@@ -22,7 +22,7 @@
   <entry>
     <title>python_challenge 记录</title>
     <url>/2022/01/29/python_challenge%20%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<p>这是个人的 python challenge 的刷题记录，网址是：<a href="http://www.pythonchallenge.com/">pythoon challenge</a>。更多内容请点击 <strong>阅读全文</strong>。</p>
+    <content><![CDATA[<p>这是个人的 python challenge 的刷题记录，网址是：<a href="http://www.pythonchallenge.com/">python challenge</a>。更多内容请点击 <strong>阅读全文</strong>，如有错误，欢迎在评论区指出。</p>
 <span id="more"></span>
 <h1 id="level-0">level 0</h1>
 <h2 id="题目信息">题目信息</h2>
@@ -32,19 +32,16 @@
 <h2 id="方法">方法</h2>
 <p>代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">res = <span class="number">2</span> ** <span class="number">38</span></span><br><span class="line"><span class="built_in">print</span>(res) <span class="comment"># 274877906944</span></span><br></pre></td></tr></table></figure></p>
 <p>将 url 中的 0 用 274877906944 代替即可。</p>
-<h2 id="总结">总结</h2>
-<p>考察 python 中的幂运算 <code>**</code></p>
 <h1 id="level-1">level 1</h1>
 <h2 id="题目信息-1">题目信息</h2>
 <p>题目信息如下：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220129215240.png" /></p>
 <p>根据图片应该是某种加密方法，图中的 <code>K-&gt;M, O-&gt;Q, E-&gt;G</code>，正好符合规律：<strong>K往后两个字母就是M，O往后两个字母就是Q，E往后两个字母就是G</strong>。猜测只要把下面粉色的字母全部用自己的后两个字母代替即可。</p>
 <h2 id="方法-1">方法 1</h2>
-<p>代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span> <span class="comment"># 原来的字符串  </span></span><br><span class="line">  </span><br><span class="line">shift = <span class="number">2</span> <span class="comment"># 后移步数  </span></span><br><span class="line">new_str = <span class="string">&quot;&quot;</span> <span class="comment"># 新的字符串  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> encypt_str:  </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">str</span>.isalpha(ch): <span class="comment"># 判断是否是字母  </span></span><br><span class="line">		ch = <span class="built_in">ord</span>(ch)  </span><br><span class="line">	    ch = ((ch + shift) - <span class="number">97</span>) % <span class="number">26</span> + <span class="number">97</span> <span class="comment">#  y 和 z 变成 a 和 b</span></span><br><span class="line">		ch = <span class="built_in">chr</span>(ch)  </span><br><span class="line"></span><br><span class="line">    new_str += ch  </span><br><span class="line"><span class="built_in">print</span>(new_str)</span><br></pre></td></tr></table></figure> （需要注意的是 y 和 z 变成 a 和 b 的时候！！！）</p>
+<p>代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span> <span class="comment"># 原来的字符串  </span></span><br><span class="line">  </span><br><span class="line">shift = <span class="number">2</span> <span class="comment"># 后移步数  </span></span><br><span class="line">new_str = <span class="string">&quot;&quot;</span> <span class="comment"># 新的字符串  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> encypt_str:  </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">str</span>.isalpha(ch): <span class="comment"># 判断是否是字母  </span></span><br><span class="line">        ch = <span class="built_in">ord</span>(ch)</span><br><span class="line">        ch = ((ch + shift) - <span class="number">97</span>) % <span class="number">26</span> + <span class="number">97</span> <span class="comment">#  y 和 z 变成 a 和 b</span></span><br><span class="line">        ch = <span class="built_in">chr</span>(ch)  </span><br><span class="line">    new_str += ch  </span><br><span class="line"><span class="built_in">print</span>(new_str)</span><br></pre></td></tr></table></figure> （需要注意的是 y 和 z 变成 a 和 b 的时候！！！）</p>
 <p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">i hope you didnt translate it by hand. thats what computers are for. doing it in by hand is inefficient and that&#x27;s why this text is so long. using string.maketrans() is recommended. now apply on the url.</span><br></pre></td></tr></table></figure></p>
-<p>发现结果也没什么用。我们回到 url <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/def/map.html</span><br></pre></td></tr></table></figure></p>
+<p>发现除了提示我们可以使用 maketrans() 方法之外，没有其他信息。我们回到 url <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/def/map.html</span><br></pre></td></tr></table></figure></p>
 <p>根据本题的加密方法，将 <code>map -&gt; ocr</code> 即可跳转下一关。 （其实，连代码都没必要写！！！）</p>
-<p>提示我们可以使用 maketrans() 方法。</p>
 <h2 id="方法-2">方法 2</h2>
 <h3 id="maketrans-方法介绍">maketrans() 方法介绍</h3>
 <blockquote>
@@ -87,10 +84,85 @@
 </ul></li>
 <li><p>返回值： 返回一个对象。</p></li>
 <li><p>解压： <code>zip(*被压缩的对象)</code>，返回二维矩阵式</p></li>
-<li><p>本题演示： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span> <span class="comment"># 原来的字符串</span></span><br><span class="line"></span><br><span class="line">intab = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz,. &#x27;()&quot;</span>  </span><br><span class="line">outtab = <span class="string">&quot;cdefghijklmnopqrstuvwxyzab,. &#x27;()&quot;</span>  </span><br><span class="line">transtab = <span class="built_in">dict</span>(<span class="built_in">zip</span>(intab, outtab))  </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(transtab[x] <span class="keyword">for</span> x <span class="keyword">in</span> encypt_str))</span><br></pre></td></tr></table></figure> ## 总结</p></li>
-<li><p>后来才发现，这就是凯撒密码偏移量为 2 的情况；</p></li>
-<li><p>maketrans(), translate(), zip() 方法使用。</p></li>
+<li><p>本题演示： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span> <span class="comment"># 原来的字符串</span></span><br><span class="line"></span><br><span class="line">intab = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz,. &#x27;()&quot;</span>  </span><br><span class="line">outtab = <span class="string">&quot;cdefghijklmnopqrstuvwxyzab,. &#x27;()&quot;</span>  </span><br><span class="line">transtab = <span class="built_in">dict</span>(<span class="built_in">zip</span>(intab, outtab))  </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(transtab[x] <span class="keyword">for</span> x <span class="keyword">in</span> encypt_str))</span><br></pre></td></tr></table></figure></p></li>
 </ul>
+<h1 id="level-2">level 2</h1>
+<h2 id="题目信息-2">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130103607.png" /></p>
+<p>注意红色字符串，要我们从图片中的书里或者页面源码中找字符。首先，书里根本看不清，所以只能从页面源码中找，打开页面源码，往下滑动，发现确实有，但是内容很多，需要写脚本。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130103757.png" /></p>
+<h2 id="方法-4">方法</h2>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li><p>请求网址，获得页面源码</p></li>
+<li><p>拿到这串字符串</p></li>
+<li><p>从中找出字母</p></li>
+</ol>
+<p><strong>代码：</strong> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests  </span><br><span class="line"><span class="keyword">import</span> re  </span><br><span class="line">url = <span class="string">&quot;http://www.pythonchallenge.com/pc/def/ocr.html&quot;</span>  </span><br><span class="line">r = requests.get(url)  </span><br><span class="line">tar = re.findall(<span class="string">r&#x27;&lt;!--(.*?)--&gt;&#x27;</span>, r.text, flags=re.S)[<span class="number">1</span>]  <span class="comment"># 找到一大串字符串</span></span><br><span class="line">ch_lst = re.findall(<span class="string">r&#x27;[a-zA-Z0-9]+&#x27;</span>, tar)  <span class="comment"># 拿到字符串中的字符</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(ch <span class="keyword">for</span> ch <span class="keyword">in</span> ch_lst)) <span class="comment"># 拼接成 url</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>结果：</strong> <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">equality</span><br></pre></td></tr></table></figure></p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/ocr.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/equality.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-3">level 3</h1>
+<h2 id="题目信息-3">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130142422.png" /></p>
+<p>除了一句提示，什么都没有。查看页面源码，发现字符串： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130142748.png" /></p>
+<p>根据提示做出合理猜测：<strong>找出这一字符串中的小写字母，每个小写字母的前后都是三个大写字母！！！也就是 AAAbCCC 类型的</strong></p>
+<h2 id="方法-5">方法</h2>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li>请求网址，拿到页面源码</li>
+<li>取出这一大串字符串</li>
+<li>从中找出符合条件的小写字母</li>
+</ol>
+<p><strong>代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">url = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/equality.html&#x27;</span>  </span><br><span class="line">r = requests.get(url)  </span><br><span class="line">tar = re.findall(<span class="string">r&#x27;&lt;!--(.*?)--&gt;&#x27;</span>, r.text, flags = re.S)[-<span class="number">1</span>] <span class="comment"># 取出目标字符串  </span></span><br><span class="line">ch_lst = re.findall(<span class="string">r&#x27;[^A-Z]+[A-Z]&#123;3&#125;([a-z])[A-Z]&#123;3&#125;[^A-Z]+&#x27;</span>, tar, re.S)    <span class="comment"># 从目标字符串中取出符合条件的小写字母  </span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(ch <span class="keyword">for</span> ch <span class="keyword">in</span> ch_lst)) <span class="comment"># 拼接成 url</span></span><br></pre></td></tr></table></figure>
+<p><strong>解释：</strong> 主要说明一下取出符合条件的小写字母的模式是如何而来的。</p>
+<p><code>[a-z]</code> 表示一个小写字母；</p>
+<p><code>[A-Z]</code> 表示一个大写字母；</p>
+<p><code>[A-Z]&#123;3&#125;</code> 表示三个大写字母；</p>
+<p><code>[A-Z]&#123;3&#125;[a-z][A-Z]&#123;3&#125;</code> 表示 ...AAAbCCC... 类型的，注意 ... 可能为大写，比如说：AAAAbCCC 也是会被匹配到的，但是，题目要求的小写字母是前后严格只有三个大写字母，所以还需要补上 <code>[^A-Z]</code> ，这表示非大写字母</p>
+<p>总的模式就是：<code>[^A-Z]+[A-Z]&#123;3&#125;([a-z])[A-Z]&#123;3&#125;[^A-Z]+</code>，这个 <code>+</code> 写不写无所谓，就本题而言，主要是 <code>aAAAbCCCc</code> 的都行，无所谓前后是大写还是小写。</p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">linkedlist</span><br></pre></td></tr></table></figure></p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/equality.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/linkedlist.html</span><br></pre></td></tr></table></figure></p>
+<p>访问修改后的 url 得到提示 <code>linkedlist.php</code> ，访问<code>http://www.pythonchallenge.com/pc/def/linkedlist.php</code> 即可。</p>
+<h1 id="level-4">level 4</h1>
+<h2 id="题目信息-4">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194001.png" /></p>
+<p>页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194018.png" /></p>
+<p>点击图片发现可以跳转： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194032.png" /></p>
+<p>注意 url 中的 nothing，应该是通过不停的获得 nothing 然后跳转到下一个页面，最后某个页面会出来答案。手动几次后发现确实如此： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194143.png" /></p>
+<p><strong>注意：本题深坑</strong></p>
+<h2 id="方法-6">方法</h2>
+<p><strong>代码：</strong> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span>  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing  </span><br><span class="line">    r = requests.get(url)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        nothing = <span class="built_in">int</span>(re.findall(<span class="string">r&#x27;\d+&#x27;</span>, r.text)[-<span class="number">1</span>])  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;nothing: %d&quot;</span> % nothing)  </span><br><span class="line">    <span class="keyword">except</span>:  </span><br><span class="line">        nothing /= <span class="number">2</span>  </span><br><span class="line">	<span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure></p>
+<p><strong>解释：</strong> 首先例举一下这题我遇到的坑！</p>
+<p>原先我的代码是这样的： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing</span><br><span class="line">    r = requests.get(url)</span><br><span class="line">    <span class="built_in">print</span>(r.text)</span><br><span class="line">    nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())</span><br></pre></td></tr></table></figure></p>
+<p>运行一段时间后，得到如下报错： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;group&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>并且此时页面的内容为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Yes. Divide by two and keep going.</span><br></pre></td></tr></table></figure></p>
+<p>因为此时页面并没有数字，无法匹配，也就没有返回匹配对象，更加没有 group() 方法，所以报错。因此，我讲代码修改为如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing  </span><br><span class="line">    r = requests.get(url)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;nothing: %d&quot;</span> % nothing)  </span><br><span class="line">    <span class="keyword">except</span>:  </span><br><span class="line">        nothing /= <span class="number">2</span></span><br><span class="line">		<span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure></p>
+<p>然后能够越过这个坑： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195351.png" /></p>
+<p>跳进下一个坑： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195449.png" /></p>
+<p>当 nothing = 82683 时，页面内容如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">You&#x27;ve been misleaded to here. Go to previous one and check.</span><br></pre></td></tr></table></figure></p>
+<p>前一个是 82682，页面内容如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">There maybe misleading numbers in the text. One example is 82683. Look only for the next nothing and the next nothing is 63579</span><br></pre></td></tr></table></figure></p>
+<p>因为 re.search() 匹配到第一个就会返回，所以才会踩到这个坑，这里的 nothing 是第二个，所以修改为最终代码，就是刚刚给的，最后顺利得到结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130200232.png" /></p>
+<p>这里其实存在着另一个坑，得到 peak.html 的 nothing = 66831，此时如果你没有显示每一页的内容 <code>print(r.text)</code>，极容易错过信息，因为此时 nothing /= 2，也能访问，看后面能够继续就知道了。</p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/linkedlist.php</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/peak.html</span><br></pre></td></tr></table></figure></p>
+<p><strong>注意：</strong> 遇到坑之后的 nothing 不要从头开始，这样会省时间。</p>
+<h1 id="level-5">level 5</h1>
+<h2 id="题目信息-5">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130205619.png" /></p>
+<p>页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130205643.png" /></p>
+<p>注意绿字提醒：python 中有一个库叫做 pickle，用来序列化和非序列化的。因此，本题需要使用到该库。还有 <code>banner.p</code> 点进去发现是看不懂的一堆字符串，做一个合理的猜测：<strong><code>banner.p</code> 中的字符串是经过序列化的，将它反序列应该会得到答案</strong></p>
+<h2 id="方法-7">方法</h2>
+<p><strong>代码：</strong> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, pickle  </span><br><span class="line">url = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/banner.p&#x27;</span>  </span><br><span class="line">raw = requests.get(url).content  </span><br><span class="line"><span class="built_in">print</span>(pickle.loads(raw))</span><br></pre></td></tr></table></figure></p>
+<p>发现得到看不懂的一堆东西： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210254.png" /></p>
+<p>仔细观察发现，是一个二元列表，每一行都是由一个或多个元组组成的，猜测（看完答案后）：<strong>每一行其实都是字符串的压缩：将一行字符串压缩成 <code>[(字符1，出现次数), (字符2，出现次数)...]</code> 因此，只要将每一行还原成原来的样子即可。</strong></p>
+<p><strong>最终代码：</strong> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, pickle  </span><br><span class="line">url = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/banner.p&#x27;</span>  </span><br><span class="line">raw = requests.get(url).content  <span class="comment"># 转为 byte，因为 loads() 的参数是 byte 类型的</span></span><br><span class="line">data = pickle.loads(raw)  </span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> data:  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join([ch * num <span class="keyword">for</span> ch, num <span class="keyword">in</span> line]))</span><br></pre></td></tr></table></figure></p>
+<p><strong>结果：</strong> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210708.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">channel</span><br></pre></td></tr></table></figure>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/peak.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/channel.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="附录">附录</h1>
+<ol type="1">
+<li>网址：<a href="http://www.pythonchallenge.com/">python challenge</a></li>
+<li>解法：<a href="https://www.hackingnote.com/en/python-challenge-solutions/overview">python challenge solutions</a></li>
+</ol>
 ]]></content>
       <categories>
         <category>python</category>
