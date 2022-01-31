@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>pickle 库</title>
+    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
+    <content><![CDATA[<p>pickle 库的简单使用。</p>
+<span id="more"></span>
+<h1 id="前言">前言</h1>
+<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
+<h1 id="介绍">介绍</h1>
+<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
+<h1 id="常用方法">常用方法</h1>
+<p>主要由两类接口，即序列化和反序列化。</p>
+<p>其中序列化包括： 1. dump() 2. dumps()</p>
+<p>反序列化包括： 1. load() 2. loads()</p>
+<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
+<h2 id="dump">dump</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
+</blockquote>
+<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
+<h2 id="dumps">dumps</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - obj：要序列化的对象 - 少了 file</p>
+<ul>
+<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
+</ul>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
+<h2 id="load">load</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
+<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="loads">loads</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
+<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pickle</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python_challenge 记录</title>
     <url>/2022/01/29/python_challenge%20%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<p>这是个人的 python challenge 的刷题记录，网址是：<a href="http://www.pythonchallenge.com/">python challenge</a>。更多内容请点击 <strong>阅读全文</strong>，如有错误，欢迎在评论区指出。</p>
@@ -117,7 +166,7 @@
 <p>原先我的代码是这样的： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing</span><br><span class="line">    r = requests.get(url)</span><br><span class="line">    <span class="built_in">print</span>(r.text)</span><br><span class="line">    nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())</span><br></pre></td></tr></table></figure></p>
 <p>运行一段时间后，得到如下报错： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;group&#x27;</span><br></pre></td></tr></table></figure></p>
 <p>并且此时页面的内容为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Yes. Divide by two and keep going.</span><br></pre></td></tr></table></figure></p>
-<p>因为此时页面并没有数字，无法匹配，也就没有返回匹配对象，更加没有 group() 方法，所以报错。因此，我讲代码修改为如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing  </span><br><span class="line">    r = requests.get(url)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;nothing: %d&quot;</span> % nothing)  </span><br><span class="line">    <span class="keyword">except</span>:  </span><br><span class="line">        nothing /= <span class="number">2</span></span><br><span class="line">		<span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure></p>
+<p>因为此时页面并没有数字，无法匹配，也就没有返回匹配对象，更加没有 group() 方法，所以报错。因此，我将代码修改为如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing  </span><br><span class="line">    r = requests.get(url)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;nothing: %d&quot;</span> % nothing)  </span><br><span class="line">    <span class="keyword">except</span>:  </span><br><span class="line">        nothing /= <span class="number">2</span></span><br><span class="line">		<span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure></p>
 <p>然后能够越过这个坑： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195351.png" /></p>
 <p>跳进下一个坑： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195449.png" /></p>
 <p>当 nothing = 82683 时，页面内容如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">You&#x27;ve been misleaded to here. Go to previous one and check.</span><br></pre></td></tr></table></figure></p>
@@ -139,6 +188,24 @@
 <p><strong>结果：</strong> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210708.png" /></p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">channel</span><br></pre></td></tr></table></figure>
 <p>修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/peak.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/channel.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-6">level 6</h1>
+<h2 id="题目信息-6">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131103728.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131103745.png" /></p>
+<p>注意：html 旁边的 <code>&lt;!-- &lt;-- zip --&gt;</code>。尝试将 html 修改为 zip 发现可以下载一个压缩文件。</p>
+<p>压缩文包里有许多文件，先看 <code>readme.txt</code>： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">welcome to my zipped list.  </span><br><span class="line">  </span><br><span class="line">hint1: start from 90052  </span><br><span class="line">hint2: answer is inside the zip</span><br></pre></td></tr></table></figure></p>
+<p>查看之后猜测，除 <code>readme.txt</code> 之外每一个文件内容都是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Next nothing is (\d+)</span><br></pre></td></tr></table></figure></p>
+<p>思路：<strong>nothing 从 90052 开始，先访问对应文件，然后读取下一个 nothing 继续访问。直到出现不同</strong></p>
+<h2 id="方法-8">方法</h2>
+<p>第一次代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> re  </span><br><span class="line">rpath = <span class="string">&quot;attachments/level_6/%s.txt&quot;</span>  </span><br><span class="line">nothing = <span class="string">&quot;90052&quot;</span>  </span><br><span class="line">pattern = <span class="string">&quot;Next nothing is (\d+)&quot;</span>  </span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:  </span><br><span class="line">    path = rpath % nothing  </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(path, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">        content = f.read()  </span><br><span class="line">        <span class="built_in">print</span>(content)  </span><br><span class="line">        match = re.search(pattern, content)  </span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> match:  </span><br><span class="line">            <span class="keyword">break</span>  </span><br><span class="line">	nothing = match.group(<span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
+<p>解释： <code>match.group(1)</code>：因为代码中的 pattern 里面只有一个括号（在我们需要处加上括号），这样子匹配下来的其实是一整句话 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Next nothing is (\d+)</span><br></pre></td></tr></table></figure></p>
+<p>但是，我们只需要 () ，如果直接使用 <code>match.group()</code> 就会将整句话给 nothing，而 <code>group(1)</code> 就是只读取第一个括号中的内容，也就是 () 即 nothing。</p>
+<p>不出所料，果然没这么简单，当 nothing = 46145 时： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131105144.png" /></p>
+<p>现在的问题是什么是 comments？经过百度后发现 zip 文件有 comment，用来写额外的描述数据。python 中有 zipfile 库可以获得 comment。</p>
+<p>最终代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> re, zipfile  </span><br><span class="line">path = <span class="string">&quot;attachments/level_6/channel.zip&quot;</span>  </span><br><span class="line">nothing = <span class="string">&quot;90052&quot;</span>  </span><br><span class="line">comment = []  </span><br><span class="line">pattern = <span class="string">&quot;Next nothing is (\d+)&quot;</span>  </span><br><span class="line"><span class="keyword">with</span> zipfile.ZipFile(path, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:  </span><br><span class="line">        fileName = nothing + <span class="string">&#x27;.txt&#x27;</span>  </span><br><span class="line">		content = f.read(fileName).decode(<span class="string">&quot;utf-8&quot;</span>)  </span><br><span class="line">        comment.append(f.getinfo(fileName).comment.decode(<span class="string">&#x27;utf-8&#x27;</span>))  </span><br><span class="line">        match = re.search(pattern, content)  </span><br><span class="line">		<span class="keyword">if</span> <span class="keyword">not</span> match:  </span><br><span class="line">            <span class="keyword">break</span>  </span><br><span class="line">		nothing = match.group(<span class="number">1</span>)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(comment))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131110030.png" /></p>
+<p>访问 <code>http://www.pythonchallenge.com/pc/def/hockey.html</code>，得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">it&#x27;s in the air. look at the letters.</span><br></pre></td></tr></table></figure></p>
+<p>注意到，组成 HOCKY 的字母为 oxygen，因此修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/hockey.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/oxygen.html</span><br></pre></td></tr></table></figure></p>
 <h1 id="附录">附录</h1>
 <ol type="1">
 <li>网址：<a href="http://www.pythonchallenge.com/">python challenge</a></li>
