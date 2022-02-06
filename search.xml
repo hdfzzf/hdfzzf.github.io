@@ -338,7 +338,28 @@
 <h2 id="方法-15">方法</h2>
 <p>代码如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image, ImageDraw  </span><br><span class="line">path = <span class="string">&#x27;attachments/level_14/wire.png&#x27;</span>  </span><br><span class="line">img = Image.<span class="built_in">open</span>(path)  </span><br><span class="line"><span class="built_in">print</span>(img.size, img.mode, img.<span class="built_in">format</span>)  </span><br><span class="line">out = Image.new(<span class="string">&#x27;RGB&#x27;</span>, (<span class="number">100</span>, <span class="number">100</span>))  </span><br><span class="line">d = <span class="number">200</span>  </span><br><span class="line">delta = [(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">1</span>), (-<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, -<span class="number">1</span>)]  </span><br><span class="line">x, y, i = -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>  <span class="comment"># 因为第一次要 +100，所以 x 初始为 -1</span></span><br><span class="line"><span class="keyword">while</span> d/<span class="number">2</span> &gt; <span class="number">0</span>:  </span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> delta:  </span><br><span class="line">        steps = d // <span class="number">2</span></span><br><span class="line">		<span class="keyword">for</span> s <span class="keyword">in</span> <span class="built_in">range</span>(steps):  </span><br><span class="line">            x, y = x + v[<span class="number">0</span>], y + v[<span class="number">1</span>]  </span><br><span class="line">            out.putpixel((x, y), img.getpixel((i, <span class="number">0</span>)))  </span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">		d -= <span class="number">1</span>  </span><br><span class="line">out.show()</span><br></pre></td></tr></table></figure></p>
 <p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203111203.png" /></p>
-<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/italy.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/cat.html</span><br></pre></td></tr></table></figure></p>
+<p>当访问 <code>http://www.pythonchallenge.com/pc/return/cat.html</code> 时，出现：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206223856.png" /></p>
+<p>因此用 uzi 替代 cat，修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/cat.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/uzi.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-15">level 15</h1>
+<h2 id="题目信息-15">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206225138.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206225159.png" /></p>
+<p>信息总结：</p>
+<ol type="1">
+<li>日历上显示的应该是 <code>1xx6</code> 年；</li>
+<li>注意最右下角的其实是2月，有 29 天，说明应该是闰年；</li>
+<li>他不是最年轻的，而是第二年轻的</li>
+<li>要做的事：为明天买花</li>
+<li>网页标题：<code>whom?</code></li>
+</ol>
+<p>猜测：需要通过生日找出这个人是谁。</p>
+<h2 id="方法-16">方法</h2>
+<ol type="1">
+<li>找出 1006 到 1996 之间的满足 1.26 是周一的所有闰年。代码如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime, calendar  </span><br><span class="line"><span class="keyword">for</span> year <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1006</span>, <span class="number">1997</span>, <span class="number">10</span>):  </span><br><span class="line">    d = datetime.date(year, <span class="number">1</span>, <span class="number">26</span>)  </span><br><span class="line">    <span class="keyword">if</span> d.isoweekday() == <span class="number">1</span> <span class="keyword">and</span> calendar.isleap(year):  <span class="comment"># 判断是否为闰年，1，26是否为周一</span></span><br><span class="line">        <span class="built_in">print</span>(d)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>结果为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1176-01-26</span><br><span class="line">1356-01-26</span><br><span class="line">1576-01-26</span><br><span class="line">1756-01-26</span><br><span class="line">1976-01-26</span><br></pre></td></tr></table></figure></p>
+<p>然后，根据 "他不是最年轻的，而是第二年轻的"，猜测应该是 1756 年，最年轻的是1956年。，再根据"要做的事：为明天买花"，猜测他的生日应该是 1756.1.27，百度发现，那天是莫扎特（Mozart）的生日，修改 url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/uzi.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/mozart.html</span><br></pre></td></tr></table></figure></p>
 <h1 id="附录">附录</h1>
 <ol type="1">
 <li>网址：<a href="http://www.pythonchallenge.com/">python challenge</a></li>
