@@ -17,23 +17,39 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta property="og:type" content="website">
-<meta property="og:title" content="HDFZZF&#39;s BLOG">
-<meta property="og:url" content="https://hdfzzf.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/index.html">
+<meta name="description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GXYCTF2019 BabyUpload">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/03/21/GXYCTF2019%20BabyUpload/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png">
+<meta property="article:published_time" content="2022-03-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-21T12:10:07.013Z">
 <meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="文件上传">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png">
 
 
-<link rel="canonical" href="https://hdfzzf.github.io/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">
+<link rel="canonical" href="https://hdfzzf.github.io/2022/03/21/GXYCTF2019%20BabyUpload/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/漏洞复现/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/03/21/GXYCTF2019%20BabyUpload/","path":"2022/03/21/GXYCTF2019 BabyUpload/","title":"GXYCTF2019 BabyUpload"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: 漏洞复现 | HDFZZF's BLOG</title>
+<title>GXYCTF2019 BabyUpload | HDFZZF's BLOG</title>
   
 
 
@@ -127,7 +143,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -140,6 +156,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">题目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">过滤测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E7%B1%BB%E5%9E%8B%E6%B5%8B%E8%AF%95"><span class="nav-number">2.1.</span> <span class="nav-text">过滤类型测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E5%90%8E%E7%BC%80%E6%B5%8B%E8%AF%95"><span class="nav-number">2.2.</span> <span class="nav-text">过滤后缀测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%9A%81%E5%89%91%E8%BF%9E%E6%8E%A5get-flag"><span class="nav-number">3.</span> <span class="nav-text">蚁剑连接get flag</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -202,51 +219,162 @@
 </noscript>
 
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">漏洞复现
-          <small>分类</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/03/21/GXYCTF2019%20BabyUpload/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GXYCTF2019 BabyUpload
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
+
+      <time title="创建时间：2022-03-21 00:00 / 修改时间：20:10" itemprop="dateCreated datePublished" datetime="2022-03-21T00:00:00+08:00">2022-03-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/03/21/GXYCTF2019%20BabyUpload/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/21/GXYCTF2019 BabyUpload/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>603</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
+<h1 id="过滤测试">过滤测试</h1>
+<h2 id="过滤类型测试">过滤类型测试</h2>
+<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
+<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
+<h2 id="过滤后缀测试">过滤后缀测试</h2>
+<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
+<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
+<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。 ## 文件内容过滤 写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
+<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
+<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
+<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
+<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
+<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
+<p>成功。</p>
+<h1 id="总结">总结</h1>
+<ol type="1">
+<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
+<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
+<li>文件内容的过滤，需要知道多种木马的写法。</li>
+</ol>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-03-21T00:00:00+08:00"
-              content="2022-03-21">
-          03-21
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/" itemprop="url">
-            <span itemprop="name">复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" rel="tag"># 文件上传</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/" rel="prev" title="复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）">
+                  <i class="fa fa-chevron-left"></i> 复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-    </div>
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
   </div>
   
-  
-  
-
 </div>
   </main>
 
