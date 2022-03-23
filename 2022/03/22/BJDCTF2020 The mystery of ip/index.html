@@ -17,23 +17,35 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta property="og:type" content="website">
-<meta property="og:title" content="HDFZZF&#39;s BLOG">
-<meta property="og:url" content="https://hdfzzf.github.io/tags/python/index.html">
+<meta name="description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BJDCTF2020 The mystery of ip">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png">
+<meta property="article:published_time" content="2022-03-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-22T12:56:52.518Z">
 <meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="SSTI">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png">
 
 
-<link rel="canonical" href="https://hdfzzf.github.io/tags/python/">
+<link rel="canonical" href="https://hdfzzf.github.io/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"tags/python/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/","path":"2022/03/22/BJDCTF2020 The mystery of ip/","title":"BJDCTF2020 The mystery of ip"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>标签: python | HDFZZF's BLOG</title>
+<title>BJDCTF2020 The mystery of ip | HDFZZF's BLOG</title>
   
 
 
@@ -127,7 +139,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -140,6 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">题目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">解题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -202,71 +215,157 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">python
-          <small>标签</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BJDCTF2020 The mystery of ip
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
+
+      <time title="创建时间：2022-03-22 00:00 / 修改时间：20:56" itemprop="dateCreated datePublished" datetime="2022-03-22T00:00:00+08:00">2022-03-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/22/BJDCTF2020 The mystery of ip/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>868</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<h1 id="解题">解题</h1>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>发现是 <code>smarty</code>。</p>
+<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>成功get。</p>
+<h1 id="总结">总结</h1>
+<ul>
+<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+</ul>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-01-30T22:39:39+08:00"
-              content="2022-01-30">
-          01-30
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/01/30/pickle%20%E5%BA%93/" itemprop="url">
-            <span itemprop="name">pickle 库</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SSTI/" rel="tag"># SSTI</a>
+          </div>
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/22/BUUCTF%202018%20Online%20Tool/" rel="prev" title="BUUCTF 2018 Online Tool">
+                  <i class="fa fa-chevron-left"></i> BUUCTF 2018 Online Tool
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2022-01-29T23:23:54+08:00"
-              content="2022-01-29">
-          01-29
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/" itemprop="url">
-            <span itemprop="name">python challenge 题解</span>
-          </a>
-      </div>
 
-      
-    </header>
-  </article>
 
-    </div>
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
   </div>
   
-  
-  
-
 </div>
   </main>
 

