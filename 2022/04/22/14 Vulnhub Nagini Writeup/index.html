@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="该靶机难度比较高，有许多知识点之前没有涉及过。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="14 Vulnhub Nagini Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/04/22/14%20Vulnhub%20Nagini%20Writeup/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="该靶机难度比较高，有许多知识点之前没有涉及过。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170113.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170617.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170925.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171108.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171121.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171543.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171621.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171902.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422172803.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422172743.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422173341.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422173441.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422173716.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422174138.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422174354.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422175005.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422175046.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422175900.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422180121.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422180226.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422194046.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422194531.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195004.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195336.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195515.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195550.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200531.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200625.png">
+<meta property="article:published_time" content="2022-04-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-24T10:39:36.727Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="SSRF">
+<meta property="article:tag" content="HTTP3协议">
+<meta property="article:tag" content="Gopher">
+<meta property="article:tag" content="浏览器密码还原">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170113.png">
+
+
+<link rel="canonical" href="https://hdfzzf.github.io/2022/04/22/14%20Vulnhub%20Nagini%20Writeup/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/22/14%20Vulnhub%20Nagini%20Writeup/","path":"2022/04/22/14 Vulnhub Nagini Writeup/","title":"14 Vulnhub Nagini Writeup"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>14 Vulnhub Nagini Writeup | HDFZZF's BLOG</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HDFZZF's BLOG</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-text">前置知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#gopher%E5%8D%8F%E8%AE%AE"><span class="nav-text">Gopher协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http3%E5%8D%8F%E8%AE%AE"><span class="nav-text">HTTP3协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssrf%E6%BC%8F%E6%B4%9E"><span class="nav-text">SSRF漏洞</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D%E7%BB%91%E5%AE%9A%E5%92%8Chttp3%E5%8D%8F%E8%AE%AE"><span class="nav-text">域名绑定和HTTP3协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D%E7%BB%91%E5%AE%9A"><span class="nav-text">域名绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http3%E5%8D%8F%E8%AE%AE%E5%B7%A5%E5%85%B7"><span class="nav-text">HTTP3协议工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssrf-mysql"><span class="nav-text">SSRF + MySql</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A1%A8"><span class="nav-text">查看数据库中有哪些表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%A1%A8%E4%B8%8B%E7%9A%84%E5%AD%97%E6%AE%B5"><span class="nav-text">查看表下的字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9site_admin%E5%AF%86%E7%A0%81"><span class="nav-text">修改site_admin密码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97snape%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="nav-text">获得snape用户权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97hermoine%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90"><span class="nav-text">获得hermoine用户权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97root%E6%9D%83%E9%99%90"><span class="nav-text">获得root权限</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hdfzzf"
+      src="/images/zzf.jpg">
+  <p class="site-author-name" itemprop="name">hdfzzf</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">96</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/22/14%20Vulnhub%20Nagini%20Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          14 Vulnhub Nagini Writeup
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-22 00:00" itemprop="dateCreated datePublished" datetime="2022-04-22T00:00:00+08:00">2022-04-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-24 18:39" itemprop="dateModified" datetime="2022-04-24T18:39:36+08:00">2022-04-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/04/22/14%20Vulnhub%20Nagini%20Writeup/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/22/14 Vulnhub Nagini Writeup/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>该靶机难度比较高，有许多知识点之前没有涉及过。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址： - <a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/harrypotter-nagini,689/">HarryPotter: Nagini ~ VulnHub</a></p>
+<p>难度： - 中、高难度</p>
+<p>目标： - 取得root权限 - 拿到3个flag</p>
+<p>涉及攻击方法： - 主机发现 - 端口扫描 - Web信息收集 - <strong>HTTP3协议</strong> - 域名绑定 - <strong>SSRF漏洞</strong>（Gopher+MySQL） - Joomla漏洞 - SSH公钥登录 - <strong>浏览器密码还原</strong></p>
+<h1 id="前置知识">前置知识</h1>
+<h2 id="gopher协议">Gopher协议</h2>
+<p><a href="Gopher协议.md">Gopher协议</a></p>
+<h2 id="http3协议">HTTP3协议</h2>
+<p><a href="HTTP3协议.md">HTTP3协议</a></p>
+<h2 id="ssrf漏洞">SSRF漏洞</h2>
+<p><a href="SSRF.md">SSRF</a></p>
+<h1 id="渗透">渗透</h1>
+<p>kali: 10.0.2.4</p>
+<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.22</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.22</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170113.png" /></p>
+<p>信息：</p>
+<ul>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http，版本为Apache 2.4.38</li>
+<li>靶机操作系统为Debian</li>
+</ul>
+<h2 id="访问http服务">访问http服务</h2>
+<p>直接访问80端口，发现网页非常的干净，只有一张图片，没办法，只能使用路径扫描。这里需要注意的是dirsearch扫描的不全，要么自己指定字典，或者就是配合gobuster一起使用。</p>
+<p>利用dirsearch扫描出了两个： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">index.html</span><br><span class="line">/joomla/</span><br></pre></td></tr></table></figure></p>
+<p>可以对后者继续进行扫描，会扫出很多东西。后者其实是一个开源的CMS，可以在GitHub上找到源码：<a target="_blank" rel="noopener" href="https://github.com/joomla/joomla-cms">GitHub - joomla/joomla-cms: Home of the Joomla! Content Management System</a></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170617.png" /></p>
+<p>重要的其实是这个，将其下载下来，得到许多配置信息（直接将.bak后缀删掉就可以打开了），重要的是</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422170925.png" /></p>
+<p>因此可以知道靶机上存在着MySQL数据库，并且用户名和数据库都写在这里面了。这些信息后面用到。</p>
+<p>后来我就尝试访问了下扫描出来的路径，得到两个登陆界面，第一个是普通用户登录界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171108.png" /></p>
+<p>第二个是后台登录界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171121.png" /></p>
+<p>原本以为是利用开源CMS的漏洞来获得shell，于是利用msf查看了靶机上joomla的版本，最后确定是3.9.25，也就是不存在可以利用的漏洞。默认的账号和密码也不能够登录。万般无奈之下，尝试用gobuster再次扫描，这回得到了一个文件note.txt <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.22/ -w /usr/share/dirb/wordlists/common.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
+<hr />
+<p>也可以使用： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.43 -f -e html,php,txt -w [字典地址]</span><br></pre></td></tr></table></figure></p>
+<p>指定字典，效果有时候会比不带字典好，但是速度慢。</p>
+<hr />
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171543.png" /></p>
+<p>访问该文件得到如下内容：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171621.png" /></p>
+<p>要求我们访问HTTP3的服务端，并且给出了域名。</p>
+<h2 id="域名绑定和http3协议">域名绑定和HTTP3协议</h2>
+<h3 id="域名绑定">域名绑定</h3>
+<p>这台靶机通过上有多个Web应用，但是端口都是在80端口，因此推测通过访问不同的域名可以访问到该靶机上不同的Web应用。因此，需要先进行域名绑定。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/hosts</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422171902.png" /></p>
+<p>此时还不能访问，因为该域名的使用的是HTTP3协议，因此需要先下载HTTP3协议工具。</p>
+<h3 id="http3协议工具">HTTP3协议工具</h3>
+<blockquote>
+<p>需要提前安装carrgo, cmake</p>
+</blockquote>
+<p>工具地址：<a target="_blank" rel="noopener" href="https://github.com/cloudflare/quiche">GitHub - cloudflare/quiche: 🥧 Savoury implementation of the QUIC transport protocol and HTTP/3</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --recursive https://github.com/cloudflare/quiche</span><br><span class="line">cargo build --examples  <span class="comment"># 需要进入到quiche目录</span></span><br><span class="line"><span class="built_in">cd</span> quiche/target/debug/examples</span><br><span class="line">./http3-client https://quic.nagini.hogwarts 或者 ./http3-client https://10.0.2.22</span><br></pre></td></tr></table></figure>
+<p>得到如下内容：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422172803.png" /></p>
+<p>这里其实得到两条信息： - 让我们访问/internalResourceFeTcher.php - 让我们查看配置文件的备份，及configruation.php.bak。上面看过的</p>
+<hr />
+<p>如果rustc报错，先卸载当前的，然后下载，命令如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">卸载: sudo apt purge rustc</span><br><span class="line">下载: </span><br><span class="line">	curl --proto &#x27;=https&#x27; --tlsv1.2 -sSf https://sh.rustup.rs | sh</span><br><span class="line">	弹出互动，输入1</span><br><span class="line">	然后输入：source $HOME/.cargo/env</span><br></pre></td></tr></table></figure></p>
+<hr />
+<h2 id="ssrf-mysql">SSRF + MySql</h2>
+<p>直接访问：10.0.2.22/internalResourceFeTcher.php</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422172743.png" /></p>
+<p>经过测试发现，这里存在着SSRF漏洞。又根据提示，查看配置文件，发现里面有MySQL数据库的相关信息，因此猜测这里应该使用SSRF攻击MySql数据库，从而获取数据库中的信息。</p>
+<p>利用工具：<a target="_blank" rel="noopener" href="https://github.com/tarunkant/Gopherus">GitHub - tarunkant/Gopherus: This tool generates gopher link for exploiting SSRF and gaining RCE in various servers</a></p>
+<p>使用方式很简单：<code>./gopherus.py --exploit mysql</code>，如果是不同的数据库，后面修改一下就可以</p>
+<h3 id="查看数据库中有哪些表">查看数据库中有哪些表</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422173341.png" /></p>
+<p>然后将生成的url粘贴到网页中的输入框，这里可能会不成功，多刷新几次就好了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422173441.png" /></p>
+<p>发现joomla数据库下有许多的表，我们主要关注一个叫做<code>joomla_users</code>的表，这里最有可能存在着用户的登录信息。</p>
+<h3 id="查看表下的字段">查看表下的字段</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422173716.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422174138.png" /></p>
+<p>def后面跟着的分别是“数据库、表名、字段名”这些信息。如果看的不清楚可以按F12然后查看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422174354.png" /></p>
+<p>我们只需要关注有一个字段为email，其后一个字段为密码，其前一个字段为username。因此<code>site_admin@nagini,hogwarts</code>这个应该是email，那么后面跟着的就是密码，前面就是用户名site_admin。可以尝试破解该密码，但是并不推荐，这里推荐直接修改掉site_admin的密码。</p>
+<h3 id="修改site_admin密码">修改site_admin密码</h3>
+<p>先生成一个md5的密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">┌──(hdfzzf㉿kali)-[~]</span><br><span class="line">└─$ echo -n &quot;pass&quot; | md5sum</span><br><span class="line">1a1dc91c907325c69271ddf0c944bc72  -</span><br></pre></td></tr></table></figure></p>
+<p>注意，一定要加-n。然后</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422175005.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422175046.png" /></p>
+<p>然后去10.0.2.22/joomla/administrator/index.php，用修改后的密码登录。</p>
+<h2 id="get-shell">get shell</h2>
+<p>进入后台之后如何get shell可以查看：<a href="4.%20Vulnhub%20AdmX%20Writeup.md">4. Vulnhub AdmX Writeup</a></p>
+<p>直接寻找模板 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Templates -&gt; Templates -&gt; [随便选一个] -&gt; [随便选一个php文件]</span><br></pre></td></tr></table></figure></p>
+<p>将<code>/usr/share/webshells/php/php-reverse-shell.php</code>的内容代替原来php的内容，注意修改ip和端口。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422175900.png" /></p>
+<p>可以利用dirsearch找到对应php文件的路径。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422180121.png" /></p>
+<p>kali监听对应的端口，然后网页访问该文件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422180226.png" /></p>
+<h2 id="权限提升">权限提升</h2>
+<h3 id="获得snape用户权限">获得snape用户权限</h3>
+<p>发现靶机上存在三个用户root, hermoine, snape。先查看snape的家目录，发现有一个奇怪的文件 .creds.txt，这看上去会像是一个口令，因此查看内容，发现是经过base64编码的 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// .creds.txt</span><br><span class="line">TG92ZUBsaWxseQ==</span><br><span class="line">-&gt; Love@lilly</span><br></pre></td></tr></table></figure></p>
+<p>猜测这可能是ssh登录的密码，尝试登录</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422194046.png" /></p>
+<p>成功登录。</p>
+<h3 id="获得hermoine用户权限">获得hermoine用户权限</h3>
+<p>先到对应的家目录，查看内容。发现了三个比较奇怪的点： 1. 家目录下存在着.ssh目录，如果存在ssh密钥登录，那么对应的公钥就会保存在该目录下。但是现在里面为空； 2. 家目录下居然有一个bin目录，这不应该在这，而且里面的文件居然有suid权限，属主为hermoine，并且是可执行文件，初步猜测利用该文件获得hermoine的权限； 3. 还有一个奇怪的目录.mozilla，这是火狐浏览器的目录，但是现在没有权限查看；</p>
+<p>先去看一下suid文件的作用</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422194531.png" /></p>
+<p>发现这就是一个将目标文件cp到另一个地方的可执行文件，结合.ssh目录，猜测：<strong>利用该程序将ssh公钥放入到hermoine的.ssh目录下，然后使用ssh密钥登录</strong></p>
+<p>在kali上生成ssh公、私钥（注意，kali哪个用户生成的就用哪个用户登录！！！） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br><span class="line">输入命令之后，一直回车就好了</span><br></pre></td></tr></table></figure></p>
+<p>将公钥发送到snape用户的目录里去 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp id_rsa.pub snape@10.0.2.22:~/ <span class="comment"># 拷贝文件到对应</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195004.png" /></p>
+<p>然后利用 su_cp 将公钥复制到/home/hermoine/.ssh目录下，并且名字一定要改为authorized_keys！！！否则无法登录，我尝试过！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195336.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195515.png" /></p>
+<p>其他尝试过，都不能登录。</p>
+<p>然后利用密钥登录即可</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422195550.png" /></p>
+<h3 id="获得root权限">获得root权限</h3>
+<p>这台靶机利用的方式比较奇怪。还记得刚刚在hermoine目录下的.mozilla吗，里面保存的都是一些火狐浏览器相关的信息，当然也包括一些登录信息。</p>
+<p>进入到.mozilla/firefox/g2mhbq0o.default目录内，发现有logins.json和key4.db文件，利用工具提取出里面的信息，工具地址：<a target="_blank" rel="noopener" href="https://github.com/lclevy/firepwd">GitHub - lclevy/firepwd: firepwd.py, an open source tool to decrypt Mozilla protected passwords</a></p>
+<p>该工具的作用： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This educational tool was written to illustrate how Mozilla passwords (Firefox, Thunderbird) are protected using contents of files key4.db (or key3.db), logins.json (or signons.sqlite)</span><br></pre></td></tr></table></figure></p>
+<p>将logins.json和key4.db文件与firepwd.py放到同一个目录下，然后执行 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 firepwd.py</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200531.png" /></p>
+<p>得到用户名和密码，直接ssh登录</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200625.png" /></p>
+<p>成功获得root权限，现在依次查看三个flag，分别是： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// /var/www/html/horcrux1.txt</span><br><span class="line">horcrux_&#123;MzogU2x5dGhFcmlOJ3MgTG9jS0VldCBkRXN0cm9ZZUQgYlkgUm9O&#125;</span><br><span class="line">-&gt; horcrux_&#123;3: SlythEriN&#x27;s LocKEet dEstroYeD bY RoN&#125;</span><br><span class="line"></span><br><span class="line">// /home/hermoine/horcrux2.txt</span><br><span class="line">horcrux_&#123;NDogSGVsZ2EgSHVmZmxlcHVmZidzIEN1cCBkZXN0cm95ZWQgYnkgSGVybWlvbmU=&#125;</span><br><span class="line">-&gt; horcrux_&#123;4: Helga Hufflepuff&#x27;s Cup destroyed by Hermione&#125;</span><br><span class="line"></span><br><span class="line">// /root/horcrux3.txt</span><br><span class="line">  ____                            _         _       _   _                 </span><br><span class="line"> / ___|___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_(_) ___  _ __  ___ </span><br><span class="line">| |   / _ \| &#x27;_ \ / _` | &#x27;__/ _` | __| | | | |/ _` | __| |/ _ \| &#x27;_ \/ __|</span><br><span class="line">| |__| (_) | | | | (_| | | | (_| | |_| |_| | | (_| | |_| | (_) | | | \__ \</span><br><span class="line"> \____\___/|_| |_|\__, |_|  \__,_|\__|\__,_|_|\__,_|\__|_|\___/|_| |_|___/</span><br><span class="line">                  |___/                                                   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Machine Author: Mansoor R (@time4ster)</span><br><span class="line">Machine Difficulty: Medium</span><br><span class="line">Machine Name: Nagini</span><br><span class="line">Horcruxes Hidden in this VM: 3 horcruxes</span><br><span class="line"></span><br><span class="line">You have successfully pwned Nagini machine.</span><br><span class="line">Here is your third hocrux: horcrux_&#123;NTogRGlhZGVtIG9mIFJhdmVuY2xhdyBkZXN0cm95ZWQgYnkgSGFycnk=&#125;</span><br><span class="line">-&gt; horcrux_&#123;5: Diadem of Ravenclaw destroyed by Harry&#125;</span><br><span class="line"></span><br><span class="line"># For any queries/suggestions feel free to ping me at email: time4ster@protonmail.com</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">总结</h1>
+<p>该靶机难度挺大的，主要是涉及到许多没见过的知识点： - Gopher + SSRF - HTTP3协议 - 浏览器密码还原</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
+              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
+              <a href="/tags/SSRF/" rel="tag"># SSRF</a>
+              <a href="/tags/HTTP3%E5%8D%8F%E8%AE%AE/" rel="tag"># HTTP3协议</a>
+              <a href="/tags/Gopher/" rel="tag"># Gopher</a>
+              <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%AF%86%E7%A0%81%E8%BF%98%E5%8E%9F/" rel="tag"># 浏览器密码还原</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/22/WUSTCTF2020%20%E9%A2%9C%E5%80%BC%E6%88%90%E7%BB%A9%E6%9F%A5%E8%AF%A2/" rel="prev" title="WUSTCTF2020 颜值成绩查询">
+                  <i class="fa fa-chevron-left"></i> WUSTCTF2020 颜值成绩查询
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/" rel="next" title="15 Vulnhub Ripper Writeup">
+                  15 Vulnhub Ripper Writeup <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">240k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:38</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
