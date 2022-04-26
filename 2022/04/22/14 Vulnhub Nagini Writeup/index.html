@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200531.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200625.png">
 <meta property="article:published_time" content="2022-04-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-24T10:39:36.727Z">
+<meta property="article:modified_time" content="2022-04-26T07:25:35.355Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="综合">
 <meta property="article:tag" content="vulnhub">
@@ -194,7 +194,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -205,7 +205,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-count">100</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -284,7 +284,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-24 18:39" itemprop="dateModified" datetime="2022-04-24T18:39:36+08:00">2022-04-24</time>
+      <time title="修改时间：2022-04-26 15:25" itemprop="dateModified" datetime="2022-04-26T15:25:35+08:00">2022-04-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -324,7 +324,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>5.2k</span>
+      <span>5.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -345,10 +345,31 @@
         <p>该靶机难度比较高，有许多知识点之前没有涉及过。</p>
 <span id="more"></span>
 <h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址： - <a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/harrypotter-nagini,689/">HarryPotter: Nagini ~ VulnHub</a></p>
-<p>难度： - 中、高难度</p>
-<p>目标： - 取得root权限 - 拿到3个flag</p>
-<p>涉及攻击方法： - 主机发现 - 端口扫描 - Web信息收集 - <strong>HTTP3协议</strong> - 域名绑定 - <strong>SSRF漏洞</strong>（Gopher+MySQL） - Joomla漏洞 - SSH公钥登录 - <strong>浏览器密码还原</strong></p>
+<p>靶机地址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/harrypotter-nagini,689/">HarryPotter: Nagini ~ VulnHub</a></li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>中、高难度</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>取得root权限</li>
+<li>拿到3个flag</li>
+</ul>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>Web信息收集</li>
+<li><strong>HTTP3协议</strong></li>
+<li>域名绑定</li>
+<li><strong>SSRF漏洞</strong>（Gopher+MySQL）</li>
+<li>Joomla漏洞</li>
+<li>SSH公钥登录</li>
+<li><strong>浏览器密码还原</strong></li>
+</ul>
 <h1 id="前置知识">前置知识</h1>
 <h2 id="gopher协议">Gopher协议</h2>
 <p><a href="Gopher协议.md">Gopher协议</a></p>
@@ -401,7 +422,11 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --recursive https://github.com/cloudflare/quiche</span><br><span class="line">cargo build --examples  <span class="comment"># 需要进入到quiche目录</span></span><br><span class="line"><span class="built_in">cd</span> quiche/target/debug/examples</span><br><span class="line">./http3-client https://quic.nagini.hogwarts 或者 ./http3-client https://10.0.2.22</span><br></pre></td></tr></table></figure>
 <p>得到如下内容：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422172803.png" /></p>
-<p>这里其实得到两条信息： - 让我们访问/internalResourceFeTcher.php - 让我们查看配置文件的备份，及configruation.php.bak。上面看过的</p>
+<p>这里其实得到两条信息：</p>
+<ul>
+<li>让我们访问/internalResourceFeTcher.php</li>
+<li>让我们查看配置文件的备份，及configruation.php.bak。上面看过的</li>
+</ul>
 <hr />
 <p>如果rustc报错，先卸载当前的，然后下载，命令如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">卸载: sudo apt purge rustc</span><br><span class="line">下载: </span><br><span class="line">	curl --proto &#x27;=https&#x27; --tlsv1.2 -sSf https://sh.rustup.rs | sh</span><br><span class="line">	弹出互动，输入1</span><br><span class="line">	然后输入：source $HOME/.cargo/env</span><br></pre></td></tr></table></figure></p>
 <hr />
@@ -444,7 +469,12 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422194046.png" /></p>
 <p>成功登录。</p>
 <h3 id="获得hermoine用户权限">获得hermoine用户权限</h3>
-<p>先到对应的家目录，查看内容。发现了三个比较奇怪的点： 1. 家目录下存在着.ssh目录，如果存在ssh密钥登录，那么对应的公钥就会保存在该目录下。但是现在里面为空； 2. 家目录下居然有一个bin目录，这不应该在这，而且里面的文件居然有suid权限，属主为hermoine，并且是可执行文件，初步猜测利用该文件获得hermoine的权限； 3. 还有一个奇怪的目录.mozilla，这是火狐浏览器的目录，但是现在没有权限查看；</p>
+<p>先到对应的家目录，查看内容。发现了三个比较奇怪的点：</p>
+<ol type="1">
+<li>家目录下存在着.ssh目录，如果存在ssh密钥登录，那么对应的公钥就会保存在该目录下。但是现在里面为空；</li>
+<li>家目录下居然有一个bin目录，这不应该在这，而且里面的文件居然有suid权限，属主为hermoine，并且是可执行文件，初步猜测利用该文件获得hermoine的权限；</li>
+<li>还有一个奇怪的目录.mozilla，这是火狐浏览器的目录，但是现在没有权限查看；</li>
+</ol>
 <p>先去看一下suid文件的作用</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422194531.png" /></p>
 <p>发现这就是一个将目标文件cp到另一个地方的可执行文件，结合.ssh目录，猜测：<strong>利用该程序将ssh公钥放入到hermoine的.ssh目录下，然后使用ssh密钥登录</strong></p>
@@ -467,7 +497,12 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220422200625.png" /></p>
 <p>成功获得root权限，现在依次查看三个flag，分别是： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// /var/www/html/horcrux1.txt</span><br><span class="line">horcrux_&#123;MzogU2x5dGhFcmlOJ3MgTG9jS0VldCBkRXN0cm9ZZUQgYlkgUm9O&#125;</span><br><span class="line">-&gt; horcrux_&#123;3: SlythEriN&#x27;s LocKEet dEstroYeD bY RoN&#125;</span><br><span class="line"></span><br><span class="line">// /home/hermoine/horcrux2.txt</span><br><span class="line">horcrux_&#123;NDogSGVsZ2EgSHVmZmxlcHVmZidzIEN1cCBkZXN0cm95ZWQgYnkgSGVybWlvbmU=&#125;</span><br><span class="line">-&gt; horcrux_&#123;4: Helga Hufflepuff&#x27;s Cup destroyed by Hermione&#125;</span><br><span class="line"></span><br><span class="line">// /root/horcrux3.txt</span><br><span class="line">  ____                            _         _       _   _                 </span><br><span class="line"> / ___|___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_(_) ___  _ __  ___ </span><br><span class="line">| |   / _ \| &#x27;_ \ / _` | &#x27;__/ _` | __| | | | |/ _` | __| |/ _ \| &#x27;_ \/ __|</span><br><span class="line">| |__| (_) | | | | (_| | | | (_| | |_| |_| | | (_| | |_| | (_) | | | \__ \</span><br><span class="line"> \____\___/|_| |_|\__, |_|  \__,_|\__|\__,_|_|\__,_|\__|_|\___/|_| |_|___/</span><br><span class="line">                  |___/                                                   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Machine Author: Mansoor R (@time4ster)</span><br><span class="line">Machine Difficulty: Medium</span><br><span class="line">Machine Name: Nagini</span><br><span class="line">Horcruxes Hidden in this VM: 3 horcruxes</span><br><span class="line"></span><br><span class="line">You have successfully pwned Nagini machine.</span><br><span class="line">Here is your third hocrux: horcrux_&#123;NTogRGlhZGVtIG9mIFJhdmVuY2xhdyBkZXN0cm95ZWQgYnkgSGFycnk=&#125;</span><br><span class="line">-&gt; horcrux_&#123;5: Diadem of Ravenclaw destroyed by Harry&#125;</span><br><span class="line"></span><br><span class="line"># For any queries/suggestions feel free to ping me at email: time4ster@protonmail.com</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">总结</h1>
-<p>该靶机难度挺大的，主要是涉及到许多没见过的知识点： - Gopher + SSRF - HTTP3协议 - 浏览器密码还原</p>
+<p>该靶机难度挺大的，主要是涉及到许多没见过的知识点：</p>
+<ul>
+<li>Gopher + SSRF</li>
+<li>HTTP3协议</li>
+<li>浏览器密码还原</li>
+</ul>
 
     </div>
 
@@ -534,14 +569,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">241k</span>
+    <span title="站点总字数">247k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:39</span>
+    <span title="站点阅读时长">3:45</span>
   </span>
 </div>
 <div class="busuanzi-count">
