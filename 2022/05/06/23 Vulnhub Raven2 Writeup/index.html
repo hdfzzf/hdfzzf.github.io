@@ -17,12 +17,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机有点恶心，不过我在phpmailer卡了很久。">
+<meta name="description" content="该靶机有点恶心，我在phpmailer卡了很久。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="23 Vulnhub Raven2 Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/05/06/23%20Vulnhub%20Raven2%20Writeup/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="该靶机有点恶心，不过我在phpmailer卡了很久。">
+<meta property="og:description" content="该靶机有点恶心，我在phpmailer卡了很久。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506150958.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506151113.png">
@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506161923.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506162042.png">
 <meta property="article:published_time" content="2022-05-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-05-06T15:01:53.232Z">
+<meta property="article:modified_time" content="2022-05-07T00:23:32.612Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="综合">
 <meta property="article:tag" content="vulnhub">
@@ -164,7 +164,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. 访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -179,18 +179,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">133</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -261,9 +261,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-05-06 00:00 / 修改时间：23:01" itemprop="dateCreated datePublished" datetime="2022-05-06T00:00:00+08:00">2022-05-06</time>
+      <time title="创建时间：2022-05-06 00:00" itemprop="dateCreated datePublished" datetime="2022-05-06T00:00:00+08:00">2022-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-07 08:23" itemprop="dateModified" datetime="2022-05-07T08:23:32+08:00">2022-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -321,9 +327,9 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>该靶机有点恶心，不过我在phpmailer卡了很久。</p>
+        <p>该靶机有点恶心，我在phpmailer卡了很久。</p>
 <span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
+<h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/raven-2,269/">Raven: 2 ~ VulnHub</a></li>
@@ -350,13 +356,13 @@
 <li>本地信息收集</li>
 <li><strong>MySQL UDF提权</strong></li>
 </ul>
-<h1 id="渗透">渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<h1 id="渗透">2. 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l </span><br><span class="line">sudo nmap -p- 10.0.2.28</span><br><span class="line">sudo nmap -p22,80,111,39505 -A 10.0.2.28</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506150958.png" /></p>
 <p>这里111端口上的服务是rpcbind，这是存在漏洞的，不过是拒绝服务的漏洞，对get shell和提权都没有帮助。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506151113.png" /></p>
-<h2 id="访问http服务">访问http服务</h2>
+<h2 id="访问http服务">2.2. 访问http服务</h2>
 <p>在网站主页面进行功能点检测的时候发现了一个域名：raven.local，将其加入到/etc/hosts下。之后就没有其他发现了。</p>
 <p>进行路径扫描： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.28/ -w /usr/share/dirb/wordlists/common.txt</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506151306.png" /></p>
@@ -373,7 +379,7 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506152411.png" /></p>
 <p>此时可以确定是contact.php调用了phpmailer。</p>
 <p>最后，从PATH文件中发现了第一个flag，以及文件路径： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/var/www/html/vendor/</span><br><span class="line">flag1&#123;a2c1f66d2b8051bd3a5874b5b6e43e21&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="get-shell">get shell</h2>
+<h2 id="get-shell">2.3. get shell</h2>
 <p>这里才是最坑的。searchsplot扫描出多个漏洞，但是能利用的只有40974.py，还需要经过一定的修改才可以！！！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506153921.png" /></p>
 <p>修改：</p>
@@ -386,7 +392,7 @@
 <p>然后执行： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">python3 40974.py</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> █████╗ ███╗   ██╗ █████╗ ██████╗  ██████╗ ██████╗ ██████╗ ███████╗██████╗ </span><br><span class="line">██╔══██╗████╗  ██║██╔══██╗██╔══██╗██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔══██╗</span><br><span class="line">███████║██╔██╗ ██║███████║██████╔╝██║     ██║   ██║██║  ██║█████╗  ██████╔╝</span><br><span class="line">██╔══██║██║╚██╗██║██╔══██║██╔══██╗██║     ██║   ██║██║  ██║██╔══╝  ██╔══██╗</span><br><span class="line">██║  ██║██║ ╚████║██║  ██║██║  ██║╚██████╗╚██████╔╝██████╔╝███████╗██║  ██║</span><br><span class="line">╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝</span><br><span class="line">      PHPMailer Exploit CVE 2016-10033 - anarcoder at protonmail.com</span><br><span class="line"> Version 1.0 - github.com/anarcoder - greetings opsxcq &amp; David Golunski</span><br><span class="line"></span><br><span class="line">[+] SeNdiNG eVIl SHeLL To TaRGeT....</span><br><span class="line">[+] SPaWNiNG eVIL sHeLL..... bOOOOM :D</span><br><span class="line">[+]  ExPLoITeD http://10.0.2.28/contact.php</span><br></pre></td></tr></table></figure></p>
 <p>先直接访问10.0.2.28/exp.php是否存在，如果存在，则在kali上开启监听，然后再次访问exp.php即可获得shell</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506154057.png" /></p>
-<h2 id="权限提升">权限提升</h2>
+<h2 id="权限提升">2.4. 权限提升</h2>
 <p>介绍一款信息收集的工具：<a target="_blank" rel="noopener" href="https://github.com/rebootuser/LinEnum">GitHub - rebootuser/LinEnum: Scripted Local Linux Enumeration &amp; Privilege Escalation Checks</a></p>
 <p>将 LinEnum.sh 传送到靶机，并执行。查看信息内容的时候发现了mysql，并且是root权限</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506154409.png" /></p>
@@ -421,7 +427,7 @@
 <blockquote>
 <p>并不一定要使用nc获得shell，反正可以执行命令，也可以利用setuid.c 编译，并且给其suid权限，这样普通用户执行./setuid 就可以提权。</p>
 </blockquote>
-<h1 id="总结">总结</h1>
+<h1 id="总结">3. 总结</h1>
 <p>该靶机涉及的主要知识点：</p>
 <ol type="1">
 <li>phpmailer漏洞；</li>
@@ -451,6 +457,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2022/05/07/26%20Vulnhub%20School%20Writeup/" rel="next" title="26 Vulnhub School Writeup">
+                  26 Vulnhub School Writeup <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -488,14 +497,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">353k</span>
+    <span title="站点总字数">332k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5:21</span>
+    <span title="站点阅读时长">5:02</span>
   </span>
 </div>
 <div class="busuanzi-count">

