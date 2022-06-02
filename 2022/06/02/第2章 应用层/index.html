@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="个人的知识笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第2章 应用层">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/06/02/%E7%AC%AC2%E7%AB%A0%20%E5%BA%94%E7%94%A8%E5%B1%82/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的知识笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530214613.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530215738.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530220314.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530225408.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530225508.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530230450.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530230701.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530233320.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531084434.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531084336.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531085023.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531085742.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531091818.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531092039.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531092428.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531214332.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531093724.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531093734.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531093804.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531101859.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531102846.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531105706.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531110908.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531113835.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531140557.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531141528.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531143022.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531144448.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531150401.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531150954.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531152338.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531152353.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531202251.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531203917.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531204853.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531205952.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531210141.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531210607.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531211326.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531211334.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531213509.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602083126.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602084835.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602082557.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602083031.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602085715.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602091023.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602092511.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602093511.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602102932.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602103319.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602131408.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602121416.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602132841.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602134844.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210159.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210245.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210411.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210628.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212546.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212602.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212809.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212800.png">
+<meta property="article:published_time" content="2022-06-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-02T13:28:57.377Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="计算网络教程 自顶向下方法">
+<meta property="article:tag" content="B站中科大计网">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530214613.png">
+
+
+<link rel="canonical" href="https://hdfzzf.github.io/2022/06/02/%E7%AC%AC2%E7%AB%A0%20%E5%BA%94%E7%94%A8%E5%B1%82/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/06/02/%E7%AC%AC2%E7%AB%A0%20%E5%BA%94%E7%94%A8%E5%B1%82/","path":"2022/06/02/第2章 应用层/","title":"第2章 应用层"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第2章 应用层 | HDFZZF's BLOG</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HDFZZF's BLOG</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE%E5%8E%9F%E7%90%86"><span class="nav-text">1. 应用层协议原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%BA%94%E7%94%A8%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-text">1.1. 网络应用的体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cs%E6%A8%A1%E5%BC%8F"><span class="nav-text">1.1.1. C&#x2F;S模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#p2p%E6%A8%A1%E5%BC%8F"><span class="nav-text">1.1.2. p2p模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1"><span class="nav-text">1.2. 进程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%981%E8%BF%9B%E7%A8%8B%E5%AF%BB%E5%9D%80"><span class="nav-text">1.2.1. 问题1：进程寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%982%E7%A9%BF%E8%BF%87%E5%B1%82%E9%97%B4%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-text">1.2.2. 问题2：穿过层间的信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tcp-socket"><span class="nav-text">1.2.2.1. TCP socket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#udp-socket"><span class="nav-text">1.2.2.2. UDP socket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#socket%E6%80%BB%E7%BB%93"><span class="nav-text">1.2.2.3. socket总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%983%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-text">1.2.3. 问题3：应用层协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E4%BC%A0%E8%BE%93%E5%B1%82%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%8C%87%E6%A0%87"><span class="nav-text">1.3. 选择传输层服务的指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9C%8D%E5%8A%A1"><span class="nav-text">1.4. 传输层提供的服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#web%E5%92%8Chttp"><span class="nav-text">2. Web和HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%A6%82%E5%86%B5"><span class="nav-text">2.1. HTTP概况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E6%8C%81%E4%B9%85%E5%92%8C%E6%8C%81%E4%B9%85http%E8%BF%9E%E6%8E%A5"><span class="nav-text">2.2. 非持久和持久HTTP连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%92%8C%E9%9D%9E%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-text">2.2.1. 流水线和非流水线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%8A%A5%E6%96%87"><span class="nav-text">2.3. HTTP报文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie"><span class="nav-text">2.4. cookie</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web%E7%BC%93%E5%AD%98"><span class="nav-text">2.5. Web缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C"><span class="nav-text">2.5.1. 效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6get%E6%96%B9%E6%B3%95"><span class="nav-text">2.5.2. 条件GET方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ftp"><span class="nav-text">3. FTP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#email"><span class="nav-text">4. EMail</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#smtp"><span class="nav-text">4.1. SMTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6%E8%AE%BF%E9%97%AE%E5%8D%8F%E8%AE%AE"><span class="nav-text">4.2. 邮件访问协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pop3"><span class="nav-text">4.2.1. POP3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#imap"><span class="nav-text">4.2.2. IMAP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http%E5%9F%BA%E4%BA%8Eweb%E7%9A%84%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6"><span class="nav-text">4.2.3. HTTP：基于Web的电子邮件</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dns"><span class="nav-text">5. DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%91%BD%E5%90%8D%E8%AE%BE%E5%A4%87"><span class="nav-text">5.1. 如何命名设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%8C%E6%88%90%E5%90%8D%E5%AD%97%E5%88%B0ip%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-text">5.2. 如何完成名字到IP的转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dns%E5%A4%A7%E8%87%B4%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">5.2.1. DNS大致工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%A7%A3%E6%9E%90"><span class="nav-text">5.2.3. 网络解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.2.3.1. 递归查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E6%9F%A5%E8%AF%A2%E8%B8%A2%E7%9A%AE%E7%90%83%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.2.3.2. 迭代查询（踢皮球查询）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87"><span class="nav-text">5.2.4. DNS协议报文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%B4%E6%8A%A4%E9%97%AE%E9%A2%98"><span class="nav-text">5.3. 维护问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-text">5.4. 安全性问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#p2p%E5%BA%94%E7%94%A8"><span class="nav-text">6. P2P应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#p2p%E4%BD%93%E7%B3%BB%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-text">6.1. P2P体系的优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%BB%93%E6%9E%84%E5%8C%96"><span class="nav-text">6.2. 非结构化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E5%BC%8F%E7%9B%AE%E5%BD%95napster"><span class="nav-text">6.2.1. 集中式目录(napster)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E5%85%A8%E5%88%86%E5%B8%83%E5%BC%8Fgnutella"><span class="nav-text">6.2.2. 完全分布式(Gnutella)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E8%B5%84%E6%BA%90"><span class="nav-text">6.2.2.1. 请求资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5%E7%BD%91%E7%BB%9C"><span class="nav-text">6.2.2.2. 加入网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E7%BD%91%E7%BB%9C"><span class="nav-text">6.2.2.3. 退出网络</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E4%BD%93kazaa"><span class="nav-text">6.2.3. 混合体(KaZaA)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bittorrent"><span class="nav-text">6.2.4. BitTorrent</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E5%85%A5torrent"><span class="nav-text">6.2.4.1. 加入torrent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E8%B5%84%E6%BA%90-1"><span class="nav-text">6.2.4.2. 请求资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E8%AF%B7%E6%B1%82"><span class="nav-text">6.2.4.3. 响应请求</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dht"><span class="nav-text">6.3. DHT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cdn"><span class="nav-text">7. CDN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E6%9E%84%E6%80%A7"><span class="nav-text">7.1. 异构性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E7%9A%84%E7%BC%96%E7%A0%81"><span class="nav-text">7.1.1. 视频的编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%AA%92%E4%BD%93%E6%B5%81%E5%8C%96%E6%9C%8D%E5%8A%A1%E5%92%8Cdash"><span class="nav-text">7.1.2. 多媒体流化服务和DASH</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E6%A8%A1%E6%80%A7"><span class="nav-text">7.2. 规模性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#socket%E7%BC%96%E7%A8%8B"><span class="nav-text">8. socket编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#udp-socket-1"><span class="nav-text">8.1. UDP socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcp-socket-1"><span class="nav-text">8.2. TCP socket</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hdfzzf"
+      src="/images/zzf.jpg">
+  <p class="site-author-name" itemprop="name">hdfzzf</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">118</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">194</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/06/02/%E7%AC%AC2%E7%AB%A0%20%E5%BA%94%E7%94%A8%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第2章 应用层
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-06-02 00:00 / 修改时间：21:28" itemprop="dateCreated datePublished" datetime="2022-06-02T00:00:00+08:00">2022-06-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">计算机基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/06/02/%E7%AC%AC2%E7%AB%A0%20%E5%BA%94%E7%94%A8%E5%B1%82/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/06/02/第2章 应用层/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>26k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>24 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>个人的知识笔记。</p>
+<span id="more"></span>
+<h1 id="应用层协议原理">1. 应用层协议原理</h1>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530214613.png" /></p>
+<p>如果我们要创建一个新的网络应用，需要注意<strong>网络核心中没有应用层软件</strong>，从上一章的图中也可以看出，路由器只有物理层、链路层、网络层，因此，也注定了网络核心设备不在应用层上起作用，而仅在低层起作用。</p>
+<p>这种设计方式将应用软件限制在了端系统，促进了网络应用程序的研发和部署。因为只需要遵从协议，就可以立马部署网络应用程序。</p>
+<h2 id="网络应用的体系结构">1.1. 网络应用的体系结构</h2>
+<p>网络应用的体系结构大致分为是2种类型：</p>
+<ol type="1">
+<li>客户-服务器模式(C/S: client/server)</li>
+<li>对等模式(p2p: peer to peer)</li>
+</ol>
+<h3 id="cs模式">1.1.1. C/S模式</h3>
+<p>在该体系结构性，将端系统分为两种：服务器和客户端。</p>
+<p>服务器：</p>
+<ul>
+<li><strong>一直运行</strong>：保证任何时刻，客户端请求都能给予响应；</li>
+<li><strong>固定的IP地址和周知的端口号</strong>：保证客户端能够请求到该服务器的资源；</li>
+<li><strong>扩展性较差</strong></li>
+</ul>
+<p>客户端：</p>
+<ul>
+<li><strong>主动与服务器通信</strong></li>
+<li><strong>与互联网间歇性连接</strong></li>
+<li><strong>可能是动态IP地址</strong></li>
+<li><strong>不直接与其他客户端通信</strong></li>
+</ul>
+<p>服务器不只一台主机，可能是一个<strong>数据中心（有许多主机）</strong>，数据中心也可能不止一个。这样子全球各地的用户可以选择距离自己最近的数据中心请求资源。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530215738.png" /></p>
+<p>这种模式的好处就是可以随时向服务器请求资源，但是这种模式下存在“不平等关系”，服务器有着所有的数据，而客户端没有，并且一旦客户端数量太多，服务器服务不过来，导致每个客户端的速率降低，更有甚者，还会导致服务器宕机。</p>
+<p>该模式好就好在稳定，可管理性强。</p>
+<h3 id="p2p模式">1.1.2. p2p模式</h3>
+<ul>
+<li>没有一直运行的服务器；</li>
+<li>任意端系统之间可以通信；</li>
+<li>每个节点既是客户端，也是服务器；</li>
+<li>参与的主机间歇性连接，且可以改变IP地址</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530220314.png" /></p>
+<p>这种模式下，所有的主机都成为对等体。如果有多个对等体请求一样的资源，那么某个对等体A可以向B请求片段1，同时向C请求片段2，依此类推，使其速率会非常快。同样的，A也会提供自己已下载的片段。这个特性称为p2p的<strong>自拓展性</strong>。</p>
+<p>因为p2p中的对等体都是自发连接的，这种非集中式结构不仅难以管理，而且不可靠，且安全性不是很高。不可靠是因为如果只有一个用户请求资源，那么速度就会非常慢，p2p模式下没有人会去升级各种硬件设施从而提高链路带宽，就算有也没有足够的财力能够升级成大公司那样的带宽。自发性连接，谁也不知道这里面是否存在想干坏事的人，因此安全性不高，用户的杂、乱、多也使得p2p极其难管理。</p>
+<h2 id="进程通信">1.2. 进程通信</h2>
+<p>我们平常说使用某应用软件进行通信，<strong>本质上其实是进程与进程间进行通信</strong>。但是可以把进程理解为某个应用程序。</p>
+<p>进程间通信一般分为两种：</p>
+<ol type="1">
+<li>同一端系统上的进程通信</li>
+<li>不同端系统的进程通信</li>
+</ol>
+<p>对于前者，使用<strong>进程间通信机制</strong>进行通信，由操作系统定义。不同端系统的进程通过交换message进行通信。本节讨论的是后者。</p>
+<p>进程也分为两类：</p>
+<ol type="1">
+<li><strong>客户端进程</strong>：发起通信的进程</li>
+<li><strong>服务器进程</strong>：等待连接的进程</li>
+</ol>
+<p>分布式（不在同一端系统）进程通信需要解决三个问题：</p>
+<ol type="1">
+<li>Q1：发送的 message 如何找到对方进程？</li>
+<li>Q2：应用层需要向传输层发送哪些信息？</li>
+<li>Q3：发送的 message 要怎么让对方进程明白？</li>
+</ol>
+<h3 id="问题1进程寻址">1.2.1. 问题1：进程寻址</h3>
+<p>一个进程为了接收 message，需要有一个标识，使其能够被找到。至少需要包含3个部分：</p>
+<ol type="1">
+<li>IP地址：用来唯一标识主机</li>
+<li>采用传输层协议：TCP or UDP</li>
+<li>端口号：唯一标识进程</li>
+</ol>
+<p>简单的解释：IP地址可以使源主机找到目标主机，这样子，message 就能够传输到目标主机。message 要通过正确的协议来解析，因此标识采用的协议能够使目标主机“看得懂信息”。端口号用来找到进程，TCP(or UDP)拿到message之后需要将其经过一定处理，然后向上层提交给对应的进程，此时就需要端口。</p>
+<p>TCP和UDP都具有对应的端口，且编号都是1-65535，所以不能只指定编号，而不指定协议！</p>
+<h3 id="问题2穿过层间的信息">1.2.2. 问题2：穿过层间的信息</h3>
+<p>应用层给传输层的消息必须携带下面三个：</p>
+<ol type="1">
+<li>要传输的报文</li>
+<li>谁传的：源主机的 IP + TCP(UDP) + port</li>
+<li>传给谁：目标主机的 IP + TCP(UDP) + port</li>
+</ol>
+<p>这样子传输层实体才能够根据这些信息对TCP报文段（UDP数据包）进行封装，然后传给下一层。</p>
+<p>举个例子：我们发快递，不能够仅仅把货物给快递小哥，还需要把自己的地址以及接收方的地址一起给快递小哥，这样子我们的快递才能够成功被寄出去。</p>
+<p>这样子其实会有一个小小的问题：如果源进程与同一目标进程一直通信，那么每次应用层都需要携带“老三样”，携带的信息多，且麻烦，不便于管理。这里面其实有变化的只有数据，而源进程和目标进程的地址信息是没有变化的。有没有一种机制能够记住通信的双方（或者单方，后面会说到）的地址信息，这样子每次层间就只需要传输数据就可以了。socket应运而生。</p>
+<h4 id="tcp-socket">1.2.2.1. TCP socket</h4>
+<p>socket 用一个代号标识通信双方的地址信息。这样子应用只要向传输层发送 socket 和数据即可，传输层会根据socket自动补充双方地址信息。TCP在建立连接的时候就会同时建立好socket。</p>
+<p>注意 socket 是<strong>本地标识</strong>，并且是<strong>应用层和传输层的“约定”</strong>。使用 socket 可以使穿过层间的信息最少。</p>
+<blockquote>
+<p>本地标识：其他主机不认识你这个socket。即使是通信的双方，使用的socket代号也大概率不同。</p>
+</blockquote>
+<ul>
+<li>TCP socket是一个四元组：<code>(源IP, 源port, 目标IP, 目标port)</code>。协议标识放在头部；</li>
+<li>一个 socket 唯一指定了一个会话；</li>
+<li>本地进程使用这个标识，与远程进程通信</li>
+<li>简单，便于管理</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530225408.png" /></p>
+<p>传输层会维护上图中的一张表。</p>
+<p>下面有一个例子：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530225508.png" /></p>
+<p>对于左、右两个主机来说，只需要一个socket 即可，对于中间的主机来说，就需要两个socket来分别指示与左边主机进程的通信，以及与右边主机进程的通信。</p>
+<h4 id="udp-socket">1.2.2.2. UDP socket</h4>
+<p>使用UDP，两个进程之间的通信是无连接的。所以 UDP socket 和 TCP socket 的不同就体现出来了，UDP socket 是一个二元组：<code>(源IP, 源port)</code>。此时 UDP socket 就是用来标识单方的。</p>
+<p>因此，应用层通过 UDP socket 传输报文时，必须要提供目标IP和目标port。同样的，源主机传输层向应用层上传报文时也需要提供目标IP和目标port。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530230450.png" /></p>
+<h4 id="socket总结">1.2.2.3. socket总结</h4>
+<ul>
+<li>进程向socket发送报文或者从socket接收报文</li>
+<li>socket &lt;-&gt; 门户
+<ul>
+<li>发送进程将报文推出门户，其他的就不用管了</li>
+<li>接收进程从门户接收报文，不用在乎报文是怎么到达的</li>
+</ul></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530230701.png" /></p>
+<p>因此，socket 也称为应用程序和网络之间的<strong>应用程序编程接口(Application Programming Interface, API)</strong></p>
+<h3 id="问题3应用层协议">1.2.3. 问题3：应用层协议</h3>
+<p>应用层协议：定义了在不同端系统上的应用进程如何相互交换报文。</p>
+<ul>
+<li>交换的<strong>报文类型</strong>：请求还是应答</li>
+<li>各种报文类型的<strong>语法</strong>：报文中各个字段及其描述</li>
+<li>字段的<strong>语义</strong>：字段取值的含义</li>
+<li>进程何时、如何发送报文即对报文如何响应的<strong>规则</strong></li>
+</ul>
+<blockquote>
+<p>应用包含很多部分。比如一个Web应用，包括HTTP协议，Web客户端/服务器，HTML等。应用层协议（HTTP协议）只是应用的一部分！ 实体：仅仅表示<strong>实现网络协议的</strong>、<strong>运行中的</strong>软、硬件。</p>
+</blockquote>
+<p>应用层协议分为两种：</p>
+<ol type="1">
+<li>公开协议，比如HTTP，SMTP</li>
+<li>专用（私有）协议，比如Skype</li>
+</ol>
+<h2 id="选择传输层服务的指标">1.3. 选择传输层服务的指标</h2>
+<p>选择传输层服务的指标，也可以叫做如何描述传输层服务。这些指标的作用就是帮助应用程序去选择传输层提供的服务。主要有四个指标：</p>
+<ol type="1">
+<li>数据丢失率</li>
+<li>吞吐量</li>
+<li>时延</li>
+<li>安全性</li>
+</ol>
+<p><strong>数据丢失率</strong>：有些应用要求100%的可靠传输。比如传文件，丢了一字节可能整个文件就乱码了。但流媒体就能够容忍一定的数据丢失。</p>
+<p><strong>吞吐量</strong>：发送进程能够向接收进程交付的比特的速率。有些应用需要最小限度的吞吐才能够保证应用能够有效运作，比如电视和音频。但是有些应用则不需要，这些应用称之为弹性应用。</p>
+<p><strong>时延</strong>：这个最好理解，打游戏就是一个时延敏感的应用。</p>
+<p><strong>安全性</strong>：主要包括：机密性、完整性和可认证性（鉴别）。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220530233320.png" /></p>
+<p>需要注意的是，<strong>传输层提供的服务只能够保证数据的丢失率</strong>，而无法保证吞吐量和时延。平常我们打游戏的时候延迟有时候会比较高，看视频的时候经常转圈圈加载，这也体现了当前的传输层服务无法保证吞吐量和时延。但是这不代表时延敏感应用和需要最小限度的吞吐的应用无法运行，这类应用被设计成<strong>尽最大可能对付这种保证的缺乏</strong>，因此，当今的互联网能够为这些应用提供满意的服务，但是不提供任何时延和吞吐量的保证。</p>
+<p>无论是TCP和UDP没有安全性可言，两者在网络中发送的是明文，也就是未经加密处理的。如果数据中包含用户名和口令，那么只需要一个抓包工具就能够获得其中的明文信息，非常不安全。针对该问题，Internet使用一种机制SSL(Secure Sockets Layer)，<strong>SSL运行在应用层，SSL运行在TCP之上，为TCP提供增强服务，但这种强化是在应用层上实现的。SSL运行在应用层协议之下，夹在TCP和应用层协议中间的位置</strong>。但是也可以认为它运行在传输层，因为某种意义上来说，SSL也是为应用提供服务的。因此，有些协议或者其他的层划分不是那么的明显。</p>
+<p>SSL拥有自己的socket API，与TCP socket类似。当一个应用使用SSL时，通过SSL socket传递明文数据，SSL会先进行加密，并将加密后的数据传递给TCP socket。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531084434.png" /></p>
+<p>这里注意一下，只使用HTTP的就叫做HTTP，如果使用SSL + HTTP，那么就是HTTPS，我们逛淘宝、京东的网页的时候看到的就是HTTPS。</p>
+<p><strong>SSL</strong>：</p>
+<ul>
+<li>在TCP上连接，提供加密的TCP连接</li>
+<li>私密性</li>
+<li>数据完整性</li>
+<li>端到端的鉴别</li>
+</ul>
+<h2 id="传输层提供的服务">1.4. 传输层提供的服务</h2>
+<p>传输层向上层提供的服务就是大名鼎鼎的TCP和UDP。</p>
+<p><strong>TCP服务</strong>：</p>
+<ul>
+<li>可靠的传输服务：不丢失，不出错，不乱序</li>
+<li>流量控制</li>
+<li>拥塞控制</li>
+<li>面向连接</li>
+<li>不能提供：时间保证、最小吞吐量保证和安全性</li>
+</ul>
+<p><strong>UDP服务</strong>：</p>
+<ul>
+<li>不可靠传输服务</li>
+<li>不提供：可靠，流量控制，拥塞控制，时延，最小吞吐量，连接，安全</li>
+</ul>
+<p>那这就有一个问题了：<strong>UDP还有必要存在吗？</strong></p>
+<p>答案是有必要。与TCP作比较，UDP虽然不提供非常多的服务，但是它的优势就在于工作量少，<strong>速度特别快</strong>。UDP不建立连接。不做可靠性工作，因此实现这些功能的时间都可以被节省下来。UDP也没有拥塞控制和流量控制，<strong>应用能够按照设定的速度发送数据</strong>，UDP不会管对方和网络情况，拿到数据直接发，简单易实现且速度快。</p>
+<p>因此，对于某些应用，UDP是具有优势了，比如常说的流媒体。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531084336.png" /></p>
+<h1 id="web和http">2. Web和HTTP</h1>
+<ul>
+<li><p>Web页面：由一些对象组成；</p></li>
+<li><p>www：World Wide Web</p></li>
+<li><p>对象可以是HTML文件，JPEG等图像，声音、视频等</p></li>
+<li><p>Web页面 = base HTML + 引用对象</p></li>
+<li><p>通过URL对每个对象进行引用</p></li>
+<li><p>URL(uniform resource locator)格式</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531085023.png" /></p></li>
+</ul>
+<p>客户端是如和加载一个Web页面的呢？假设请求一个有着两个引用对象的Web页面：</p>
+<ol type="1">
+<li>客户端向服务器请求资源，拿到 base HTML 页面</li>
+<li>根据HTML语法进行渲染，就是把页面画出来</li>
+<li>遇到引用对象，先把框架画出来，内容先空着</li>
+<li>base HTML渲染完之后，再去请求引用对象</li>
+<li>将请求到的数据填入框架</li>
+</ol>
+<p>因此，网速不够的情况下总是会看见有些网页图片加载不出来，但是会有一个白框框，这就是为图片预留的位置。</p>
+<h2 id="http概况">2.1. HTTP概况</h2>
+<p>HTTP(HyperText Transfer Protocol)：超文本传输协议。</p>
+<ul>
+<li>Web的应用层协议</li>
+<li>C/S模式</li>
+<li>HTTP 1.0 和 HTTP 1.1</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531085742.png" /></p>
+<p><strong>HTTP使用的是TCP服务</strong>：</p>
+<ul>
+<li>客户发起一个与服务器的TCP连接，并且建立socket，默认端口后为80</li>
+<li>服务器接收客户的TCP连接</li>
+<li>在浏览器（HTTP客户端）与服务器（HTTP服务器）之间交换HTTP报文（应用层协议报文）</li>
+<li>TCP连接关闭</li>
+</ul>
+<p><strong>HTTP是无状态的</strong>：</p>
+<ul>
+<li>服务器不维护关于客户的任何信息。只要有请求，服务器就回响应。</li>
+<li>这意味着如果页面需要登录，那么每次我们请求该网页的一个资源的时候都要登陆一次！</li>
+</ul>
+<p>维护状态是非常复杂的：</p>
+<ul>
+<li>必须维护历史信息</li>
+<li>如果服务器/客户端宕机，它们的状态信息就会出现不一致，此时一方就要帮助另一发恢复</li>
+<li>无状态服务器能够支持更多的客户端</li>
+</ul>
+<h2 id="非持久和持久http连接">2.2. 非持久和持久HTTP连接</h2>
+<p>非持久HTTP连接：</p>
+<ul>
+<li>最多只有一个对象在TCP连接上发送</li>
+<li>下载多个对象需要多个TCP连接</li>
+<li>HTTP 1.0 使用非持久HTTP连接</li>
+</ul>
+<p>持久HTTP连接：</p>
+<ul>
+<li>多个对象可以在一个TCP连接上传输</li>
+<li>HTTP 1.1 默认使用持久连接</li>
+</ul>
+<p>举个例子，客户向服务器请求一个带有10个引用对象的Web页面，这10个引用对象也是服务器上的资源。</p>
+<p>如果使用非持久HTTP连接：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531091818.png" /></p>
+<p>可以看出，请求这样一个web页面，需要11次的TCP连接。</p>
+<p>使用持久HTTP连接：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531092039.png" /></p>
+<p>只需要建立一次TCP连接，就可以传完所有的对象。</p>
+<p>我们引入一个概念，<strong>响应时间模型</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531092428.png" /></p>
+<p>RTT: Round-Trip Time，一个小的分组从客户端到服务器，再回到客户端的时间（传输时间可以忽略）</p>
+<p>因此对于非持久连接来说，需要 <span class="math inline">\(22RTT+对象传输时间\)</span> 来传输数据，<span class="math inline">\(11RTT\)</span> 用来断开连接。而对于持久连接来说，只需要 <span class="math inline">\(11RTT+对象传输时间\)</span> 传输数据，<span class="math inline">\(1RTT\)</span> 断开连接。</p>
+<p>从这就可以看出非持久HTTP连接的缺点：</p>
+<ul>
+<li>传输一个对象至少需要2个RTT（不包括断开连接）</li>
+<li>操作系统给必须为每个TCP连接分配资源，比如说socket表</li>
+</ul>
+<p>而持久HTTP连接：</p>
+<ul>
+<li>服务器发送响应后，仍保持TCP连接</li>
+<li>相同的客户和服务器之间的后续请求和响应报文通过相同的连接进行</li>
+</ul>
+<h3 id="流水线和非流水线">2.2.1. 流水线和非流水线</h3>
+<p>持久的HTTP连接还有两种工作方式：</p>
+<ol type="1">
+<li><strong>流水线</strong>：发出所有请求，然后等待响应依次回来</li>
+<li><strong>非流水线</strong>：发送一个请求，等待响应回来之后再发送另一个请求</li>
+</ol>
+<p>流水线与非流水线对比：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531214332.png" /></p>
+<h2 id="http报文">2.3. HTTP报文</h2>
+<p>大致分为两类：</p>
+<ol type="1">
+<li>请求报文</li>
+<li>响应报文</li>
+</ol>
+<p>HTTP报文使用的ASCII码，所以人类可以阅读。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531093724.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531093734.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531093804.png" /></p>
+<p>首部字段 Connection。刚刚说HTTP 1.1 默认是持久的HTTP连接，但可以认为的设置成非持久的，使用的就是 Connection字段。<code>Connection: close</code>表示的就是这次请求响应结束之后就断开TCP连接。</p>
+<p>还有一点，如果带有实体，那么就会有一个字段：Content-Length。该字段表示实体中的字节数。因为传输层传输的是字节流，简单来说对于应用层来说的不同报文对于传输层来说它并不认识，只知道有字节需要传输，因此传输层不能够区分拿些字节是前一个报文的，哪些字节是后一个报文的。所以，应用层需要做好边界划分，通过 <code>Content-Length</code> 就能够区分前后报文的边界。</p>
+<p>这一部分不是重点，我之前看过图解HTTP，所以这里不多赘述。</p>
+<h2 id="cookie">2.4. cookie</h2>
+<p>刚刚说了HTTP是一个无状态的协议，但是许多时候，网站需要记住客户的一些信息，比如网络购物，总不能没看一个商品都要登陆一次吧，而且购物车这个功能也是需要记住状态的。因此，这就是cookie的作用。</p>
+<p>cookie主要有四个组成部分：</p>
+<ol type="1">
+<li>HTTP响应报文中的Set-cookie首部行</li>
+<li>HTTP请求报文中的Cookie首部行</li>
+<li>用户端系统中保留有一个cookie文件，由用户的浏览器管理</li>
+<li>Web站点有一个后端数据库吗，用来存放用户的数据信息</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531101859.png" /></p>
+<p>用户第一次登录的时候，在请求报文中带上用户名和密码。服务器接收之后在数据库中建立相应的表项，并记录用户当前状态，然后给用户回一个响应，带上 <code>Set-cookie: 12343</code>。用户可以在后续的请求中带上 cookie，这样服务器就能够利用cookie去服务器查找属于对应cookie的数据，并返回给用户。这就实现了<strong>维护状态</strong>的功能。</p>
+<p>cookie能带来：</p>
+<ul>
+<li>用户验证</li>
+<li>购物车</li>
+<li>推荐</li>
+<li>用户状态</li>
+</ul>
+<p>但是cookie带来便利的同时也会存在安全和隐私方面的问题。首先，后端数据库通过cookie读取对应用户的数据，也就是，不论是不是用户本人，只要拥有cookie，都能够获取对应的数据。因此，只要盗取了别人的cookie，就可以不用用户名和密码登录对方的账号。其次，后端数据库保存用户的数据信息，可能会存在违法贩卖信息的问题。</p>
+<h2 id="web缓存">2.5. Web缓存</h2>
+<h3 id="效果">2.5.1. 效果</h3>
+<p>先举个例子，如下网络构造</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531102846.png" /></p>
+<p>需求：机构内部网络的主机需要访问来自Internet另一方的origin servers上面的资源。</p>
+<p>假设：</p>
+<ul>
+<li>平均对象大小 100kb</li>
+<li>机构内浏览器对原始服务器的平均请求率为 15个/s</li>
+<li>机构路由器到Internet的带宽 1.54Mbps</li>
+<li>边缘路由器到origins server再返回的时间为 2s</li>
+<li>机构内主机到机构路由器的时间为 2ms</li>
+</ul>
+<p>结果：</p>
+<ul>
+<li>可以计算出接入链路流量强度 <span class="math inline">\(I=La/R=100kb*15/1.54Mbps \approx 99\%\)</span></li>
+<li>计算排队时延：<span class="math inline">\(d_{queue}=\frac I{1-I} \ast \frac LR\)</span> ，因为 I 趋近于1，所以排队时延非常的长，这里假设是min级别的</li>
+<li>每个用户的总时延：<span class="math inline">\(t=d_{queue} + 2s + 2ms = min + s + ms \approx min\)</span> ，因此时延是分钟级别的</li>
+</ul>
+<p>这就是为什么WWW(World Wide Web)早期又被叫做 World Wide Wait。</p>
+<p>那该如何解决这个问题呢？两种方法：</p>
+<ol type="1">
+<li>最简单暴力：这里的问题出在接入链路带宽上，只要接入带宽扩大就好了。</li>
+<li>优雅的方法：Web 缓存</li>
+</ol>
+<p><strong>先介绍第一种</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531105706.png" /></p>
+<p>直_接将接入链路变为原来的100倍，那么此时的流量强度 <span class="math inline">\(I \approx 1 \%\)</span>，因此排队时延也变小，<span class="math inline">\(d_{queue}=\frac I{1-I} \ast \frac LR\)</span> ，变为ms级别的。</p>
+<p>此时的总时延 <span class="math inline">\(t=ms + ms +s\)</span> 也就是 s 级别的。</p>
+<p>虽然能够解决问题，但是100倍的带宽可不止原来100倍的钱，并且是每个月都要交这么多钱。是在不是一个经济的方法。</p>
+<p><strong>第二种，Web缓存</strong></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531110908.png" /></p>
+<p>在内部网络里装一台web缓存服务器（也叫代理服务器 proxy server），内部网的主机所有的请求都会经过该缓存服务器，如果该缓存服务器中有请求的资源，直接返回给主机，如果没有，则缓存服务器会向origin servers请求该资源，然后再返回给主机，并缓存该资源。</p>
+<blockquote>
+<p>28定律：80%的请求都是请求20%的资源。</p>
+</blockquote>
+<p><strong>因此，web缓存服务器可以通过缓存部分资源，使大部分主机的请求都能够在web缓存服务器中得到满足</strong>。这个叫做<strong>命中-hit</strong>。</p>
+<p>也可以计算一下此时的总时延。假设40%的请求都能够在web缓存服务器中满足，剩下的60%需要请求origins server。</p>
+<p>那么此时总时延 <span class="math inline">\(t=t_1+t_2\)</span></p>
+<p><span class="math display">\[
+t_1=0.4 \cdot 15 \cdot 2ms = 12ms
+\]</span></p>
+<p><span class="math display">\[
+I=\frac {La}R = \frac {100kb \cdot o.6}{1.54Mbps}
+\]</span></p>
+<p><span class="math display">\[
+d_{queue}=\frac I{1-I} \ast \frac LR -&gt; ms 级别
+\]</span></p>
+<p><span class="math display">\[
+t_2 = 0.6(2s + 2ms + d_{queue}) \approx 0.6 \cdot 2s = 1.2s
+\]</span></p>
+<p>那么总时延也就约等于 1.2 s。比扩大带宽的效果更好。</p>
+<p>总结一下web缓存机制的好处：</p>
+<ol type="1">
+<li>对用户来说：响应速度变快了</li>
+<li>对服务器来说：缓解了服务压力，部分的请求不会到达原始服务器</li>
+<li>对整个网络来说：缓解了网络压力，部分的请求不会到互联网，内部就解决了</li>
+<li>对机构来说：为用户提高了服务质量，且经济实惠</li>
+<li>对ISP来说：我有一句脏话想讲</li>
+</ol>
+<h3 id="条件get方法">2.5.2. 条件GET方法</h3>
+<p>Web缓存这个机制最主要的地方就在于：Web缓存服务器保存origin server中的资源。但是会出现这么一种情况，就是web缓存服务器昨天从原始服务器保存了资源A，但是今天原始服务器中的资源A做了修改，变成A'，这时候用户的请求只会得到资源A，而得不到资源A'，这就存在Web缓存服务器和原始服务器<strong>版本不一致的问题</strong>。</p>
+<p><strong>幸运的是HTTP协议中有一种机制就是用来解决该问题的————条件GET方法</strong>。该方法在HTTP请求中添加一个首部字段：<code>If-modified-since: &lt;date&gt;</code>。</p>
+<p>工作流程如下：</p>
+<p>用户A向缓存服务器请求一个对象，缓存服务器此时没有该对象，就像原始服务器请求，并保存下来。</p>
+<p>一个星期以后，用户B像缓存服务器请求同一个对象，此时已经过了一个星期了，缓存服务器不知道原始服务器中该对象是否被修改，因此会向原始服务器发送一个带有 <code>If-modified-since: 上次请求该数据的具体时间</code> 的HTTP请求报文，原始服务收到之后首先检查对象是否经过了修改，如果对象被修改，则回复一个正常的响应报文，带上修改之后的数据；如果没有被修改，则回一个状态码 304 Not Modified 的响应报文，不带上数据。</p>
+<p>缓存服务器收到响应报文之后将数据发给用户B，并且更新对象的数据以及请求时间。如果对象没有更改，则只更新请求时间，那么下一次再发送 <code>If-modified-since</code> 时，带的就是今天的时间，而不是一周前。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531113835.png" /></p>
+<h1 id="ftp">3. FTP</h1>
+<p>FTP: File Transfer Protocol。该协议建立在TCP之上。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531140557.png" /></p>
+<p>简单来说就是客户可以通过FTP客户端与FTP服务器连接。向远程主机传输文件或者从远程主机下载文件。</p>
+<p>采用的是C/S模式：</p>
+<ul>
+<li>客户端：发起连接的一方</li>
+<li>服务器：远程主机</li>
+</ul>
+<p>采用的默认端口是 21/TCP</p>
+<p>FTP的过程如下：</p>
+<ol type="1">
+<li>FTP客户端请求FTP服务器，两者通过21端口建立连接，并使用TCP作为传输协议。此时建立的连接称为<strong>控制连接（TCP control connection）</strong></li>
+<li>客户端通过控制连接发送身份认证信息</li>
+<li>客户端通过控制连接发送各种命令浏览远程目录</li>
+<li>如果收到一个文件传输命令，服务器会主动请求连接客户端的21端口，此时建立的连接叫做<strong>数据连接（TCP data connection）</strong>，文件通过数据连接进行传输</li>
+<li>一个文件传输完毕之后，服务器会关闭数据连接。</li>
+</ol>
+<p>这里有一个诡异的情况，一般来说都是客户端请求服务器建立连接，而这里建立数据连接的时候，是服务器请求客户端建立连接。</p>
+<p>FTP与HTTP不同，它建立了两个连接：</p>
+<ul>
+<li>控制连接：带外(out of band)</li>
+<li>数据连接：带内(in band)</li>
+</ul>
+<p>除此之外，FTP还是一个<strong>有状态的协议</strong>，FTP服务器需要维护用户的状态信息：当前所在路径，用户的账号以及对应的控制连接。</p>
+<p>与HTTP相同的地方在于：</p>
+<ul>
+<li>两者都使用TCP</li>
+<li>FTP在控制连接上也是以ASCII文本方式传送</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531141528.png" /></p>
+<h1 id="email">4. EMail</h1>
+<p>电子邮件由三个主要组成部分：</p>
+<ol type="1">
+<li>用户代理</li>
+<li>邮件服务器</li>
+<li>简单邮件传输协议(SMTP, Simple Mail Transfer Protocol)</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531143022.png" /></p>
+<p>我们作为用户，通过一些软件（比如，Outlook，网易邮箱等）来收发邮件，这个就是用户代理。本质上不是我们直接与服务器通信，而是我们使用应用程序，让应用程序与服务器进行通信。</p>
+<blockquote>
+<p>代理：如果A，B双方直接通信，那么就不需要代理。如果A，B之间的通信需要经过其他硬、软件来完成，那么这些资源就是代理。</p>
+</blockquote>
+<p>我们利用用户代理来将我们要发送的邮件发送给邮件服务器，或者从邮件服务器上读取邮件。</p>
+<p>邮件服务器是电子邮件体系的核心。邮件服务器有两个功能：</p>
+<ol type="1">
+<li>邮箱：用来管理和维护发送给用户的邮件；（相当于收件箱）</li>
+<li>报文队列（输出邮件队列）：用来保持待发送邮件报文；（邮件服务器不是为一个用户准备的，所以每个用户要发送的邮件总得有个先后顺序）</li>
+</ol>
+<p>邮件服务器之间的SMTP协议作用：发送Email报文（只是发送）</p>
+<ul>
+<li>客户端：发送方邮件服务器</li>
+<li>服务器：接收端邮件服务器</li>
+</ul>
+<p><strong>无论客户还是服务器都是邮件服务器</strong>，既不是用户代理，也不是用户本身。</p>
+<h3 id="smtp">4.1. SMTP</h3>
+<ul>
+<li>使用TCP在客户端和服务器之间传送报文。默认端口号为25</li>
+<li><strong>直接传输</strong>：直接将报文从发送方服务器发送到接收方服务器。即使我在中国，你在美国，在网通的情况下，也是直接从我的邮件服务器发送到你的邮件服务器，不会经过其他邮件服务器。</li>
+<li>传输有3个阶段：
+<ol type="1">
+<li>握手（建立连接）</li>
+<li>传输报文</li>
+<li>关闭</li>
+</ol></li>
+<li>命令/响应交互
+<ul>
+<li>命令：ASCII文本</li>
+<li>响应：状态码和状态信息</li>
+</ul></li>
+<li>报文必须为7bit的ASCII码，超过这个范围的报文不予以发送</li>
+</ul>
+<p>举个例子：Alice给Bob发送报文</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531144448.png" /></p>
+<ol type="1">
+<li>Alice使用用户代理编写邮件，并发送给 <code>Bob@email.com</code></li>
+<li>Alice的用户代理将邮件发送到邮件服务器；<strong>使用SMTP, HTTP(后面说)</strong></li>
+<li>邮件被放在了报文队列进行排队等待发送；</li>
+<li>邮件从发送方的邮件服务器发送到接收方的邮件服务器；<strong>使用SMTP</strong></li>
+<li>邮件服务器将邮件放到Bob的邮箱中；</li>
+<li>Bob使用用户代理阅读邮箱中的邮件；<strong>使用POP3, IMAP or HTTP</strong></li>
+</ol>
+<p>简单的SMTP交互：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531150401.png" /></p>
+<p><strong>SMTP总结</strong>：</p>
+<ul>
+<li>SMTP使用持久连接。向上图中，只要不发送 '.' 就可以一直的发送多封邮件</li>
+<li>SMTP要求报文为7bitASCII编码</li>
+<li>SMTP使用 <code>CRLF.CRLF</code> 决定报文的尾部</li>
+<li>SMTP只是将邮件发送出去的协议；可以采用HTTP或者其他协议从邮件服务器的邮箱中拉取邮件</li>
+<li>HTTP的每个对象封装在各自的响应报文中，如果有引用对象需要建立新的连接。而SMTP多个对象包含在一个报文中，可以包含文字，图片，视频等多个对象。</li>
+<li><strong>SMTP只是将邮件从发送方用户代理发送到接收方邮件服务器</strong></li>
+<li>SMTP是直接传输，不使用其他邮件服务器进行中转。</li>
+</ul>
+<p><strong>邮件的报文格式</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531150954.png" /></p>
+<p>问题出现了，刚刚说一个报文内部可以包含多个对象，假设包含一张图片，但是图片的数据并不全是ascii码字符，这该如何发送呢？</p>
+<p>这就要说到<strong>报文格式的多媒体扩展</strong>。假设我们发送的报文中存在ASCII码字符，也存在非ASCII码字符，该怎么办呢？这就需要使用到编码。我们设定一种编码方式，将所有的字符统一编码，不管是ASCII码字符也好，非ASCII码字符也罢，都按照一样的规则编码，使编码得到的字符全部都是ASCII码字符，这样就能够通过SMTP发送出去，对方接收到之后，再通过相同的编码规则将其解码即可得到原来的数据。</p>
+<blockquote>
+<p>base64就是用来解决这个问题的。Base64是网络上最常见的用于传输8Bit字节码的编码方式之一，Base64就是一种基于64个可打印字符来表示二进制数据的方法。</p>
+</blockquote>
+<h3 id="邮件访问协议">4.2. 邮件访问协议</h3>
+<p>通过上面的描述，现在一封邮件从发送方到接收方邮件服务器的过程已经清楚了，最后的问题就是接收方如何通过用户代理从邮件服务器中的邮箱读取自己的邮件呢？这就要谈到邮件访问协议，大致有3种：</p>
+<ul>
+<li>POP3(Post Office Protocol-Version 3)</li>
+<li>IMAP(Internet Mail Access Protocol)</li>
+<li>HTTP</li>
+</ul>
+<h4 id="pop3">4.2.1. POP3</h4>
+<p>POP3是一个极为简单的邮件访问协议。当用户代理打开了一个到邮件服务器的TCP连接之后，POP3就开始工作。POP3按照3个阶段进行工作：</p>
+<ol type="1">
+<li>特许(authorizaiton)或者叫做用户确认阶段</li>
+<li>事务处理阶段</li>
+<li>更新阶段</li>
+</ol>
+<p><strong>在特许阶段</strong>，用户代理通过命令向服务器发送用户名和口令（明文形式）来进行身份确认，邮件服务器响应 <code>+OK</code> 或者 <code>-ERR</code> 告知用户代理用户确认是否通过。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531152338.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531152353.png" /></p>
+<p><strong>在事务处理阶段</strong>，主要做两件事</p>
+<ol type="1">
+<li>用户代理从邮件服务器取回报文</li>
+<li>对报文做/取消删除标记</li>
+</ol>
+<p>用户发出 <code>quit</code> 命令之后，进入<strong>更新阶段</strong>，在这个阶段，邮件服务器通过删除标记来确认哪些报文需要被删除。</p>
+<p>上面的描述中，用户读取邮件之后，会将相应的报文打上“删除标记”。这样的模式叫做<strong>下载并删除模式</strong>。除此之外，还有一种模式叫做<strong>下载并保留模式</strong>。这并不是协议特有的，可以通过用户代理进行配置。</p>
+<p>下载并删除模式：</p>
+<ul>
+<li>优势：邮件服务器上的邮箱空间不大可能会占满；</li>
+<li>劣势：在一个设备上读取邮件之后，邮件服务器上的报文就被删除，其他设备就无法再次从邮件服务器读取邮件</li>
+</ul>
+<p>下载并保留模式：</p>
+<ul>
+<li>优势：用户代理拿到的只是邮件服务器上的拷贝，而邮件服务器保留有相应报文。这样子其他设备也可以读取到该邮件</li>
+<li>劣势：邮箱可能会满，需要定期处理</li>
+</ul>
+<p><strong>POP3在会话中是无状态的</strong>，意思就是用户认证通过之后，用户在自己的“邮箱”（服务器为用户分配的特定的目录）读取报文发送的命令中不会再携带“我是谁，我的密码是balabala”这些信息。邮件服务器也只保留部分状态信息：比如哪些用户报文被标记了删除。</p>
+<h4 id="imap">4.2.2. IMAP</h4>
+<p>IMAP比POP3复杂，它的出现主要是因为POP3协议要将邮件下载到本地，而IMAP可以运行用户代理远程管理邮件服务器中属于自己的“邮箱”。</p>
+<p>IMAP会将第一次到达的报文放到“未读邮件”中，将读过的报文放到“已读邮件”中。也就是每个报文都会与一个目录相关联。相当于邮件服务器分配的邮箱真的就属于用户，用户可以随意的管理这个邮箱，无论是创建新的目录，移动报文到另一个目录，读取报文内容，都可以。</p>
+<p>IMAP还允许用户代理获取报文中的某些部分。比如一个报文里面有一个音频，但是我只想读取文件，这是可以办到的，这在低带宽连接的时候非常有用。用户代理还可以通过指定条件来查询匹配的报文。</p>
+<p>因此，IMAP是有状态的协议。它维护了IMAP会话中的用户状态信息，例如，文件夹的名字以及哪些报文属于哪些文件夹。</p>
+<p>以下是两个协议最大的区别：</p>
+<ul>
+<li><strong>POP3：本地管理文件夹</strong></li>
+<li><strong>IMAP：远程管理文件夹</strong></li>
+</ul>
+<h4 id="http基于web的电子邮件">4.2.3. HTTP：基于Web的电子邮件</h4>
+<p>使用这种服务，用户代理就是普通的浏览器。用户与远程邮件服务器之间的通信通过HTTP进行。</p>
+<p>当一个收件人想从邮箱中访问一个报文的时候，向邮件服务器发送HTTP请求报文，邮件服务器发送响应报文到浏览器，这之间使用的是HTTP协议。</p>
+<p>类似的，当一个发件人想发送邮件时，可以使用HTTP协议从浏览器发送到邮件服务器。然而，发送方邮件服务器与接收方邮件服务器之间的通信还是通过SMTP。</p>
+<h1 id="dns">5. DNS</h1>
+<p><strong>DNS：Domain Name System</strong>，运行在UDP协议之上。就是一来一回的信息，类似于“你叫什么”，“我叫xx”这样的对话，建立连接就要多一个RTT。因此非常适合UDP。</p>
+<p>我们知道主机（路由器有IP）一般有两种标识方式</p>
+<ul>
+<li>主机名（域名，待会会说于域名的命名规则），比如 <code>wwww.baidu.com</code></li>
+<li>IP地址，比如 <code>220.181.38.148</code></li>
+</ul>
+<p>但是在网络中，路由器是通过IP地址进行路由转发的，因此，我们的报文要想从源主机发送到目标主机，就必须知道目标主机的IP地址。但是我们只知道域名，不知道IP地址，那么就需要一个机制进行<strong>IP地址和域名之间的映射</strong>，这就是<strong>DNS的主要服务</strong>。</p>
+<p>来看看早期的实现。早期由于主机节点非常少，几台十几台。因此，它们的主机名就是随便取得，比如mary，bob之类的。因为主机少，所以重名的概率也不高，即使真的重名了，后面加个数字即可。</p>
+<p>因此，早期使用一台服务器来实现该功能，该服务器叫做DNS服务器，<strong>DNS服务器上记录着所有主机名以及对应的IP地址</strong>。工作的步骤如下，假设有一台主机名为mary，另一台为bob，mary想要知道bob的IP：</p>
+<ol type="1">
+<li>mary向DNS服务器发送一个包含bob的请求</li>
+<li>DNS收到请求，从记录中查找bob主机名对应的IP地址: <code>10.20.30.40</code>，找到之后并向mary发送一个包含bob主机名及其IP地址的响应</li>
+<li>mary收到该响应之后，提取其中的IP地址，然后再跟bob通信</li>
+</ol>
+<p>但是现在主机太多了，一台DNS服务器根本hold不住，如果只有一台DNS服务器会有以下问题：</p>
+<ul>
+<li><strong>单点故障</strong>：如果DNS服务器坏了，那么整个互联网就GG了</li>
+<li><strong>通信容量</strong>：只有一台DNS服务器，那么它的流量就会非常大，服务器可能应付不过来</li>
+<li><strong>距离太远</strong>：如果DNS服务器放在美国，那么我们找 <code>www.baidu.com</code> 这个域名的IP地址，还需要越过大半个地球，时延太高了</li>
+<li><strong>维护困难</strong>：现在主机这么多，每天都有新的主机上线，旧的主机下线，那么维护人员需要维护一个已亿为单位的数据库记录量，太困难了</li>
+</ul>
+<p>因此，分布式DNS也就出现了，也就是现在的DNS，具体后面再说。</p>
+<p><strong>DNS的必要性</strong>：</p>
+<ul>
+<li>IP地址唯一标识主机、路由器</li>
+<li>IP地址对于人类不好记忆（没有意义），人类一般倾向于有意义的字符串来标识设备</li>
+<li>因此就存在着 “字符串” &lt;-&gt; IP地址 必要性</li>
+<li>人类用户提供“字符串”，DNS负责将其转为IP地址</li>
+</ul>
+<p><strong>需要实现DNS系统，需要解决以下三个问题</strong>：</p>
+<ol type="1">
+<li>Q1: 如何命名设备？
+<ul>
+<li>需要使用有意义的字符串，好记</li>
+<li>但是又不能平面命名，容易重名，需要<strong>层次化命名</strong></li>
+</ul></li>
+<li>Q2: 如何完成名字到IP地址的转换
+<ul>
+<li>分布式数据库维护和响应名字查询</li>
+</ul></li>
+<li>Q3: 如何维护：增加或删除一个域，需要再域名系统中做哪些工作</li>
+</ol>
+<p><strong>DNS总体思路</strong>：</p>
+<ol type="1">
+<li><p>分层的、基于域的命名机制 -&gt; 层次化命名</p></li>
+<li><p>若干分布式数据库完成名字到IP的转换</p></li>
+<li><p>运行在53/UDP端口</p></li>
+<li><p>这是Internet核心功能，但却在网络边缘实现</p>
+<blockquote>
+<p>因此，Internet的复杂性就体现在很多核心功能都在网络边缘实现。</p>
+</blockquote></li>
+</ol>
+<p><strong>DNS目的</strong>：</p>
+<ol type="1">
+<li><strong>主要目的</strong>：实现主机名到IP地址的转换</li>
+<li>其他目的：
+<ol type="1">
+<li><strong>主机别名</strong>到<strong>规范名字</strong>的转换</li>
+<li>邮件服务器<strong>别名</strong>到邮件服务器<strong>正规名字</strong>的转换</li>
+<li>负载均衡(Load Distribution)</li>
+</ol></li>
+</ol>
+<p>主机会有<strong>主机别名</strong>和<strong>规范名字</strong>，<strong>前者对外使用，便于用户记忆</strong>；<strong>后者对内使用，便于系统管理</strong>。举个例子：我的一个主机别名为：www.hdfzzf.icu，其他人可以通过这个名字访问我的某台服务器，但是我管理服务器的时候给这台服务器取名叫做 servers_1，因此，这就存在 <code>www.hdfzzf.icu &lt;-&gt; servers_1</code> 的转换</p>
+<p>邮件服务器也是类似：别名相当于 <code>mail.someschool.edu</code>，正规名字相当于 <code>email_server</code></p>
+<p><strong>负载均衡</strong>。举个例子，我维护一个网站<code>www.xxxnet.com</code>，因为数据量可能比较大，我有多台服务器来维护，每台主机都有唯一的IP地址。DNS服务器中就会有一个域名对应 IP表 的情况。用户请求我的网站的时候，DNS把第一个IP地址给他，然后将该IP地址放在 IP表 的最后，下一次请求再从 IP表 的头拿，然后把其放在最后。这样就实现了每个服务器的请求都差不多。</p>
+<h2 id="如何命名设备">5.1. 如何命名设备</h2>
+<p>DNS域名采取层次树状结构的命名方法。Internet首先有一个根，将其划分为几百个顶级域名(top level domains)：</p>
+<ul>
+<li>通用的(generic)：<code>.com, .gov, .edu, .int, .net, .org, .firm, .mil, .hsop, .web, .arts, .rec, ...</code></li>
+<li>国家的(countries)：<code>.cn, .us, .jp</code></li>
+</ul>
+<p>每个域下面都可以划分若干子域(subdomains)。这个树的树叶就该表着主机。</p>
+<p>DNS命名空间如下图(The DNS Name Space)：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531202251.png" /></p>
+<p>使用 <code>.</code> 来间隔不同级别的子域，域名因此可以分为两种：</p>
+<ul>
+<li><strong>一个域的域名</strong>：从树枝开始往上。比如上图中的：<code>cs.yale.edu</code></li>
+<li><strong>一个主机的域名</strong>：从树叶开始往上。比如图中的：<code>robot.ai.cs.yale.edu</code></li>
+</ul>
+<p><strong>那么该如何管理这些域名呢</strong>？</p>
+<ul>
+<li>一个域管理自己的子域：比如上图中的org就要管理<code>acm,org</code>， <code>ieee.org</code></li>
+<li>创建一个新的域，需要它所属域的同意：比如在edu下面新建一个 <code>xidian.edu</code>，就需要请求edu的同意。如果名字重复了，edu就不会同意</li>
+</ul>
+<p><strong>需要注意：域与物理网络无关</strong></p>
+<ul>
+<li>域遵从组织界限，而不是物理网络
+<ul>
+<li>一个域的主机可以不在一个网络：西电广研院的服务器属于<code>xidian.edu.cn</code>，但是不在一个网络</li>
+<li>一个网络的主机不一定在一个域：我的电脑连接校园网，和学校的服务器属于同一网络，但是我的电脑甚至没有域名</li>
+</ul></li>
+</ul>
+<h2 id="如何完成名字到ip的转换">5.2. 如何完成名字到IP的转换</h2>
+<p>接下来就需要解决如何解析名字了，也就是DNS服务器。<strong>DNS服务器可以大致分为三种</strong>：</p>
+<ul>
+<li>根DNS服务器</li>
+<li>顶级域(TLD)DNS服务器</li>
+<li>权威DNS服务器</li>
+</ul>
+<p>一般根DNS服务器（全球有13个）和顶级域DNS服务器都能够在网络上找到对应的IP地址。根DNS服务器中保存的所有顶级域服务器及其对应的IP地址。TLD DNS服务器提供了权威DNS服务器的IP地址。</p>
+<p>在顶级域名服务器之下的子域会被划分为区域(zone)，区域的划分由管理者自己决定，将DNS名字空间划分为<strong>互不相交</strong>的区域，每个区域内：</p>
+<ul>
+<li>都有一个名字服务器，维护它所管辖的区域的权威信息，这就是权威DNS服务器</li>
+<li>名字服务器允许被放置在区域之外</li>
+</ul>
+<p>区域的划分如下图：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531203917.png" /></p>
+<p>以edu下面的yale为例，yale和eng划分到同一区域，由同一个权威DNS服务器管理，而yale下面的cs由于主机众多，单独分了一个区域，由另一个权威DNS服务器管理。</p>
+<blockquote>
+<p>管理的意思是，处于cs区域的主机，绝对可以通过权威DNS服务器找到。</p>
+</blockquote>
+<p>DNS服务器维护资源记录(RR)，主要就是维护 <strong>域名和其他</strong> 的映射关系。RR格式：<code>(name, ttl, class, type, value)</code></p>
+<ul>
+<li>name：域名</li>
+<li>ttl: time to live，生存时间，决定了资源记录从缓存中删除的时间。主要作用就是区分权威、缓冲记录
+<ul>
+<li>没有值：权威记录，不会删除</li>
+<li>有限值：缓冲记录，TTL归0则删除</li>
+</ul></li>
+<li>class：对于Internet，值为IN，非Internet不管</li>
+<li>type：资源记录的类型</li>
+<li>value：可以是IP，域名，规范名字等，取决于type</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531204853.png" /></p>
+<p>其实<code>Type=NS</code>的时候比较难理解。当主机访问不同域的主机时，需要先找到域的权威服务器，从中获得对应主机的IP，此时就需要这个。</p>
+<p>在这里我提个问题：<strong>为什么需要缓存记录，为什么需要删除缓存记录？</strong></p>
+<p>先看一下[[#5 2 1 DNS大致工作流程]]就会知道，如果某个名字服务器缓存了某条记录，那么就不需要那么多次的查询，因此，<strong>缓存可以提高性能</strong>。比方说edu知道 <code>gaia.cs.umass.edu</code> 那么就直接回响应就好了，就需要再找权威DNS了。同样的，如果本地DNS服务器知道，连出网都可以省略。</p>
+<p>那为什么又要删除呢？因为域名和IP之间的映射是会变的，假设本地知道了 <code>gaia.cs.umass.edu</code> 的IP，就不会再去请求。如果<code>gaia.cs.umass.edu</code>的IP改了，那么本地保存的就是错误的，访问不到<code>gaia.cs.umass.edu</code>。因此，删除是为了保证缓存记录与权威DNS服务器中的记录保持一致。</p>
+<h3 id="dns大致工作流程">5.2.1. DNS大致工作流程</h3>
+<p>DNS解析请求可以流水线工作，也可以非流水线工作。与HTTP类似[[#2 2 1 流水线和非流水线]] ### 5.2.2. 本地解析 首先，每个ISP都会有一个本地DNS服务器（Local Name Server）。该服务器会缓存一些内部主机常访问的域名和IP的映射。除此之外一般还会缓存权威DNS服务器的IP，根服务器和TLD服务器。</p>
+<p>这样，当内部主机发起一个DNS查询时，查询会被送到本地DNS服务器，如果本地DNS服务器有对应缓存，则直接返回IP；否则，由本地DNS服务器向根、TLD、权威等服务器进行查询</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531205952.png" /></p>
+<p>这个本地DNS服务器也是代理作用，跟HTTP中的Web缓存作用相似。</p>
+<blockquote>
+<p>一台主机要想上网，必须具备四个条件： 1. IP地址 2. 子网掩码 3. Local Name Server：解析不认识的域名 4. 网关：联网的路由器的IP地址，(通过这个路由器才能访问Internet)</p>
+</blockquote>
+<h3 id="网络解析">5.2.3. 网络解析</h3>
+<p>如果本地无法解析，那么由本地DNS服务器向外发送DNS查询，有以下两种方式：</p>
+<ol type="1">
+<li>递归查询</li>
+<li>迭代查询</li>
+</ol>
+<h4 id="递归查询">5.2.3.1. 递归查询</h4>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531210141.png" /></p>
+<p>稍微解释一下：</p>
+<ol type="1">
+<li>主机向本地DNS服务器请求 <code>gaia.cs.umass.edu</code>，但是它不知道</li>
+<li>本地DNS服务器向根DNS服务器请求<code>gaia.cs.umass.edu</code>，根也不知道</li>
+<li>根就向 <code>edu</code> TLD请求，TLD也不知大</li>
+<li>TLD就向权威DNS服务器请求，它肯定知道呀</li>
+<li>然后响应就顺者请求的反方向回到请求主机</li>
+</ol>
+<p><strong>这样做会有一个问题：根服务器负担太重了，什么乱七八糟的请求都要来我这。</strong></p>
+<p><strong>解决：使用迭代查询</strong></p>
+<h4 id="迭代查询踢皮球查询">5.2.3.2. 迭代查询（踢皮球查询）</h4>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531210607.png" /></p>
+<ol type="1">
+<li>本地向根请求 <code>gaia.cs.umass.edu</code></li>
+<li>根不知道，但是根知道edu TLD在哪，就跟本地说“edu在这，你找它问问，这归它管”</li>
+<li>本地又向 edu TLD 请求 <code>gaia.cs.umass.edu</code>，edu TLD说“我也不知道，你去找权威DNS服务器问问，这归它管，它的地址是balabala”</li>
+<li>本地再向权威DNS服务器请求 <code>gaia.cs.umass.edu</code>，权威服务器说“这我熟，它的IP是balabala，你去找它吧”</li>
+<li>本地将得到的IP给请求主机</li>
+</ol>
+<h3 id="dns协议报文">5.2.4. DNS协议报文</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531211326.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531211334.png" /></p>
+<p>这不是重点，我就说一个字段，那就是ID，为什么要有ID？如果没有ID那么主机向本地请求时需要说“我叫xxx，我要找xxx”，本地得到IP之后也要根据请求主机的名字或者IP给其回响应。但是如果使用ID，就很简单了，主机说“id=1，请求xxx”，本地只需要做好id和主机的映射关系，然后将响应会给对应主机。</p>
+<p>方便的点：在本地DNS查询谁发的请求的时候，前者使用IP进行查询，后者使用ID进行查询。</p>
+<h2 id="维护问题">5.3. 维护问题</h2>
+<p>新增一个子域：</p>
+<ul>
+<li>需要向上级域的名字服务器中增加两条记录。指向这个 <strong>新增的域名</strong> 和 <strong>权威DNS服务器的地址</strong></li>
+<li>在新增的子域中指定一台权威DNS服务器，负责本域的名字解析</li>
+</ul>
+<p>假设在 com 域下新建一个子域 <code>Utopia.com</code> ：</p>
+<ul>
+<li>去注册机构注册该域名，保证不重名
+<ul>
+<li>向机构提供权威DNS服务器的名字和IP地址</li>
+<li>注册机构在 com TLD服务器中插入两条RR记录：(只显示了name, value, type三个字段)
+<ul>
+<li><code>(Utopia.com, dns.Utopia.com, NS)</code></li>
+<li><code>(dns.Utopia.com, 212.212.212.1, A)</code></li>
+</ul></li>
+</ul></li>
+<li>在 <code>Utopia.com</code> 的权威服务器中确保有：
+<ul>
+<li>用于Web服务器的 <code>www.Utopia.com</code> 的类型为 A 的记录</li>
+<li>用于邮件服务器 <code>mail.Upotia.com</code> 的类型为 MX 的记录</li>
+</ul></li>
+</ul>
+<h2 id="安全性问题">5.4. 安全性问题</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531213509.png" /></p>
+<h1 id="p2p应用">6. P2P应用</h1>
+<h2 id="p2p体系的优势">6.1. P2P体系的优势</h2>
+<p>本章节除了这一节之外，其余的都是C/S模式。因此，首先介绍p2p模式较于C/S模式的优势。</p>
+<ul>
+<li>速度快</li>
+<li>自拓展性（可以“服务”非常多的主机，这是C/S模式做不到的）</li>
+</ul>
+<p><strong>C/S模式下</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602083126.png" /></p>
+<p>服务器传输：服务器需要向外传N个文件，每个文件大小F，服务器的上载速率为 <span class="math inline">\(u_s\)</span>，因此可以计算出服务器上载N个文件的拷贝到互联网的时间为：</p>
+<p><span class="math display">\[
+t_1 = \frac {NF}{u_s}
+\]</span></p>
+<p>客户端：每个客户端需要下载一份文件拷贝，每个客户端下载速率不同，且客户端可以同时进行下载，因此，客户端的下载时间应该为下载速率最慢的客户的下载时间，即：</p>
+<p><span class="math display">\[
+t_2 = \frac F{d_{min}}
+\]</span></p>
+<p>因此，C/S模式下，一台服务器分发文件到N个peer需要的最少时间为：</p>
+<p><span class="math display">\[
+D_{c/s} \geq max(t_1, t_2)
+\]</span></p>
+<p><strong>P2P模式下</strong>：</p>
+<p>同样的图，此时服务器相当于拥有一个文件全部资源的peer。</p>
+<p>服务器：需要至少上载一份文件的全部拷贝：</p>
+<p><span class="math display">\[
+t_1 = \frac F{u_s}
+\]</span></p>
+<p>客户端：每个客户端必须下载一份拷贝，因此客户端的下载时间取决于下载速率最慢的客户端的下载时间：</p>
+<p><span class="math display">\[
+t_2 = \frac F{d_{min}}
+\]</span></p>
+<p>客户端：与此同时，所有客户端总体下载量是NF，也就是所有的客户端（包括服务器）需要向整个互联网中上载N份的文件拷贝，因此这个时间为：</p>
+<p><span class="math display">\[
+t_3 = \frac {NF}{u_s+\sum{u_i}}
+\]</span></p>
+<p>最后，P2P模式下，将一个F大小的文件分发到N个peer的时间为：</p>
+<p><span class="math display">\[
+D_{P2P} = max(t_1, t_2, t_3)
+\]</span></p>
+<p>在C/S模式下，客户少的时候，客户端的下载速率成为瓶颈，这是因为假设一个服务器能够服务100个人，但是就10个客户端，服务器传完10份，客户还没下载好。但是，一旦客户数量超过服务器的范围，那么服务器的上载速率就会成为瓶颈，而此时t1是N的线性函数，所以耗时就会线性增加。</p>
+<p>在P2P模式下则没有这个问题，如果P2P中节点数量变多，那么总体时间也会取决于t3，而这并不是线性的，N增大的同时 <span class="math inline">\(\sum{u_i}\)</span> 也在增加。因此，两者的耗时与节点数量的图像如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602084835.png" /></p>
+<p>这就是p2p速度快的原因，这也是P2P模式的自拓展性。</p>
+<p>P2P大致可以分为两类：</p>
+<ol type="1">
+<li>非结构化</li>
+<li>结构化(DHT, Distributed Hash Table)</li>
+</ol>
+<p>非结构化就是周围的任意两个节点都可以建立连接。一般会形成一个无向图，也叫覆盖网（overlay）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602082557.png" /></p>
+<p>结构化也是任意两个节点都可以建立连接，但是会建立成一个结构，比如说环、树</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602083031.png" /></p>
+<p>本节主要介绍的是非结构化的，结构化大致了解以下即可。</p>
+<h2 id="非结构化">6.2. 非结构化</h2>
+<p>非结构化的P2P又可以大致分为三类：</p>
+<ol type="1">
+<li>集中式目录：napster</li>
+<li>完全分布式：Gnutella</li>
+<li>混合体：KaZaA</li>
+</ol>
+<p>还会单独介绍一个协议 <strong>BitTorrent</strong>, <strong>BT</strong> 协议。我们常说的BT种子就是跟这相关的。这个不好分类，硬要分的话，可以算是混合体中的一个。</p>
+<h3 id="集中式目录napster">6.2.1. 集中式目录(napster)</h3>
+<p>napster协议就是采用集中式目录，这是一个专门用于音乐分享的</p>
+<p>napster工作原理如下：（每个客户端都配置了中心服务器的地址）</p>
+<ol type="1">
+<li>每个客户端上线的时候都会告诉中心服务器两件事：
+<ul>
+<li>自己的IP地址</li>
+<li>自己拥有哪些内容</li>
+</ul></li>
+<li>Alice想要查询某个资源的时候，会给中心服务器发送请求，中心服务器查询自己的记录，告诉Alice哪些peer有这些资源、这些peer的IP</li>
+<li>Alice向这些peer（比如Bob）请求资源，Bob给Alice回响应</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602085715.png" /></p>
+<p>这种模式下，中心服务器知道有哪些peer已经上线，并且知道这些peer拥有哪些可以分享的资源，但是中心服务器没有资源，资源分布在各个peer中。</p>
+<p>这种模式的特点：<strong>文件传输是分散的，内容定位是集中的</strong>。但也有一些问题：</p>
+<ol type="1">
+<li><strong>单点故障</strong>：中心服务器一旦宕机，整个网络崩溃</li>
+<li><strong>性能瓶颈</strong>：需要依赖一定的用户量才可以保证速度，如果只有一两个用户，那么速度就是两个用户的上载和下载速度的最小值决定的</li>
+<li><strong>侵犯版权</strong>：P2P中的其他peer不好找到，数量多且分布广，但是中心服务器好找，因此很容易被追踪</li>
+</ol>
+<h3 id="完全分布式gnutella">6.2.2. 完全分布式(Gnutella)</h3>
+<p>Gnutella协议是全分布式的，没有中心服务器，整个网络中的所有节点都是peer。</p>
+<p>从三个部分来分析 Gnutella：</p>
+<ul>
+<li>请求资源</li>
+<li>加入网络</li>
+<li>退出网络</li>
+</ul>
+<h4 id="请求资源">6.2.2.1. 请求资源</h4>
+<p>假设此时，有多个peer已经建立起一个覆盖网络（peer与peer间的连接是逻辑的），此时Alice想要请求资源该如何做呢？</p>
+<ol type="1">
+<li><p>Alice会向她的邻居发出请求“我想要A文件，谁知道它在哪？”</p>
+<blockquote>
+<p>邻居：在覆盖网络中，与Alice直接建立连接的peer</p>
+</blockquote></li>
+<li><p>邻居收到请求之后会做两件事：</p>
+<ul>
+<li>查询：如果自己有该资源，那么则会向Alice回“我有”</li>
+<li>转发：将Alice的资源继续转发给自己的邻居</li>
+</ul></li>
+<li><p>非Alice邻居的peer收到转发的请求时也会做和上面一样的两件事：</p>
+<ul>
+<li>查询：如果自己有，则向<strong>转发消息</strong>的<strong>发送方</strong>回“我有”（转发消息的发送方不是Alice，可以理解为一种递归的方式）</li>
+<li>转发：继续转发</li>
+</ul></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602091023.png" /></p>
+<p>这种查询方式叫做：<strong>查询洪泛</strong>。这种方式也有一个问题，那就是Alice的请求会发送给某个邻居A，A又给Alice转发（因为Alice也是A的邻居，然后Alice又给A转发，没完没了），其他节点也是同样的，A给B转发，B也会给A转发。这就会导致过了好久后，这个请求还在网络中。解决办法有两种：</p>
+<ol type="1">
+<li><strong>有限泛洪</strong>：设置转发的次数，请求转发一定次数之后就不再转发</li>
+<li><strong>记住状态</strong>：当A转发了Alice的消息之后就会记住自己已经转发过了，当再次收到这条转发消息之后就不会再次转发</li>
+</ol>
+<h4 id="加入网络">6.2.2.2. 加入网络</h4>
+<p>请求资源解决了，但是如何搭建这样一个网络呢？刚开始的时候大家都不知道对方，如何进行连接呢？</p>
+<p>其实原理是这样的，客户端里面会配置有几个固定的节点，这些节点已经构建成了一个网络。当客户上线的时候，需要选择其中一个节点发送‘ping’，节点收到‘ping’之后会给客户回一个‘pong’，并且向邻居继续发送‘ping’，邻居收到‘ping’之后会给客户回‘pong’，这样子继续下去，客户就会收到许多‘pong’，客户从中选择一定数量的节点进行连接。此时网络搭建完毕</p>
+<h4 id="退出网络">6.2.2.3. 退出网络</h4>
+<p>退出时，客户需要向网络中的邻居告知，邻居收到之后就会断开与其的连接。除此之外，还会补充一个peer进来，维持使整个网络能够正常运行的条件。</p>
+<h3 id="混合体kazaa">6.2.3. 混合体(KaZaA)</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602092511.png" /></p>
+<ul>
+<li>每个peer要么是组长，要么隶属于一个组长</li>
+<li>组长会跟踪组内所有peer的资源内容</li>
+<li>组长与组长之间：
+<ul>
+<li>peer会先向组长查询，组长没有的话，则由组长向其他组长查询</li>
+<li>获得其他组长的文件copy</li>
+</ul></li>
+</ul>
+<p>KaZaA查询：</p>
+<ol type="1">
+<li>每个文件都有一个hash值用来唯一标识该文件</li>
+<li>peer向组长发送查询</li>
+<li>组长进行匹配
+<ol type="1">
+<li>如果组内有：则向请求方发送拥有该资源的peer的IP</li>
+<li>如果组内没有：则组长向其他组长转发请求，收到其他组长的响应之后，将响应转发给请求peer</li>
+</ol></li>
+<li>请求peer向拥有文件的peer发送一个带hash值的<strong>HTTP请求</strong></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602093511.png" /></p>
+<h3 id="bittorrent">6.2.4. BitTorrent</h3>
+<p>这个是日常生活中最常见的，先介绍几个概念：</p>
+<ul>
+<li>洪流(torrent)：参与一个特定文件的所有peer的集合</li>
+<li>块：一个文件会被划分为多个256Kb的数据块</li>
+<li>map：每个peer维护一个bit map，如果 <span class="math inline">\(dth\)</span> 位为1，表示拥有这个文件的 <span class="math inline">\(dth\)</span> 块，0则表示没有</li>
+<li>种子：拥有一个文件的全部块的peer</li>
+</ul>
+<h4 id="加入torrent">6.2.4.1. 加入torrent</h4>
+<p>每个torrent拥有一个tracker（追踪器）。当一个peer加入torrent时，需要向tracker注册自己，并且周期性的通知tracker自己还在torrent中。这样子，tracker可以追踪torrent中的所有peer。</p>
+<p>peer（假设为Alice）加入torrent时，此时Alice没有该文件的任意块，tracker从torrent中随机的找出一些peer（假设30个），并将这30个peer的IP地址交给Alice。然后Alice向这些peer请求TCP连接。</p>
+<p>加入torrent之后，Alice会周期的询问临近的peer的bit map。也就是说，Alice在任何时刻，都知道临近的peer拥有哪些块。此时，就会有两个问题：</p>
+<ul>
+<li>Alice要请求哪些资源块</li>
+<li>Alice要向哪些peer请求资源</li>
+</ul>
+<h4 id="请求资源-1">6.2.4.2. 请求资源</h4>
+<p>这里介绍一个请求资源块的技术：<strong>最稀缺优先(rarest first)</strong>。原理：根据邻近peer的bit map以及自己没有的块，去请求<strong>自己没有的并且peer中也最少的</strong>资源块。这样做的目的是为了<strong>均衡每个块在洪流中的副本数量</strong>。举个极端的例子，某一个块只有一个peer有，如果该peer下线了，那么torrent中的所有peer将都得不到完整的文件。</p>
+<h4 id="响应请求">6.2.4.3. 响应请求</h4>
+<p>通过时间的累积，Alice也有了部分资源块。此时，其他peer向Alice请求块，Alice需要如何响应呢？假设有10个请求，那么Alice会：</p>
+<ol type="1">
+<li>第一个周期(10s)：评估上一个周期内这些请求peer向Alice提供数据时的比特率，并根据比特率选择速度最快的4个进行响应。这4个peer成为<strong>疏通(unchocked)</strong></li>
+<li>第二个周期(10s)：与第一个周期一样</li>
+<li>第三个周期(10s)：除了选择前4个之外，还会随机的选择请求peer中的一个，响应它的请求，假设是Bob</li>
+</ol>
+<p>这么做的好处有很多：</p>
+<ol type="1">
+<li><strong>对于其他peer</strong>：假设Bob第一次请求Alice，之前也没有响应过Alice，那么Bob可能无法成为Alice的疏通。但是该机制下，Bob就可能随机的被Alice选择，从而获得资源快</li>
+<li><strong>对于Alice</strong>：假设Bob拥有Alice没有的资源块，Alice从没有向Bob提供过数据。该机制下，Alice随机选择到Bob，并响应它的请求，那么Bob就会在下一个周期评估Alice的比特率，这样子Alice可能会在下一个周期成为Bob的疏通，从而两者可以交换数据。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602102932.png" /></p>
+<p>这种关于交换的激励机制一般称为“一报还一报(tit-for-tat)”，除了上面的优势之外，还可以避免一种情况，那就是某个peer只请求，不响应，当个“吸血鬼”。如果peer不响应，那么一段时间后，该peer就不会成为其他peer的疏通，虽然可以通过随机选择被选中，但是这样一来，获得资源的速度就慢了。</p>
+<blockquote>
+<p>一报还一报：你对我好，我对你好；你对我不好，我也对你不好。</p>
+</blockquote>
+<h2 id="dht">6.3. DHT</h2>
+<p>就大致讲一下，假设已经搭建了一个环形的网络。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602103319.png" /></p>
+<p>这些服务器构成了一个环形网络，并且在该网络中都有特定的id。每个文件也拥有特定的hash值。假设，hash值为2-50的都放在50节点，1201-1300的放在1节点，21-100的放在100节点......。如果我要请求hash为78的节点，就可以通过环形网络一个一个网下查，直到100节点。然后100节点向请求方提供特定文件。</p>
+<h1 id="cdn">7. CDN</h1>
+<p>CDN：Content Distribution Network，内容分发网。</p>
+<p>如今的网络上，视频流量占大头，这就会出现两个挑战：</p>
+<ol type="1">
+<li>挑战1：<strong>规模性</strong>。如何服务全世界这么多用户</li>
+<li>挑战2：<strong>异构性</strong>。不同用户、不同地区、不同设备的能力不同，该如何根据情况调整服务策略</li>
+</ol>
+<h2 id="异构性">7.1. 异构性</h2>
+<h3 id="视频的编码">7.1.1. 视频的编码</h3>
+<p><strong>视频</strong>：以固定速度显示图片序列。比如游戏中的30帧、60帧、120帧，就是1s分别显示30、60、120张图像。原理就是利用人的眼睛的滞后性，人看到一张图片之后，会停留一段时间，此时计算机切换到另一张图片，眼睛感觉不到。</p>
+<p>视频通常比较大，因为有太多的图片了，但是前后两张图片之间并不是完全不同的，而是基本都相同（找一本空白的本子在每一页画一个图像，然后翻动本子就能显示出一个“视频”。但是每页其实都差不多。画过的应该能体会到）。这个就叫做图像之间的<strong>时间冗余</strong>。</p>
+<p>同一张图片中，也不是每一个像素点都不一样，有一大部分像素点应该是一样的，这就是图像的<strong>空间冗余</strong>。</p>
+<p>因此，视频的冗余有两种：</p>
+<ol type="1">
+<li>时间冗余</li>
+<li>空间冗余</li>
+</ol>
+<p>针对不同的冗余，就会出现两种编码方式来降低需要传输的图片的比特数：</p>
+<ol type="1">
+<li><strong>时间编码</strong>：假设第i张图片已经发送，那么在传送第i+1张图片的时候并不是所有的像素都发送，而是只发送与前一张不同的地方的像素点。</li>
+<li><strong>空间编码</strong>：假设发送一张图片，其中N个像素点是一样的。此时不会发送这N个像素点的值，而是只发送一个像素点的值，以及像素点的个数和位置。</li>
+</ol>
+<p>编码根据速率还可以分为：</p>
+<ol type="1">
+<li>CBR(Constant bit rate)：以固定的速率编码</li>
+<li>VBR(Variable bit rate)：视频编码的速率随时间的变化而变化</li>
+</ol>
+<p>解释：假设是一个地方的风景的视频，那么绝大部分的图片都是类似的，因此可以使用CBR方式。如果是打斗戏，那么可能每一张图片的变化就会较大，此时就不太适合固定的速率编码了（来不及将下一张图片编码完成），此时就需要根据时间从而变化编码率。</p>
+<h3 id="多媒体流化服务和dash">7.1.2. 多媒体流化服务和DASH</h3>
+<p><strong>DASH: Dynamic Adaptive Streaming over HTTP</strong></p>
+<p>客户请求一个视频资源的时候一般有两种方式：</p>
+<ol type="1">
+<li>将整个视频下载下来，下载完成之后再看</li>
+<li><strong>多媒体流化服务</strong>：一边看一边加载后面的内容</li>
+</ol>
+<p>如果采用多媒体流化服务，那么服务器就需要：</p>
+<ul>
+<li>将视频文件分成多块</li>
+<li>每个块独立存储，并且不同编码速率的都会存储一份</li>
+<li><strong>告示文件(manifest file)</strong>：提供不同块的URL</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602131408.png" /></p>
+<p>客户端：</p>
+<ul>
+<li>先获取 manifest file</li>
+<li>周期性的测量服务器到客户端的带宽</li>
+<li>查询告示文件，请求一个块</li>
+</ul>
+<p>但是什么时候请求、请求什么编码速率的块，这就是DASH的工作了。当然用户可以自己指定，也可以通过选择 “自动” 交给DASH决定。比如bilibili中的：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602121416.png" /></p>
+<p>如果带宽稳定，DASH会按照一定的时间去请求资源块，是缓存不挨饿，也不溢出。如果带宽不稳定，DASH会根据带宽的变化，决定什么时候请求下一个资源块。</p>
+<p>请求什么编码速率的块也是一样的，如果带宽资源够或者缓存了足够的资源（保证不会卡顿），那么请求下一个资源块的时候就可以请求编码率高的。除此之外，还会根据设备的情况，比如说屏幕的大小来决定请求的块的编码率。</p>
+<p>到此，就解决了异构性的问题。</p>
+<h2 id="规模性">7.2. 规模性</h2>
+<p>假设Youtube在全世界只有一处数据中心，那么日本或者非洲的用户想要查看其中的视频内容该怎么办呢？即使服务器能够服务全世界的用户，但是吞吐量不够呀，视频需要一定的吞吐量才能观看。</p>
+<p>更何况，全世界的用户请求这一个数据中心，那么数据中心周遭的流量就会非常的大，造成拥塞。即使数据中心有能力，但是中间链路的带宽可能不够，就会成为瓶颈。</p>
+<p>并且根据“28定律”，这使得网络充斥着同一个视频的多个拷贝，效率低还占带宽。最后，只有一处数据中心，如果出现故障，全世界将无法享受服务。因此需要解决办法来满足如此大规模的用户量，CDN就这样出现了。</p>
+<p>CDN服务器有CDN供应商提供，简单来说就是CDN供应商在全球范围内的各个重要的地方设置数据服务器，然后ICP将数据内容预先的存放到CDN服务器上（至于哪些CDN服务器存放哪些内容这就涉及到部署策略的问题，这里不会说明）。这样子客户就能够通过向距离最近、带宽最好的CDN服务器请求资源。这样子既解决了规模的问题，也在一定程度上优化了用户的服务体验。所以CDN提供的是：<strong>内容加速服务</strong>。</p>
+<p>CDN服务器的设置有两种方式：</p>
+<ol type="1">
+<li>enter deep：将CDN服务器设置到接入网内部
+<ul>
+<li>优势：更接近用户，用户体验最好</li>
+<li>劣势：需要部署的服务器多且分散，难以管理，经济压力大</li>
+</ul></li>
+<li>bring home：部署在关键位置，比如IXP位置
+<ul>
+<li>优势：部署的服务器数量少，比较实惠，并且方便管理。也能够提供不错的服务</li>
+<li>劣势：离用户稍远，提供的体验没有 enter deep</li>
+</ul></li>
+</ol>
+<p>解释一下 bring home。假设YouTube需要给中国用户提供服务，那么只需要在几个地方建CDN，比如说西安，北京、广州，上海，成都。这样中国的用户就可就近请求资源。凡是如果是 enter deep，可能就需要在每个省建立一个CDN服务器。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602132841.png" /></p>
+<p>上图中的方式就是 enter deep。如果是 bring home，就会建立在蓝色圆圈这些地方。</p>
+<p>这里详细说明一下CDN的工作流程。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602134844.png" /></p>
+<ol type="1">
+<li>client首先向原始服务器请求资源，原始服务器回了一个 manifest file；比如说内容为：<code>block1: video.netcinema.com?vid=1, ....</code></li>
+<li>client根据manifest file请求block1，交给本地DNS解析域名</li>
+<li>本地DNS不知道，去问 <code>netcinema.com</code>权威DNS服务器（这里可能跳过了请求根、顶级之类的过程），权威DNS为了将该请求转交个CDN，因此给了本地DNS KingCDN权威服务器的IP</li>
+<li>本地DNS向KingCDN请求 block1，KingCDN权威根据LDNS的IP或者其他信息，找到最近的CDN服务器，然后将IP地址返回给本地DNS</li>
+<li>本地DNS将这个IP地址返回给client</li>
+<li>client拿着这个IP地址去请求CDN服务器，与其建立连接，并进行数据传输</li>
+</ol>
+<p>如果请求block2可能就不需要1，2，3，4，5，直接与CDN服务器请求。如果使用DASH，还可以根据带宽、缓存请求版本最适合的块。</p>
+<h1 id="socket编程">8. socket编程</h1>
+<p>分别用UDP和TCP实现socket通信。</p>
+<p>需求：client发送小写的句子，server将其全部转成大写并发送回client。</p>
+<h2 id="udp-socket-1">8.1. UDP socket</h2>
+<p>UDPcliet.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line">serverHost = <span class="string">&#x27;10.0.2.21&#x27;</span></span><br><span class="line">serverPort = <span class="number">3333</span></span><br><span class="line">clientSocket = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line">message = <span class="built_in">input</span>(<span class="string">&#x27;please input lowercase sentence: &#x27;</span>)</span><br><span class="line">clientSocket.sendto(message.encode(), (serverHost, serverPort))</span><br><span class="line">resp =clientSocket.recvfrom(<span class="number">2048</span>)</span><br><span class="line"><span class="built_in">print</span>(resp[<span class="number">0</span>].decode())</span><br><span class="line">clientSocket.close()</span><br></pre></td></tr></table></figure>
+<p>稍微解释一下：</p>
+<ul>
+<li><code>clientSocket = socket(AF_INET, SOCK_DGRAM)</code> 创建一个UDP Socket，SOCK_DGRAM 就是数据报 datagram；AF_INET（又称 PF_INET）是 IPv4 网络协议的套接字类型</li>
+<li><code>clientSocket.sendto(message.encode(), (serverHost, serverPort))</code> 将信息发送给服务器，需要指定服务器的IP和port。因为是字节流，所以需要先将字符串转为byte</li>
+<li><code>resp =clientSocket.recvfrom(2048)</code> 从字节流中接收2048个字节，也就是只能接收2048个字节长度的响应报文。返回值是一个元组 <code>(message, (ip, port))</code></li>
+<li>因为 message 是 byte 型，所以需要转为str</li>
+</ul>
+<p>UDPserver.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line">port = <span class="number">3333</span></span><br><span class="line">serverSocket = socket(AF_INET, SOCK_DGRAM)</span><br><span class="line">serverSocket.bind((<span class="string">&#x27;&#x27;</span>, port))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The server is ready to receive.&#x27;</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    message, clientAddress = serverSocket.recvfrom(<span class="number">2048</span>)</span><br><span class="line">    modifiedMessage = message.decode().upper()</span><br><span class="line">    serverSocket.sendto(modifiedMessage.encode(), clientAddress)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>serverSocket.bind(('', port))</code>将socket与自己的端口绑定</li>
+</ul>
+<p>效果：</p>
+<p>先启动服务器</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210159.png" /></p>
+<p>然后启动客户端</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210245.png" /></p>
+<p>如果将客户端的 2048 改为 1，那么即使服务器返回 <code>HELLO WORLD</code> 也只能收到 H。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210411.png" /></p>
+<p>同样的，如果服务器的改为 1，即使客户端能够接收2048，因为服务器只能接收1，所以也还是 H</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602210628.png" /></p>
+<h2 id="tcp-socket-1">8.2. TCP socket</h2>
+<p>TCPcliet.py <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line">serverHost = <span class="string">&#x27;10.0.2.21&#x27;</span></span><br><span class="line">serverPort = <span class="number">4444</span></span><br><span class="line">clientSocket = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">clientSocket.connect((serverHost, serverPort))</span><br><span class="line">message = <span class="built_in">input</span>(<span class="string">&#x27;please input lowercase sentence: &#x27;</span>)</span><br><span class="line">clientSocket.send(message.encode())</span><br><span class="line">resp = clientSocket.recv(<span class="number">1024</span>)</span><br><span class="line"><span class="built_in">print</span>(resp.decode())</span><br><span class="line">clientSocket.close()</span><br></pre></td></tr></table></figure></p>
+<p>TCPserver.py <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"><span class="keyword">from</span> socket <span class="keyword">import</span> *</span><br><span class="line">port = <span class="number">4444</span></span><br><span class="line">serverSocket = socket(AF_INET, SOCK_STREAM)</span><br><span class="line">serverSocket.bind((<span class="string">&#x27;&#x27;</span>, port))</span><br><span class="line">serverSocket.listen(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The server is ready to receive&#x27;</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    connectionSocket, target = serverSocket.accept()</span><br><span class="line">    <span class="built_in">print</span>(addr)</span><br><span class="line">    message = connectionSocket.recv(<span class="number">2048</span>).decode()</span><br><span class="line">    modifiedMessage = message.upper()</span><br><span class="line">    connectionSocket.send(modifiedMessage.encode())</span><br><span class="line">    connectionSocket.close()</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>SOCK_STREAM</code> 字节流，TCP发送的是字节流</li>
+<li><code>clientSocket.connect((serverHost, serverPort))</code>TCP需要建立连接</li>
+<li><code>resp = clientSocket.recv(1024)</code> 接收1024的字节流，直接获得的就是数据</li>
+<li><code>connectionSocket, target = serverSocket.accept()</code> 接收客户端的连接请求，返回值是<code>(conn, address)</code> ，前者为新的socket对象，后者为另一端的socket值</li>
+<li><code>serverSocket.listen(1)</code> TCP请求队列，设置为1表示最多只能接收一个TCP请求，因为一个TCP连接建立，队列就满了</li>
+<li></li>
+</ul>
+<p>效果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212546.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212602.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212809.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220602212800.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E7%BD%91%E7%BB%9C%E6%95%99%E7%A8%8B-%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E6%96%B9%E6%B3%95/" rel="tag"># 计算网络教程 自顶向下方法</a>
+              <a href="/tags/B%E7%AB%99%E4%B8%AD%E7%A7%91%E5%A4%A7%E8%AE%A1%E7%BD%91/" rel="tag"># B站中科大计网</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/30/%E7%AC%AC1%E7%AB%A0%20%E6%A6%82%E8%AE%BA/" rel="prev" title="第1章 概论">
+                  <i class="fa fa-chevron-left"></i> 第1章 概论
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">484k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:20</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
