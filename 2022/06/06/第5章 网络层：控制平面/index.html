@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="个人的知识笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第5章 网络层：控制平面">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/06/06/%E7%AC%AC5%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%9A%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的知识笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605222946.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605223522.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605224947.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606082956.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606085221.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606085930.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606100114.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606090833.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606090910.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606090805.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606091803.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606091814.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092036.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092137.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092311.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092405.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092501.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092525.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092726.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092749.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092838.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092858.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092930.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092951.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606094522.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606111120.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606114933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606115234.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606115326.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606115234.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606121724.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606145442.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606145749.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606150301.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606151001.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606182240.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606182849.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606184830.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185101.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185722.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185821.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185923.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185955.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192129.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192519.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192706.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192835.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192931.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193348.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193329.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193406.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193551.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193629.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193905.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193929.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193945.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606194016.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606194032.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606194043.png">
+<meta property="article:published_time" content="2022-06-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-06T11:42:04.894Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="计算网络教程 自顶向下方法">
+<meta property="article:tag" content="B站中科大计网">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605222946.png">
+
+
+<link rel="canonical" href="https://hdfzzf.github.io/2022/06/06/%E7%AC%AC5%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%9A%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/06/06/%E7%AC%AC5%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%9A%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2/","path":"2022/06/06/第5章 网络层：控制平面/","title":"第5章 网络层：控制平面"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第5章 网络层：控制平面 | HDFZZF's BLOG</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HDFZZF's BLOG</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95"><span class="nav-text">1. 路由选择算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1route%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-text">1.1. 路由(route)相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#link-state-routing"><span class="nav-text">1.2. Link State Routing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">1.2.1. 具体工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E7%8E%B0%E7%9B%B8%E9%82%BB%E8%8A%82%E7%82%B9%E8%8E%B7%E5%8F%96%E5%AF%B9%E6%96%B9%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80"><span class="nav-text">1.2.1.1. 发现相邻节点，获取对方网络地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E9%87%8F%E5%88%B0%E5%93%8D%E9%93%83%E8%8A%82%E7%82%B9%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="nav-text">1.2.1.2. 测量到响铃节点的代价</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E4%B8%80%E4%B8%AA%E5%88%86%E7%BB%84%E6%8F%8F%E8%BF%B0%E7%9B%B8%E9%82%BB%E8%8A%82%E7%82%B9%E6%83%85%E5%86%B5"><span class="nav-text">1.2.1.3. 封装一个分组，描述相邻节点情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%86%E5%88%86%E7%BB%84%E6%B3%9B%E6%B4%AA"><span class="nav-text">1.2.1.4. 将分组泛洪</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E5%91%8Adijkstra%E7%AE%97%E6%B3%95%E6%89%BE%E5%87%BA%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="nav-text">1.2.1.5. 通告Dijkstra算法找出最短路径</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dijkstra%E7%AE%97%E6%B3%95"><span class="nav-text">1.2.2. Dijkstra算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#distance-vector-routing"><span class="nav-text">1.3. Distance Vector Routing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%A9%B7%E8%AE%A1%E7%AE%97%E9%97%AE%E9%A2%98"><span class="nav-text">1.3.1. 无穷计算问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B0%B4%E5%B9%B3%E5%88%86%E8%A3%82%E7%AE%97%E6%B3%95"><span class="nav-text">1.3.2. 水平分裂算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ls%E5%92%8Cdv%E5%AF%B9%E6%AF%94"><span class="nav-text">1.4. LS和DV对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E5%8D%8F%E8%AE%AE"><span class="nav-text">2. 路由选择协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="nav-text">2.1. 内部网关协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#riprouting-information-protocol"><span class="nav-text">2.1.1. RIP(Routing Information Protocol)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ospfopen-shortest-path-first"><span class="nav-text">2.1.2. OSPF(Open Shortest Path First)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AEbgp"><span class="nav-text">2.2. 外部网关协议：BGP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bgp%E5%9F%BA%E7%A1%80"><span class="nav-text">2.2.1. BGP基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bgp%E8%B7%AF%E5%BE%84%E9%80%9A%E5%91%8A"><span class="nav-text">2.2.2. BGP路径通告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bgp%E6%8A%A5%E6%96%87"><span class="nav-text">2.2.3. BGP报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bgp%E8%B7%AF%E5%BE%84%E9%80%89%E6%8B%A9"><span class="nav-text">2.2.4. BGP路径选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%83%AD%E5%9C%9F%E8%B1%86%E8%B7%AF%E7%94%B1"><span class="nav-text">2.2.4.1. 热土豆路由</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E8%B7%AF%E5%BE%84%E9%80%9A%E5%91%8A%E6%89%A7%E8%A1%8C%E7%AD%96%E7%95%A5"><span class="nav-text">2.2.4.2. 通过路径通告执行策略</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E5%92%8C%E5%A4%96%E9%83%A8%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-text">2.3. 内部和外部网关协议的对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sdn%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2"><span class="nav-text">3. SDN控制平面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-text">3.1. 基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sdn%E6%95%B0%E6%8D%AE%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E4%BA%A4%E4%BA%92%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-text">3.2. SDN：数据&#x2F;控制平面交互的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%99%A8%E4%BE%8B%E5%AD%90"><span class="nav-text">3.3. 控制器例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sdn%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="nav-text">3.4. SDN面临的挑战</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#icmp"><span class="nav-text">4. ICMP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%92%8Csnmp"><span class="nav-text">5. 网络管理和SNMP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86"><span class="nav-text">5.1. 网络管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#snmp"><span class="nav-text">5.2. SNMP</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="hdfzzf"
+      src="/images/zzf.jpg">
+  <p class="site-author-name" itemprop="name">hdfzzf</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">194</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/06/06/%E7%AC%AC5%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%9A%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zzf.jpg">
+      <meta itemprop="name" content="hdfzzf">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HDFZZF's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第5章 网络层：控制平面
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-06-06 00:00 / 修改时间：19:42" itemprop="dateCreated datePublished" datetime="2022-06-06T00:00:00+08:00">2022-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">计算机基础</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2022/06/06/%E7%AC%AC5%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%9A%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/06/06/第5章 网络层：控制平面/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>个人的知识笔记。</p>
+<span id="more"></span>
+<h1 id="路由选择算法">1. 路由选择算法</h1>
+<h2 id="路由route相关概念">1.1. 路由(route)相关概念</h2>
+<p>路由：按照<strong>某种指标</strong>找到一条从源节点到目标节点的<strong>较好路径</strong>。</p>
+<ul>
+<li>较好路径：按照某种指标，代价较小的路径</li>
+<li>指标：跳数、费用、队列长度等，也可以是一些指标的加权平均</li>
+<li>采用什么样的指标，标示网络使用者希望网络在什么方面表现突出</li>
+</ul>
+<p>以网络（子网）为单位进行路由（路由信息通过+路由通告）</p>
+<ul>
+<li>网络为单位进行路由，路由信息传输、计算和匹配的代价低（以网络为单位，路由表可能只有一个表项。以主机为单位，路由表可能就有几百个表项）</li>
+<li>前提条件：一个网络的所有节点地址前缀相同（同一网络号，或者网络号可以聚合），且物理上聚集</li>
+<li>路由就是：计算网络到其他网络如何走的问题</li>
+</ul>
+<p>网络到网络的路由 == 路由器到路由器之间的路由</p>
+<ul>
+<li>路由器连接至少两个网络</li>
+<li>在一个网络中：路由器到主机的通信在数据链路层解决</li>
+<li><strong>到了这个路由器，就到了这个网络</strong></li>
+</ul>
+<p>路由选择算法(routing algorithm)：网络层软件的一部分（控制平面），完成路由功能。</p>
+<p>网络拓扑抽象：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605222946.png" /></p>
+<p>链路的代价可能是：</p>
+<ul>
+<li>链路带宽的倒数（链路带宽越大，代价越小）</li>
+<li>拥塞情况的倒数（越拥塞，代价越小）</li>
+</ul>
+<p>路由的目的是找到从源节点到目标节点的较好路径。因此，我们需要源节点、目标节点、网络的拓扑以及每条边（链路）的代价。最后得到的是路径。</p>
+<p>如果我们没有目标节点，我们想知道源节点到其他所有节点的较好路径。那么：</p>
+<ul>
+<li>输入：网络拓扑、边的代价、源节点</li>
+<li>输出：源节点的汇集树(sink tree)</li>
+</ul>
+<p>汇集树：</p>
+<ul>
+<li>此节点到其他所有节点的 <strong>最优路径（某种指标最优）</strong> 形成的树（最优化原则, optimality principle）</li>
+<li>路由选择算法就是为所有路由器找到并使用汇集树</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605223522.png" /></p>
+<p>左边是错的，右边是对的。因为路由选择算法得到的是树（假设把没有环的图也当作树），不是图。如果存在环，比如说作图中的L点，会形成这么一个环：<code>FKLGDHF</code>，那么从B点到L就会存在至少两条路径：</p>
+<ol type="1">
+<li>BAFKL</li>
+<li>AFHDGL</li>
+</ol>
+<p>这两条路径在某个指标下，一定会有一条优于另一条。那么另一条就要从输出中消失，因此输出是树，不会是图。</p>
+<p>路由的原则：</p>
+<ol type="1">
+<li><strong>正确性(correctness)</strong>：算法必须是正确的和完整的，使分组一站一站接力，正确到达目标站；完整：目标所有的站的地址，在路径中的路由器的路由表中都能找到相应的表项</li>
+<li><strong>简单性(simplicity)</strong>：算法在计算机上应该简单：最优但复杂的算法，时间上延迟比较大，不实用，不应该为了获取路由信息增加很多的通信量。</li>
+<li><strong>健壮性(robustness)</strong>：算法应该能够适应<strong>通信量</strong>和<strong>网络拓扑</strong>的变化；通信量变化、网络拓扑的变化算法能很快适应；不向很拥挤的链路、断了的链路发送数据</li>
+<li><strong>稳定性(stability)</strong>：产生的路由不应该摇摆</li>
+<li><strong>公平性(fariness)</strong>：对每一个站点都公平</li>
+<li><strong>最优性(optimality)</strong>：某一指标的最优；实际上，获取最优结果的代价较高，可以是次优</li>
+</ol>
+<p>路由算法的分类，根据路由信息的不同可以分为两类：</p>
+<ol type="1">
+<li>全局：所有的路由器拥有完整的网络拓扑和边的代价的信息 -&gt; <strong>link state 算法</strong></li>
+<li>局部：路由器只知道邻居路由器（直接相连）和到邻居路由器的代价。通过<strong>迭代的</strong>与邻居交换路由信息、计算路由信息 -&gt; <strong>distance vector 算法</strong></li>
+</ol>
+<p>至于怎么获得信息，后面说算法的时候会说明。这里介绍一下<strong>迭代的与邻居交互</strong>的意思，假设下面是一个简单的网络拓扑，刚开始路由器上没有任何信息：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220605224947.png" /></p>
+<ol type="1">
+<li>第一个周期：所有路由器都发出消息“谁是我的邻居”，邻居收到之后就会给它会消息。这时候A就知道B是它的邻居</li>
+<li>第二个周期：所有路由器都告诉自己的邻居的信息。比如说B告诉A“我的邻居除了你，还有C”，这样子A就知道可以通过B到达C。同样的C也会告诉B“我的邻居除了你，还有D”</li>
+<li>第三个周期：再次进行2步骤，B告诉A“我的邻居C可以到达B”。这之后A就知道了可以通过B到C，最后到D</li>
+</ol>
+<p>上述过程简单讲述了如何获取网络拓扑，其实代价也可以同时告诉邻居。这就是一个迭代的过程。</p>
+<h2 id="link-state-routing">1.2. Link State Routing</h2>
+<p>LS路由选择算法的工作大致上可以分为两个阶段：</p>
+<ol type="1">
+<li>收集信息</li>
+<li>路由选择</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606082956.png" /></p>
+<p>基本工作过程如下：</p>
+<ol type="1">
+<li><p>发现相邻节点，获知对方网络地址</p></li>
+<li><p>测量到相邻节点的代价（延迟、开销等）</p></li>
+<li><p>将到达相邻节点的代价情况封装到一个LS分组内</p></li>
+<li><p>将分组通过泛洪的方式扩散到整个网络</p>
+<p>（以上4步让每个路由器获得网络拓扑和边的代价）</p></li>
+<li><p>通过Dijkstra算法找出最短路径（这个才是真正的路由算法）</p></li>
+</ol>
+<h3 id="具体工作流程">1.2.1. 具体工作流程</h3>
+<h4 id="发现相邻节点获取对方网络地址">1.2.1.1. 发现相邻节点，获取对方网络地址</h4>
+<ul>
+<li>一个路由器上线之后，向连接的所有线路发送分组“say hello”</li>
+<li>邻居路由器收到分组之后，回送应答，在应答分组中指出自己的名字（IP）</li>
+<li>邻居路由器还将收到的分组继续转发</li>
+</ul>
+<h4 id="测量到响铃节点的代价">1.2.1.2. 测量到响铃节点的代价</h4>
+<ul>
+<li>发送一个分组要求对方立即响应</li>
+<li>回送一个echo分组</li>
+<li>通过测量时间可以估算出延迟情况</li>
+</ul>
+<h4 id="封装一个分组描述相邻节点情况">1.2.1.3. 封装一个分组，描述相邻节点情况</h4>
+<ul>
+<li>发送者的名称（IP）</li>
+<li><strong>序号(seq)、年龄(age)</strong></li>
+<li>列表：给出它相邻节点，和它到相邻节点的延迟</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606085221.png" /></p>
+<h4 id="将分组泛洪">1.2.1.4. 将分组泛洪</h4>
+<p>泛洪的时候会产生两个问题：</p>
+<ol type="1">
+<li>一个分组泛洪到整个网络最后又回到本身，然后再次将其转发。不断重复，会导致网络中充斥着“路由通告”信息</li>
+<li>因为泛洪的原因，即使新的路由通告产生，旧的也不会消失，会导致网络内有许多没有意义的信息</li>
+</ol>
+<p>解决第一个问题的办法之前其实也谈过，可以使用TTL字段，每到一个路由器值就减1，减到0就不再转发。这里使用的是 age ，每过一段时间，age值减1，age减到0的时候，分组被丢弃</p>
+<p>解决第二个问题的办法就是“版本号”，如果能够区分路由信息的新、老版本，就可以选择丢弃旧版本，转发新版本。这就是 seq 的作用。如果有新的路由信息，则新的分组 seq 在之前的基础上加1，其他路由器如果收到新的之后，就不会再转发旧的。路由器崩溃/重启之后序号从0开始。</p>
+<p>除此之外，路由器还会维护一个表：扩散分组的表（上图中的B节点的表）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606085930.png" /></p>
+<ul>
+<li>source：从哪个节点收到的LS分组</li>
+<li>seq，age：上面说了作用</li>
+<li>send flags：发送标记，必须向指定的哪些相邻站点转发LS分组</li>
+<li>ACK flags：应答标记，本站点必须向哪些相邻站点发送Ack。LS分组必须收到Ack，目的就是为了让所有节点都收到消息（没有Ack，不知道对方收没收到）</li>
+<li>DATA：来自source站点的LS分组数据</li>
+</ul>
+<h4 id="通告dijkstra算法找出最短路径">1.2.1.5. 通告Dijkstra算法找出最短路径</h4>
+<ul>
+<li>路由器获得各站点LS分组和整个网络拓扑</li>
+<li>通过Dijkstra算法计算出到其他各路由器的最短路径（汇集树）</li>
+<li>将计算结果安装到路由表中</li>
+</ul>
+<p>Dijkstra在路由选择中有可能会产生震荡。假设链路的代价 = 链路承载的流量</p>
+<p>刚开始，通过Dijkstra得到最优路径，因此该路径上的链路必定会承载更多的流量，因此，路径上的链路代价升高，此时Dijkstra重新开始计算路径，得到另一条路径。新得到的路径上的链路代价也会随之升高，原路径的代价随之减少。再次重新路由，又得到原来的路径（也可能是其他路径）。如此往复产生震荡</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606100114.png" /></p>
+<h3 id="dijkstra算法">1.2.2. Dijkstra算法</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606090833.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606090910.png" /></p>
+<ol type="1">
+<li>初始化
+<ul>
+<li>刚开始的时候，除了源节点，所有节点都是临时节点</li>
+<li>节点代价除了与源节点相邻的节点之外，都为 ∞</li>
+</ul></li>
+<li>从所有临时节点中找到一个<strong>节点代价最小</strong>的临时节点，将其变成你永久节点（假设为w）</li>
+<li>对此节点的<strong>所有在临时节点集合中的相邻节点（假设某个节点为v）</strong>
+<ul>
+<li>如果D(v) &gt; D(w) + c(w,v)，说明源节点从w到达v比直接到达v代价更小，因此，v节点的标记应该更改为 (D(w)+c(w,v), w)</li>
+<li>否则，不修改标记</li>
+</ul></li>
+<li>回到第2步开始循环</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606090805.png" /></p>
+<p>以上图为例，假设最开始源节点为A，那么：</p>
+<ol type="1">
+<li>初始化之后</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606091803.png" /></p>
+<ul>
+<li>永久节点集合 N' = {A}</li>
+<li>临时节点集合 I-N' = {B,C,D,E,F,G,H}</li>
+</ul>
+<ol start="2" type="1">
+<li>从临时节点中找到代价最小的节点B，将其变成永久节点</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606091814.png" /></p>
+<ol start="3" type="1">
+<li>对B节点的所有在临时节点集合中的相邻节点（C，E）作检查</li>
+</ol>
+<p>C：<strong>通过B到达C的代价为 2+7=9</strong> &lt; ∞，因此需要重新修改</p>
+<p>E：<strong>通过B到达E的代价为 2+2=4</strong> &lt; ∞，因此需要重新修改</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092036.png" /></p>
+<ol start="4" type="1">
+<li>从临时节点中找到代价最小的节点E，将其变成永久节点</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092137.png" /></p>
+<ol start="5" type="1">
+<li>对E节点的所有在临时节点集合中的相邻节点（G，F）作检查</li>
+</ol>
+<p>G：<strong>通过E到达G的代价为 4+1=5</strong> &lt; 6，因此需要重新修改</p>
+<p>F：<strong>通过E到达F的代价为 4+2=6</strong> &lt; ∞，因此需要重新修改</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092311.png" /></p>
+<ol start="6" type="1">
+<li>从临时节点中找到代价最小的节点G，将其变成永久节点</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092405.png" /></p>
+<ol start="7" type="1">
+<li>对G节点的所有在临时节点集合中的相邻节点（H）作检查</li>
+</ol>
+<p>H：<strong>通过G到达H的代价为 5+4=9</strong> &lt; ∞，因此需要重新修改</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092501.png" /></p>
+<ol start="8" type="1">
+<li>从临时节点中找到代价最小的节点F，将其变成永久节点</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092525.png" /></p>
+<ol start="9" type="1">
+<li>对F节点的所有在临时节点集合中的相邻节点（C，H）作检查</li>
+</ol>
+<p>H：<strong>通过F到达H的代价为 6+2=8</strong> &lt; 9，因此需要重新修改</p>
+<p>C：<strong>通过F到达C的代价为 6+3=9</strong> = 9，可修改也可以不修改（如果追求跳数最小则修改，我这里就不修改了）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092726.png" /></p>
+<ol start="10" type="1">
+<li>从临时节点中找到代价最小的节点H，将其变成永久节点</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092749.png" /></p>
+<ol start="11" type="1">
+<li>对H节点的所有在临时节点集合中的相邻节点（D）作检查</li>
+</ol>
+<p>D：<strong>通过H到达D的代价为 8+2=10</strong> &lt; ∞，因此需要重新修改</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092838.png" /></p>
+<ol start="12" type="1">
+<li>从临时节点中找到代价最小的节点C，将其变成永久节点</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092858.png" /></p>
+<ol start="13" type="1">
+<li>对C节点的所有在临时节点集合中的相邻节点（D）作检查</li>
+</ol>
+<p>D：<strong>通过C到达D的代价为 9+3=12</strong> &gt; 10，因此不需要修改</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092930.png" /></p>
+<ol start="13" type="1">
+<li>从临时节点中找到代价最小的节点D，将其变成永久节点，算法结束</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606092951.png" /></p>
+<p>其实可以将算法中的2，3两个步骤合为1各步骤。下面用表格表示：</p>
+<table>
+<thead>
+<tr class="header">
+<th>step</th>
+<th>N'</th>
+<th>B节点标记</th>
+<th>C节点标记</th>
+<th>D节点标记</th>
+<th>E节点标记</th>
+<th>F节点标记</th>
+<th>G节点标记</th>
+<th>H节点标记</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>A</td>
+<td>2,A</td>
+<td>∞</td>
+<td>∞</td>
+<td>∞</td>
+<td>∞</td>
+<td>6,A</td>
+<td>∞</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>A,B</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>∞</td>
+<td>4,B</td>
+<td>∞</td>
+<td>6,A</td>
+<td>∞</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>A,B,E</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>∞</td>
+<td>4,B</td>
+<td>6,E</td>
+<td>5,E</td>
+<td>∞</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>A,B,E,G</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>∞</td>
+<td>4,B</td>
+<td>6,E</td>
+<td>5,E</td>
+<td>9,G</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>A,B,E,G,F</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>∞</td>
+<td>4,B</td>
+<td>6,E</td>
+<td>5,E</td>
+<td>8,F</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>A,B,E,G,F,H</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>10,H</td>
+<td>4,B</td>
+<td>6,E</td>
+<td>5,E</td>
+<td>8,F</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>A,B,E,G,F,H,C</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>10,H</td>
+<td>4,B</td>
+<td>6,E</td>
+<td>5,E</td>
+<td>8,F</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>A,B,E,G,F,H,C,D</td>
+<td>2,A</td>
+<td>9,B</td>
+<td>10,H</td>
+<td>4,B</td>
+<td>6,E</td>
+<td>5,E</td>
+<td>8,F</td>
+</tr>
+</tbody>
+</table>
+<p>两者的结果是一样的，只是表示形式不一样。最后输出的汇集树如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606094522.png" /></p>
+<p>原理其实很简单。先具体一点，A到达B有且只有两种方式，A直接到达B，或者A通过其他节点到达B。A走到G的代价大于B，所以通过G再经过其他节点到达B的代价远大于直接到达。因此选择直达。</p>
+<p>同样的道理，我们将其抽象。从N'到达临时节点中的某一个节点只有两种方法，一种是N'中某个节点可以直接到达，另一种是先到达临时节点中的其他节点，通过该节点到达。假设我们需要到达临时节点K（当前直连代价最小的节点），如果存在一条路径，可以经过另一个临时节点J，然后在经过0或者多个节点到达K，并且代价比直连小。那么N'到达J的代价就会小于到达K的代价，那么K的当前直连代价就不是最小，与假设相悖。因此，每次从临时节点中找的直连代价最小的节点，并将其加入永久节点，那么该节点的最短路径就已确定。</p>
+<p>Dijkstra的算法复杂度为 <span class="math inline">\(O(n^2)\)</span> ，可以有效的实现，使时间复杂度降为 <span class="math inline">\(O(nlog_2n)\)</span></p>
+<h2 id="distance-vector-routing">1.3. Distance Vector Routing</h2>
+<p>距离矢量路由选择的基本思想：</p>
+<ul>
+<li>各路由器维护一张路由表，结构如图</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>To</th>
+<th>Next hop</th>
+<th>cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>Z</td>
+<td>14</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>各路由器<strong>只</strong>与相邻路由器交换路由表</li>
+<li>根据从邻居获得的路由信息，更新自己的路由表</li>
+</ul>
+<p>举个简单点的例子：（刚开始的时候所有路由表都为空）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606111120.png" /></p>
+<ol type="1">
+<li>第一个周期：所有路由器发分组给邻居“我是xx，你是谁？”，邻居收到之后回复“收到，我是XX”（本质上也是路由表的交互，只不过刚开始的时候路由表为空，因此只能从分组中得到IP）。通过这样的一次交互，所有路由器就知道了邻居的消息，就有了基本的路由表（表项只有关于邻居的）。A的路由表如下：</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th>To</th>
+<th>Next hop</th>
+<th>cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B</td>
+<td>B</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td>D</td>
+<td>16</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="1">
+<li>第二个周期：所有路由器与邻居交换路由表，B告诉A“到C的分组给我，我到C的代价是22”，D告诉A“到C的分组给我，我到C的代价只要5”。A收到这样的信息之后，通过计算：<span class="math inline">\(d_A(C)=min(\ d_A(B)+d_B(C),\quad d_A(D)+d_D(C)\ )=min(10+22, 16+5)=21,\quad 其中 d_A(C) 表示A到C的最小代价\)</span> 因此，A更新自己的路由表：</li>
+</ol>
+<table>
+<thead>
+<tr class="header">
+<th>To</th>
+<th>Next hop</th>
+<th>cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B</td>
+<td>B</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td>D</td>
+<td>16</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>D</td>
+<td>21</td>
+</tr>
+</tbody>
+</table>
+<p>该过程中用到了一个公式，这个公式就是 Bellman-Ford 方程（动态规划）</p>
+<p><span class="math display">\[
+\begin{array}{l}
+设\ d_x(y) \ 表示从x到y的最小路径代价，那么: \\ \\
+d_x(y) = min_v\{c(x,v)+d_v(y)\} \\ \\
+其中，c(x,v)：x到邻居v的代价；v是x的所有邻居中代价最小的
+\end{array}
+\]</span></p>
+<p><strong>核心思路</strong>：</p>
+<ul>
+<li>定时或者DV发生变化时，每个节点都将自己的距离矢量估计值传送给邻居，让对方自己算</li>
+<li>当x从邻居收到DV时，自己运算（B-F方程），更新它自己的距离矢量</li>
+</ul>
+<p>DV算法是一个异步的、迭代算法：每次本地迭代都会被以下事件触发：</p>
+<ul>
+<li>本地链路（与自己相连的链路）代价发生变化</li>
+<li>从邻居来了DV的更新消息</li>
+</ul>
+<p>DV算法还是分布式的，每个节点只是在自己的DV改变之后向邻居通告：</p>
+<ul>
+<li>邻居们在<strong>有必要的情况</strong>再通知它们的邻居</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606114933.png" /></p>
+<h3 id="无穷计算问题">1.3.1. 无穷计算问题</h3>
+<p>DV算法的特点有两点：</p>
+<ol type="1">
+<li>好消息传得快：好消息得传播以每一个周期前进一个路由器得速度进行</li>
+<li>坏消息传得慢：无穷计算问题</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606115234.png" /></p>
+<p>如上图，假设代价为跳数。那么B，C，D得路由表中，关于A得代价都是∞，即A不可达。这时候，A与B之间可达了，变成下图</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606115326.png" /></p>
+<p>A可达这就是一个好消息，接下来分析一下过程：</p>
+<table>
+<thead>
+<tr class="header">
+<th>周期</th>
+<th>B到A</th>
+<th>C到A</th>
+<th>D到A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>初始</td>
+<td>∞,-</td>
+<td>∞,-</td>
+<td>∞,-</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1,A</td>
+<td>∞,-</td>
+<td>∞,-</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>1,A</td>
+<td>2,B</td>
+<td>∞,-</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>1,A</td>
+<td>2,B</td>
+<td>3,C</td>
+</tr>
+</tbody>
+</table>
+<p>3个周期之后，整个网络就知道了这个好消息。</p>
+<p>但是如果是坏消息呢？接着上面的分析，3个周期之后，A可到的消息整个网络都知道了，忽然A又不可达了</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606115234.png" /></p>
+<p>这时候的过程如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>周期</th>
+<th>B到A</th>
+<th>C到A</th>
+<th>D到A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>初始</td>
+<td>1,A</td>
+<td>2,B</td>
+<td>3,C</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>3,C</td>
+<td>2,B</td>
+<td>3,C</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>3,C</td>
+<td>4,B</td>
+<td>3,C</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>5,C</td>
+<td>4,B</td>
+<td>5,C</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>5,C</td>
+<td>6,B</td>
+<td>5,C</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>7,C</td>
+<td>6,B</td>
+<td>7,C</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>7,C</td>
+<td>8,B</td>
+<td>7,C</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>n</td>
+<td>∞</td>
+<td>∞</td>
+<td>∞</td>
+</tr>
+</tbody>
+</table>
+<p>这个坏消息要经过非常多的周期之后，网络中才会知道A真的不可达了。</p>
+<p>解释一下：</p>
+<ol type="1">
+<li>第一个周期，B检测到A不可达，但是C告诉B和D“你给我，我到A只要2跳”，B就信了，因此将自己到A的代价改为3。（B和D的变化是一样的，因此后面只说B）</li>
+<li>第二个周期，B，C，D向邻居发送上一个周期算出来的路由表，B一看“C到A2跳”，因此不做修改；但是C看到B的路由表“B到A要3跳”，因此将自己修改为4</li>
+<li>第三个周期，B，C，D向邻居发送上一个周期算出来的路由表，B一看“C到A为4跳”，就把自己修改为5；C看到B的路由表没变，因此没修改</li>
+<li>第4个周期，B，C，D向邻居发送上一个周期算出来的路由表，B一看“C到A为4跳”，所以没修改；C看到B的路由表“B到A需要5跳”，因此将自己修改为6</li>
+<li>依此类推，要非常多个周期之后（代价到达一个上限或者age为0）整个网络才知道A不可达，才将到A的代价修改为∞</li>
+</ol>
+<p><strong>根据上面的过程分析：最开始的时候C告诉B“你给我，我到A只要2跳”，但是C是通过B到达A的，也就是B是C的下一跳。因此，C不应该跟B这么说，应该说“我到A要2跳，但是下一跳就是B”，B收到这样的信息就知道“A应该不可达了”，变将自己修改为∞。下一个周期，B将整个信息告诉C；每过一个周期，就会有一个节点知道A不可达这个坏消息。</strong></p>
+<p>上面的思路是解决无穷计算问题的一个方法：水平分裂(split horizon)算法</p>
+<h3 id="水平分裂算法">1.3.2. 水平分裂算法</h3>
+<p>还是以上面的例子为例，使用水平分裂算法的过程为：</p>
+<table>
+<thead>
+<tr class="header">
+<th>周期</th>
+<th>B到A</th>
+<th>C到A</th>
+<th>D到A</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>初始</td>
+<td>1,A</td>
+<td>2,B</td>
+<td>3,C</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>∞,-</td>
+<td>2,B</td>
+<td>3,C</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>∞,-</td>
+<td>∞,-</td>
+<td>3,C</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>∞,-</td>
+<td>∞,-</td>
+<td>∞,-</td>
+</tr>
+</tbody>
+</table>
+<p>这个算法的核心在于邻居的身份：</p>
+<ul>
+<li>如果邻居就是下一跳：如实告诉邻居，我到xx不可达，我是通过你到达的</li>
+<li>如果邻居不是下一跳：就告诉邻居自己的路由表</li>
+</ul>
+<p>这就是分裂，遇到不同的邻居说不同的话，看起来像是人格分裂。但是该算法只能减缓无穷计算问题，而不能杜绝，当网络存在环的时候，该算法可能就失效了。下面举一个例子：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606121724.png" /></p>
+<p>过程如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>周期</th>
+<th>A到D</th>
+<th>B到D</th>
+<th>C到D</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>初始</td>
+<td>2,C</td>
+<td>2,C</td>
+<td>1,D</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>2,C</td>
+<td>2,C</td>
+<td>∞,-</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>3,B</td>
+<td>3,A</td>
+<td>∞,-</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>∞,-</td>
+<td>∞,-</td>
+<td>4,A</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>∞,-</td>
+<td>5,C</td>
+<td>∞,-</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>6,B</td>
+<td>∞,-</td>
+<td>∞,-</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>∞,-</td>
+<td>∞,-</td>
+<td>7,A</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>∞,-</td>
+<td>8,C</td>
+<td>∞,-</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>9,B</td>
+<td>∞,-</td>
+<td>∞,-</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>n</td>
+<td>∞,-</td>
+<td>∞,-</td>
+<td>∞,-</td>
+</tr>
+</tbody>
+</table>
+<p>解释：</p>
+<ol type="1">
+<li>A和B没有变化，但是两者告诉C，“我不能直达D，你是我的下一跳”，而C检测到无法到达D，则设置为 ∞</li>
+<li>C告诉A，B“我无法到达D”。A，B虽然告诉C“我不能直达D，你是我的下一跳”，但互相告诉对方“我可以到达”，因此A，B修改对方为自己的下一跳，而C还是∞</li>
+<li>C告诉A，B“我无法到达D”。B告诉A“我不能直达D，你是我的下一跳”，同样的A也给B类似的信息，所以A，B都修改为∞。但是A，B告诉C，“我可以到达D”，因此C修改为4，A（或者4，B。选择不一样，后面的结果也不一样）</li>
+<li>C告诉B“我可以到达D”，因此B修改为5,C。C告诉A“我无法直达D，你是我的下一跳”，因此A还是无穷。A告诉C“自己到不了D”，于是C修改为∞</li>
+<li>B告诉A“可以到达D”，A修改为6，B。C和A都告诉B“到达不了D”，于是B修改为∞。C还是无穷</li>
+</ol>
+<p>3,4,5一个循环和6,7,8另一个循环。后面会一直这样的循环，A，B，C三者中总有一个有着"假消息"。最终代价值达到上限，坏消息才全网知道。</p>
+<h2 id="ls和dv对比">1.4. LS和DV对比</h2>
+<ol type="1">
+<li>消息复杂度：DV简单
+<ul>
+<li>LS需要泛洪，每个节点都需要（局部的信息，全局传播）</li>
+<li>DV只需要周期性和邻居交换信息（全局的信息，局部传播）</li>
+</ul></li>
+<li>收敛时间：LS更快
+<ul>
+<li>LS不需要周期，一段时间后就能获得网络的全部信息。然后根据dijkstra得出汇集树。但可能存在震荡</li>
+<li>DV需要周期性从邻居获得消息，收敛慢。可能存在无穷计算(count-to-infinity)问题</li>
+</ul></li>
+<li>健壮性：LS更健壮
+<ul>
+<li>LS：某个节点出问题了，只会影响局部。该节点以及周边节点执行dijkstra时候影响很大，但对远一点的节点影响就小了，有可能只是不能到达坏节点的局部地区的节点。</li>
+<li>DV：坏节点告诉邻居，自己很nb，到哪都是1。邻居信了，也告诉它们的邻居“给我，我邻居超nb，到哪都是1”。这样子，所有的节点都会相信（好消息传得快嘛🤡）把分组都交给坏节点，全网崩溃。</li>
+</ul></li>
+</ol>
+<p>这样子对比，2种算法各有优缺点，在互联网上都有应用。</p>
+<h1 id="路由选择协议">2. 路由选择协议</h1>
+<p>本节讲的是实现路由选择的协议，上一节讲的是路由选择算法。算法是一种思路，协议是具体的实现。</p>
+<p>首先介绍一下什么是自治系统（autonomous system, AS）。在互联网中，<strong>一个自治系统(AS)是一个有权自主地决定在本系统中应采用各种路由协议的小型单位</strong>。这个网络单位可以是一个简单的网络也可以是一个由一个或多个普通的网络管理员来控制的网络群体，它是一个单独的可管理的网络单元（例如一所大学，一个企业或者一个公司个体）。一个自治系统有时也被称为是一个路由选择域（routing domain）。一个自治系统将会分配一个全局的唯一的16位号码，有时我们把这个号码叫做自治系统号（ASN）。</p>
+<p>如果没有AS，那么所有的路由器都在一个层面上：</p>
+<ul>
+<li>一个网络中的所有路由器地位相等</li>
+<li>LS、DV或者其他路由算法，所有路由器都要知道到其他路由器该怎么走</li>
+<li>所有路由器在一个平面</li>
+</ul>
+<p>这会导致以下问题：</p>
+<ol type="1">
+<li>在规模巨大的网络中，路由信息的存储、传输和计算代价巨大（比如几百万个路由器，一个路由表的表项就有上百万个）
+<ul>
+<li>DV：距离矢量很大。体现在表项多，代价大</li>
+<li>LS：几百万个节点的LS分组在网络内泛洪，Dijkstra算法实现的的复杂度</li>
+</ul></li>
+<li>管理层面的问题：
+<ul>
+<li>不同的网络所有者希望按照自己的方式管理网络</li>
+<li>希望对外隐藏自己网络的拓扑</li>
+<li>最重要的是要与其他网络互联</li>
+</ul></li>
+</ol>
+<p>因此，需要层次化路由。将互联网分成一个个AS：</p>
+<ul>
+<li>某个区域内的路由器集合称为AS</li>
+<li>一个AS用AS number(ASN) 唯一标识</li>
+<li>一个ISP可能包括一个或多个AS</li>
+</ul>
+<p>层次化之后，路由也分为了2个层次的路由：</p>
+<ol type="1">
+<li>AS内部路由：
+<ul>
+<li>同一个AS内部路由器运行的路由协议相同，称为内部网关协议(intra-AS routing protocol)</li>
+<li>不同的AS可能运行着<strong>不同的</strong>内部网关协议，如RIP，OSPF</li>
+<li><strong>网关路由器</strong>：AS边缘路由器，可以连接到其他AS</li>
+<li>AS内部路由对外表现为一个网关路由器</li>
+</ul></li>
+<li>AS间路由：
+<ul>
+<li>运行<strong>统一的</strong>外部网关协议(inter-AS routing protocol)</li>
+<li>只解决AS之间的路由问题，完成AS之间的互联互通</li>
+</ul></li>
+</ol>
+<p>层次路由的优点就是：</p>
+<ol type="1">
+<li>内部网关协议解决了AS内部数量有限的路由器相互到达的问题，AS内部规模可控，如果节点多了，就分成两个AS</li>
+<li>AS之间的路由规模问题被解决：
+<ul>
+<li>增加一个AS，对于AS之间路由来说就是增加了一个节点</li>
+<li>对于其他AS来说就是多了一个表项</li>
+<li>扩展性强：规模增大，性能不会减的太多</li>
+</ul></li>
+<li>管理方便：
+<ul>
+<li>各个AS运行不同的内部网关协议</li>
+<li>可以让自己的网络细节不向外透露</li>
+</ul></li>
+</ol>
+<h2 id="内部网关协议">2.1. 内部网关协议</h2>
+<h3 id="riprouting-information-protocol">2.1.1. RIP(Routing Information Protocol)</h3>
+<p>RIP协议的实现是基于DV算法：</p>
+<ul>
+<li>距离矢量：每条链路的cost=1， 最大hops为15</li>
+<li>DV每隔30s和邻居交换DV，称为<strong>路由通告</strong>
+<ul>
+<li>定期发送通告报文，或者</li>
+<li>在对方的请求下可以也可以发送通告报文</li>
+</ul></li>
+<li>每个通告包括：AS内部最多25个目标<strong>子网</strong>的DV，包括目标网络以及跳数</li>
+</ul>
+<p>举一个例子：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606145442.png" /></p>
+<p>上图中，给出了AS内部的网络拓扑以及D路由器的路由表。接下来，A发送给D距离矢量如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>dest</th>
+<th>next</th>
+<th>hops</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>w</td>
+<td>-</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>x</td>
+<td>-</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>z</td>
+<td>C</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<p>D收到这样一个距离矢量后，分析：</p>
+<ul>
+<li>到达w网络，我的下一跳就是A，并且跳数也没有改变，因此不做修改</li>
+<li>到达x网络，我可以直接到达，也不需要改变</li>
+<li>到达z网络，我到达A需要1跳，A到达z需要4跳，那么我通过A到达z只需要5跳，比现在的代价要少，因此会做出修改</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606145749.png" /></p>
+<p><strong>RIP：链路失效和恢复</strong>：如果180s（6个周期）没有收到通告信息，那么就说明邻居或者链路失效，此时的action如下：</p>
+<ol type="1">
+<li>发现邻居或者链路失效</li>
+<li>将新的通告报文传递给其他邻居</li>
+<li>邻居因此发出新的通告（如果自己的路由产生了变化）</li>
+<li>链路失效在全AS中传输（也不一定，因为DV的无穷计算问题）</li>
+<li>使用水平分裂（也叫做毒性逆转 poison reverse）一定程度上缓解无穷计算问题，并且使用最大跳数上限来限制环路情况下的问题</li>
+</ol>
+<p>接下来就是RIP比较诡异的特点：</p>
+<ul>
+<li><strong>RIP以应用进程的方式实现：route-d(daemon)</strong></li>
+<li>通告报文通过UDP报文发送，周期性重复</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606150301.png" /></p>
+<p>总结来说：一个网络层的协议使用了传输层的服务，以应用层实体的方式实现。（下层的协议使用了依赖上层实现）</p>
+<h3 id="ospfopen-shortest-path-first">2.1.2. OSPF(Open Shortest Path First)</h3>
+<p><strong>OSPF协议使用了LS算法</strong>：</p>
+<ul>
+<li>LS分组在AS中分发</li>
+<li>全局网络（AS）拓扑、代价在每一个节点中保存</li>
+<li>路由计算采取Dijkstra算法</li>
+<li>OSPF通告信息中携带：每一个邻居路由器一个表项。</li>
+<li>通告信息传遍整个AS</li>
+<li>在<strong>IP数据报</strong>上直接传送OSPF报文</li>
+</ul>
+<p>IS-IS路由协议：和OSPF几乎一致</p>
+<p><strong>OSPF的“高级”特性（RIP没有的特性）</strong>：</p>
+<ul>
+<li>安全：所有的OSPF报文都经过认证</li>
+<li>允许有多个代价相同的路径存在（RIP中只能存在一个），这样有利于负载均衡</li>
+<li>对于每一个链路，有多重代价矩阵。这样做的优势
+<ul>
+<li>支持按照不同的代价计算最优路径</li>
+</ul></li>
+<li>对单播和多播的集成支持：
+<ul>
+<li>multicast OSPF(MOSPF)使用相同的拓扑数据库，就像是OSPF一样</li>
+</ul></li>
+<li>在大型网络中支持<strong>层次性</strong>OSPF</li>
+</ul>
+<p>层次化OSPF路由如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606151001.png" /></p>
+<p>将一个AS分为两个级别的层次：本地和骨干</p>
+<ul>
+<li>链路状态通告仅在本地区域内进行</li>
+<li>每一个节点拥有本地区域的拓扑信息。关于其他区域，只知道去它的方向</li>
+</ul>
+<p>路由器也分为4类：</p>
+<ol type="1">
+<li>普通路由器：仅仅在本地区域内运行OSPF路由</li>
+<li>骨干路由器：仅仅在骨干区域内运行OSPF路由</li>
+<li>区域边界路由器：“聚集”到自己区域内网络的距离，向其他区域边界路由器通告</li>
+<li>边界路由器：连接其他AS</li>
+</ol>
+<p>个人理解：大型AS内部路由器太多，如果对路由器进行OSPF，路由表的表项会比较的多，因此将几个<strong>路由器</strong>抽象成一个<strong>区域边界路由器</strong>。对于子网来说，子网内的主机都由路由器管理；对于区域边界路由器来说，区域内的所有路由器都由它管理。<strong>进一步抽象</strong>。因此，想要跨区域只需要通过骨干执行OSPF就知道，如果不跨区域，在本地区域内执行OSPF就可以了。</p>
+<p>类比：</p>
+<table>
+<thead>
+<tr class="header">
+<th>internet</th>
+<th>AS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ISP</td>
+<td>backbone</td>
+</tr>
+<tr class="even">
+<td>ISP内路由器</td>
+<td>backbone路由器</td>
+</tr>
+<tr class="odd">
+<td>子网</td>
+<td>area</td>
+</tr>
+<tr class="even">
+<td>子网出口路由器</td>
+<td>边界区域路由器</td>
+</tr>
+<tr class="odd">
+<td>子网内的主机</td>
+<td>area路由器</td>
+</tr>
+<tr class="even">
+<td>ISP到Internet的路由器</td>
+<td>边界路由器</td>
+</tr>
+</tbody>
+</table>
+<p>这样做的好处：</p>
+<ul>
+<li>每个路由器的表项少了</li>
+<li>计算复杂性下降</li>
+<li>获得网络大致信息的时间减少了</li>
+</ul>
+<h2 id="外部网关协议bgp">2.2. 外部网关协议：BGP</h2>
+<p>BGP(Border Gateway Protocol)：AS之间路由协议“事实上的”标准 -&gt; “将互联网各个AS粘在一起的胶水”</p>
+<p>BGP提供给每个AS以下方法：</p>
+<ol type="1">
+<li>eBGP(External BGP)：从相邻的AS处获得子网可达信息</li>
+<li>iBGP(Internal BGP)：将获得子网可达信息传遍AS内部的所有路由器</li>
+<li>根据子网可达信息和<strong>策略</strong>来决定到达子网的“好”路径</li>
+</ol>
+<p>BGP基于SV算法，但是改进版的（可以认为是<strong>路径矢量</strong>），解决了环路问题。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606182240.png" /></p>
+<p>解释：1c收集AS1内所有路由信息（通过内部网关协议）然后告诉给2a（通过eBGP），2a再将信息告诉AS2内所有路由器（iBGP）。2c收集AS2内所有路由信息，包括1c告诉给2a的信息（内部网关协议），然后将收集到的信息告诉给3a（eGBP），3a将信息告诉给AS3内所有路由器（iBGP）。</p>
+<p>上面描述的是大概的一个过程。</p>
+<h3 id="bgp基础">2.2.1. BGP基础</h3>
+<p>BGP会话：2个BGP路由器在一个半永久的TCP连接上交换BGP报文：<strong>通告不同目标子网前缀的“路径”（注意不是距离）</strong></p>
+<p>举个例子：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606182849.png" /></p>
+<p>AS3中加了一个路由器X，然后需要告知给其他AS，因此3a通过eGBP向2c发送一个BGP报文，内容大致为“AS3，X”。2c再将这条信息稍作修改（3a，cost），然后转发。这样子AS2内的主机就知道如何到达X，并且因为报文中带的是路径，如果有环路就能够看出来，然后将其丢弃。因此就解决了DV的环路问题。</p>
+<p>BGP路由的重要信息：</p>
+<ul>
+<li>当通告一个子网前缀时，通告包含BGP属性：<code>prefix + attributes = route</code></li>
+<li>2个重要属性：
+<ul>
+<li><strong>AS-PATH</strong>：前缀的通告所经过的AS列表：AS3,AS6,...
+<ul>
+<li>检测环路</li>
+<li>多路径选择</li>
+<li>在向其他AS转发时，需要将自己的AS号加在路径上</li>
+</ul></li>
+<li><strong>NEXT-HOP</strong>：从当前AS到下一跳AS有多个链路，在NEXT-HOP属性中，告诉对方通告哪个转发</li>
+<li>其他属性：路由偏好指标</li>
+</ul></li>
+<li>基于<strong>策略</strong>的路由：
+<ul>
+<li>当一个网络路由器接收到了一个路由通告，使用<strong>输入策略</strong>来接收/过滤</li>
+<li>策略也决定了是否向它的邻居通告收到的这个路由信息</li>
+<li>策略：政治因素、经济因素等</li>
+</ul></li>
+</ul>
+<blockquote>
+<p>AS内部一般属于同一个机构/企业/组织，所以通信应该是“无话不说”的，都是自己人；而AS之间相当于两个企业，一个AS要从另一个AS之间穿过到达目标AS，需要考虑：分组会不会被拦截，信息是否会泄露等信息。因此需要有一定的策略，而不在关注性能。</p>
+</blockquote>
+<h3 id="bgp路径通告">2.2.2. BGP路径通告</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606184830.png" /></p>
+<ul>
+<li>路由器AS.2c 从 AS3.3a 收到 “AS3,X” 路由通告（eBGP）</li>
+<li>基于AS2的输入策略，AS.2c决定接收该通告，而且通告iBGP向AS2内所有路由器通告</li>
+<li>基于AS2的策略，AS2路由器2a通告eBGP向AS1.1c通告 “AS2,AS3,X”
+<ul>
+<li>AS-PATH加上了AS2自己这一跳</li>
+</ul></li>
+</ul>
+<p>当然，也有可能AS3和AS1也有路径</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185101.png" /></p>
+<ul>
+<li>AS1.1c会从AS3.3a收到 “AS3，X”；会从AS2.2a收到 “AS2,AS3,X”；</li>
+<li>基于AS1的策略，AS1路由器可以选择不同的路径。比方说AS2是敌对公司的，那么就会选择上面那条路径</li>
+</ul>
+<p>那么请问AS内的路由器对于X的表项该如何表示呢？假设1d右边的接口为1，左边的接口为2，那么1d的路由表可以为：</p>
+<table>
+<thead>
+<tr class="header">
+<th>dest</th>
+<th>interface</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="even">
+<td>X</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<p>这样子，如果1d需要给X发送分组，只需要将分组从接口1转发就可以了。</p>
+<h3 id="bgp报文">2.2.3. BGP报文</h3>
+<ul>
+<li>使用TCP协议交换BGP报文</li>
+<li>BGP报文包括：
+<ul>
+<li>OPEN：打开TCP连接，认证发送方</li>
+<li>UPDATE：通告新路径（或者撤销原路径）</li>
+<li>KEEP ALIVE：在没有更新时保持连接，也用于对OPEN的确认</li>
+<li>NOTIFICATION：通告以前消息的错误，也用来关闭连接</li>
+</ul></li>
+</ul>
+<h3 id="bgp路径选择">2.2.4. BGP路径选择</h3>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185722.png" /></p>
+<h4 id="热土豆路由">2.2.4.1. 热土豆路由</h4>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185821.png" /></p>
+<h4 id="通过路径通告执行策略">2.2.4.2. 通过路径通告执行策略</h4>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185923.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606185955.png" /></p>
+<h2 id="内部和外部网关协议的对比">2.3. 内部和外部网关协议的对比</h2>
+<p>内部和外部网关协议有许多的不同，<strong>归根结底是因为AS内是属于一个机构的，而不同AS是分属于不同机构的。</strong></p>
+<p><strong>策略</strong>：</p>
+<ul>
+<li>Inter-AS：管理员需要控制通信路径，谁在使用它的网络进行数据传输</li>
+<li>Intra-AS：属于同一个机构，无需政策。AS内部的各子网的主机尽可能地利用资源进行快速路由</li>
+</ul>
+<p><strong>规模</strong>：</p>
+<ul>
+<li>AS间路由必须考虑规模问题，一遍支持全网的数据转发</li>
+<li>AS内部就不需要考虑规模
+<ul>
+<li>如果AS太大，切成两个AS就好了</li>
+<li>上面的动作对于AS之间的路由来说只不过多了一个点而已</li>
+<li>AS内部路由也可以采用层次性路由</li>
+</ul></li>
+</ul>
+<p><strong>性能</strong>：</p>
+<ul>
+<li>Intra-AS：关注性能。越快路由越好</li>
+<li>Inter-AS：策略比性能更重要</li>
+</ul>
+<h1 id="sdn控制平面">3. SDN控制平面</h1>
+<h2 id="基础">3.1. 基础</h2>
+<p>SDN架构以及数据平面的内容在上一章介绍了。</p>
+<p>SDN控制器里的元件</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192129.png" /></p>
+<p>上图中SDN控制自上而下分为三层，依次为：</p>
+<ul>
+<li>网络控制应用的界面层：抽象API</li>
+<li>网络范围的状态管理层（分布式数据库）：网络链路、交互设备和服务的状态</li>
+<li>通信层：SDN控制器和SDN交换机之间进行通信</li>
+</ul>
+<p>SDN有一个比较好的协议：OpenFlow协议</p>
+<ul>
+<li>控制器和SDN交换机交互的协议</li>
+<li>采用TCP来交互报文，因此可以通过SSL加密</li>
+<li>3中OpenFlow报文类型：
+<ul>
+<li>控制器-交换机</li>
+<li>交换机-控制器（异步工作方式）</li>
+<li>对称</li>
+</ul></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192519.png" /></p>
+<p>控制器-交换机报文（一些关键的）：</p>
+<ul>
+<li>特性：控制器查询交换机特性，交换机应答</li>
+<li>配置：交换机查询/设置交换机的配置</li>
+<li>修改状态：增加/删除/修改OpenFlow表中的流表</li>
+<li>packet-out：控制器可以将分组通过特定的端口发出</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192706.png" /></p>
+<p>交换机-控制器的报文（一些关键的）：</p>
+<ul>
+<li>分组进入：将分组传给控制器</li>
+<li>流移除：在交换机上删除流表项</li>
+<li>端口状态：通告控制器端口的变化</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192835.png" /></p>
+<blockquote>
+<p>网络管理员不需要直接通告创建/发送流表来编程交换机，而是采用在控制器上的app自动运算和配置</p>
+</blockquote>
+<h2 id="sdn数据控制平面交互的例子">3.2. SDN：数据/控制平面交互的例子</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606192931.png" /></p>
+<ol type="1">
+<li>S1向控制器通告链路失效（端口状态报文）</li>
+<li>SDN控制器接收报文，更新链路状态信息</li>
+<li>Dijkstra路由算法应用被调用</li>
+<li>Dijkstra路由算法访问控制器中的网络拓扑信息、链路状态信息，重新计算路由</li>
+<li>链路状态路由app和SDN控制器中流表计算元件交互，计算出新的流表</li>
+<li>控制器采用OpenFlow在交换机上安装新的流表</li>
+</ol>
+<h2 id="控制器例子">3.3. 控制器例子</h2>
+<p>OpenDaylight(ODL)控制器</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193348.png" /></p>
+<p>ONOS控制器</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193329.png" /></p>
+<h2 id="sdn面临的挑战">3.4. SDN面临的挑战</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193406.png" /></p>
+<h1 id="icmp">4. ICMP</h1>
+<p>ICMP：Internet Control Message Protocol</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193551.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193629.png" /></p>
+<p>源主机发送一些列UDP段给目标主机：</p>
+<ul>
+<li>TTL=1的</li>
+<li>TTL=2的</li>
+<li>TTL=3的</li>
+<li>...</li>
+<li>直到TTL=n到达。路由器抛弃数据报，向源发送一个ICMP报文(type 11, code 0)，报文中包括了路由器名字和IP地址</li>
+</ul>
+<h1 id="网络管理和snmp">5. 网络管理和SNMP</h1>
+<h2 id="网络管理">5.1. 网络管理</h2>
+<p>什么是网络管理：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193905.png" /></p>
+<p>网络管理的5大功能：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193929.png" /></p>
+<p>网络管理架构：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606193945.png" /></p>
+<h2 id="snmp">5.2. SNMP</h2>
+<p>SNMP：Simple Network Management Protocol。SNMP协议的两种模式：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606194016.png" /></p>
+<p>报文类型：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606194032.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220606194043.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E7%BD%91%E7%BB%9C%E6%95%99%E7%A8%8B-%E8%87%AA%E9%A1%B6%E5%90%91%E4%B8%8B%E6%96%B9%E6%B3%95/" rel="tag"># 计算网络教程 自顶向下方法</a>
+              <a href="/tags/B%E7%AB%99%E4%B8%AD%E7%A7%91%E5%A4%A7%E8%AE%A1%E7%BD%91/" rel="tag"># B站中科大计网</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/05/%E7%AC%AC4%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%B1%82%EF%BC%9A%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2/" rel="prev" title="第4章 网络层：数据平面">
+                  <i class="fa fa-chevron-left"></i> 第4章 网络层：数据平面
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">534k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:05</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
