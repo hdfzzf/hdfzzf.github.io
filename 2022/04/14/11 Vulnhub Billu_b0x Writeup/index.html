@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="11 Vulnhub Billu_b0x Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/index.html">
@@ -67,286 +56,158 @@
 <meta property="article:tag" content="任意文件读取">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413121446.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/","path":"2022/04/14/11 Vulnhub Billu_b0x Writeup/","title":"11 Vulnhub Billu_b0x Writeup"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>11 Vulnhub Billu_b0x Writeup | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
+    
+    
+      
         
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>11 Vulnhub Billu_b0x Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <aside class="sidebar">
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
       </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/04/15/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9F%A5%E8%AF%86%E7%82%B9/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/04/13/MRCTF2020%20PYWebsite/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&text=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&is_video=false&description=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=11 Vulnhub Billu_b0x Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&name=11 Vulnhub Billu_b0x Writeup&description=&lt;p&gt;该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&t=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
 
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F-1"><span class="nav-text">渗透-1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql%E6%B3%A8%E5%85%A5"><span class="nav-text">SQL注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%88%86%E7%A0%B4"><span class="nav-text">爆破</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E5%8D%95%E5%BC%95%E5%8F%B7%E8%BF%87%E6%BB%A4"><span class="nav-text">绕过单引号过滤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E9%85%8D%E5%90%88%E5%9B%BE%E7%89%87%E5%8F%8D%E5%BC%B9shell"><span class="nav-text">文件上传和文件包含配合——图片🐎反弹shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%BA%8C%E7%A7%8D"><span class="nav-text">第一种+第二种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D"><span class="nav-text">第三种</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F-2"><span class="nav-text">渗透-2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F-3"><span class="nav-text">渗透-3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#phpmysql%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-text">phpmysql的配置信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8"><span class="nav-text">利用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          11 Vulnhub Billu_b0x Writeup
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-04-14 00:00" itemprop="dateCreated datePublished" datetime="2022-04-14T00:00:00+08:00">2022-04-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-16 20:21" itemprop="dateModified" datetime="2022-04-16T20:21:12+08:00">2022-04-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/14/11 Vulnhub Billu_b0x Writeup/" itemprop="commentCount"></span>
-    </a>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F-1"><span class="toc-number">2.</span> <span class="toc-text">渗透-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5"><span class="toc-number">2.3.</span> <span class="toc-text">SQL注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%88%86%E7%A0%B4"><span class="toc-number">2.3.1.</span> <span class="toc-text">爆破</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E5%8D%95%E5%BC%95%E5%8F%B7%E8%BF%87%E6%BB%A4"><span class="toc-number">2.3.2.</span> <span class="toc-text">绕过单引号过滤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E9%85%8D%E5%90%88%E5%9B%BE%E7%89%87%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">2.4.</span> <span class="toc-text">文件上传和文件包含配合——图片🐎反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%BA%8C%E7%A7%8D"><span class="toc-number">2.4.1.</span> <span class="toc-text">第一种+第二种</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D"><span class="toc-number">2.4.2.</span> <span class="toc-text">第三种</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F-2"><span class="toc-number">3.</span> <span class="toc-text">渗透-2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F-3"><span class="toc-number">4.</span> <span class="toc-text">渗透-3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#phpmysql%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">4.1.</span> <span class="toc-text">phpmysql的配置信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8"><span class="toc-number">4.2.</span> <span class="toc-text">利用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        11 Vulnhub Billu_b0x Writeup
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-13T16:00:00.000Z" itemprop="datePublished">2022-04-14</time>
+        
+        (Updated: <time datetime="2022-04-16T12:21:12.571Z" itemprop="dateModified">2022-04-16</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/" rel="tag">任意文件读取</a>, <a class="tag-link-link" href="/tags/%E5%9B%BE%E7%89%87%E9%A9%AC/" rel="tag">图片马</a>, <a class="tag-link-link" href="/tags/%E6%BA%90%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag">源码审计</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！</p>
 <span id="more"></span>
 <h1 id="靶机信息">靶机信息</h1>
 <p>靶机地址：</p>
@@ -377,7 +238,9 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413121446.png" /></p>
 <h1 id="渗透-1">渗透-1</h1>
 <h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.15</span><br><span class="line">sudo nmap -p22,80 -sV 10.0.2.15</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
+<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.15
+<span class="token function">sudo</span> nmap -p22,80 -sV <span class="token number">10.0</span>.2.15<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414190943.png" /></p>
 <ul>
 <li>22端口的服务为ssh</li>
@@ -389,7 +252,7 @@
 <p>接下来常规的进行一下路径扫描，发现了许多东西！！！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414192633.png" /></p>
 <p>里面有非常多的漏洞！！！还有许多关键信息，这里先展示第一种利用方式所用到的，剩下的会在其他攻击路线中提到。</p>
-<p>关注<code>test.php</code>这个文件（url中输入<code>test</code>会被定位到<code>test.php</code>），发现一句提示 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;file&#x27; parameter is empty. Please provide file path in &#x27;file&#x27; parameter</span><br></pre></td></tr></table></figure></p>
+<p>关注<code>test.php</code>这个文件（url中输入<code>test</code>会被定位到<code>test.php</code>），发现一句提示 <pre class="line-numbers language-none"><code class="language-none">&#39;file&#39; parameter is empty. Please provide file path in &#39;file&#39; parameter<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>经过测试发现需要用POST方式提交参数file，然后就会发现，这里存在<strong>任意文件读取漏洞</strong>！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414192915.png" /></p>
 <p>成功得到<code>index.php</code>的源码，当然也可以得到其他的源码或者其他文件的内容！！！</p>
@@ -403,12 +266,15 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414191859.png" /></p>
 <p>然后可以跑出来！</p>
 <h3 id="绕过单引号过滤">绕过单引号过滤</h3>
-<p>通过<code>test.php</code>的任意文件读取漏洞，得到了<code>index.php</code>的源码，直接给出关键的源码信息： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$uname</span>=str_replace(<span class="string">&#x27;\&#x27;&#x27;</span>,<span class="string">&#x27;&#x27;</span>,urldecode(<span class="variable">$_POST</span>[<span class="string">&#x27;un&#x27;</span>]));</span><br><span class="line"><span class="variable">$pass</span>=str_replace(<span class="string">&#x27;\&#x27;&#x27;</span>,<span class="string">&#x27;&#x27;</span>,urldecode(<span class="variable">$_POST</span>[<span class="string">&#x27;ps&#x27;</span>]));</span><br><span class="line"><span class="variable">$run</span>=<span class="string">&#x27;select * from auth where  pass=\&#x27;&#x27;</span>.<span class="variable">$pass</span>.<span class="string">&#x27;\&#x27; and uname=\&#x27;&#x27;</span>.<span class="variable">$uname</span>.<span class="string">&#x27;\&#x27;&#x27;</span>;</span><br></pre></td></tr></table></figure></p>
-<p>首先关注一下查询那句代码，现在这样子明显太复杂了，我们把它简化一下。首先，因为<code>$run</code>最外面使用的是单引号，所以在内部的单引号前面需要加上转义字符。因此真正的查询语句实际如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * <span class="keyword">from</span> auth where  pass=<span class="string">&#x27;[密码]&#x27;</span> <span class="keyword">and</span> uname=<span class="string">&#x27;[账号]&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p>通过<code>test.php</code>的任意文件读取漏洞，得到了<code>index.php</code>的源码，直接给出关键的源码信息： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$uname</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'\''</span><span class="token punctuation">,</span><span class="token string single-quoted-string">''</span><span class="token punctuation">,</span><span class="token function">urldecode</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'un'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$pass</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'\''</span><span class="token punctuation">,</span><span class="token string single-quoted-string">''</span><span class="token punctuation">,</span><span class="token function">urldecode</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'ps'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$run</span><span class="token operator">=</span><span class="token string single-quoted-string">'select * from auth where  pass=\''</span><span class="token operator">.</span><span class="token variable">$pass</span><span class="token operator">.</span><span class="token string single-quoted-string">'\' and uname=\''</span><span class="token operator">.</span><span class="token variable">$uname</span><span class="token operator">.</span><span class="token string single-quoted-string">'\''</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>首先关注一下查询那句代码，现在这样子明显太复杂了，我们把它简化一下。首先，因为<code>$run</code>最外面使用的是单引号，所以在内部的单引号前面需要加上转义字符。因此真正的查询语句实际如下： <pre class="line-numbers language-php" data-language="php"><code class="language-php">select <span class="token operator">*</span> from auth where  pass<span class="token operator">=</span><span class="token string single-quoted-string">'[密码]'</span> <span class="token keyword">and</span> uname<span class="token operator">=</span><span class="token string single-quoted-string">'[账号]'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>为了方便观看，我将我们输入的部分用<code>[]</code>包括起来了，并且<code>$run</code>和头尾的单引号我都去掉了。</p>
-<p>直接给出一个payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">un=or 1=1#&amp;ps=\</span><br></pre></td></tr></table></figure></p>
-<p>将上述payload带入查询语句中： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * <span class="keyword">from</span> auth where pass=<span class="string">&#x27;\&#x27; and uname=&#x27;</span><span class="keyword">or</span> <span class="number">1</span>=<span class="number">1</span><span class="comment">#&#x27;</span></span><br></pre></td></tr></table></figure></p>
-<p>分析，因为我们输入了一个<code>\</code>，使得上面语句中的第二个单引号失去了与前面单引号闭合的功能，仅仅作为一个单引号被查询。那么第一个单引号就会和第三个单引号闭合，使得<code>or 1=1</code>逃逸，然后<code>#</code>又把最后的单引号注释掉了。因此，此时查询的信息应该如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. pass = \&#x27; and uname=</span><br><span class="line">2. uname 没了</span><br></pre></td></tr></table></figure></p>
+<p>直接给出一个payload： <pre class="line-numbers language-none"><code class="language-none">un&#x3D;or 1&#x3D;1#&amp;ps&#x3D;\<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>将上述payload带入查询语句中： <pre class="line-numbers language-php" data-language="php"><code class="language-php">select <span class="token operator">*</span> from auth where pass<span class="token operator">=</span><span class="token string single-quoted-string">'\' and uname='</span><span class="token keyword">or</span> <span class="token number">1</span><span class="token operator">=</span><span class="token number">1</span><span class="token comment">#'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>分析，因为我们输入了一个<code>\</code>，使得上面语句中的第二个单引号失去了与前面单引号闭合的功能，仅仅作为一个单引号被查询。那么第一个单引号就会和第三个单引号闭合，使得<code>or 1=1</code>逃逸，然后<code>#</code>又把最后的单引号注释掉了。因此，此时查询的信息应该如下： <pre class="line-numbers language-none"><code class="language-none">1. pass &#x3D; \&#39; and uname&#x3D;
+2. uname 没了<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p>因此，<code>where</code>后面的两个判断条件变成了一个，并且多了一句<code>or 1=1</code>。因为后者为1，并且是<code>or</code>，所以这句查询语句一定为真，直接登陆成功！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414192522.png" /></p>
 <p>直接页面输入对应的信息即可成功登录！</p>
@@ -427,7 +293,8 @@
 <p>发现两者非常类似，因此可以猜测通过<code>load=filename</code>可以包含其他文件。尝试一下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414195344.png" /></p>
 <p>确认存在文件包含漏洞！</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">如果：/etc/passwd 没有效果，可以尝试以下下面的payload，绕过无法从当前目录访问的限制</span><br><span class="line">../../../../../../../../../etc/payload</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">如果：&#x2F;etc&#x2F;passwd 没有效果，可以尝试以下下面的payload，绕过无法从当前目录访问的限制
+..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;payload<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>有多种方式利用图片🐎：</p>
 <ul>
 <li>写入命令执行代码，然后执行对应的命令；（此时也可以输入对应命令，执行后面两者）</li>
@@ -439,8 +306,15 @@
 <p>必须使用<code>system</code>，<code>eval</code>没用！不知道原因！</p>
 <p>然后上传，到<code>show users</code>界面就可以查看对应的图片地址</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414200103.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://10.0.2.15/uploaded_images/1.gif</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">命令执行：</span><br><span class="line">1. </span><br><span class="line">load=uploaded_iamges/1.gif?cmd=ls</span><br><span class="line">经尝试，不行</span><br><span class="line"></span><br><span class="line">2.</span><br><span class="line">可以在panel.php?cmd=ls -l</span><br><span class="line">load=uploaded_iamges/1.gif</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;10.0.2.15&#x2F;uploaded_images&#x2F;1.gif<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">命令执行：
+1. 
+load&#x3D;uploaded_iamges&#x2F;1.gif?cmd&#x3D;ls
+经尝试，不行
+
+2.
+可以在panel.php?cmd&#x3D;ls -l
+load&#x3D;uploaded_iamges&#x2F;1.gif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>注意<code>ls -l</code>需要url编码，否则无法执行！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414201247.png" /></p>
 <p>发现<code>uploaded_images</code>我们有全部的权限，因此直接执行命令，写入一句话</p>
@@ -473,7 +347,7 @@
 <h1 id="渗透-2">渗透-2</h1>
 <p>刚刚路径扫描中有一个<code>c</code>文件，直接用<code>test.php</code>读取其中的内容</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414203553.png" /></p>
-<p>其中 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqli_connect(ip, username, password, dbname);</span><br></pre></td></tr></table></figure></p>
+<p>其中 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token function">mysqli_connect</span><span class="token punctuation">(</span>ip<span class="token punctuation">,</span> username<span class="token punctuation">,</span> password<span class="token punctuation">,</span> dbname<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>直接获得了用户名和密码。</p>
 <p>路径扫描中还扫描出了<code>/phpmy</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414203828.png" /></p>
@@ -486,7 +360,7 @@
 <p>通常用php+MySQL搭建web应用的时候会生成一个网页的管理系统，一般文件为<code>phpmy</code>或者<code>phpmyadmin</code>。</p>
 <p>还会生成配置信息文件<code>phpmy/config.inc.php</code>或者<code>phpmyadmin/config.inc.php</code></p>
 <h2 id="利用">利用</h2>
-<p>再次扫描（每次扫描到新的目录都要接着往下扫描） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.15/phpmy/</span><br></pre></td></tr></table></figure></p>
+<p>再次扫描（每次扫描到新的目录都要接着往下扫描） <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.15/phpmy/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414204317.png" /></p>
 <p>注意红框的两个文件，直接用<code>test.php</code>读取其中的内容</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220414204443.png" /></p>
@@ -496,112 +370,164 @@
 <h1 id="总结">总结</h1>
 <p>该靶机非常好！！！涉及的攻击技术都非常的常见，并且比较常规。但是就是这些常规的漏洞的组合，却有了很好的表现，比如文件上传和文件包含实现的图片🐎、任意文件读取加上源码审计绕过sql注入、已经强行爆破sql注入等等。值得多次复习！</p>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%BA%90%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># 源码审计</a>
-              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
-              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
-              <a href="/tags/%E5%9B%BE%E7%89%87%E9%A9%AC/" rel="tag"># 图片马</a>
-              <a href="/tags/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/" rel="tag"># 任意文件读取</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/04/13/MRCTF2020%20PYWebsite/" rel="prev" title="MRCTF2020 PYWebsite">
-                  <i class="fa fa-chevron-left"></i> MRCTF2020 PYWebsite
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/04/15/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%9F%A5%E8%AF%86%E7%82%B9/" rel="next" title="反序列化知识点">
-                  反序列化知识点 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F-1"><span class="toc-number">2.</span> <span class="toc-text">渗透-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5"><span class="toc-number">2.3.</span> <span class="toc-text">SQL注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%88%86%E7%A0%B4"><span class="toc-number">2.3.1.</span> <span class="toc-text">爆破</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E5%8D%95%E5%BC%95%E5%8F%B7%E8%BF%87%E6%BB%A4"><span class="toc-number">2.3.2.</span> <span class="toc-text">绕过单引号过滤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E9%85%8D%E5%90%88%E5%9B%BE%E7%89%87%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">2.4.</span> <span class="toc-text">文件上传和文件包含配合——图片🐎反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E7%AC%AC%E4%BA%8C%E7%A7%8D"><span class="toc-number">2.4.1.</span> <span class="toc-text">第一种+第二种</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D"><span class="toc-number">2.4.2.</span> <span class="toc-text">第三种</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F-2"><span class="toc-number">3.</span> <span class="toc-text">渗透-2</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F-3"><span class="toc-number">4.</span> <span class="toc-text">渗透-3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#phpmysql%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">4.1.</span> <span class="toc-text">phpmysql的配置信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8"><span class="toc-number">4.2.</span> <span class="toc-text">利用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&text=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&is_video=false&description=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=11 Vulnhub Billu_b0x Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&title=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&name=11 Vulnhub Billu_b0x Writeup&description=&lt;p&gt;该靶机难度为中等，不过存在多种思路。肯定还有一些我没有记录到。该靶机的漏洞都比较常规，但是组合起来就有了非常好的表现！&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/14/11%20Vulnhub%20Billu_b0x%20Writeup/&t=11 Vulnhub Billu_b0x Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>

