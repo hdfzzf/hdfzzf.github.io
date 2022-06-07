@@ -109,30 +109,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/14/DC-9%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&text=DC-8 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&title=DC-8 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&is_video=false&description=DC-8 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=DC-8 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&title=DC-8 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&title=DC-8 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&title=DC-8 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&title=DC-8 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&name=DC-8 Writeup&description=&lt;p&gt;该靶机难度适中。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/14/DC-8%20Writeup/&t=DC-8 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -159,8 +141,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-13T16:00:00.000Z" itemprop="datePublished">2022-05-14</time>
-        
-        (Updated: <time datetime="2022-05-14T06:58:09.676Z" itemprop="dateModified">2022-05-14</time>)
         
       
     </div>
@@ -203,9 +183,7 @@
 </ul>
 <h1 id="信息收集">2. 信息收集</h1>
 <h2 id="端口信息">2.1. 端口信息</h2>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> arp-scan -l
-<span class="token number">2</span>. <span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.44
-<span class="token number">3</span>. <span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">10.0</span>.2.44<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.44</span><br><span class="line">3. sudo nmap -p22,80 -A 10.0.2.44</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514143441.png" /></p>
 <h2 id="网页信息">2.2. 网页信息</h2>
 <p>通过点击右侧的 Detail 中的信息（后三个是我后来测试功能点添加的，原先没有），网页没有任何变化，但是url出现了变化</p>
@@ -213,8 +191,7 @@
 <p>经过测试，发现存在SQL注入，并且是数字型，有回显</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514143643.png" /></p>
 <p>直接丢到sqlmap中，爆破得到下面信息</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">admin : $S$D2tRcYRyqVFNSc0NvYUrYeQbLQg5koMKtihYTIDC9QQqJi3ICg5z
-john  : $S$DqupvJbxVmqjr6cYePnx2A891ln7lsuku/3if/oRVZJaz5mKC2vF<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">admin : $S$D2tRcYRyqVFNSc0NvYUrYeQbLQg5koMKtihYTIDC9QQqJi3ICg5z</span><br><span class="line">john  : $S$DqupvJbxVmqjr6cYePnx2A891ln7lsuku/3if/oRVZJaz5mKC2vF</span><br></pre></td></tr></table></figure>
 <p>将密码丢入 john 中破解，之破解了 john 的密码为 turtle。</p>
 <p>利用该密码成功登录后台（通过路径扫描得到后台登录信息）</p>
 <h1 id="get-shell">3. get shell</h1>
@@ -227,49 +204,15 @@ john  : $S$DqupvJbxVmqjr6cYePnx2A891ln7lsuku/3if/oRVZJaz5mKC2vF<span aria-hidden
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514144356.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514144334.png" /></p>
 <h1 id="权限提升">4. 权限提升</h1>
-<p>再信息收集到suid文件的时候，发现了一个奇怪的文件 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> / -perm -u<span class="token operator">=</span>s -type f -ls <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>再信息收集到suid文件的时候，发现了一个奇怪的文件 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -perm -u=s -type f -ls 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514144618.png" /></p>
 <p>搜索exim4的可利用漏洞</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514144824.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514144749.png" /></p>
-<p>查看 46996.sh 的内容，发现有两种利用方式 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">1. Usage (setuid method): ./raptor_exim_wiz -m setuid
-2. Usage (netcat method): ./raptor_exim_wiz -m netcat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>查看 46996.sh 的内容，发现有两种利用方式 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. Usage (setuid method): ./raptor_exim_wiz -m setuid</span><br><span class="line">2. Usage (netcat method): ./raptor_exim_wiz -m netcat</span><br></pre></td></tr></table></figure></p>
 <p>经尝试，第一种方法失败，第二种成功</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514145452.png" /></p>
-<p>最后，读取/root/flag.txt <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">Brilliant - you have succeeded!!!
-
-
-
-888       888          888 888      8888888b.                             888 888 888 888
-888   o   888          888 888      888  "Y88b                            888 888 888 888
-888  d8b  888          888 888      888    888                            888 888 888 888
-888 d888b 888  .d88b.  888 888      888    888  .d88b.  88888b.   .d88b.  888 888 888 888
-888d88888b888 d8P  Y8b 888 888      888    888 d88""88b 888 "88b d8P  Y8b 888 888 888 888
-88888P Y88888 88888888 888 888      888    888 888  888 888  888 88888888 Y8P Y8P Y8P Y8P
-8888P   Y8888 Y8b.     888 888      888  .d88P Y88..88P 888  888 Y8b.      "   "   "   "
-888P     Y888  "Y8888  888 888      8888888P"   "Y88P"  888  888  "Y8888  888 888 888 888
-
-
-
-Hope you enjoyed DC-8.  Just wanted to send a big thanks out there to all those
-who have provided feedback, and all those who have taken the time to complete these little
-challenges.
-
-I'm also sending out an especially big thanks to:
-
-@4nqr34z
-@D4mianWayne
-@0xmzfr
-@theart42
-
-This challenge was largely based on two things:
-
-1. A Tweet that I came across from someone asking about 2FA on a Linux box, and whether it was worthwhile.
-2. A suggestion from @theart42
-
-The answer to that question is...
-
-If you enjoyed this CTF, send me a tweet via @DCAU7.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后，读取/root/flag.txt <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Brilliant - you have succeeded!!!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">888       888          888 888      8888888b.                             888 888 888 888</span><br><span class="line">888   o   888          888 888      888  &quot;Y88b                            888 888 888 888</span><br><span class="line">888  d8b  888          888 888      888    888                            888 888 888 888</span><br><span class="line">888 d888b 888  .d88b.  888 888      888    888  .d88b.  88888b.   .d88b.  888 888 888 888</span><br><span class="line">888d88888b888 d8P  Y8b 888 888      888    888 d88&quot;&quot;88b 888 &quot;88b d8P  Y8b 888 888 888 888</span><br><span class="line">88888P Y88888 88888888 888 888      888    888 888  888 888  888 88888888 Y8P Y8P Y8P Y8P</span><br><span class="line">8888P   Y8888 Y8b.     888 888      888  .d88P Y88..88P 888  888 Y8b.      &quot;   &quot;   &quot;   &quot;</span><br><span class="line">888P     Y888  &quot;Y8888  888 888      8888888P&quot;   &quot;Y88P&quot;  888  888  &quot;Y8888  888 888 888 888</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Hope you enjoyed DC-8.  Just wanted to send a big thanks out there to all those</span><br><span class="line">who have provided feedback, and all those who have taken the time to complete these little</span><br><span class="line">challenges.</span><br><span class="line"></span><br><span class="line">I&#x27;m also sending out an especially big thanks to:</span><br><span class="line"></span><br><span class="line">@4nqr34z</span><br><span class="line">@D4mianWayne</span><br><span class="line">@0xmzfr</span><br><span class="line">@theart42</span><br><span class="line"></span><br><span class="line">This challenge was largely based on two things:</span><br><span class="line"></span><br><span class="line">1. A Tweet that I came across from someone asking about 2FA on a Linux box, and whether it was worthwhile.</span><br><span class="line">2. A suggestion from @theart42</span><br><span class="line"></span><br><span class="line">The answer to that question is...</span><br><span class="line"></span><br><span class="line">If you enjoyed this CTF, send me a tweet via @DCAU7.</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机难度适中，涉及以下攻击方法：</p>
 <ol type="1">
@@ -334,7 +277,6 @@ If you enjoyed this CTF, send me a tweet via @DCAU7.<span aria-hidden="true" cla
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

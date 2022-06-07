@@ -98,33 +98,15 @@
         <li><a class="icon" aria-label="上一篇" href="/2022/05/14/DC-9%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="下一篇" href="/2022/05/13/DC-5%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/13/DC-6%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&text=Port Knocking"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&title=Port Knocking"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&is_video=false&description=Port Knocking"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Port Knocking&body=Check out this article: https://hdfzzf.github.io/2022/05/14/Port%20Knocking/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&title=Port Knocking"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&title=Port Knocking"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&title=Port Knocking"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&title=Port Knocking"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&name=Port Knocking&description=&lt;p&gt;个人的知识点记录。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/14/Port%20Knocking/&t=Port Knocking"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEport-knocking"><span class="toc-number">2.</span> <span class="toc-text">2. 设置Port Knocking</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEiptables"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 安装、配置Iptables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEknockd"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 安装、配置Knockd</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE%E6%B5%8B%E8%AF%95"><span class="toc-number">3.</span> <span class="toc-text">3. 远程访问测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">4. 总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">5. 参考</span></a></li></ol>
     </div>
@@ -151,8 +133,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-13T16:00:00.000Z" itemprop="datePublished">2022-05-14</time>
-        
-        (Updated: <time datetime="2022-05-25T03:44:05.098Z" itemprop="dateModified">2022-05-25</time>)
         
       
     </div>
@@ -190,56 +170,35 @@
 </ol>
 <h1 id="设置port-knocking">2. 设置Port Knocking</h1>
 <h2 id="安装配置iptables">2.1. 安装、配置Iptables</h2>
-<p>在安装 iptables 之前，需要先禁用 UFW <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> ufw disable<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>接着，安装 iptables，（过程中遇到的选择都选yes） <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> iptables iptables-persistent<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>安装完成之后，需要通过 iptables 允许所有已经建立的和正在进行的会话 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>接着，使用下面的命令屏蔽端口22上的ssh的连接的传入 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> iptables -A INPUT -p tcp --dport <span class="token number">22</span> -j REJECT<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>最后，使用下面的命令保存并重载防火墙的规则 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> netfilter-persistent save
-<span class="token number">2</span>. <span class="token function">sudo</span> netfilter-persistent reload<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>使用远程主机的nmap检测一下ssh是否已经关闭： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> nmap -p22 <span class="token number">10.0</span>.2.21<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>在安装 iptables 之前，需要先禁用 UFW <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ufw disable</span><br></pre></td></tr></table></figure></p>
+<p>接着，安装 iptables，（过程中遇到的选择都选yes） <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install iptables iptables-persistent</span><br></pre></td></tr></table></figure></p>
+<p>安装完成之后，需要通过 iptables 允许所有已经建立的和正在进行的会话 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</span><br></pre></td></tr></table></figure></p>
+<p>接着，使用下面的命令屏蔽端口22上的ssh的连接的传入 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo iptables -A INPUT -p tcp --dport 22 -j REJECT</span><br></pre></td></tr></table></figure></p>
+<p>最后，使用下面的命令保存并重载防火墙的规则 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. sudo netfilter-persistent save</span><br><span class="line">2. sudo netfilter-persistent reload</span><br></pre></td></tr></table></figure></p>
+<p>使用远程主机的nmap检测一下ssh是否已经关闭： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p22 10.0.2.21</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514202835.png" /></p>
 <p>尝试连接，提示连接被拒绝</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514202920.png" /></p>
 <h2 id="安装配置knockd">2.2. 安装、配置Knockd</h2>
-<p>执行下面的命令安装 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> knockd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>knockd安装完成之后，需要配置 /etc/default/knockd 文件使 knockd 服务在启动时开启。 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> <span class="token function">vim</span> /etc/default/knockd
-<span class="token number">2</span>. 修改 <span class="token assign-left variable">START_KNOCKD</span><span class="token operator">=</span><span class="token number">0</span> -<span class="token operator">></span> <span class="token assign-left variable">START_KNOCKD</span><span class="token operator">=</span><span class="token number">1</span>
-<span class="token number">3</span>. 修改网卡：KNOCKD_OPTS<span class="token operator">=</span><span class="token string">"-i enp0s3"</span> <span class="token comment"># 注意，先用 ip a 查看一下网卡</span>
-<span class="token number">4</span>. 保存，并退出<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>接下来，需要配置 /etc/knockd.conf 文件 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">vim</span> /etc/knockd.conf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>根据个人需求，修改 openSSH 和 closeSSH 的端口以及敲击顺序 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">[options]
-	UseSyslog
-
-[openSSH]
-	sequence    = 7000,8000,9000
-	seq_timeout = 20
-	command     = /sbin/iptables -I INPUT -s %IP% -p tcp --dport 22 -j ACCEPT
-	tcpflags    = syn
-
-[closeSSH]
-	sequence    = 9000,8000,7000
-	seq_timeout = 20
-	command     = /sbin/iptables -D INPUT -s %IP% -p tcp --dport 22 -j ACCEPT
-	tcpflags    = syn<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>修改完成之后，保存并退出，然后启动 knockd 服务 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">service</span> knockd start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>执行下面的命令安装 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install knockd</span><br></pre></td></tr></table></figure></p>
+<p>knockd安装完成之后，需要配置 /etc/default/knockd 文件使 knockd 服务在启动时开启。 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. sudo vim /etc/default/knockd</span><br><span class="line">2. 修改 START_KNOCKD=0 -&gt; START_KNOCKD=1</span><br><span class="line">3. 修改网卡：KNOCKD_OPTS=&quot;-i enp0s3&quot; # 注意，先用 ip a 查看一下网卡</span><br><span class="line">4. 保存，并退出</span><br></pre></td></tr></table></figure></p>
+<p>接下来，需要配置 /etc/knockd.conf 文件 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/knockd.conf</span><br></pre></td></tr></table></figure></p>
+<p>根据个人需求，修改 openSSH 和 closeSSH 的端口以及敲击顺序 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[options]</span><br><span class="line">	UseSyslog</span><br><span class="line"></span><br><span class="line">[openSSH]</span><br><span class="line">	sequence    = 7000,8000,9000</span><br><span class="line">	seq_timeout = 20</span><br><span class="line">	command     = /sbin/iptables -I INPUT -s %IP% -p tcp --dport 22 -j ACCEPT</span><br><span class="line">	tcpflags    = syn</span><br><span class="line"></span><br><span class="line">[closeSSH]</span><br><span class="line">	sequence    = 9000,8000,7000</span><br><span class="line">	seq_timeout = 20</span><br><span class="line">	command     = /sbin/iptables -D INPUT -s %IP% -p tcp --dport 22 -j ACCEPT</span><br><span class="line">	tcpflags    = syn</span><br></pre></td></tr></table></figure></p>
+<p>修改完成之后，保存并退出，然后启动 knockd 服务 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service knockd start</span><br></pre></td></tr></table></figure></p>
 <p>解释：上述命令的意思就是如果依次访问 7000,8000,9000 就允许其访问 22 端口；如果它依次访问 9000,8000,7000 ，则再次关闭 22 端口。</p>
 <h1 id="远程访问测试">3. 远程访问测试</h1>
 <p>远程主机上查看 22 端口还是处于 filtered 状态</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514205254.png" /></p>
-<p>我们依次访问 7000,8000,9000 端口 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. nmap -p <span class="token number">7000</span> <span class="token number">10.0</span>.2.21
-<span class="token number">2</span>. nmap -p <span class="token number">8000</span> <span class="token number">10.0</span>.2.21
-<span class="token number">3</span>. nmap -p <span class="token number">9000</span> <span class="token number">10.0</span>.2.21<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>我们依次访问 7000,8000,9000 端口 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. nmap -p 7000 10.0.2.21</span><br><span class="line">2. nmap -p 8000 10.0.2.21</span><br><span class="line">3. nmap -p 9000 10.0.2.21</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514210433.png" /></p>
 <p>然后再次查看 22 端口</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514210127.png" /></p>
-<p>依次访问： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. nmap -p <span class="token number">9000</span> <span class="token number">10.0</span>.2.21
-<span class="token number">2</span>. nmap -p <span class="token number">8000</span> <span class="token number">10.0</span>.2.21
-<span class="token number">3</span>. nmap -p <span class="token number">7000</span> <span class="token number">10.0</span>.2.21<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>依次访问： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. nmap -p 9000 10.0.2.21</span><br><span class="line">2. nmap -p 8000 10.0.2.21</span><br><span class="line">3. nmap -p 7000 10.0.2.21</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514210414.png" /></p>
 <p>22 端口就会关闭</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220514210401.png" /></p>
 <h2 id="番外">3.1. 番外</h2>
-<p>在[[HackableⅢ Writeup]]中，就无法使用 nmap 来依次访问端口序列。这时候就需要使用 knock 工具。命令如下： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">knock <span class="token function">ip</span> port_seq1 port_seq2 port_seq3 <span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>在[[HackableⅢ Writeup]]中，就无法使用 nmap 来依次访问端口序列。这时候就需要使用 knock 工具。命令如下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">knock ip port_seq1 port_seq2 port_seq3 ...</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">4. 总结</h1>
 <p>这个方法还是挺有意思的，像是“芝麻开门”。只要访问序列够复杂，爆破的难度就会很大。</p>
 <h1 id="参考">5. 参考</h1>
@@ -303,7 +262,6 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

