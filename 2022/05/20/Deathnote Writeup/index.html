@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="靶机难度不高。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deathnote Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="靶机难度不高。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520150335.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520151025.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520151951.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520153428.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520153441.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520153751.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155224.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155243.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155338.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155433.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155512.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520160646.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520160724.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520161328.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520162243.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520162625.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520162710.png">
+<meta property="article:published_time" content="2022-05-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-24T08:57:18.363Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="sudo提权">
+<meta property="article:tag" content="wordpress后台get shell">
+<meta property="article:tag" content="ssh密钥登录">
+<meta property="article:tag" content="brainfuck编码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520150335.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Deathnote Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/20/CISCN2019%20%E6%80%BB%E5%86%B3%E8%B5%9B%20Day2%20Web1%20Easyweb/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/19/CISCN2019%20%E5%8D%8E%E5%8C%97%E8%B5%9B%E5%8C%BA%20Day1%20Web5%20CyberPunk/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 后台信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#l-%E6%9D%83%E9%99%90"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. l 权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kira-%E6%9D%83%E9%99%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. kira 权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#root-%E6%9D%83%E9%99%90"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. root 权限</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Deathnote Writeup
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-19T16:00:00.000Z" itemprop="datePublished">2022-05-20</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/brainfuck%E7%BC%96%E7%A0%81/" rel="tag">brainfuck编码</a>, <a class="tag-link-link" href="/tags/ssh%E5%AF%86%E9%92%A5%E7%99%BB%E5%BD%95/" rel="tag">ssh密钥登录</a>, <a class="tag-link-link" href="/tags/sudo%E6%8F%90%E6%9D%83/" rel="tag">sudo提权</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/wordpress%E5%90%8E%E5%8F%B0get-shell/" rel="tag">wordpress后台get shell</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>靶机难度不高。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1. 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/deathnote-1,739/">Deathnote: 1 ~ VulnHub</a></li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>简单</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>拿到root权限</li>
+<li>拿到2个flag</li>
+</ul>
+<h1 id="信息收集">2. 信息收集</h1>
+<h2 id="端口信息">2.1. 端口信息</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.53</span><br><span class="line">3. sudo nmap -p22,80 -A 10.0.2.53</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520150335.png" /></p>
+<h2 id="网页信息">2.2. 网页信息</h2>
+<p>直接访问10.0.2.53，发现跳转到了 deathnote.vuln，因此将该域名加入/etc/hosts。其实不加也没事，经过后面的测试发现不能直接访问10.0.2.53，但是能够访问目录下的文件，比如10.0.2.53/robots.txt，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fuck it my dad </span><br><span class="line">added hint on /important.jpg</span><br><span class="line"></span><br><span class="line">ryuk please delete it</span><br></pre></td></tr></table></figure></p>
+<p>直接在浏览器无法查看该文件，提示图片有误，使用curl访问： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://10.0.2.53/important.jpg</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">i am Soichiro Yagami, light&#x27;s father</span><br><span class="line">i have a doubt if L is true about the assumption that light is kira</span><br><span class="line"></span><br><span class="line">i can only help you by giving something important</span><br><span class="line"></span><br><span class="line">login username : user.txt</span><br><span class="line">i don&#x27;t know the password.</span><br><span class="line">find it by yourself </span><br><span class="line">but i think it is in the hint section of site</span><br></pre></td></tr></table></figure>
+<p>给了我们一个文件名：user.txt，还有一个关于密码的提示。</p>
+<p>路径扫描结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520151025.png" /></p>
+<p>根据提示，找到了 hint</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520151951.png" /></p>
+<p>L的评论为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">my fav line is iamjustic3</span><br></pre></td></tr></table></figure></p>
+<p>利用 wpscan 扫描 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wpscan --url http://deathnote.vuln/wordpress --enumerate u</span><br></pre></td></tr></table></figure></p>
+<p>得到一个用户名：kira。根据上面的信息，密码有可能是 world!!! 和 iamjustic3 或者一整句话，都尝试一下。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520153428.png" /></p>
+<p>登录成功！</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520153441.png" /></p>
+<h2 id="后台信息">2.3. 后台信息</h2>
+<p>首先在 media 中找到了 note.txt</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520153751.png" /></p>
+<p>点击，然后在新页面点击右边的 Copy URL to clipboard 用浏览器直接访问，得到如下信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">death4</span><br><span class="line">death4life</span><br><span class="line">death4u</span><br><span class="line">death4ever</span><br><span class="line">death4all</span><br><span class="line">death420</span><br><span class="line">death45</span><br><span class="line">death4love</span><br><span class="line">death49</span><br><span class="line">death48</span><br><span class="line">death456</span><br><span class="line">death4014</span><br><span class="line">1death4u</span><br><span class="line">yaydeath44</span><br><span class="line">thedeath4u2</span><br><span class="line">thedeath4u</span><br><span class="line">stickdeath420</span><br><span class="line">reddeath44</span><br><span class="line">megadeath44</span><br><span class="line">megadeath4</span><br><span class="line">killdeath405</span><br><span class="line">hot2death4sho</span><br><span class="line">death4south</span><br><span class="line">death4now</span><br><span class="line">death4l0ve</span><br><span class="line">death4free</span><br><span class="line">death4elmo</span><br><span class="line">death4blood</span><br><span class="line">death499Eyes301</span><br><span class="line">death498</span><br><span class="line">death4859</span><br><span class="line">death47</span><br><span class="line">death4545</span><br><span class="line">death445</span><br><span class="line">death444</span><br><span class="line">death4387n</span><br><span class="line">death4332387</span><br><span class="line">death42521439</span><br><span class="line">death42</span><br><span class="line">death4138</span><br><span class="line">death411</span><br><span class="line">death405</span><br><span class="line">death4me</span><br></pre></td></tr></table></figure></p>
+<p>最开始在 Media 里面上传文件，结果不允许，应该是做了某些过滤，不过 Plugins 中可以修改 php 还可以自定义插件，这里get shell的可能性比较大。</p>
+<h1 id="get-shell">3. get shell</h1>
+<p>首先在kali上获得一个反弹shell的php文件，然后压缩为 zip 格式，上传并安装</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155224.png" /></p>
+<p>然后激活</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155243.png" /></p>
+<p>最后来到 Plugins -&gt; Installed Plugins 下面，把未激活的激活（这里名字插件名字可能大家都不一样，因为我根据第一个插件的注释信息修改了上传的php文件，所以名字和第一个是一样的）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155338.png" /></p>
+<hr />
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155433.png" /></p>
+<p>可以自己随意修改</p>
+<hr />
+<p>kali在监听状态下成功反弹shell</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520155512.png" /></p>
+<h1 id="权限提升">4. 权限提升</h1>
+<h2 id="l-权限">4.1. l 权限</h2>
+<p>首先，我想先找到 user.txt <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find / -name &quot;user.txt&quot; 2&gt;/dev/null</span><br></pre></td></tr></table></figure></p>
+<p>结果找到两个： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/home/l/user.txt</span><br><span class="line">/var/www/deathnote.vuln/wordpress/wp-content/uploads/2021/07/user.txt</span><br></pre></td></tr></table></figure></p>
+<p>第一个文件的内容为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">++++++++++[&gt;+&gt;+++&gt;+++++++&gt;++++++++++&lt;&lt;&lt;&lt;-]&gt;&gt;&gt;&gt;+++++.&lt;&lt;++.&gt;&gt;+++++++++++.------------.+.+++++.---.&lt;&lt;.&gt;&gt;++++++++++.&lt;&lt;.&gt;&gt;--------------.++++++++.+++++.&lt;&lt;.&gt;&gt;.------------.---.&lt;&lt;.&gt;&gt;++++++++++++++.-----------.---.+++++++..&lt;&lt;.++++++++++++.------------.&gt;&gt;----------.+++++++++++++++++++.-.&lt;&lt;.&gt;&gt;+++++.----------.++++++.&lt;&lt;.&gt;&gt;++.--------.-.++++++.&lt;&lt;.&gt;&gt;------------------.+++.&lt;&lt;.&gt;&gt;----.+.++++++++++.-------.&lt;&lt;.&gt;&gt;+++++++++++++++.-----.&lt;&lt;.&gt;&gt;----.--.+++..&lt;&lt;.&gt;&gt;+.--------.&lt;&lt;.+++++++++++++.&gt;&gt;++++++.--.+++++++++.-----------------.</span><br></pre></td></tr></table></figure></p>
+<p>这是一段 brainfuck 的代码，将其解密为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i think u got the shell , but you wont be able to kill me -kira</span><br></pre></td></tr></table></figure></p>
+<p>这估计是一个flag。</p>
+<p>第二个文件的内容为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">KIRA</span><br><span class="line">L</span><br><span class="line">ryuk</span><br><span class="line">rem</span><br><span class="line">misa</span><br><span class="line">siochira </span><br><span class="line">light</span><br><span class="line">takada</span><br><span class="line">near</span><br><span class="line">mello</span><br><span class="line">l</span><br><span class="line">kira</span><br><span class="line">RYUK</span><br><span class="line">REM</span><br><span class="line">SIOCHIRA</span><br><span class="line">LIGHT</span><br><span class="line">NEAR</span><br></pre></td></tr></table></figure></p>
+<p>接下来可以利用user.txt和notes.txt内容进行爆破（其实根据 /etc/passwd 中的内容，也可以只针对 l 和 kira 进行爆破） <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -L user.txt -P notes.txt 10.0.2.53 ssh</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520160646.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">l:death4me</span><br></pre></td></tr></table></figure>
+<p>ssh连接</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520160724.png" /></p>
+<h2 id="kira-权限">4.2. kira 权限</h2>
+<p>首先在 l 的家目录的 .ssh 中发现了公私钥，还有一个 known_hosts，<strong>这是第一次用密钥登录其他主机/用户的时候才会生成的文件</strong>。因此查看 kira 下面是否也有，结果在 kira 家目录中的 .ssh 目录下发现了 authorized_keys，内容为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDyiW87OWKrV0KW13eKWJir58hT8IbC6Z61SZNh4Yzm9XlfTcCytDH56uhDOqtMR6jVzs9qCSXGQFLhc6IMPF69YMiK9yTU5ahT8LmfO0ObqSfSAGHaS0i5A73pxlqUTHHrzhB3/Jy93n0NfPqOX7HGkLBasYR0v/IreR74iiBI0JseDxyrZCLcl6h9V0WiU0mjbPNBGOffz41CJN78y2YXBuUliOAj/6vBi+wMyFF3jQhP4Su72ssLH1n/E2HBimD0F75mi6LE9SNuI6NivbJUWZFrfbQhN2FSsIHnuoLIJQfuFZsQtJsBQ9d3yvTD2k/POyhURC6MW0V/aQICFZ6z l@deathnote</span><br></pre></td></tr></table></figure></p>
+<p>注意最后 l@deathnote 说明这是 l 的公钥，因此直接使用 ssh 密钥获得 kira 权限。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520161328.png" /></p>
+<h2 id="root-权限">4.3. root 权限</h2>
+<p>读取 kira 家目录下的 kira.txt <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cGxlYXNlIHByb3RlY3Qgb25lIG9mIHRoZSBmb2xsb3dpbmcgCjEuIEwgKC9vcHQpCjIuIE1pc2EgKC92YXIp</span><br></pre></td></tr></table></figure></p>
+<p>将其base64解码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">please protect one of the following </span><br><span class="line">1. L (/opt)</span><br><span class="line">2. Misa (/var)</span><br></pre></td></tr></table></figure></p>
+<p>首先去了 /opr/L/fake-notebook-rule 发现两个文件：case.wav 和 hint，内容分别为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">case.wav: </span><br><span class="line">63 47 46 7a 63 33 64 6b 49 44 6f 67 61 32 6c 79 59 57 6c 7a 5a 58 5a 70 62 43 41 3d</span><br><span class="line">hint:</span><br><span class="line">use cyberchef</span><br></pre></td></tr></table></figure></p>
+<p>将其解码</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520162243.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd : kiraisevil</span><br></pre></td></tr></table></figure>
+<p>可能是 kira 的密码。</p>
+<p>查看 /opt/L/kira-case 目录，只有一个文件： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">the FBI agent died on December 27, 2006</span><br><span class="line"></span><br><span class="line">1 week after the investigation of the task-force member/head.</span><br><span class="line">aka.....</span><br><span class="line">Soichiro Yagami&#x27;s family .</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hmmmmmmmmm......</span><br><span class="line">and according to watari ,</span><br><span class="line">he died as other died after Kira targeted them .</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">and we also found something in </span><br><span class="line">fake-notebook-rule folder .</span><br></pre></td></tr></table></figure></p>
+<p>提示我们去之前看的那个目录。</p>
+<p>然后又去查看了 /var/misa，内容为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">it is toooo late for misa</span><br></pre></td></tr></table></figure></p>
+<p>到头来就获得了一个密码，应该是 kira 的。输入 sudo -l 试一下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520162625.png" /></p>
+<p>确实是 kira 的密码。并且kira具有所有权限，那么直接输入下面命令提权： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220520162710.png" /></p>
+<p>读取root下的flag：/root/root.txt <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">      ::::::::       ::::::::       ::::    :::       ::::::::       :::::::::           :::    :::::::::::       :::::::: </span><br><span class="line">    :+:    :+:     :+:    :+:      :+:+:   :+:      :+:    :+:      :+:    :+:        :+: :+:      :+:          :+:    :+: </span><br><span class="line">   +:+            +:+    +:+      :+:+:+  +:+      +:+             +:+    +:+       +:+   +:+     +:+          +:+         </span><br><span class="line">  +#+            +#+    +:+      +#+ +:+ +#+      :#:             +#++:++#:       +#++:++#++:    +#+          +#++:++#++   </span><br><span class="line"> +#+            +#+    +#+      +#+  +#+#+#      +#+   +#+#      +#+    +#+      +#+     +#+    +#+                 +#+    </span><br><span class="line">#+#    #+#     #+#    #+#      #+#   #+#+#      #+#    #+#      #+#    #+#      #+#     #+#    #+#          #+#    #+#     </span><br><span class="line">########       ########       ###    ####       ########       ###    ###      ###     ###    ###           ########       </span><br><span class="line"></span><br><span class="line">##########follow me on twitter###########3</span><br><span class="line">and share this screen shot and tag @KDSAMF</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">5. 总结</h1>
+<p>该靶机较简单，涉及的攻击方法有：</p>
+<ol type="1">
+<li>后台get shell</li>
+<li>ssh密钥登录</li>
+<li>brainfuck编码</li>
+<li>sudo提权</li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">2. 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E4%BF%A1%E6%81%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 端口信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 网页信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E5%8F%B0%E4%BF%A1%E6%81%AF"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 后台信息</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#get-shell"><span class="toc-number">3.</span> <span class="toc-text">3. get shell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.</span> <span class="toc-text">4. 权限提升</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#l-%E6%9D%83%E9%99%90"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. l 权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kira-%E6%9D%83%E9%99%90"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. kira 权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#root-%E6%9D%83%E9%99%90"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. root 权限</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">5. 总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&text=Deathnote Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&title=Deathnote Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&is_video=false&description=Deathnote Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Deathnote Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&title=Deathnote Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&title=Deathnote Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&title=Deathnote Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&title=Deathnote Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&name=Deathnote Writeup&description=&lt;p&gt;靶机难度不高。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/20/Deathnote%20Writeup/&t=Deathnote Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人知识点记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="suid, ruid, euid 区别">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人知识点记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517094652.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517094749.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517095844.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517095936.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100137.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100337.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100409.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100521.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100911.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517102116.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517102239.png">
+<meta property="article:published_time" content="2022-05-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-17T02:23:17.506Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="suid提权">
+<meta property="article:tag" content="Linux基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517094652.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>suid, ruid, euid 区别</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/17/Earth%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/16/Infosec%20Prep%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A"><span class="toc-number">1.</span> <span class="toc-text">1. 解释</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8Esuid%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">3. 关于suid的小问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        suid, ruid, euid 区别
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-16T16:00:00.000Z" itemprop="datePublished">2022-05-17</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Linux%E5%9F%BA%E7%A1%80/" rel="tag">Linux基础</a>, <a class="tag-link-link" href="/tags/suid%E6%8F%90%E6%9D%83/" rel="tag">suid提权</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人知识点记录。</p>
+<span id="more"></span>
+<h1 id="解释">1. 解释</h1>
+<ul>
+<li>RUID(Real User ID)
+<ul>
+<li>The actual owner of a process</li>
+<li>It is used in signal transmission. A unprivileged process can signal to the another process when the RUID, EUID is the same as RUID, SUID of the another process</li>
+</ul></li>
+<li>EUID(Effective User ID)
+<ul>
+<li>Generally, UID and EUID is the same</li>
+<li>EUID is changed by executable file that is configured SetUID authority</li>
+<li>EUID temporarily stores another account's UID</li>
+<li>The authority of a process is determined according to the UID stored in the EUID</li>
+</ul></li>
+<li>SUID(Saved set-user-ID)
+<ul>
+<li>SUID is used when a process'authority is recovered after lowered</li>
+<li>When process'authority is changed to lower, previous EUID is stored at EUID</li>
+<li>Then, when the lowered authority is rcovered to original authority, the SUID is stored at EUID</li>
+</ul></li>
+</ul>
+<h1 id="理解">2. 理解</h1>
+<p>Linux系统中并不是通过用户名来判断用户的权限的，而是通过uid。在提权过程中经常会遇到过这么一种情况，那就是普通用户对/etc/passwd文件有写权限，我们就可以利用普通用户的写权限往/etc/passwd中添加类似下面的内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m1ku::0:0::/root:/usr/bin/bash</span><br></pre></td></tr></table></figure></p>
+<p>其中，第一个0表示uid，第二个0表示gid。这就代表着我们创建了一个用户名为m1ku的用户，并且uid和gid都为0。那么即使该用户名不是root，它也拥有root权限。因为Linux中uid=0表示的就是root。</p>
+<ul>
+<li>RUID, 用于在系统中标识一个用户是谁，当用户使用用户名和密码成功登录后一个UNIX系统后就唯一确定了他的RUID.</li>
+<li>EUID, 用于系统决定用户对系统资源的访问权限，通常情况下等于RUID。</li>
+<li>SUID，用于对外权限的开放。跟RUID及EUID是用一个用户绑定不同，它是跟文件而不是跟用户绑定。</li>
+</ul>
+<p>Linux中有一个文件叫做/etc/shadow，该文件保存的就是用户的密码信息，默认情况下只有root有权限，</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517094652.png" /></p>
+<p>但是普通用户可以通过passwd修改密码，也就是修改/etc/shadow中的内容。那么这到底是如何实现的呢？为什么普通用户能够修改一个没有权限的文件的内容呢？这是因为 passwd 这个文件的权限。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517094749.png" /></p>
+<p>从上图中可以看到，原来属主的'x'权限所在的地方变成了's'，这个's'表示的就是SUID。接下来分析一下普通用户执行 passwd 命令的过程：</p>
+<ol type="1">
+<li>普通用户hdfzzf在shell中执行 passwd</li>
+<li>系统判断hdfzzf是否有执行的权限，如果有则下一步，没有则 permission denied；</li>
+<li>系统判断 /bin/passwd 是否具有suid，如果有则下一步，没有则以hdfzzf权限执行，也就是euid为hdfzzf，跳到5；</li>
+<li>执行passwd，并且权限为root（属主），此时该进程的euid为root；</li>
+<li>输入新的密码，如果passwd进程的euid为root，则将密码写入/etc/shadow，否则无法写入，密码修改失败；</li>
+<li>结束进程</li>
+</ol>
+<p><strong>passwd有suid权限，并且是hdfzzf用户执行</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517095844.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517095936.png" /></p>
+<p>可以看到passwd的进程权限是root。此时修改密码能够成功。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100137.png" /></p>
+<p><strong>如果passwd没有suid权限，还是hdfzzf用户执行</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100337.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100409.png" /></p>
+<p>可以看到，此时的passwd的进程权限是hdfzf，密码已经无法修改了，因为hdfzzf没有对/etc/shadow的写权限</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100521.png" /></p>
+<p>如果passwd具有suid权限，但是hdfzzf没有执行权限：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517100911.png" /></p>
+<h1 id="关于suid的小问题">3. 关于suid的小问题</h1>
+<p>每个权限都有一个数字对应，比如说r=4, w=2, x=1，同样的s=4000，因此可以使用下面的命令设置suid权限： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 4777 /bin/passwd</span><br></pre></td></tr></table></figure></p>
+<p>最开始的4表示的就是suid。</p>
+<p>但是如果执行下面的命令 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 4677 hello.sh # hello.sh属主是root</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517102116.png" /></p>
+<p>此时root没有执行权，所以suid位置的是大写的'S'。<strong>这样子，普通用户执行该文件的时候就是普通用户的权限，而不会变成root权限。</strong></p>
+<p>如果需要把'S' -&gt; 's'，只需要给root执行权即可</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220517102239.png" /></p>
+<h1 id="参考">4. 参考</h1>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://cysecguide.blogspot.com/2016/10/difference-among-ruid-euid-suid.html">Difference among RUID, EUID, SUID - Cybersecurity Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linuxidc.com/Linux/2011-09/43194.htm">Linux内核学习笔记： uid之ruid，euid，suid_Linux教程_Linux公社-Linux系统门户网站</a></li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A"><span class="toc-number">1.</span> <span class="toc-text">1. 解释</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3"><span class="toc-number">2.</span> <span class="toc-text">2. 理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8Esuid%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98"><span class="toc-number">3.</span> <span class="toc-text">3. 关于suid的小问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&text=suid, ruid, euid 区别"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&is_video=false&description=suid, ruid, euid 区别"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=suid, ruid, euid 区别&body=Check out this article: https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&title=suid, ruid, euid 区别"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&name=suid, ruid, euid 区别&description=&lt;p&gt;个人知识点记录。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/17/suid,%20ruid,%20euid%20%E5%8C%BA%E5%88%AB/&t=suid, ruid, euid 区别"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

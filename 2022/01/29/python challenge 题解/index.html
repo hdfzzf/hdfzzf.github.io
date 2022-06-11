@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这是个人的 python challenge 的刷题记录，网址是：python challenge。更多内容请点击 阅读全文，如有错误，欢迎在评论区指出。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python challenge 题解">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="这是个人的 python challenge 的刷题记录，网址是：python challenge。更多内容请点击 阅读全文，如有错误，欢迎在评论区指出。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220129214059.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220129215240.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130103607.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130103757.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130142422.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130142748.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194001.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194018.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194032.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194143.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195351.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195449.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130200232.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130205619.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130205643.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210254.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210708.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131103728.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131103745.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131105144.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131110030.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201114933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201122229.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201122525.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201122931.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201221330.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201221350.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201221552.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201230807.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201230823.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201231228.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201231802.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220202104810.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220202111336.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220202111705.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203091240.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203091406.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203091619.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203093800.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203101659.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203110227.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203110246.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203111001.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203111203.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206223856.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206225138.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206225159.png">
+<meta property="article:published_time" content="2022-01-29T15:23:54.021Z">
+<meta property="article:modified_time" content="2022-02-06T15:03:01.103Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220129214059.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>python challenge 题解</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/01/30/pickle%20%E5%BA%93/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#level-0"><span class="toc-number">1.</span> <span class="toc-text">level 0</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-1"><span class="toc-number">2.</span> <span class="toc-text">level 1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-1"><span class="toc-number">2.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-1"><span class="toc-number">2.2.</span> <span class="toc-text">方法 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-2"><span class="toc-number">2.3.</span> <span class="toc-text">方法 2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#maketrans-%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.3.1.</span> <span class="toc-text">maketrans() 方法介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#translate-%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.3.2.</span> <span class="toc-text">translate() 方法介绍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-3"><span class="toc-number">2.4.</span> <span class="toc-text">方法 3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zip-%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.4.1.</span> <span class="toc-text">zip() 方法介绍</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-2"><span class="toc-number">3.</span> <span class="toc-text">level 2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-2"><span class="toc-number">3.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-4"><span class="toc-number">3.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-3"><span class="toc-number">4.</span> <span class="toc-text">level 3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-3"><span class="toc-number">4.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-5"><span class="toc-number">4.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-4"><span class="toc-number">5.</span> <span class="toc-text">level 4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-4"><span class="toc-number">5.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-6"><span class="toc-number">5.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-5"><span class="toc-number">6.</span> <span class="toc-text">level 5</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-5"><span class="toc-number">6.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-7"><span class="toc-number">6.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-6"><span class="toc-number">7.</span> <span class="toc-text">level 6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-6"><span class="toc-number">7.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-8"><span class="toc-number">7.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-7"><span class="toc-number">8.</span> <span class="toc-text">level 7</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-7"><span class="toc-number">8.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-9"><span class="toc-number">8.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-8"><span class="toc-number">9.</span> <span class="toc-text">level 8</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-8"><span class="toc-number">9.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-10"><span class="toc-number">9.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-9"><span class="toc-number">10.</span> <span class="toc-text">level 9</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-9"><span class="toc-number">10.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-11"><span class="toc-number">10.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-10"><span class="toc-number">11.</span> <span class="toc-text">level 10</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-10"><span class="toc-number">11.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-1-1"><span class="toc-number">11.2.</span> <span class="toc-text">方法 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-2-1"><span class="toc-number">11.3.</span> <span class="toc-text">方法 2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-11"><span class="toc-number">12.</span> <span class="toc-text">level 11</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-11"><span class="toc-number">12.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-12"><span class="toc-number">12.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-12"><span class="toc-number">13.</span> <span class="toc-text">level 12</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-12"><span class="toc-number">13.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-13"><span class="toc-number">13.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-13"><span class="toc-number">14.</span> <span class="toc-text">level 13</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-13"><span class="toc-number">14.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-14"><span class="toc-number">14.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-14"><span class="toc-number">15.</span> <span class="toc-text">level 14</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-14"><span class="toc-number">15.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-15"><span class="toc-number">15.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-15"><span class="toc-number">16.</span> <span class="toc-text">level 15</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-15"><span class="toc-number">16.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-16"><span class="toc-number">16.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">17.</span> <span class="toc-text">附录</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        python challenge 题解
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-01-29T15:23:54.021Z" itemprop="datePublished">2022-01-29</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/python/">python</a> › <a class="category-link" href="/categories/%E5%88%B7%E9%A2%98/">刷题</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>这是个人的 python challenge 的刷题记录，网址是：<a target="_blank" rel="noopener" href="http://www.pythonchallenge.com/">python challenge</a>。更多内容请点击 <strong>阅读全文</strong>，如有错误，欢迎在评论区指出。</p>
+<span id="more"></span>
+<h1 id="level-0">level 0</h1>
+<h2 id="题目信息">题目信息</h2>
+<p>题目信息如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220129214059.png" /></p>
+<p>提示：修改 url 的值，并且画面中为 <span class="math inline">\(2^{38}\)</span>，当前 url 为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/def/0.html</span><br></pre></td></tr></table></figure></p>
+<h2 id="方法">方法</h2>
+<p>代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">res = <span class="number">2</span> ** <span class="number">38</span></span><br><span class="line"><span class="built_in">print</span>(res) <span class="comment"># 274877906944</span></span><br></pre></td></tr></table></figure></p>
+<p>将 url 中的 0 用 274877906944 代替即可。</p>
+<h1 id="level-1">level 1</h1>
+<h2 id="题目信息-1">题目信息</h2>
+<p>题目信息如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220129215240.png" /></p>
+<p>根据图片应该是某种加密方法，图中的 <code>K-&gt;M, O-&gt;Q, E-&gt;G</code>，正好符合规律：<strong>K往后两个字母就是M，O往后两个字母就是Q，E往后两个字母就是G</strong>。猜测只要把下面粉色的字母全部用自己的后两个字母代替即可。</p>
+<h2 id="方法-1">方法 1</h2>
+<p>代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span> <span class="comment"># 原来的字符串  </span></span><br><span class="line">  </span><br><span class="line">shift = <span class="number">2</span> <span class="comment"># 后移步数  </span></span><br><span class="line">new_str = <span class="string">&quot;&quot;</span> <span class="comment"># 新的字符串  </span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">for</span> ch <span class="keyword">in</span> encypt_str:  </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">str</span>.isalpha(ch): <span class="comment"># 判断是否是字母  </span></span><br><span class="line">        ch = <span class="built_in">ord</span>(ch)</span><br><span class="line">        ch = ((ch + shift) - <span class="number">97</span>) % <span class="number">26</span> + <span class="number">97</span> <span class="comment">#  y 和 z 变成 a 和 b</span></span><br><span class="line">        ch = <span class="built_in">chr</span>(ch)  </span><br><span class="line">    new_str += ch  </span><br><span class="line"><span class="built_in">print</span>(new_str)</span><br></pre></td></tr></table></figure> （需要注意的是 y 和 z 变成 a 和 b 的时候！！！）</p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i hope you didnt translate it by hand. thats what computers are for. doing it in by hand is inefficient and that&#x27;s why this text is so long. using string.maketrans() is recommended. now apply on the url.</span><br></pre></td></tr></table></figure></p>
+<p>发现除了提示我们可以使用 maketrans() 方法之外，没有其他信息。我们回到 url <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/def/map.html</span><br></pre></td></tr></table></figure></p>
+<p>根据本题的加密方法，将 <code>map -&gt; ocr</code> 即可跳转下一关。 （其实，连代码都没必要写！！！）</p>
+<h2 id="方法-2">方法 2</h2>
+<h3 id="maketrans-方法介绍">maketrans() 方法介绍</h3>
+<blockquote>
+<p>Python maketrans() 方法用于创建字符映射的转换表，对于接受两个参数的最简单的调用方式，第一个参数是字符串，表示需要转换的字符，第二个参数也是字符串表示转换的目标。 <strong>注：</strong>两个字符串的长度必须相同，为一一对应的关系。python 3 和 python 2 的使用方法不同，2 需要导入 string，而 3 不需要。</p>
+</blockquote>
+<ul>
+<li><p>语法： <code>str.maketrans(intab, outtab)</code></p></li>
+<li><p>参数：</p>
+<ul>
+<li>intab：字符串中要替代的字符组成的字符串。</li>
+<li>outab：与 intab 一一对应的映射字符的字符串。</li>
+</ul></li>
+<li><p>返回值： 返回字符串转换后生成的新字符串。</p></li>
+<li><p>一般配合 translate() 使用</p></li>
+</ul>
+<h3 id="translate-方法介绍">translate() 方法介绍</h3>
+<blockquote>
+<p>Python translate() 方法根据参数table给出的表(包含 256 个字符)转换字符串的字符, 要过滤掉的字符放到 del 参数中。</p>
+</blockquote>
+<ul>
+<li><p>语法： <code>str.translate(table[, deletechars]);</code></p></li>
+<li><p>参数：</p>
+<ul>
+<li>table：翻译表，翻译表是通过maketrans方法转换而来。</li>
+<li>deletechars：字符串中要过滤的字符列表。</li>
+</ul></li>
+<li><p>返回值： 返回翻译后的字符串。</p></li>
+<li><p>本题演示： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span></span><br><span class="line"></span><br><span class="line">intab = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>  </span><br><span class="line">outtab = <span class="string">&quot;cdefghijklmnopqrstuvwxyzab&quot;</span>  </span><br><span class="line">trantab = encypt_str.maketrans(intab, outtab)  </span><br><span class="line">  </span><br><span class="line"><span class="built_in">print</span>(encypt_str.translate(trantab))</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h2 id="方法-3">方法 3</h2>
+<h3 id="zip-方法介绍">zip() 方法介绍</h3>
+<blockquote>
+<p><strong>zip()</strong> 函数用于将可迭代的对象作为参数，将对象中 <strong>对应的元素</strong> 打包成一个个元组，然后返回由这些元组组成的对象，这样做的好处是节约了不少的内存。 我们可以使用 list() 转换来输出列表。也可以用 dict() 转换为字典，此时就产生了映射关系。 如果各个迭代器的元素个数不一致，则返回列表长度与最短的对象相同，利用 * 号操作符，可以将元组解压为列表。</p>
+</blockquote>
+<ul>
+<li><p>语法： <code>zip([iterable, ...])</code></p></li>
+<li><p>参数：</p>
+<ul>
+<li>iterabl：一个或多个迭代器</li>
+</ul></li>
+<li><p>返回值： 返回一个对象。</p></li>
+<li><p>解压： <code>zip(*被压缩的对象)</code>，返回二维矩阵式</p></li>
+<li><p>本题演示： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">encypt_str = <span class="string">&quot;g fmnc wms bgblr rpylqjyrc gr zw fylb. rfyrq ufyr amknsrcpq ypc dmp. bmgle gr gl zw fylb gq glcddgagclr ylb rfyr&#x27;q ufw rfgq rcvr gq qm jmle. sqgle qrpgle.kyicrpylq() gq pcamkkclbcb. lmu ynnjw ml rfc spj. &quot;</span> <span class="comment"># 原来的字符串</span></span><br><span class="line"></span><br><span class="line">intab = <span class="string">&quot;abcdefghijklmnopqrstuvwxyz,. &#x27;()&quot;</span>  </span><br><span class="line">outtab = <span class="string">&quot;cdefghijklmnopqrstuvwxyzab,. &#x27;()&quot;</span>  </span><br><span class="line">transtab = <span class="built_in">dict</span>(<span class="built_in">zip</span>(intab, outtab))  </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(transtab[x] <span class="keyword">for</span> x <span class="keyword">in</span> encypt_str))</span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h1 id="level-2">level 2</h1>
+<h2 id="题目信息-2">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130103607.png" /></p>
+<p>注意红色字符串，要我们从图片中的书里或者页面源码中找字符。首先，书里根本看不清，所以只能从页面源码中找，打开页面源码，往下滑动，发现确实有，但是内容很多，需要写脚本。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130103757.png" /></p>
+<h2 id="方法-4">方法</h2>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li><p>请求网址，获得页面源码</p></li>
+<li><p>拿到这串字符串</p></li>
+<li><p>从中找出字母</p></li>
+</ol>
+<p><strong>代码：</strong> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests  </span><br><span class="line"><span class="keyword">import</span> re  </span><br><span class="line">url = <span class="string">&quot;http://www.pythonchallenge.com/pc/def/ocr.html&quot;</span>  </span><br><span class="line">r = requests.get(url)  </span><br><span class="line">tar = re.findall(<span class="string">r&#x27;&lt;!--(.*?)--&gt;&#x27;</span>, r.text, flags=re.S)[<span class="number">1</span>]  <span class="comment"># 找到一大串字符串</span></span><br><span class="line">ch_lst = re.findall(<span class="string">r&#x27;[a-zA-Z0-9]+&#x27;</span>, tar)  <span class="comment"># 拿到字符串中的字符</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(ch <span class="keyword">for</span> ch <span class="keyword">in</span> ch_lst)) <span class="comment"># 拼接成 url</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>结果：</strong> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">equality</span><br></pre></td></tr></table></figure></p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/ocr.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/equality.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-3">level 3</h1>
+<h2 id="题目信息-3">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130142422.png" /></p>
+<p>除了一句提示，什么都没有。查看页面源码，发现字符串： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130142748.png" /></p>
+<p>根据提示做出合理猜测：<strong>找出这一字符串中的小写字母，每个小写字母的前后都是三个大写字母！！！也就是 AAAbCCC 类型的</strong></p>
+<h2 id="方法-5">方法</h2>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li>请求网址，拿到页面源码</li>
+<li>取出这一大串字符串</li>
+<li>从中找出符合条件的小写字母</li>
+</ol>
+<p><strong>代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">url = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/equality.html&#x27;</span>  </span><br><span class="line">r = requests.get(url)  </span><br><span class="line">tar = re.findall(<span class="string">r&#x27;&lt;!--(.*?)--&gt;&#x27;</span>, r.text, flags = re.S)[-<span class="number">1</span>] <span class="comment"># 取出目标字符串  </span></span><br><span class="line">ch_lst = re.findall(<span class="string">r&#x27;[^A-Z]+[A-Z]&#123;3&#125;([a-z])[A-Z]&#123;3&#125;[^A-Z]+&#x27;</span>, tar, re.S)    <span class="comment"># 从目标字符串中取出符合条件的小写字母  </span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(ch <span class="keyword">for</span> ch <span class="keyword">in</span> ch_lst)) <span class="comment"># 拼接成 url</span></span><br></pre></td></tr></table></figure>
+<p><strong>解释：</strong> 主要说明一下取出符合条件的小写字母的模式是如何而来的。</p>
+<p><code>[a-z]</code> 表示一个小写字母；</p>
+<p><code>[A-Z]</code> 表示一个大写字母；</p>
+<p><code>[A-Z]&#123;3&#125;</code> 表示三个大写字母；</p>
+<p><code>[A-Z]&#123;3&#125;[a-z][A-Z]&#123;3&#125;</code> 表示 ...AAAbCCC... 类型的，注意 ... 可能为大写，比如说：AAAAbCCC 也是会被匹配到的，但是，题目要求的小写字母是前后严格只有三个大写字母，所以还需要补上 <code>[^A-Z]</code> ，这表示非大写字母</p>
+<p>总的模式就是：<code>[^A-Z]+[A-Z]&#123;3&#125;([a-z])[A-Z]&#123;3&#125;[^A-Z]+</code>，这个 <code>+</code> 写不写无所谓，就本题而言，主要是 <code>aAAAbCCCc</code> 的都行，无所谓前后是大写还是小写。</p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linkedlist</span><br></pre></td></tr></table></figure></p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/equality.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/linkedlist.html</span><br></pre></td></tr></table></figure></p>
+<p>访问修改后的 url 得到提示 <code>linkedlist.php</code> ，访问<code>http://www.pythonchallenge.com/pc/def/linkedlist.php</code> 即可。</p>
+<h1 id="level-4">level 4</h1>
+<h2 id="题目信息-4">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194001.png" /></p>
+<p>页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194018.png" /></p>
+<p>点击图片发现可以跳转： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194032.png" /></p>
+<p>注意 url 中的 nothing，应该是通过不停的获得 nothing 然后跳转到下一个页面，最后某个页面会出来答案。手动几次后发现确实如此： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130194143.png" /></p>
+<p><strong>注意：本题深坑</strong></p>
+<h2 id="方法-6">方法</h2>
+<p><strong>代码：</strong> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span>  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing  </span><br><span class="line">    r = requests.get(url)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        nothing = <span class="built_in">int</span>(re.findall(<span class="string">r&#x27;\d+&#x27;</span>, r.text)[-<span class="number">1</span>])  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;nothing: %d&quot;</span> % nothing)  </span><br><span class="line">    <span class="keyword">except</span>:  </span><br><span class="line">        nothing /= <span class="number">2</span>  </span><br><span class="line">	<span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure></p>
+<p><strong>解释：</strong> 首先例举一下这题我遇到的坑！</p>
+<p>原先我的代码是这样的： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing</span><br><span class="line">    r = requests.get(url)</span><br><span class="line">    <span class="built_in">print</span>(r.text)</span><br><span class="line">    nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())</span><br></pre></td></tr></table></figure></p>
+<p>运行一段时间后，得到如下报错： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AttributeError: &#x27;NoneType&#x27; object has no attribute &#x27;group&#x27;</span><br></pre></td></tr></table></figure></p>
+<p>并且此时页面的内容为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Yes. Divide by two and keep going.</span><br></pre></td></tr></table></figure></p>
+<p>因为此时页面并没有数字，无法匹配，也就没有返回匹配对象，更加没有 group() 方法，所以报错。因此，我将代码修改为如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line">nothing = <span class="number">12345</span>  </span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/linkedlist.php?nothing=%d&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">400</span>):  </span><br><span class="line">    url = <span class="built_in">str</span> % nothing  </span><br><span class="line">    r = requests.get(url)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        nothing = <span class="built_in">int</span>(re.search(<span class="string">r&#x27;\d+&#x27;</span>, r.text).group())  </span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;nothing: %d&quot;</span> % nothing)  </span><br><span class="line">    <span class="keyword">except</span>:  </span><br><span class="line">        nothing /= <span class="number">2</span></span><br><span class="line">		<span class="built_in">print</span>(r.text)</span><br></pre></td></tr></table></figure></p>
+<p>然后能够越过这个坑： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195351.png" /></p>
+<p>跳进下一个坑： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130195449.png" /></p>
+<p>当 nothing = 82683 时，页面内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">You&#x27;ve been misleaded to here. Go to previous one and check.</span><br></pre></td></tr></table></figure></p>
+<p>前一个是 82682，页面内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">There maybe misleading numbers in the text. One example is 82683. Look only for the next nothing and the next nothing is 63579</span><br></pre></td></tr></table></figure></p>
+<p>因为 re.search() 匹配到第一个就会返回，所以才会踩到这个坑，这里的 nothing 是第二个，所以修改为最终代码，就是刚刚给的，最后顺利得到结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130200232.png" /></p>
+<p>这里其实存在着另一个坑，得到 peak.html 的 nothing = 66831，此时如果你没有显示每一页的内容 <code>print(r.text)</code>，极容易错过信息，因为此时 nothing /= 2，也能访问，看后面能够继续就知道了。</p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/linkedlist.php</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/peak.html</span><br></pre></td></tr></table></figure></p>
+<p><strong>注意：</strong> 遇到坑之后的 nothing 不要从头开始，这样会省时间。</p>
+<h1 id="level-5">level 5</h1>
+<h2 id="题目信息-5">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130205619.png" /></p>
+<p>页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130205643.png" /></p>
+<p>注意绿字提醒：python 中有一个库叫做 pickle，用来序列化和非序列化的。因此，本题需要使用到该库。还有 <code>banner.p</code> 点进去发现是看不懂的一堆字符串，做一个合理的猜测：<strong><code>banner.p</code> 中的字符串是经过序列化的，将它反序列应该会得到答案</strong></p>
+<h2 id="方法-7">方法</h2>
+<p><strong>代码：</strong> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, pickle  </span><br><span class="line">url = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/banner.p&#x27;</span>  </span><br><span class="line">raw = requests.get(url).content  </span><br><span class="line"><span class="built_in">print</span>(pickle.loads(raw))</span><br></pre></td></tr></table></figure></p>
+<p>发现得到看不懂的一堆东西： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210254.png" /></p>
+<p>仔细观察发现，是一个二元列表，每一行都是由一个或多个元组组成的，猜测（看完答案后）：<strong>每一行其实都是字符串的压缩：将一行字符串压缩成 <code>[(字符1，出现次数), (字符2，出现次数)...]</code> 因此，只要将每一行还原成原来的样子即可。</strong></p>
+<p><strong>最终代码：</strong> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, pickle  </span><br><span class="line">url = <span class="string">&#x27;http://www.pythonchallenge.com/pc/def/banner.p&#x27;</span>  </span><br><span class="line">raw = requests.get(url).content  <span class="comment"># 转为 byte，因为 loads() 的参数是 byte 类型的</span></span><br><span class="line">data = pickle.loads(raw)  </span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> data:  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join([ch * num <span class="keyword">for</span> ch, num <span class="keyword">in</span> line]))</span><br></pre></td></tr></table></figure></p>
+<p><strong>结果：</strong> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220130210708.png" /></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel</span><br></pre></td></tr></table></figure>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/peak.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/channel.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-6">level 6</h1>
+<h2 id="题目信息-6">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131103728.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131103745.png" /></p>
+<p>注意：html 旁边的 <code>&lt;!-- &lt;-- zip --&gt;</code>。尝试将 html 修改为 zip 发现可以下载一个压缩文件。</p>
+<p>压缩文包里有许多文件，先看 <code>readme.txt</code>： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">welcome to my zipped list.  </span><br><span class="line">  </span><br><span class="line">hint1: start from 90052  </span><br><span class="line">hint2: answer is inside the zip</span><br></pre></td></tr></table></figure></p>
+<p>查看之后猜测，除 <code>readme.txt</code> 之外每一个文件内容都是： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Next nothing is (\d+)</span><br></pre></td></tr></table></figure></p>
+<p>思路：<strong>nothing 从 90052 开始，先访问对应文件，然后读取下一个 nothing 继续访问。直到出现不同</strong></p>
+<h2 id="方法-8">方法</h2>
+<p>第一次代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re  </span><br><span class="line">rpath = <span class="string">&quot;attachments/level_6/%s.txt&quot;</span>  </span><br><span class="line">nothing = <span class="string">&quot;90052&quot;</span>  </span><br><span class="line">pattern = <span class="string">&quot;Next nothing is (\d+)&quot;</span>  </span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:  </span><br><span class="line">    path = rpath % nothing  </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(path, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">        content = f.read()  </span><br><span class="line">        <span class="built_in">print</span>(content)  </span><br><span class="line">        match = re.search(pattern, content)  </span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> match:  </span><br><span class="line">            <span class="keyword">break</span>  </span><br><span class="line">	nothing = match.group(<span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
+<p>解释： <code>match.group(1)</code>：因为代码中的 pattern 里面只有一个括号（在我们需要处加上括号），这样子匹配下来的其实是一整句话 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Next nothing is (\d+)</span><br></pre></td></tr></table></figure></p>
+<p>但是，我们只需要 () ，如果直接使用 <code>match.group()</code> 就会将整句话给 nothing，而 <code>group(1)</code> 就是只读取第一个括号中的内容，也就是 () 即 nothing。</p>
+<p>不出所料，果然没这么简单，当 nothing = 46145 时： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131105144.png" /></p>
+<p>现在的问题是什么是 comments？经过百度后发现 zip 文件有 comment，用来写额外的描述数据。python 中有 zipfile 库可以获得 comment。</p>
+<p>最终代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re, zipfile  </span><br><span class="line">path = <span class="string">&quot;attachments/level_6/channel.zip&quot;</span>  </span><br><span class="line">nothing = <span class="string">&quot;90052&quot;</span>  </span><br><span class="line">comment = []  </span><br><span class="line">pattern = <span class="string">&quot;Next nothing is (\d+)&quot;</span>  </span><br><span class="line"><span class="keyword">with</span> zipfile.ZipFile(path, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:  </span><br><span class="line">        fileName = nothing + <span class="string">&#x27;.txt&#x27;</span></span><br><span class="line">        content = f.read(fileName).decode(<span class="string">&quot;utf-8&quot;</span>)  </span><br><span class="line">        comment.append(f.getinfo(fileName).comment.decode(<span class="string">&#x27;utf-8&#x27;</span>))  </span><br><span class="line">        match = re.search(pattern, content)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> match:  </span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        nothing = match.group(<span class="number">1</span>)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(comment))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220131110030.png" /></p>
+<p>访问 <code>http://www.pythonchallenge.com/pc/def/hockey.html</code>，得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">it&#x27;s in the air. look at the letters.</span><br></pre></td></tr></table></figure></p>
+<p>注意到，组成 HOCKY 的字母为 oxygen，因此修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/hockey.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/oxygen.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-7">level 7</h1>
+<h2 id="题目信息-7">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201114933.png" /></p>
+<p>只有上面一张奇怪的图片，页面源码也没有东西。可以看到图片上有一些灰度块，目前合理猜测就是：<strong>这些灰度块隐藏着信息。</strong></p>
+<h2 id="方法-9">方法</h2>
+<p>第一步，先将图片下载下来： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">img_url = <span class="string">&quot;http://www.pythonchallenge.com/pc/def/oxygen.png&quot;</span>  </span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span></span><br><span class="line">img = requests.get(img_url)  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(path, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    f.write(img.content)</span><br></pre></td></tr></table></figure></p>
+<p>第二步，查看图片的必要信息： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span></span><br><span class="line">img = Image.<span class="built_in">open</span>(path)  </span><br><span class="line"><span class="built_in">print</span>(img.<span class="built_in">format</span>, img.size, img.mode)</span><br></pre></td></tr></table></figure></p>
+<p>结果是： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PNG (629, 95) RGBA # 分别是后缀，（宽，高）， 模式</span><br></pre></td></tr></table></figure></p>
+<p>可以看到图像的模式是 RGBA 的，那么每个像素点就是个四元组，分别为 <code>r, g, b, a</code> 前三个为红，绿，黄，最后一个为透明度（本题用不着）。需要注意一点：<strong>灰度图像的 r == g == b</strong>，因此，我们利用这点，先找到图片中的灰度条在哪几行。代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span></span><br><span class="line">img = Image.<span class="built_in">open</span>(path)</span><br><span class="line">row = [img.getpixel((<span class="number">0</span>, x)) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(img.height)]  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(img.height):  </span><br><span class="line">    <span class="keyword">if</span> row[i][<span class="number">0</span>] == row[i][<span class="number">1</span>] == row[i][<span class="number">2</span>]:  <span class="comment"># r == g == b</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;%d:&quot;</span> % i, end = <span class="string">&#x27; &#x27;</span>)</span><br><span class="line">        <span class="built_in">print</span>(row[i])</span><br></pre></td></tr></table></figure></p>
+<p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201122229.png" /></p>
+<p>随便取一行即可，这里取 47，因为 <code>img.height / 2</code> 的值为 47。</p>
+<p>第三步，取出 47 行的所有像素点： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span></span><br><span class="line">img = Image.<span class="built_in">open</span>(path)</span><br><span class="line">row = [img.getpixel((x, img.height/<span class="number">2</span>)) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(img.width)]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(img.width):</span><br><span class="line">    <span class="built_in">print</span>(row[i])</span><br></pre></td></tr></table></figure></p>
+<p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201122525.png" /></p>
+<p>发现，除了第一个之外，其余的像素点都重复了 7 次，因此我们剔除重复的：（上面的代码稍作修改） <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span></span><br><span class="line">img = Image.<span class="built_in">open</span>(path)</span><br><span class="line">row = [img.getpixel((x, img.height/<span class="number">2</span>)) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(img.width)]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, img.width, <span class="number">7</span>): <span class="comment"># 修改了这里</span></span><br><span class="line">    <span class="built_in">print</span>(row[i])</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201122931.png" /></p>
+<p>第四步，每个灰度图像都有一个灰度值，因此做一个猜测：<strong>将这些灰度值当作 ascii 码，然后转为字符。</strong> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span></span><br><span class="line">img = Image.<span class="built_in">open</span>(path)  </span><br><span class="line">row = [img.getpixel((x, img.height/<span class="number">2</span>)) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(img.width)]  </span><br><span class="line">info = []  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, img.width, <span class="number">7</span>):  </span><br><span class="line">    info.append(<span class="built_in">chr</span>(row[i][<span class="number">0</span>]))  </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;&quot;</span>.join(info))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smart guy, you made it. the next level is [105, 110, 116, 101, 103, 114, 105, 116, 121]pe_ </span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>后边的 pe_ 我猜测是因为第一个像素点就重复了5次，而我取步长为7，导致每次取得都不是重复值里面得第一个，因为可能将重复值后面得无关的也取了进来。</p>
+</blockquote>
+<p>将上面结果中得数字也提取出来，当作 ascii 码处理，因此最终代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re  </span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image  </span><br><span class="line">img_url = <span class="string">&quot;http://www.pythonchallenge.com/pc/def/oxygen.png&quot;</span>  </span><br><span class="line">path = <span class="string">&quot;attachments/level_7/oxygen.png&quot;</span>  </span><br><span class="line">img = Image.<span class="built_in">open</span>(path)  </span><br><span class="line">row = [img.getpixel((x, img.height/<span class="number">2</span>)) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(img.width)]  </span><br><span class="line">info = []  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, img.width, <span class="number">7</span>):  </span><br><span class="line">    info.append(<span class="built_in">chr</span>(row[i][<span class="number">0</span>]))  </span><br><span class="line">message = <span class="string">&quot;&quot;</span>.join(info)  </span><br><span class="line"><span class="built_in">next</span> = re.findall(<span class="string">r&#x27;(\d+)&#x27;</span>, message)  </span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> <span class="built_in">next</span>:  </span><br><span class="line">    v = <span class="built_in">int</span>(c)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">chr</span>(v), end=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">integrity</span><br></pre></td></tr></table></figure></p>
+<p>修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/def/oxygen.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/def/integrity.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-8">level 8</h1>
+<h2 id="题目信息-8">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201221330.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201221350.png" /></p>
+<p>发现：</p>
+<ol type="1">
+<li>图片中的蜜蜂可以点开，点开之后会跳出一个验证界面 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201221552.png" /></li>
+<li>绿色字符串正好对应的用户名和密码</li>
+</ol>
+<p>但是，很明显可以看出应该是经过某种编码的，后来发现，是通过 <strong>bz2</strong> 压缩得到的。而 python 自带了 <strong>bz2</strong> 库。</p>
+<h2 id="方法-10">方法</h2>
+<p>代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> bz2  </span><br><span class="line">un = <span class="string">b&#x27;BZh91AY&amp;SYA\xaf\x82\r\x00\x00\x01\x01\x80\x02\xc0\x02\x00 \x00!\x9ah3M\x07&lt;]\xc9\x14\xe1BA\x06\xbe\x084&#x27;</span>  </span><br><span class="line">pw = <span class="string">b&#x27;BZh91AY&amp;SY\x94$|\x0e\x00\x00\x00\x81\x00\x03$ \x00!\x9ah3M\x13&lt;]\xc9\x14\xe1BBP\x91\xf08&#x27;</span>  </span><br><span class="line"><span class="built_in">print</span>(bz2.decompress(un), bz2.decompress(pw))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">b&#x27;huge&#x27; b&#x27;file&#x27;</span><br><span class="line"></span><br><span class="line">用户名：huge</span><br><span class="line">密码：file</span><br></pre></td></tr></table></figure></p>
+<p>然后成功登录，得到新的 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/return/good.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-9">level 9</h1>
+<h2 id="题目信息-9">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201230807.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201230823.png" /></p>
+<p>最开始还以为是将图中的黑点连起来，后来想想应该不太可能，然后注意到 <code>first + second</code> ，但是 first 和 second 的长度都不同，无法相加，所以应该不是简单的相加。联想到 <code>connect the dots</code> 觉得应该是将 first 和 second 连接起来，那么 first 和 second 代表的就是点的坐标。</p>
+<h2 id="方法-11">方法</h2>
+<p>代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image, ImageDraw  </span><br><span class="line">first = [<span class="number">146</span>,<span class="number">399</span>,<span class="number">163</span>,<span class="number">403</span>,<span class="number">170</span>,<span class="number">393</span>,<span class="number">169</span>,<span class="number">391</span>,<span class="number">166</span>,<span class="number">386</span>,<span class="number">170</span>,<span class="number">381</span>,<span class="number">170</span>,<span class="number">371</span>,<span class="number">170</span>,<span class="number">355</span>,<span class="number">169</span>,<span class="number">346</span>,<span class="number">167</span>,<span class="number">335</span>,<span class="number">170</span>,<span class="number">329</span>,<span class="number">170</span>,<span class="number">320</span>,<span class="number">170</span>,<span class="number">310</span>,<span class="number">171</span>,<span class="number">301</span>,<span class="number">173</span>,<span class="number">290</span>,<span class="number">178</span>,<span class="number">289</span>,<span class="number">182</span>,<span class="number">287</span>,<span class="number">188</span>,<span class="number">286</span>,<span class="number">190</span>,<span class="number">286</span>,<span class="number">192</span>,<span class="number">291</span>,<span class="number">194</span>,<span class="number">296</span>,<span class="number">195</span>,<span class="number">305</span>,<span class="number">194</span>,<span class="number">307</span>,<span class="number">191</span>,<span class="number">312</span>,<span class="number">190</span>,<span class="number">316</span>,<span class="number">190</span>,<span class="number">321</span>,<span class="number">192</span>,<span class="number">331</span>,<span class="number">193</span>,<span class="number">338</span>,<span class="number">196</span>,<span class="number">341</span>,<span class="number">197</span>,<span class="number">346</span>,<span class="number">199</span>,<span class="number">352</span>,<span class="number">198</span>,<span class="number">360</span>,<span class="number">197</span>,<span class="number">366</span>,<span class="number">197</span>,<span class="number">373</span>,<span class="number">196</span>,<span class="number">380</span>,<span class="number">197</span>,<span class="number">383</span>,<span class="number">196</span>,<span class="number">387</span>,<span class="number">192</span>,<span class="number">389</span>,<span class="number">191</span>,<span class="number">392</span>,<span class="number">190</span>,<span class="number">396</span>,<span class="number">189</span>,<span class="number">400</span>,<span class="number">194</span>,<span class="number">401</span>,<span class="number">201</span>,<span class="number">402</span>,<span class="number">208</span>,<span class="number">403</span>,<span class="number">213</span>,<span class="number">402</span>,<span class="number">216</span>,<span class="number">401</span>,<span class="number">219</span>,<span class="number">397</span>,<span class="number">219</span>,<span class="number">393</span>,<span class="number">216</span>,<span class="number">390</span>,<span class="number">215</span>,<span class="number">385</span>,<span class="number">215</span>,<span class="number">379</span>,<span class="number">213</span>,<span class="number">373</span>,<span class="number">213</span>,<span class="number">365</span>,<span class="number">212</span>,<span class="number">360</span>,<span class="number">210</span>,<span class="number">353</span>,<span class="number">210</span>,<span class="number">347</span>,<span class="number">212</span>,<span class="number">338</span>,<span class="number">213</span>,<span class="number">329</span>,<span class="number">214</span>,<span class="number">319</span>,<span class="number">215</span>,<span class="number">311</span>,<span class="number">215</span>,<span class="number">306</span>,<span class="number">216</span>,<span class="number">296</span>,<span class="number">218</span>,<span class="number">290</span>,<span class="number">221</span>,<span class="number">283</span>,<span class="number">225</span>,<span class="number">282</span>,<span class="number">233</span>,<span class="number">284</span>,<span class="number">238</span>,<span class="number">287</span>,<span class="number">243</span>,<span class="number">290</span>,<span class="number">250</span>,<span class="number">291</span>,<span class="number">255</span>,<span class="number">294</span>,<span class="number">261</span>,<span class="number">293</span>,<span class="number">265</span>,<span class="number">291</span>,<span class="number">271</span>,<span class="number">291</span>,<span class="number">273</span>,<span class="number">289</span>,<span class="number">278</span>,<span class="number">287</span>,<span class="number">279</span>,<span class="number">285</span>,<span class="number">281</span>,<span class="number">280</span>,<span class="number">284</span>,<span class="number">278</span>,<span class="number">284</span>,<span class="number">276</span>,<span class="number">287</span>,<span class="number">277</span>,<span class="number">289</span>,<span class="number">283</span>,<span class="number">291</span>,<span class="number">286</span>,<span class="number">294</span>,<span class="number">291</span>,<span class="number">296</span>,<span class="number">295</span>,<span class="number">299</span>,<span class="number">300</span>,<span class="number">301</span>,<span class="number">304</span>,<span class="number">304</span>,<span class="number">320</span>,<span class="number">305</span>,<span class="number">327</span>,<span class="number">306</span>,<span class="number">332</span>,<span class="number">307</span>,<span class="number">341</span>,<span class="number">306</span>,<span class="number">349</span>,<span class="number">303</span>,<span class="number">354</span>,<span class="number">301</span>,<span class="number">364</span>,<span class="number">301</span>,<span class="number">371</span>,<span class="number">297</span>,<span class="number">375</span>,<span class="number">292</span>,<span class="number">384</span>,<span class="number">291</span>,<span class="number">386</span>,<span class="number">302</span>,<span class="number">393</span>,<span class="number">324</span>,<span class="number">391</span>,<span class="number">333</span>,<span class="number">387</span>,<span class="number">328</span>,<span class="number">375</span>,<span class="number">329</span>,<span class="number">367</span>,<span class="number">329</span>,<span class="number">353</span>,<span class="number">330</span>,<span class="number">341</span>,<span class="number">331</span>,<span class="number">328</span>,<span class="number">336</span>,<span class="number">319</span>,<span class="number">338</span>,<span class="number">310</span>,<span class="number">341</span>,<span class="number">304</span>,<span class="number">341</span>,<span class="number">285</span>,<span class="number">341</span>,<span class="number">278</span>,<span class="number">343</span>,<span class="number">269</span>,<span class="number">344</span>,<span class="number">262</span>,<span class="number">346</span>,<span class="number">259</span>,<span class="number">346</span>,<span class="number">251</span>,<span class="number">349</span>,<span class="number">259</span>,<span class="number">349</span>,<span class="number">264</span>,<span class="number">349</span>,<span class="number">273</span>,<span class="number">349</span>,<span class="number">280</span>,<span class="number">349</span>,<span class="number">288</span>,<span class="number">349</span>,<span class="number">295</span>,<span class="number">349</span>,<span class="number">298</span>,<span class="number">354</span>,<span class="number">293</span>,<span class="number">356</span>,<span class="number">286</span>,<span class="number">354</span>,<span class="number">279</span>,<span class="number">352</span>,<span class="number">268</span>,<span class="number">352</span>,<span class="number">257</span>,<span class="number">351</span>,<span class="number">249</span>,<span class="number">350</span>,<span class="number">234</span>,<span class="number">351</span>,<span class="number">211</span>,<span class="number">352</span>,<span class="number">197</span>,<span class="number">354</span>,<span class="number">185</span>,<span class="number">353</span>,<span class="number">171</span>,<span class="number">351</span>,<span class="number">154</span>,<span class="number">348</span>,<span class="number">147</span>,<span class="number">342</span>,<span class="number">137</span>,<span class="number">339</span>,<span class="number">132</span>,<span class="number">330</span>,<span class="number">122</span>,<span class="number">327</span>,<span class="number">120</span>,<span class="number">314</span>,<span class="number">116</span>,<span class="number">304</span>,<span class="number">117</span>,<span class="number">293</span>,<span class="number">118</span>,<span class="number">284</span>,<span class="number">118</span>,<span class="number">281</span>,<span class="number">122</span>,<span class="number">275</span>,<span class="number">128</span>,<span class="number">265</span>,<span class="number">129</span>,<span class="number">257</span>,<span class="number">131</span>,<span class="number">244</span>,<span class="number">133</span>,<span class="number">239</span>,<span class="number">134</span>,<span class="number">228</span>,<span class="number">136</span>,<span class="number">221</span>,<span class="number">137</span>,<span class="number">214</span>,<span class="number">138</span>,<span class="number">209</span>,<span class="number">135</span>,<span class="number">201</span>,<span class="number">132</span>,<span class="number">192</span>,<span class="number">130</span>,<span class="number">184</span>,<span class="number">131</span>,<span class="number">175</span>,<span class="number">129</span>,<span class="number">170</span>,<span class="number">131</span>,<span class="number">159</span>,<span class="number">134</span>,<span class="number">157</span>,<span class="number">134</span>,<span class="number">160</span>,<span class="number">130</span>,<span class="number">170</span>,<span class="number">125</span>,<span class="number">176</span>,<span class="number">114</span>,<span class="number">176</span>,<span class="number">102</span>,<span class="number">173</span>,<span class="number">103</span>,<span class="number">172</span>,<span class="number">108</span>,<span class="number">171</span>,<span class="number">111</span>,<span class="number">163</span>,<span class="number">115</span>,<span class="number">156</span>,<span class="number">116</span>,<span class="number">149</span>,<span class="number">117</span>,<span class="number">142</span>,<span class="number">116</span>,<span class="number">136</span>,<span class="number">115</span>,<span class="number">129</span>,<span class="number">115</span>,<span class="number">124</span>,<span class="number">115</span>,<span class="number">120</span>,<span class="number">115</span>,<span class="number">115</span>,<span class="number">117</span>,<span class="number">113</span>,<span class="number">120</span>,<span class="number">109</span>,<span class="number">122</span>,<span class="number">102</span>,<span class="number">122</span>,<span class="number">100</span>,<span class="number">121</span>,<span class="number">95</span>,<span class="number">121</span>,<span class="number">89</span>,<span class="number">115</span>,<span class="number">87</span>,<span class="number">110</span>,<span class="number">82</span>,<span class="number">109</span>,<span class="number">84</span>,<span class="number">118</span>,<span class="number">89</span>,<span class="number">123</span>,<span class="number">93</span>,<span class="number">129</span>,<span class="number">100</span>,<span class="number">130</span>,<span class="number">108</span>,<span class="number">132</span>,<span class="number">110</span>,<span class="number">133</span>,<span class="number">110</span>,<span class="number">136</span>,<span class="number">107</span>,<span class="number">138</span>,<span class="number">105</span>,<span class="number">140</span>,<span class="number">95</span>,<span class="number">138</span>,<span class="number">86</span>,<span class="number">141</span>,<span class="number">79</span>,<span class="number">149</span>,<span class="number">77</span>,<span class="number">155</span>,<span class="number">81</span>,<span class="number">162</span>,<span class="number">90</span>,<span class="number">165</span>,<span class="number">97</span>,<span class="number">167</span>,<span class="number">99</span>,<span class="number">171</span>,<span class="number">109</span>,<span class="number">171</span>,<span class="number">107</span>,<span class="number">161</span>,<span class="number">111</span>,<span class="number">156</span>,<span class="number">113</span>,<span class="number">170</span>,<span class="number">115</span>,<span class="number">185</span>,<span class="number">118</span>,<span class="number">208</span>,<span class="number">117</span>,<span class="number">223</span>,<span class="number">121</span>,<span class="number">239</span>,<span class="number">128</span>,<span class="number">251</span>,<span class="number">133</span>,<span class="number">259</span>,<span class="number">136</span>,<span class="number">266</span>,<span class="number">139</span>,<span class="number">276</span>,<span class="number">143</span>,<span class="number">290</span>,<span class="number">148</span>,<span class="number">310</span>,<span class="number">151</span>,<span class="number">332</span>,<span class="number">155</span>,<span class="number">348</span>,<span class="number">156</span>,<span class="number">353</span>,<span class="number">153</span>,<span class="number">366</span>,<span class="number">149</span>,<span class="number">379</span>,<span class="number">147</span>,<span class="number">394</span>,<span class="number">146</span>,<span class="number">399</span>]  </span><br><span class="line">second = [<span class="number">156</span>,<span class="number">141</span>,<span class="number">165</span>,<span class="number">135</span>,<span class="number">169</span>,<span class="number">131</span>,<span class="number">176</span>,<span class="number">130</span>,<span class="number">187</span>,<span class="number">134</span>,<span class="number">191</span>,<span class="number">140</span>,<span class="number">191</span>,<span class="number">146</span>,<span class="number">186</span>,<span class="number">150</span>,<span class="number">179</span>,<span class="number">155</span>,<span class="number">175</span>,<span class="number">157</span>,<span class="number">168</span>,<span class="number">157</span>,<span class="number">163</span>,<span class="number">157</span>,<span class="number">159</span>,<span class="number">157</span>,<span class="number">158</span>,<span class="number">164</span>,<span class="number">159</span>,<span class="number">175</span>,<span class="number">159</span>,<span class="number">181</span>,<span class="number">157</span>,<span class="number">191</span>,<span class="number">154</span>,<span class="number">197</span>,<span class="number">153</span>,<span class="number">205</span>,<span class="number">153</span>,<span class="number">210</span>,<span class="number">152</span>,<span class="number">212</span>,<span class="number">147</span>,<span class="number">215</span>,<span class="number">146</span>,<span class="number">218</span>,<span class="number">143</span>,<span class="number">220</span>,<span class="number">132</span>,<span class="number">220</span>,<span class="number">125</span>,<span class="number">217</span>,<span class="number">119</span>,<span class="number">209</span>,<span class="number">116</span>,<span class="number">196</span>,<span class="number">115</span>,<span class="number">185</span>,<span class="number">114</span>,<span class="number">172</span>,<span class="number">114</span>,<span class="number">167</span>,<span class="number">112</span>,<span class="number">161</span>,<span class="number">109</span>,<span class="number">165</span>,<span class="number">107</span>,<span class="number">170</span>,<span class="number">99</span>,<span class="number">171</span>,<span class="number">97</span>,<span class="number">167</span>,<span class="number">89</span>,<span class="number">164</span>,<span class="number">81</span>,<span class="number">162</span>,<span class="number">77</span>,<span class="number">155</span>,<span class="number">81</span>,<span class="number">148</span>,<span class="number">87</span>,<span class="number">140</span>,<span class="number">96</span>,<span class="number">138</span>,<span class="number">105</span>,<span class="number">141</span>,<span class="number">110</span>,<span class="number">136</span>,<span class="number">111</span>,<span class="number">126</span>,<span class="number">113</span>,<span class="number">129</span>,<span class="number">118</span>,<span class="number">117</span>,<span class="number">128</span>,<span class="number">114</span>,<span class="number">137</span>,<span class="number">115</span>,<span class="number">146</span>,<span class="number">114</span>,<span class="number">155</span>,<span class="number">115</span>,<span class="number">158</span>,<span class="number">121</span>,<span class="number">157</span>,<span class="number">128</span>,<span class="number">156</span>,<span class="number">134</span>,<span class="number">157</span>,<span class="number">136</span>,<span class="number">156</span>,<span class="number">136</span>]  </span><br><span class="line">img = Image.new(<span class="string">&#x27;RGB&#x27;</span>, (<span class="number">500</span>, <span class="number">500</span>))  </span><br><span class="line">draw = ImageDraw.Draw(img)  </span><br><span class="line">draw.polygon(first, fill = <span class="string">&#x27;white&#x27;</span>)  </span><br><span class="line">draw.polygon(second, fill = <span class="string">&#x27;white&#x27;</span>)  </span><br><span class="line">img.show()</span><br></pre></td></tr></table></figure></p>
+<p>结果是： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201231228.png" /></p>
+<p>牛的英文是 cow，修改 url 为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/return/cow.html</span><br></pre></td></tr></table></figure>
+<p>提示： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hmm. it&#x27;s a male.</span><br></pre></td></tr></table></figure></p>
+<p>也就是公牛，英语为 bull。修改 url 为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/cow.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/bull.html</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>如果出现验证的框，输入 level 8 得到的用户名和密码即可。</p>
+</blockquote>
+<p>其实，只有 first 也能画出这头牛，而 second 画出来的长这样： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220201231802.png" /></p>
+<p>不知道是否可以理解为 <strong>性器官？？？</strong></p>
+<h1 id="level-10">level 10</h1>
+<h2 id="题目信息-10">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220202104810.png" /></p>
+<p>注意到 <code>len(a[30]) = ?</code>。查看页面源码，发现图片中的牛可以点击，并且得到一个数组 a： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = [1, 11, 21, 1211, 111221,</span><br></pre></td></tr></table></figure></p>
+<p>通过观察，发现这个数组并没有闭合。那么思路就是：<strong>通过数组的某种规律得到 a[30] 的值，然后再计算长度。</strong></p>
+<p>通过查资料发现，这是外观序列。</p>
+<blockquote>
+<p>外观序列（Look-and-say sequence），是指以下特点的整数序列：</p>
+<p>1, 11, 21, 1211, 111221, 312211, 13112221, 1113213211, ……</p>
+<p>它以数字1开始，序列的第n+1项是对第n项的描述。比如第2项是2个1，所以下一项（第三项）就是21。又比如第5项是111221，描述就是3个1，2个2，1个1， 所以下一项就是312211。</p>
+</blockquote>
+<h2 id="方法-1-1">方法 1</h2>
+<p>代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getNext</span>(<span class="params">res</span>):</span>  </span><br><span class="line">    index, <span class="built_in">next</span> = <span class="number">0</span>, <span class="string">&quot;&quot;</span>  </span><br><span class="line"> <span class="keyword">while</span> index &lt; <span class="built_in">len</span>(res):  </span><br><span class="line">	count = <span class="number">1</span>  </span><br><span class="line">	<span class="keyword">while</span> index &lt; <span class="built_in">len</span>(res) - <span class="number">1</span> <span class="keyword">and</span> res[index] == res[index+<span class="number">1</span>]:  </span><br><span class="line">		count += <span class="number">1</span>  </span><br><span class="line">		index += <span class="number">1</span>  </span><br><span class="line">	<span class="built_in">next</span> += <span class="built_in">str</span>(count) + res[index]  </span><br><span class="line">	index += <span class="number">1</span></span><br><span class="line"><span class="keyword">return</span> <span class="built_in">next</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countAndSay</span>(<span class="params">length</span>):</span>  </span><br><span class="line">    res = <span class="string">&#x27;1&#x27;</span>  </span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(length-<span class="number">1</span>):  </span><br><span class="line">		res = getNext(res)</span><br><span class="line">	<span class="keyword">return</span>(res) </span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(countAndSay(<span class="number">31</span>)))</span><br></pre></td></tr></table></figure></p>
+<p><strong>（注意，一定是 count 在前，res[index] 在后）</strong></p>
+<p>得到结果：5808</p>
+<p>因此修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/bull.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/5808.html</span><br></pre></td></tr></table></figure></p>
+<h2 id="方法-2-1">方法 2</h2>
+<p>利用正则表达式替代循环。 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="built_in">print</span>(re.findall(<span class="string">r&#x27;(\d)(\1*)&#x27;</span>, <span class="string">&#x27;111221&#x27;</span>))</span><br></pre></td></tr></table></figure></p>
+<p>结果为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[(&#x27;1&#x27;, &#x27;11&#x27;), (&#x27;2&#x27;, &#x27;2&#x27;), (&#x27;1&#x27;, &#x27;&#x27;)]</span><br></pre></td></tr></table></figure></p>
+<p>（假设元组第一个元素为 i，第二个元素为 j）那么与方法 1相比： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">value == res[index]</span><br><span class="line">count == len(str(i+j))</span><br></pre></td></tr></table></figure></p>
+<p>因此，最终代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re  </span><br><span class="line">res = <span class="string">&#x27;1&#x27;</span>  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">30</span>):  </span><br><span class="line">    res = <span class="string">&quot;&quot;</span>.join([<span class="built_in">str</span>(<span class="built_in">len</span>(i+j))+i <span class="keyword">for</span> i, j <span class="keyword">in</span> re.findall(<span class="string">r&#x27;(\d)(\1*)&#x27;</span>, res)])  </span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(res))</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-11">level 11</h1>
+<h2 id="题目信息-11">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220202111336.png" /></p>
+<p>注意网站名字：<code>odd even</code></p>
+<p>本题只有两个信息：</p>
+<ol type="1">
+<li>图片</li>
+<li><code>odd even</code> 也就是奇数，偶数</li>
+</ol>
+<p>猜测：<strong>把图中奇数和偶数的像素点分开</strong></p>
+<h2 id="方法-12">方法</h2>
+<p>代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image  </span><br><span class="line">path = <span class="string">&#x27;attachments/level_11/cave.jpg&#x27;</span>  </span><br><span class="line">img = Image.<span class="built_in">open</span>(path)  </span><br><span class="line">odd = Image.new(<span class="string">&#x27;RGB&#x27;</span>, (img.width, img.height))  </span><br><span class="line">even = Image.new(<span class="string">&#x27;RGB&#x27;</span>, (img.width, img.height))  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(img.width):  </span><br><span class="line">	<span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(img.height):  </span><br><span class="line">		pixel = img.getpixel((i, j))  </span><br><span class="line">        <span class="keyword">if</span> (i + j) % <span class="number">2</span> == <span class="number">1</span>: <span class="comment"># odd  </span></span><br><span class="line">			odd.putpixel((i, j), pixel)  </span><br><span class="line">        <span class="keyword">else</span>:   <span class="comment"># even</span></span><br><span class="line">			even.putpixel((i, j), pixel)  </span><br><span class="line"></span><br><span class="line">odd.show()  </span><br><span class="line">even.show()</span><br></pre></td></tr></table></figure></p>
+<p>得到两张图片： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220202111705.png" /></p>
+<p>右边那张中有 <code>evil</code> 字样。因此修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/5808.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/evil.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-12">level 12</h1>
+<h2 id="题目信息-12">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203091240.png" /></p>
+<p>查看源码，点击图片链接发现： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.pythonchallenge.com/pc/return/evil1.jpg</span><br></pre></td></tr></table></figure></p>
+<p>后面有数字，猜想把数字改一下会不会有其他图片，果不其然。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203091406.png" alt="evil2.jpg" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203091619.png" /></p>
+<p>以上分别是2，3。注意到2，将后缀修改会下载得到一个文件。其实4还是有的，访问的时候并不是显示没有文件，而是显示 <code>因存在错误而无法显示</code>，利用下面命令访问： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -u huge:file http://www.pythonchallenge.com/pc/return/evil4.jpg</span><br></pre></td></tr></table></figure></p>
+<p>得到一句话 <code>Bert is evil! go back!</code>。这么看来，信息应该就在刚刚下载的文件里。</p>
+<p>注意到第一张图片中将牌分为了 5 叠（dealing the cards into 5 stacks），根据网站名 <code>deal evil</code> ，那么猜测：<strong>将下载的文件数据也分为 5 叠。</strong></p>
+<h2 id="方法-13">方法</h2>
+<p>代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">path = <span class="string">&#x27;attachments/level_12/evil2.gfx&#x27;</span></span><br><span class="line">data = <span class="built_in">open</span>(path, <span class="string">&#x27;rb&#x27;</span>).read()  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):  </span><br><span class="line">    <span class="built_in">open</span>(<span class="string">&#x27;attachments/level_12/%d.jpg&#x27;</span> % i, <span class="string">&#x27;wb&#x27;</span>).write(data[i::<span class="number">5</span>])</span><br></pre></td></tr></table></figure></p>
+<p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203093800.png" /></p>
+<p>由于 4 被划掉，不做考虑。分别是：<code>dis, pro, port, ional</code> ，修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/evil.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/disproportional.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-13">level 13</h1>
+<h2 id="题目信息-13">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203101659.png" /></p>
+<p>查看页面源码发现： - <code>phone that &lt;remote /&gt; evil</code> - <code>5</code> 可以点击，结果为：<code>faultCode 105 faultString XML error 5: empty document</code></p>
+<p>查询 stack overflow，这个报错的信息是因为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">It looks from the response like you didn&#x27;t submit an xml &#x27;request&#x27; document to the url. XMLRPC requires that you post a request in the form of commands via an xml file.</span><br><span class="line"></span><br><span class="line">没有提交 xml 请求。</span><br></pre></td></tr></table></figure></p>
+<p>故可以利用 xmlrpc 库请求。</p>
+<h2 id="方法-14">方法</h2>
+<p>先查看有哪些方法： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xmlrpc.client  </span><br><span class="line">connect = xmlrpc.client.ServerProxy(<span class="string">&#x27;http://www.pythonchallenge.com/pc/phonebook.php&#x27;</span>)  </span><br><span class="line"><span class="built_in">print</span>(connect.system.listMethods())</span><br><span class="line">````</span><br><span class="line"></span><br><span class="line">结果：</span><br></pre></td></tr></table></figure> ['phone', 'system.listMethods', 'system.methodHelp', 'system.methodSignature', 'system.multicall', 'system.getCapabilities'] <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">（注意到 `phone`）</span><br><span class="line"></span><br><span class="line">查看 phone 方法的**帮助**和**输入与输出**：</span><br><span class="line">```python</span><br><span class="line">print(connect.system.methodHelp(&#x27;phone&#x27;))  </span><br><span class="line">print(connect.system.methodSignature(&#x27;phone&#x27;))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Returns the phone of a person</span><br><span class="line">[[&#x27;string&#x27;, &#x27;string&#x27;]]</span><br></pre></td></tr></table></figure></p>
+<p>该方法需要输入一个字符串，返回一个字符串。那么输入的字符串应该是人名，而返回的字符串应该是对应的电话号码。注意到上一关的 <code>Bert is evil! go back!</code>，那么这里应该输入 <code>Bert</code>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(connect.phone(<span class="string">&#x27;Bert&#x27;</span>))</span><br></pre></td></tr></table></figure></p>
+<p>结果： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">555-ITALY</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>冷知识：<code>555</code> basically means "fake phone numbers" in US...</p>
+</blockquote>
+<p>因此修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/disproportional.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/italy.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-14">level 14</h1>
+<h2 id="题目信息-14">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203110227.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203110246.png" /></p>
+<p>访问 wire.png ，发现真正的尺寸是 10000 * 1。</p>
+<p>总结一下信息：</p>
+<ol type="1">
+<li><code>100*100 = (100+99+99+98) + (...</code></li>
+<li>wire.png 是 <code>10000*1</code>，而显示出来的是 <code>100*100</code></li>
+<li>HTML 标题为 <code>walk around</code></li>
+</ol>
+<p>猜测：<strong>将 <code>10000*1</code> 的图片按某种方式卷起来，形成一个 <code>100*100</code> 的图片，卷的方式应该就是 <code>(100+99+99+98) + (..</code>。就是类似这样：</strong> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203111001.png" /> （先向右100，然后向下99，向左99，向上98；向右98 ...）</p>
+<h2 id="方法-15">方法</h2>
+<p>代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image, ImageDraw  </span><br><span class="line">path = <span class="string">&#x27;attachments/level_14/wire.png&#x27;</span>  </span><br><span class="line">img = Image.<span class="built_in">open</span>(path)  </span><br><span class="line"><span class="built_in">print</span>(img.size, img.mode, img.<span class="built_in">format</span>)  </span><br><span class="line">out = Image.new(<span class="string">&#x27;RGB&#x27;</span>, (<span class="number">100</span>, <span class="number">100</span>))  </span><br><span class="line">d = <span class="number">200</span>  </span><br><span class="line">delta = [(<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, <span class="number">1</span>), (-<span class="number">1</span>, <span class="number">0</span>), (<span class="number">0</span>, -<span class="number">1</span>)]  </span><br><span class="line">x, y, i = -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>  <span class="comment"># 因为第一次要 +100，所以 x 初始为 -1</span></span><br><span class="line"><span class="keyword">while</span> d/<span class="number">2</span> &gt; <span class="number">0</span>:  </span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> delta:  </span><br><span class="line">        steps = d // <span class="number">2</span></span><br><span class="line">		<span class="keyword">for</span> s <span class="keyword">in</span> <span class="built_in">range</span>(steps):  </span><br><span class="line">            x, y = x + v[<span class="number">0</span>], y + v[<span class="number">1</span>]  </span><br><span class="line">            out.putpixel((x, y), img.getpixel((i, <span class="number">0</span>)))  </span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">		d -= <span class="number">1</span>  </span><br><span class="line">out.show()</span><br></pre></td></tr></table></figure></p>
+<p>结果： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220203111203.png" /></p>
+<p>当访问 <code>http://www.pythonchallenge.com/pc/return/cat.html</code> 时，出现：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206223856.png" /></p>
+<p>因此用 uzi 替代 cat，修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/cat.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/uzi.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="level-15">level 15</h1>
+<h2 id="题目信息-15">题目信息</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206225138.png" /></p>
+<p>查看页面源码： <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220206225159.png" /></p>
+<p>信息总结：</p>
+<ol type="1">
+<li>日历上显示的应该是 <code>1xx6</code> 年；</li>
+<li>注意最右下角的其实是2月，有 29 天，说明应该是闰年；</li>
+<li>他不是最年轻的，而是第二年轻的</li>
+<li>要做的事：为明天买花</li>
+<li>网页标题：<code>whom?</code></li>
+</ol>
+<p>猜测：需要通过生日找出这个人是谁。</p>
+<h2 id="方法-16">方法</h2>
+<ol type="1">
+<li>找出 1006 到 1996 之间的满足 1.26 是周一的所有闰年。代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime, calendar  </span><br><span class="line"><span class="keyword">for</span> year <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1006</span>, <span class="number">1997</span>, <span class="number">10</span>):  </span><br><span class="line">    d = datetime.date(year, <span class="number">1</span>, <span class="number">26</span>)  </span><br><span class="line">    <span class="keyword">if</span> d.isoweekday() == <span class="number">1</span> <span class="keyword">and</span> calendar.isleap(year):  <span class="comment"># 判断是否为闰年，1，26是否为周一</span></span><br><span class="line">        <span class="built_in">print</span>(d)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>结果为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1176-01-26</span><br><span class="line">1356-01-26</span><br><span class="line">1576-01-26</span><br><span class="line">1756-01-26</span><br><span class="line">1976-01-26</span><br></pre></td></tr></table></figure></p>
+<p>然后，根据 "他不是最年轻的，而是第二年轻的"，猜测应该是 1756 年，最年轻的是1956年。，再根据"要做的事：为明天买花"，猜测他的生日应该是 1756.1.27，百度发现，那天是莫扎特（Mozart）的生日，修改 url： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">修改前：http://www.pythonchallenge.com/pc/return/uzi.html</span><br><span class="line">修改后：http://www.pythonchallenge.com/pc/return/mozart.html</span><br></pre></td></tr></table></figure></p>
+<h1 id="附录">附录</h1>
+<ol type="1">
+<li>网址：<a target="_blank" rel="noopener" href="http://www.pythonchallenge.com/">python challenge</a></li>
+<li>解法：<a target="_blank" rel="noopener" href="https://www.hackingnote.com/en/python-challenge-solutions/overview">python challenge solutions</a></li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#level-0"><span class="toc-number">1.</span> <span class="toc-text">level 0</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-1"><span class="toc-number">2.</span> <span class="toc-text">level 1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-1"><span class="toc-number">2.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-1"><span class="toc-number">2.2.</span> <span class="toc-text">方法 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-2"><span class="toc-number">2.3.</span> <span class="toc-text">方法 2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#maketrans-%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.3.1.</span> <span class="toc-text">maketrans() 方法介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#translate-%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.3.2.</span> <span class="toc-text">translate() 方法介绍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-3"><span class="toc-number">2.4.</span> <span class="toc-text">方法 3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zip-%E6%96%B9%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.4.1.</span> <span class="toc-text">zip() 方法介绍</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-2"><span class="toc-number">3.</span> <span class="toc-text">level 2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-2"><span class="toc-number">3.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-4"><span class="toc-number">3.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-3"><span class="toc-number">4.</span> <span class="toc-text">level 3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-3"><span class="toc-number">4.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-5"><span class="toc-number">4.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-4"><span class="toc-number">5.</span> <span class="toc-text">level 4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-4"><span class="toc-number">5.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-6"><span class="toc-number">5.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-5"><span class="toc-number">6.</span> <span class="toc-text">level 5</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-5"><span class="toc-number">6.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-7"><span class="toc-number">6.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-6"><span class="toc-number">7.</span> <span class="toc-text">level 6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-6"><span class="toc-number">7.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-8"><span class="toc-number">7.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-7"><span class="toc-number">8.</span> <span class="toc-text">level 7</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-7"><span class="toc-number">8.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-9"><span class="toc-number">8.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-8"><span class="toc-number">9.</span> <span class="toc-text">level 8</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-8"><span class="toc-number">9.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-10"><span class="toc-number">9.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-9"><span class="toc-number">10.</span> <span class="toc-text">level 9</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-9"><span class="toc-number">10.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-11"><span class="toc-number">10.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-10"><span class="toc-number">11.</span> <span class="toc-text">level 10</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-10"><span class="toc-number">11.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-1-1"><span class="toc-number">11.2.</span> <span class="toc-text">方法 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-2-1"><span class="toc-number">11.3.</span> <span class="toc-text">方法 2</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-11"><span class="toc-number">12.</span> <span class="toc-text">level 11</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-11"><span class="toc-number">12.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-12"><span class="toc-number">12.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-12"><span class="toc-number">13.</span> <span class="toc-text">level 12</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-12"><span class="toc-number">13.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-13"><span class="toc-number">13.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-13"><span class="toc-number">14.</span> <span class="toc-text">level 13</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-13"><span class="toc-number">14.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-14"><span class="toc-number">14.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-14"><span class="toc-number">15.</span> <span class="toc-text">level 14</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-14"><span class="toc-number">15.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-15"><span class="toc-number">15.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#level-15"><span class="toc-number">16.</span> <span class="toc-text">level 15</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E4%BF%A1%E6%81%AF-15"><span class="toc-number">16.1.</span> <span class="toc-text">题目信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95-16"><span class="toc-number">16.2.</span> <span class="toc-text">方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">17.</span> <span class="toc-text">附录</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&text=python challenge 题解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&title=python challenge 题解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&is_video=false&description=python challenge 题解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=python challenge 题解&body=Check out this article: https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&title=python challenge 题解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&title=python challenge 题解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&title=python challenge 题解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&title=python challenge 题解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&name=python challenge 题解&description=&lt;p&gt;这是个人的 python challenge 的刷题记录，网址是：&lt;a href=&#34;http://www.pythonchallenge.com/&#34;&gt;python challenge&lt;/a&gt;。更多内容请点击 &lt;strong&gt;阅读全文&lt;/strong&gt;，如有错误，欢迎在评论区指出。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/01/29/python%20challenge%20%E9%A2%98%E8%A7%A3/&t=python challenge 题解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

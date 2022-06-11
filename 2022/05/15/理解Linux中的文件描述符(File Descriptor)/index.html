@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人知识记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解Linux中的文件描述符(File Descriptor)">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人知识记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515211022.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515211325.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515212853.png">
+<meta property="article:published_time" content="2022-05-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-15T13:30:17.266Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="Linux基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515211022.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>理解Linux中的文件描述符(File Descriptor)</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/15/Tiki%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/14/DC-8%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#user-space-kernel-space"><span class="toc-number">2.</span> <span class="toc-text">2. user space &amp; kernel space</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#file-descriptor"><span class="toc-number">3.</span> <span class="toc-text">3. File Descriptor</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#file-tables"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. File tables</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#file-descriptor-table"><span class="toc-number">3.1.1.</span> <span class="toc-text">3.1.1. file descriptor table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#file-table"><span class="toc-number">3.1.2.</span> <span class="toc-text">3.1.2. file table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#inode-table"><span class="toc-number">3.1.3.</span> <span class="toc-text">3.1.3. inode table</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 流程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B%E7%9A%84-file-descriptor"><span class="toc-number">4.</span> <span class="toc-text">4. 查看进程的 file descriptor</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        理解Linux中的文件描述符(File Descriptor)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-14T16:00:00.000Z" itemprop="datePublished">2022-05-15</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Linux%E5%9F%BA%E7%A1%80/" rel="tag">Linux基础</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人知识记录。</p>
+<span id="more"></span>
+<h1 id="简介">1. 简介</h1>
+<p>file descriptor（一下简称为fd） 又叫文件描述符，它是一个抽象的指示符，用一个<strong>非负整数</strong>表示。它指向了由系统内核维护的一个 file table 中的某个条目(entry)。</p>
+<p>（Windows中这东西叫做file handle，翻译为：句柄）</p>
+<p>举个栗子： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;/tmp/test.txt&quot;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">	...</span><br></pre></td></tr></table></figure></p>
+<p>上述python代码中，f就可以类比为文件描述符，f就指向了 /tmp/test.txt，可以通过f对该文件进行读操作（如果设置了rw，那么就可以读写操作）。</p>
+<h1 id="user-space-kernel-space">2. user space &amp; kernel space</h1>
+<p>现在操作系统将内存划分为2个区域，分别用 user space(用户空间) 和 kernel space(内核空间)。用户的程序在 user space 中执行，系统内核在 kernel space 中执行。</p>
+<p>用户的程序没有权限直接访问硬件资源，但是系统内核可以。比如读写本地文件需要访问磁盘，创建socket需要网卡等。因此，<strong>用户想要读写文件，必须要向内核发起读写请求，这个过程叫做 system call。内核收到用户程序的 system call 之后，负责访问硬件，并把结果放回给程序。</strong> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;/tmp/test.txt&quot;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">	<span class="built_in">str</span> = f.read()</span><br></pre></td></tr></table></figure></p>
+<p>上面的代码的流程如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515211022.png" /></p>
+<h1 id="file-descriptor">3. File Descriptor</h1>
+<p>上面简单介绍了User space和Kernel space，这对于理解fd有很大的帮助。fd会存在，就是因为用户程序无法直接访问硬件，因此当程序向内核发起system call打开一个文件时，在用户进程中必须有一个东西标识着打开的文件，这个东西就是fd。</p>
+<blockquote>
+<p>概念：Linux 系统中，把一切都看做是文件，当进程打开现有文件或创建新文件时，内核向进程返回一个文件描述符，文件描述符就是内核为了高效管理已被打开的文件所创建的索引，用来指向被打开的文件，所有执行I/O操作的系统调用都会通过文件描述符。</p>
+</blockquote>
+<h2 id="file-tables">3.1. File tables</h2>
+<p>和fd相关的一共有3张表，分别是：</p>
+<ul>
+<li>file descriptor table</li>
+<li>file table</li>
+<li>inode table</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515211325.png" /></p>
+<h3 id="file-descriptor-table">3.1.1. file descriptor table</h3>
+<p>file descriptors table由用户进程所有，每个进程都有一个这样的表，这里记录了进程打开的文件所代表的fd，fd的值映射到file table中的条目(entry)。</p>
+<p>需要注意：每个进程都会预留3个默认的fd: stdin, stdout, stderr；它们的值分别为 0,1,2。</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Integer value</th>
+<th style="text-align: center;">Name</th>
+<th style="text-align: center;">Symbolic constant</th>
+<th style="text-align: center;">file stream</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">standard input</td>
+<td style="text-align: center;">STDIN_FILENO</td>
+<td style="text-align: center;">stdin</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">standard output</td>
+<td style="text-align: center;">STDOUT_FILENO</td>
+<td style="text-align: center;">stdout</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">standard error</td>
+<td style="text-align: center;">STDERR_FILENO</td>
+<td style="text-align: center;">stderr</td>
+</tr>
+</tbody>
+</table>
+<p>当Linux系统启动的时候，就会自动分配这三个fd。而子进程的fd会继承父进程的fd，因此所有的进程都会携带有这三个fd。</p>
+<h3 id="file-table">3.1.2. file table</h3>
+<p>file table是<strong>全局唯一</strong>的表，由系统内核维护。这个表记录了所有进程打开的文件的状态(是否可读、可写等状态)，同时它也映射到inode table中的entry。</p>
+<h3 id="inode-table">3.1.3. inode table</h3>
+<p>inode table同样是<strong>全局唯一</strong>的，它指向了真正的文件地址(磁盘中的位置)，每个entry全局唯一。</p>
+<h2 id="流程">3.2. 流程</h2>
+<p>当程序向内核发起 system call open()，内核会：</p>
+<ol type="1">
+<li>允许程序请求</li>
+<li>创建一个entry并插入到file table中，然后返回fd</li>
+<li>程序把fd插入到fd table中</li>
+</ol>
+<p>当程序再次发起 sytem call read()是，需要把相关的fd传给内核，内核根据fd定位到具体的文件(fd -&gt; file table -&gt; inode table)并向磁盘发起读取请求，再把读取的数据返回给程序处理。</p>
+<p>read 函数定义 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">read</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> count)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>write 函数定义 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">size_t</span> nbytes)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>从上面的结果来看，fd就是file table的一个索引，指向了file table中的entry。</p>
+<h1 id="查看进程的-file-descriptor">4. 查看进程的 file descriptor</h1>
+<p>可以使用下面的命令查看进程的fd: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -l /proc/[pid]/fd</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515212853.png" /></p>
+<p>上图中的蓝色数字就是fd。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">1. 简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#user-space-kernel-space"><span class="toc-number">2.</span> <span class="toc-text">2. user space &amp; kernel space</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#file-descriptor"><span class="toc-number">3.</span> <span class="toc-text">3. File Descriptor</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#file-tables"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. File tables</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#file-descriptor-table"><span class="toc-number">3.1.1.</span> <span class="toc-text">3.1.1. file descriptor table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#file-table"><span class="toc-number">3.1.2.</span> <span class="toc-text">3.1.2. file table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#inode-table"><span class="toc-number">3.1.3.</span> <span class="toc-text">3.1.3. inode table</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 流程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E8%BF%9B%E7%A8%8B%E7%9A%84-file-descriptor"><span class="toc-number">4.</span> <span class="toc-text">4. 查看进程的 file descriptor</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&text=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&title=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&is_video=false&description=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=理解Linux中的文件描述符(File Descriptor)&body=Check out this article: https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&title=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&title=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&title=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&title=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&name=理解Linux中的文件描述符(File Descriptor)&description=&lt;p&gt;个人知识记录。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/15/%E7%90%86%E8%A7%A3Linux%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6(File%20Descriptor)/&t=理解Linux中的文件描述符(File Descriptor)"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
