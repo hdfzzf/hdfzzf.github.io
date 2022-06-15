@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人的知识笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第2章 原始socket和流量嗅探">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的知识笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614195653.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614195715.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614222003.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614223214.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614223244.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614223833.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615141248.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615141201.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614232223.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615141722.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615153907.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615211142.png">
+<meta property="article:published_time" content="2022-06-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-15T14:13:50.754Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="black_hat_python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614195653.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>第2章 原始socket和流量嗅探</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/06/14/%E7%AC%AC1%E7%AB%A0%20%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#udp-host-discovery-tool"><span class="toc-number">1.</span> <span class="toc-text">1. UDP Host Discovery Tool</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#windowslinux%E5%88%86%E7%BB%84%E5%97%85%E6%8E%A2"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. Windows&#x2F;Linux分组嗅探</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90ip%E5%A4%B4%E9%83%A8"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. 解析IP头部</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90icmp%E5%A4%B4%E9%83%A8"><span class="toc-number">1.3.</span> <span class="toc-text">1.3. 解析ICMP头部</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E6%89%AB%E6%8F%8F"><span class="toc-number">1.4.</span> <span class="toc-text">1.4. 子网扫描</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        第2章 原始socket和流量嗅探
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-06-14T16:00:00.000Z" itemprop="datePublished">2022-06-15</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/black-hat-python/">black_hat_python</a> › <a class="category-link" href="/categories/python/">python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/black-hat-python/" rel="tag">black_hat_python</a>, <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人的知识笔记。</p>
+<span id="more"></span>
+<h1 id="udp-host-discovery-tool">1. UDP Host Discovery Tool</h1>
+<h2 id="windowslinux分组嗅探">1.1. Windows/Linux分组嗅探</h2>
+<p>UDP来探测端口与TCP不同，攻击者发送UDP数据报给目标主机的一个或多个端口，</p>
+<ul>
+<li>如果目标主机不存在，那么就不会收到任何消息（废话）</li>
+<li>如果目标主机存在，但是对应端口关闭，那么就会在一段时间之后收到 ICMP 消息，提示端口不可达</li>
+<li>如果目标主机存在，对应端口也处于开放状态，也不会收到任何回应</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="comment"># host to listen on</span></span><br><span class="line">Host = <span class="string">&#x27;10.0.2.4&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>: <span class="comment"># windows</span></span><br><span class="line">        socket_protocol = socket.IPPROTO_IP</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        socket_protocol = socket.IPPROTO_ICMP</span><br><span class="line">    </span><br><span class="line">    sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)</span><br><span class="line">    sniffer.bind((Host, <span class="number">0</span>)) <span class="comment"># 端口随意</span></span><br><span class="line">    <span class="comment"># 在捕获的数据包中包含IP头</span></span><br><span class="line">    sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, <span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 在Windows平台上，需要设置IOCTL以启用混杂模式</span></span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:</span><br><span class="line">        sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)</span><br><span class="line">    <span class="comment"># 读取单个数据包</span></span><br><span class="line">    <span class="built_in">print</span>(sniffer.recv(<span class="number">65535</span>))</span><br><span class="line">    <span class="comment"># 在Windows平台上，关闭IOCTL的混杂模式</span></span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>: </span><br><span class="line">        sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>不同平台的 <code>os.name</code> 是不同的：1. Windows</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614195653.png" /></p>
+<ol start="2" type="1">
+<li><p>Linux</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614195715.png" /></p></li>
+</ol>
+<p>Windows的IOCTL允许嗅探所有协议的分组，但Linux只能嗅探ICMP分组（根据socket对象创建的时候的参数决定）。</p>
+<p>解释：</p>
+<ol type="1">
+<li><code>sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)</code> 创建一个基于 ICMP 的raw socket</li>
+<li><code>sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)</code> 设置为 IPPROTO_IP 即接收所有IP分组；并且必须设置 IP_HDRINCL。</li>
+</ol>
+<p>运行结果：（需要使用 root 权限运行！！！）</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614222003.png" /></p>
+<p>仅仅只是接收了分组，并没有对分组进行解码。</p>
+<p>上面是ping的情况，如果不是ICMP的协议就不会嗅探：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614223214.png" /></p>
+<p>如果是在Windows平台，则所有分组都能捕捉</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614223244.png" /></p>
+<p>（我都还没有ping就已经捕捉了）</p>
+<h2 id="解析ip头部">1.2. 解析IP头部</h2>
+<p>根据上一小节的分析，现在已经可以捕捉任何协议的IP分组了，但是捕捉到的分组是二进制的，难以理解。因此，下一步的工作就是解析IP分组中的IP头部，提取出IP头部的字段信息。首先看一下IP协议的头部的样子：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614223833.png" /></p>
+<p>我们需要做的就是提取协议类型、源IP和目标IP。这意味着我们需要直接在二进制中分离出各个字段。在python中，可以使用 <code>ctypes</code> 或者 <code>struct</code> 模块。前者它为基于 C 的语言提供了一座桥梁，使你能够使用与 C 兼容的数据类型并在共享库中调用函数。后者在 Python 值和以 Python 字节对象表示的 C 结构之间进行转换。换句话说，<code>ctypes</code> 模块除了处理二进制数据类型外，还提供了很多其他功能，而 <code>struct</code> 模块主要处理二进制数据。</p>
+<p>编写如下用来解析IP头部的代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建IP头部</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IP</span>:</span> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, buff=<span class="literal">None</span></span>):</span></span><br><span class="line">        header = struct.unpack(<span class="string">&#x27;&lt;BBHHHBBH4s4s&#x27;</span>, buff)</span><br><span class="line">        self.ver = header[<span class="number">0</span>] &gt;&gt; <span class="number">4</span></span><br><span class="line">        self.ihl = header[<span class="number">0</span>] &amp; <span class="number">0xF</span></span><br><span class="line"></span><br><span class="line">        self.tos = header[<span class="number">1</span>]</span><br><span class="line">        self.<span class="built_in">len</span> = header[<span class="number">2</span>]</span><br><span class="line">        self.<span class="built_in">id</span> = header[<span class="number">3</span>]</span><br><span class="line">        self.flags = header[<span class="number">4</span>] &amp; <span class="number">0x7</span></span><br><span class="line">        self.offset = header[<span class="number">4</span>] &gt;&gt; <span class="number">3</span></span><br><span class="line">        self.ttl = header[<span class="number">5</span>]</span><br><span class="line">        self.protocol_num = header[<span class="number">6</span>]</span><br><span class="line">        self.<span class="built_in">sum</span> = header[<span class="number">7</span>]</span><br><span class="line">        self.src = header[<span class="number">8</span>]</span><br><span class="line">        self.dst = header[<span class="number">9</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># human readable IP address</span></span><br><span class="line">        self.src_address = ipaddress.ip_address(self.src)</span><br><span class="line">        self.dst_address = ipaddress.ip_address(self.dst)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># map protocl constants to their names</span></span><br><span class="line">        self.protocol_map = &#123;<span class="number">1</span>: <span class="string">&quot;ICMP&quot;</span>, <span class="number">6</span>: <span class="string">&quot;TCP&quot;</span>, <span class="number">17</span>: <span class="string">&quot;UDP&quot;</span>&#125;</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.protocol = self.protocol_map[self.protocol_num]</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s No protocol for %s&quot;</span> %(e, self.protocol_num))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sniff</span>(<span class="params">host</span>):</span></span><br><span class="line">    <span class="comment"># create raw socket, bin to public interface</span></span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>: <span class="comment"># windows</span></span><br><span class="line">        socket_protocol = socket.IPPROTO_IP</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        socket_protocol = socket.IPPROTO_ICMP</span><br><span class="line">    sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)</span><br><span class="line">    sniffer.bind((host, <span class="number">1</span>))</span><br><span class="line">    sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:</span><br><span class="line">        sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            raw_packet = sniffer.recvfrom(<span class="number">65535</span>)[<span class="number">0</span>]</span><br><span class="line">            ip_header = IP(raw_packet[:<span class="number">20</span>])</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;Protocol %s, src: %s -&gt; dst: %s&#x27;</span> % (ip_header.protocol, ip_header.src_address, ip_header.dst_address))</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:</span><br><span class="line">            sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)</span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">2</span>:</span><br><span class="line">        host = sys.argv[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        host = <span class="string">&#x27;10.0.2.4&#x27;</span></span><br><span class="line">    sniff(host)</span><br></pre></td></tr></table></figure></p>
+<ol type="1">
+<li>首先利用 <code>struct</code> 模块创建IP head 类。</li>
+<li>在类中，调用 <code>ipaddress.ip_address</code> 将二进制的IP地址转化为字符串</li>
+<li>在类中，还将得到的 protocol_num 做匹配，得到对应的 protocol 名</li>
+<li>与前一个代码不同的是，这里使用了无限循环，可以一直捕捉分组</li>
+</ol>
+<p>在Windows上的运行结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615141248.png" /></p>
+<p>在Linux上的运行结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615141201.png" /></p>
+<h2 id="解析icmp头部">1.3. 解析ICMP头部</h2>
+<blockquote>
+<p>ICMP处于网络层，但在IP之上。因此ICMP数据包是在IP head之后</p>
+</blockquote>
+<p>ICMP分组的头部：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220614232223.png" /></p>
+<p>其中，ICMP目标不可达报文格式如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615141722.png" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> struct  </span><br><span class="line"><span class="keyword">import</span> ipaddress  </span><br><span class="line"><span class="keyword">import</span> sys  </span><br><span class="line"><span class="keyword">import</span> socket  </span><br><span class="line"><span class="keyword">import</span> os  </span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IP</span>:</span>  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, buff=<span class="literal">None</span></span>):</span>  </span><br><span class="line">        header = struct.unpack(<span class="string">&#x27;&lt;BBHHHBBH4s4s&#x27;</span>, buff)  </span><br><span class="line">        self.ver = header[<span class="number">0</span>] &gt;&gt; <span class="number">4</span>  </span><br><span class="line">        self.ihl = header[<span class="number">0</span>] &amp; <span class="number">0xF</span>  </span><br><span class="line">  </span><br><span class="line">        self.tos = header[<span class="number">1</span>]  </span><br><span class="line">        self.<span class="built_in">len</span> = header[<span class="number">2</span>]  </span><br><span class="line">        self.<span class="built_in">id</span> = header[<span class="number">3</span>]  </span><br><span class="line">        self.flags = header[<span class="number">4</span>] &amp; <span class="number">0x7</span>  </span><br><span class="line">        self.offset = header[<span class="number">4</span>] &gt;&gt; <span class="number">3</span>  </span><br><span class="line">        self.ttl = header[<span class="number">5</span>]  </span><br><span class="line">        self.protocol_num = header[<span class="number">6</span>]  </span><br><span class="line">        self.<span class="built_in">sum</span> = header[<span class="number">7</span>]  </span><br><span class="line">        self.src = header[<span class="number">8</span>]  </span><br><span class="line">        self.dst = header[<span class="number">9</span>]  </span><br><span class="line">  </span><br><span class="line">        <span class="comment"># human readabl IP address  </span></span><br><span class="line">        self.src_address = ipaddress.ip_address(self.src)  </span><br><span class="line">        self.dst_address = ipaddress.ip_address(self.dst)  </span><br><span class="line">  </span><br><span class="line">        <span class="comment"># map protocl constants to their names  </span></span><br><span class="line">        self.protocol_map = &#123;<span class="number">1</span>: <span class="string">&quot;ICMP&quot;</span>, <span class="number">6</span>: <span class="string">&quot;TCP&quot;</span>, <span class="number">17</span>: <span class="string">&quot;UDP&quot;</span>&#125;  </span><br><span class="line">        <span class="keyword">try</span>:  </span><br><span class="line">            self.protocol = self.protocol_map[self.protocol_num]  </span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:  </span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s No protocol for %s&quot;</span> %(e, self.protocol_num))  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建IMCP头部</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ICMP</span>:</span>  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, buff=<span class="literal">None</span></span>):</span>  </span><br><span class="line">        header = struct.unpack(<span class="string">&#x27;&lt;BBHHH&#x27;</span>, buff)  </span><br><span class="line">        self.<span class="built_in">type</span> = header[<span class="number">0</span>]  </span><br><span class="line">        self.code = header[<span class="number">1</span>]  </span><br><span class="line">        self.head_checksum = header[<span class="number">2</span>]  </span><br><span class="line">        self.unused = header[<span class="number">3</span>]  </span><br><span class="line">        self.Next_hop_MTU = header[<span class="number">4</span>]  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sniff</span>(<span class="params">host</span>):</span>  </span><br><span class="line">    <span class="comment"># create raw socket, bin to public interface  </span></span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>: <span class="comment"># windows  </span></span><br><span class="line">        socket_protocol = socket.IPPROTO_IP  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        socket_protocol = socket.IPPROTO_ICMP  </span><br><span class="line">    sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)  </span><br><span class="line">    sniffer.bind((host, <span class="number">1</span>))  </span><br><span class="line">    sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, <span class="number">1</span>)  </span><br><span class="line">    <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:  </span><br><span class="line">        sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:  </span><br><span class="line">            raw_packet = sniffer.recvfrom(<span class="number">65535</span>)[<span class="number">0</span>]  </span><br><span class="line">            ip_header = IP(raw_packet[:<span class="number">20</span>])  </span><br><span class="line">            <span class="keyword">if</span> ip_header.protocol == <span class="string">&#x27;ICMP&#x27;</span>:  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;Protocol %s, src: %s -&gt; dst: %s&#x27;</span> % (ip_header.protocol, ip_header.src_address, ip_header.dst_address))  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;Version: %s&#x27;</span> % ip_header.ver)  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;Head Length: <span class="subst">&#123;ip_header.ihl&#125;</span>, TTL: <span class="subst">&#123;ip_header.ttl&#125;</span>&#x27;</span>)  </span><br><span class="line">  </span><br><span class="line">                <span class="comment"># caculate where ICMP packet start, ihl=1 -&gt; 1 line -&gt; 32bits -&gt; 4bits  </span></span><br><span class="line">                offset = ip_header.ihl * <span class="number">4</span>  </span><br><span class="line">                icmp_header = ICMP(raw_packet[offset: offset+<span class="number">8</span>])  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;ICMP -&gt; Type: %s, Code: %s&#x27;</span> % (icmp_header.<span class="built_in">type</span>, icmp_header.code))  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:  </span><br><span class="line">        <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:  </span><br><span class="line">            sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)  </span><br><span class="line">        sys.exit(<span class="number">0</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">2</span>:  </span><br><span class="line">        host = sys.argv[<span class="number">1</span>]  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        host = <span class="string">&#x27;10.0.2.4&#x27;</span>  </span><br><span class="line">    sniff(host)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>从计算ICMP packet开始位置可以知道，IP head 之后才是ICMP packet</li>
+<li>IP head中的Head Length长度的单位是4byte。IP head一般为20byte，所以Head Length一般为5。（一种更简单的方法，看上面的IP头部的图中，一行就是4byte，可以理解为Head Length的单位是“1行”）</li>
+</ul>
+<p>运行结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615153907.png" /></p>
+<p>首先可以看到ping的响应被正确接收，其次可以看到 ping 响应的ICMP分组的 Type 和 Code 都为0，这表示这个ICMP为 ICMP Echo——回显应答。</p>
+<h2 id="子网扫描">1.4. 子网扫描</h2>
+<p>往上面的代码添加一些内容，使我们能够对整个子网进行扫描。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress, os, socket, struct, sys, threading, time  </span><br><span class="line">  </span><br><span class="line">SUBNET = <span class="string">&#x27;10.0.2.0/24&#x27;</span>  </span><br><span class="line">MESSAGE = <span class="string">&#x27;PYTHONRULES!&#x27;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IP</span>:</span>  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, buff=<span class="literal">None</span></span>):</span>  </span><br><span class="line">        header = struct.unpack(<span class="string">&#x27;&lt;BBHHHBBH4s4s&#x27;</span>, buff)  </span><br><span class="line">        self.ver = header[<span class="number">0</span>] &gt;&gt; <span class="number">4</span>  </span><br><span class="line">        self.ihl = header[<span class="number">0</span>] &amp; <span class="number">0xF</span>  </span><br><span class="line">  </span><br><span class="line">        self.tos = header[<span class="number">1</span>]  </span><br><span class="line">        self.<span class="built_in">len</span> = header[<span class="number">2</span>]  </span><br><span class="line">        self.<span class="built_in">id</span> = header[<span class="number">3</span>]  </span><br><span class="line">        self.flags = header[<span class="number">4</span>] &amp; <span class="number">0x7</span>  </span><br><span class="line">        self.offset = header[<span class="number">4</span>] &gt;&gt; <span class="number">3</span>  </span><br><span class="line">        self.ttl = header[<span class="number">5</span>]  </span><br><span class="line">        self.protocol_num = header[<span class="number">6</span>]  </span><br><span class="line">        self.<span class="built_in">sum</span> = header[<span class="number">7</span>]  </span><br><span class="line">        self.src = header[<span class="number">8</span>]  </span><br><span class="line">        self.dst = header[<span class="number">9</span>]  </span><br><span class="line">  </span><br><span class="line">        <span class="comment"># human readabl IP address  </span></span><br><span class="line">        self.src_address = ipaddress.ip_address(self.src)  </span><br><span class="line">        self.dst_address = ipaddress.ip_address(self.dst)  </span><br><span class="line">  </span><br><span class="line">        <span class="comment"># map protocl constants to their names  </span></span><br><span class="line">        self.protocol_map = &#123;<span class="number">1</span>: <span class="string">&quot;ICMP&quot;</span>, <span class="number">6</span>: <span class="string">&quot;TCP&quot;</span>, <span class="number">17</span>: <span class="string">&quot;UDP&quot;</span>&#125;  </span><br><span class="line">        <span class="keyword">try</span>:  </span><br><span class="line">            self.protocol = self.protocol_map[self.protocol_num]  </span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:  </span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;%s No protocol for %s&quot;</span> %(e, self.protocol_num))  </span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ICMP</span>:</span>  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, buff=<span class="literal">None</span></span>):</span>  </span><br><span class="line">        header = struct.unpack(<span class="string">&#x27;&lt;BBHHH&#x27;</span>, buff)  </span><br><span class="line">        self.<span class="built_in">type</span> = header[<span class="number">0</span>]  </span><br><span class="line">        self.code = header[<span class="number">1</span>]  </span><br><span class="line">        self.head_checksum = header[<span class="number">2</span>]  </span><br><span class="line">        self.unused = header[<span class="number">3</span>]  </span><br><span class="line">        self.Next_hop_MTU = header[<span class="number">4</span>]  </span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Scanner</span>():</span>  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, host</span>):</span>  </span><br><span class="line">        self.host = host  </span><br><span class="line">        <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:  </span><br><span class="line">            socket_protocol = socket.IPPROTO_IP  </span><br><span class="line">        <span class="keyword">else</span>:  </span><br><span class="line">            socket_protocol = socket.IPPROTO_ICMP  </span><br><span class="line">  </span><br><span class="line">        self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)  </span><br><span class="line">        self.socket.bind((host, <span class="number">0</span>))  </span><br><span class="line">        self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, <span class="number">1</span>)  </span><br><span class="line">        <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:  </span><br><span class="line">            self.socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sniff</span>(<span class="params">self</span>):</span>  </span><br><span class="line">        hosts_up = []  </span><br><span class="line">        hosts_up.append(self.host)  </span><br><span class="line">  </span><br><span class="line">        <span class="keyword">try</span>:  </span><br><span class="line">            <span class="keyword">while</span> <span class="literal">True</span>:  </span><br><span class="line">                raw_buffer = self.socket.recvfrom(<span class="number">65535</span>)[<span class="number">0</span>]  </span><br><span class="line">                ip_header = IP(raw_buffer[: <span class="number">20</span>])  </span><br><span class="line">                <span class="keyword">if</span> ip_header.protocol == <span class="string">&#x27;ICMP&#x27;</span>:  </span><br><span class="line">                    offset = ip_header.ihl * <span class="number">4</span>  </span><br><span class="line">                    icmp_header = ICMP(raw_buffer[offset: offset+<span class="number">8</span>])  </span><br><span class="line">                    <span class="keyword">if</span> icmp_header.code == <span class="number">3</span> <span class="keyword">and</span> icmp_header.<span class="built_in">type</span> == <span class="number">3</span>: <span class="comment"># type=3 and code=3 indicate target&#x27;s port unreachable  </span></span><br><span class="line">                        <span class="keyword">if</span> ipaddress.ip_address(ip_header.src_address) <span class="keyword">in</span> ipaddress.IPv4Network(SUBNET):  </span><br><span class="line">                            <span class="keyword">if</span> raw_buffer[<span class="built_in">len</span>(raw_buffer) - <span class="built_in">len</span>(MESSAGE): ] == <span class="built_in">bytes</span>(MESSAGE, <span class="string">&#x27;utf-8&#x27;</span>):  </span><br><span class="line">                                tgt = <span class="built_in">str</span>(ip_header.src_address)  </span><br><span class="line">                                <span class="keyword">if</span> tgt != self.host <span class="keyword">and</span> tgt <span class="keyword">not</span> <span class="keyword">in</span> hosts_up:  </span><br><span class="line">                                    hosts_up.append(<span class="built_in">str</span>(ip_header.src_address))  </span><br><span class="line">                                    <span class="built_in">print</span>(<span class="string">f&#x27;Host Up: <span class="subst">&#123;tgt&#125;</span>&#x27;</span>)  </span><br><span class="line">        <span class="comment"># handler CTRL-C  </span></span><br><span class="line">        <span class="keyword">except</span> KeyboardInterrupt:  </span><br><span class="line">            <span class="keyword">if</span> os.name == <span class="string">&#x27;nt&#x27;</span>:  </span><br><span class="line">                self.socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)  </span><br><span class="line">  </span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;\nUser interrupted.&#x27;</span>)  </span><br><span class="line">            <span class="keyword">if</span> hosts_up:  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;\n\nSummary: Hosts up op <span class="subst">&#123;SUBNET&#125;</span>&#x27;</span>)  </span><br><span class="line">            <span class="keyword">for</span> host <span class="keyword">in</span> <span class="built_in">sorted</span>(hosts_up):  </span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;host&#125;</span>&#x27;</span>)  </span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>)  </span><br><span class="line">            sys.exit()  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">udp_sender</span>():</span>  </span><br><span class="line">    <span class="keyword">with</span> socket.socket(socket.AF_INET, socket.SOCK_DGRAM) <span class="keyword">as</span> sender:  </span><br><span class="line">        <span class="keyword">for</span> ip <span class="keyword">in</span> ipaddress.ip_network(SUBNET).hosts():  </span><br><span class="line">            sender.sendto(<span class="built_in">bytes</span>(MESSAGE, <span class="string">&#x27;utf-8&#x27;</span>), (<span class="built_in">str</span>(ip), <span class="number">65212</span>))  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) == <span class="number">2</span>:  </span><br><span class="line">        host = sys.argv[<span class="number">1</span>]  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        host = <span class="string">&#x27;10.0.2.4&#x27;</span>  </span><br><span class="line">  </span><br><span class="line">    s = Scanner(host)  </span><br><span class="line">    time.sleep(<span class="number">5</span>)  </span><br><span class="line">    t = threading.Thread(target=udp_sender)  </span><br><span class="line">    t.start()  </span><br><span class="line">    s.sniff()</span><br></pre></td></tr></table></figure>
+<p>想先重点说明一下 <code>if raw_buffer[len(raw_buffer) - len(MESSAGE): ] == bytes(MESSAGE, 'utf-8')</code>。我们发送的UDP分组是带有MESSAGE数据的，因此如果收到ICMP分组，那么ICMP分组中的 <strong>最后</strong> 就是发送的数据，即MESSAGE。因此，我们对收到的分组需要做以下验证工作：</p>
+<ol type="1">
+<li>是否为ICMP？</li>
+<li>ICMP分组中是否满足 <code>Type=3, Code=3</code>？</li>
+<li>发来ICMP分组的主机是否在子网内？</li>
+<li>这个ICMP分组是否带有数据MESSAGE？带有数据说明是对之前发的UDP的响应，不带有数据则说明不是UDP的响应，我们需要丢弃</li>
+</ol>
+<p>上述代码的工作流程：</p>
+<ol type="1">
+<li>先执行 <code>upd_sender()</code> 函数，向host所在子网广播udp，目标端口为 65212（随便选一个）</li>
+<li>然后执行 <code>s.sniff()</code> 方法：
+<ol type="1">
+<li>捕捉到来的分组，提取IP头部</li>
+<li>做上述4个验证工作</li>
+<li>验证通过则将发来ICMP分组的host加入 <code>host_up</code> 列表中</li>
+</ol></li>
+</ol>
+<p>运行结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220615211142.png" /></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#udp-host-discovery-tool"><span class="toc-number">1.</span> <span class="toc-text">1. UDP Host Discovery Tool</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#windowslinux%E5%88%86%E7%BB%84%E5%97%85%E6%8E%A2"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. Windows&#x2F;Linux分组嗅探</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90ip%E5%A4%B4%E9%83%A8"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. 解析IP头部</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90icmp%E5%A4%B4%E9%83%A8"><span class="toc-number">1.3.</span> <span class="toc-text">1.3. 解析ICMP头部</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E6%89%AB%E6%8F%8F"><span class="toc-number">1.4.</span> <span class="toc-text">1.4. 子网扫描</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&text=第2章 原始socket和流量嗅探"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&title=第2章 原始socket和流量嗅探"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&is_video=false&description=第2章 原始socket和流量嗅探"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=第2章 原始socket和流量嗅探&body=Check out this article: https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&title=第2章 原始socket和流量嗅探"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&title=第2章 原始socket和流量嗅探"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&title=第2章 原始socket和流量嗅探"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&title=第2章 原始socket和流量嗅探"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&name=第2章 原始socket和流量嗅探&description=&lt;p&gt;个人的知识笔记。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/06/15/%E7%AC%AC2%E7%AB%A0%20%E5%8E%9F%E5%A7%8Bsocket%E5%92%8C%E6%B5%81%E9%87%8F%E5%97%85%E6%8E%A2/&t=第2章 原始socket和流量嗅探"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
