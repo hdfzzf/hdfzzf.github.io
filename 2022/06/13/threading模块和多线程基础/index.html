@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人的知识记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="threading模块和多线程基础">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的知识记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613115403.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613115616.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613120351.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613120734.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613121234.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613121433.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613143810.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613131420.png">
+<meta property="article:published_time" content="2022-06-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-13T06:42:14.208Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="threading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613115403.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>threading模块和多线程基础</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/06/13/paramiko%E6%A8%A1%E5%9D%97%E5%92%8CSSH%E5%9F%BA%E7%A1%80/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/06/11/%E8%B6%85%E9%93%BE%E6%8E%A5%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80chrome/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#threading"><span class="toc-number">1.</span> <span class="toc-text">1. threading</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">2. 多线程基础</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        threading模块和多线程基础
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-06-12T16:00:00.000Z" itemprop="datePublished">2022-06-13</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/python/">python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>, <a class="tag-link-link" href="/tags/threading/" rel="tag">threading</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人的知识记录。</p>
+<span id="more"></span>
+<h1 id="threading">1. threading</h1>
+<ol type="1">
+<li>创建线程的函数 <code>Thread(target=, args=())</code>：target为线程需要处理的函数，args为函数对应的参数（元组的形式）</li>
+<li><code>t.start()</code>：开始线程</li>
+<li><code>t.join()</code>：等待，直到线程终结。这会<strong>阻塞调用这个方法的线程</strong>，直到被调用 <code>join()</code> 的线程终结。</li>
+<li></li>
+</ol>
+<h1 id="多线程基础">2. 多线程基础</h1>
+<p>首先，编写如下代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_something</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Sleep for a second.&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Sleeping done.&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    start_time = time.perf_counter()</span><br><span class="line">    do_something()</span><br><span class="line">    do_something()</span><br><span class="line">    end_time = time.perf_counter()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;The total time spent is: %.3f second(s).&quot;</span> % <span class="built_in">round</span>(end_time - start_time))</span><br></pre></td></tr></table></figure></p>
+<p>其中：</p>
+<ul>
+<li>start_time 和 end_time 只是程序的开始时间和结束时间，主要作用就是计算程序花费了多长的时间</li>
+<li><code>do_something()</code> 函数的作用就是模拟一个耗时的程序。可以看到每一个函数都会至少持续1s</li>
+</ul>
+<p>因此，上面的函数执行的时间大致应该为2s，结果也确实如此：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613115403.png" /></p>
+<p>分析一下刚刚的代码的执行过程，如下图所示，第一个函数执行完毕之后才会执行第二个函数。但其实第一个函数是在睡眠，也就是CPU并没有工作，这时候是可以执行第二个函数的（虽然说第二个函数也是睡眠）。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613115616.png" /></p>
+<p>根据上面的思路，编写如下代码： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_something</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Sleep for a second.&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Sleeping done.&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    start_time = time.perf_counter()</span><br><span class="line">    t1 = threading.Thread(target=do_something)</span><br><span class="line">    t2 = threading.Thread(target=do_something)</span><br><span class="line">    t1.start()</span><br><span class="line">    t2.start()</span><br><span class="line">    end_time = time.perf_counter()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;The total time spent is: %.3f second(s).&quot;</span> % <span class="built_in">round</span>(end_time - start_time))</span><br></pre></td></tr></table></figure></p>
+<p>首先导入 threading 模块，然后创建2个线程t1, t2。最后将两个线程开始工作。需要注意，这时候是有3个线程的：main, t1, t2。我们来看一下运行结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613120351.png" /></p>
+<p>首先执行了第一个 do_something，打印出 "Sleep for a second." 然后进入睡眠，接着执行了第二个 do_something，打印出 "Sleep for a second" 之后也进入睡眠。奇怪的事就来了，这里打印了 "The total time spent ...." 那句话，而这句话应该是在程序的最末尾执行的。最后依次打印了 "Sleeping done." 程序结束。</p>
+<p>此时的执行时序图如下：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613120734.png" /></p>
+<p>（真实的时间间隔没这么长，这里为了清晰可见）在第二个 do_something 进入睡眠之后，程序会继续执行后面的语句，也就是计算 end_time 和 计算总耗时。此时的线程执行顺序为：<code>mian -&gt; t1 -&gt; t2 -&gt; main -&gt; t1 -&gt; t2</code>，为了清楚的看到进程执行的顺序，将代码修改为如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time  </span><br><span class="line"><span class="keyword">import</span> threading  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_something</span>(<span class="params">s</span>):</span>  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s&#125;</span> sleep for a second.&quot;</span>)  </span><br><span class="line">    time.sleep(<span class="number">1</span>)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s&#125;</span> sleeping done.&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    start_time = time.perf_counter()  </span><br><span class="line">    t1 = threading.Thread(target=do_something, args=(<span class="string">&#x27;t1&#x27;</span>,))  </span><br><span class="line">    t2 = threading.Thread(target=do_something, args=(<span class="string">&#x27;t2&#x27;</span>,))  </span><br><span class="line">    t1.start()  </span><br><span class="line">    t2.start()  </span><br><span class="line">    end_time = time.perf_counter()  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;The total time spent is: %.3f second(s).&quot;</span> % <span class="built_in">round</span>(end_time - start_time))</span><br></pre></td></tr></table></figure></p>
+<p>执行结果为：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613121234.png" /></p>
+<p>这显然不是符合我们预期的，我们希望知道 <strong>使用多线程的情况下的耗时</strong>，即执行顺序为：<code>main -&gt; t1 -&gt; t2 -&gt; t1 -&gt; t2 -&gt; main</code>。此时就需要一个方法 <code>join()</code>，修改之后的代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time  </span><br><span class="line"><span class="keyword">import</span> threading  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_something</span>(<span class="params">s</span>):</span>  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s&#125;</span> sleep for a second.&quot;</span>)  </span><br><span class="line">    time.sleep(<span class="number">1</span>)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s&#125;</span> sleeping done.&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    start_time = time.perf_counter()  </span><br><span class="line">    t1 = threading.Thread(target=do_something, args=(<span class="string">&#x27;t1&#x27;</span>,))  </span><br><span class="line">    t2 = threading.Thread(target=do_something, args=(<span class="string">&#x27;t2&#x27;</span>,))  </span><br><span class="line">    t1.start()  </span><br><span class="line">    t2.start()  </span><br><span class="line">    t1.join()  </span><br><span class="line">    t2.join()  </span><br><span class="line">    end_time = time.perf_counter()  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;The total time spent is: %.3f second(s).&quot;</span> % <span class="built_in">round</span>(end_time - start_time))</span><br></pre></td></tr></table></figure></p>
+<p>执行结果为：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613121433.png" /></p>
+<p>此时的执行顺序才是我们想要的，并且注意到总耗时，只使用了1s，因此使用多线程确实能够提升效率。</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613143810.png" /></p>
+<p>还有一种情况，如果有开许多线程，每个线程都需要写一下 创建、start和join就很麻烦，因此可以使用循环，假设需要10次循环： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time  </span><br><span class="line"><span class="keyword">import</span> threading  </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_something</span>(<span class="params">s</span>):</span>  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s&#125;</span>. sleep for a second.&quot;</span>)  </span><br><span class="line">    time.sleep(<span class="number">1</span>)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;s&#125;</span>. sleeping done.&quot;</span>)  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:  </span><br><span class="line">    start_time = time.perf_counter()  </span><br><span class="line">    threads = []  </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):  </span><br><span class="line">        t = threading.Thread(target=do_something, args=(i, ))  </span><br><span class="line">        t.start()  </span><br><span class="line">        threads.append(t)  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">for</span> thread <span class="keyword">in</span> threads:  </span><br><span class="line">        thread.join()  </span><br><span class="line">        </span><br><span class="line">    end_time = time.perf_counter()  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;The total time spent is: %.3f second(s).&quot;</span> % <span class="built_in">round</span>(end_time - start_time))</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220613131420.png" /></p>
+<p>开始进程还是比较有序的，但是结束的时候就乱序了，这是随机的。不过无所谓，最终的执行顺序是：<code>main -&gt; ... -&gt; main</code> 保证main在头尾即可。</p>
+<blockquote>
+<p>需要注意的是join和创建、开始不能在一个循环里面，join必须单独出来。</p>
+</blockquote>
+<p>关于线程的其他操作可以看[[多进程与多线程]]</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#threading"><span class="toc-number">1.</span> <span class="toc-text">1. threading</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">2. 多线程基础</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&text=threading模块和多线程基础"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&title=threading模块和多线程基础"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&is_video=false&description=threading模块和多线程基础"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=threading模块和多线程基础&body=Check out this article: https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&title=threading模块和多线程基础"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&title=threading模块和多线程基础"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&title=threading模块和多线程基础"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&title=threading模块和多线程基础"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&name=threading模块和多线程基础&description=&lt;p&gt;个人的知识记录。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/06/13/threading%E6%A8%A1%E5%9D%97%E5%92%8C%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/&t=threading模块和多线程基础"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

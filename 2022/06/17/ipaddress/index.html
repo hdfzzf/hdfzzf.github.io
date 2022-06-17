@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人的知识记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ipaddress">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/06/17/ipaddress/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的知识记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617112546.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113127.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113325.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113645.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113820.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113949.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617114113.png">
+<meta property="article:published_time" content="2022-06-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-17T03:44:32.233Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="ipaddress">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617112546.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ipaddress</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/06/17/Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B6/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/06/17/struct/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">1. 介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">2.</span> <span class="toc-text">2. 例子</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        ipaddress
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-06-16T16:00:00.000Z" itemprop="datePublished">2022-06-17</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/python/">python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/ipaddress/" rel="tag">ipaddress</a>, <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人的知识记录。</p>
+<span id="more"></span>
+<h1 id="介绍">1. 介绍</h1>
+<p>下面是一些创建对象的函数和类：（没有带IPv4和IPv6的为函数，其他为类）</p>
+<p>IP主机地址</p>
+<ul>
+<li><code>ipaddress.ip_address()</code></li>
+<li><code>ipaddress.IPv4Address()</code></li>
+<li><code>ipaddress.IPv6Address()</code></li>
+</ul>
+<p>作用：根据传入的参数自动确定是创建IPv4还是IPv6的地址。后两者则是强制为特定类型的地址</p>
+<p>定义网络</p>
+<ul>
+<li><code>ipaddress.ip_network()</code></li>
+<li><code>ipaddress.IPv4Network()</code></li>
+<li><code>ipaddress.IPv6Netword()</code></li>
+</ul>
+<p>作用：根据传入的参数自动创建网络（比如：192.168.1.0/24）对象。后两者也是强制为特定类型的网络</p>
+<p>主机接口</p>
+<ul>
+<li><code>ipaddress.ip_interface()</code></li>
+<li><code>ipaddress.IPv4Interface()</code></li>
+<li><code>ipaddress.IPv6Interface()</code></li>
+</ul>
+<p>一般来说，都会使用 <code>192.168.1.1/24</code> 来表示 <code>192.168.1.0/24</code> 网络中IP地址为 <code>192.168.1.1</code> 的主机。因此，这3个函数的作用主要就是创建这么一个接口地址用来表示某个特定网络中的特定主机。</p>
+<blockquote>
+<p>192.168.1.2/24 等价于 “192.168.1.0/24 网络中IP地址为 192.168.1.1 的主机”，因此 192.168.1.2/24 更见的简单、易懂</p>
+</blockquote>
+<p>创建对象的输入可以是字符串，比如说 <code>192.168.1.1</code>，也可以是整数 <code>3232235777</code> （包括十进制、16进制、8进制、2进制），下面举个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"></span><br><span class="line">addr1 = ipaddress.ip_address(<span class="string">&#x27;192.168.1.1&#x27;</span>) <span class="comment"># 字符串</span></span><br><span class="line">addr2 = ipaddress.ip_address(<span class="number">3232235777</span>) <span class="comment"># 十进制</span></span><br><span class="line">addr3 = ipaddress.ip_address(<span class="number">0xC0A80101</span>) <span class="comment"># 16进制</span></span><br><span class="line">addr4 = ipaddress.ip_address(<span class="number">0o30052000401</span>) <span class="comment"># 8进制</span></span><br><span class="line">addr5 = ipaddress.ip_address(<span class="number">0b11000000101010000000000100000001</span>) <span class="comment"># 2进制</span></span><br><span class="line"><span class="built_in">print</span>(addr1)</span><br><span class="line"><span class="built_in">print</span>(addr2)</span><br><span class="line"><span class="built_in">print</span>(addr3)</span><br><span class="line"><span class="built_in">print</span>(addr4)</span><br><span class="line"><span class="built_in">print</span>(addr5)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617112546.png" /></p>
+<p>可以看到结果是一样的。定义网络的时候如果使用整数，那么此时的网络号就是32，网络被认为只包含由整数表示的单个地址。</p>
+<h1 id="例子">2. 例子</h1>
+<p><strong>提取IP版本</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"></span><br><span class="line">addr4 = ipaddress.ip_address(<span class="string">&#x27;192.168.1.1&#x27;</span>)</span><br><span class="line">addr6 = ipaddress.ip_address(<span class="string">&#x27;2001:db8::1&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(addr4.version)</span><br><span class="line"><span class="built_in">print</span>(addr6.version)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113127.png" /></p>
+<p><strong>从接口获取网络</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress  </span><br><span class="line">  </span><br><span class="line">host4 = ipaddress.ip_interface(<span class="string">&#x27;192.168.1.1/24&#x27;</span>)  </span><br><span class="line">host6 = ipaddress.ip_interface(<span class="string">&#x27;2001:db8::1/96&#x27;</span>)  </span><br><span class="line"><span class="built_in">print</span>(host4.network)  </span><br><span class="line"><span class="built_in">print</span>(host6.network)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113325.png" /></p>
+<p><strong>找出网络中有多少独立的地址</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress  </span><br><span class="line">  </span><br><span class="line">net4 = ipaddress.ip_network(<span class="string">&#x27;192.168.1.0/24&#x27;</span>)  </span><br><span class="line">net6 = ipaddress.ip_network(<span class="string">&#x27;2001:db8::0/96&#x27;</span>)  </span><br><span class="line"><span class="built_in">print</span>(net4.num_addresses)  </span><br><span class="line"><span class="built_in">print</span>(net6.num_addresses)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113645.png" /></p>
+<p><strong>迭代网络上可以“使用”的地址</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"></span><br><span class="line">net4 = ipaddress.ip_network(<span class="string">&#x27;192.168.1.0/24&#x27;</span>)  </span><br><span class="line"><span class="keyword">for</span> ip <span class="keyword">in</span> net4.hosts():</span><br><span class="line">	<span class="built_in">print</span>(ip)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113820.png" /></p>
+<p>从 1-255 都显示出来了。</p>
+<p><strong>如果需要IP地址的字符串</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"></span><br><span class="line">net4 = ipaddress.ip_network(<span class="string">&#x27;192.168.1.0/24&#x27;</span>)  </span><br><span class="line"><span class="keyword">for</span> ip <span class="keyword">in</span> net4.hosts():</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">str</span>(ip))</span><br></pre></td></tr></table></figure>
+<p><strong>获取网络掩码/主机掩码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress  </span><br><span class="line">  </span><br><span class="line">net4 = ipaddress.ip_network(<span class="string">&#x27;192.168.1.0/24&#x27;</span>)  </span><br><span class="line">net6 = ipaddress.ip_network(<span class="string">&#x27;2001:db8::0/96&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(net4.netmask)</span><br><span class="line"><span class="built_in">print</span>(net4.hostmask)</span><br><span class="line"><span class="built_in">print</span>(net6.netmask)</span><br><span class="line"><span class="built_in">print</span>(net6.hostmask)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113949.png" /></p>
+<blockquote>
+<p>网络掩码就是网络号全为1，主机号全为0。主机掩码则相反</p>
+</blockquote>
+<p><strong>展开或者压缩地址</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"></span><br><span class="line">addr6 = ipaddress.ip_address(<span class="string">&#x27;2001:db8::1&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(addr6.exploded)</span><br><span class="line"><span class="built_in">print</span>(addr6.compressed)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617114113.png" /></p>
+<blockquote>
+<p>IPv4没有压缩地址</p>
+</blockquote>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">1. 介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">2.</span> <span class="toc-text">2. 例子</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/06/17/ipaddress/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&text=ipaddress"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&title=ipaddress"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&is_video=false&description=ipaddress"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ipaddress&body=Check out this article: https://hdfzzf.github.io/2022/06/17/ipaddress/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&title=ipaddress"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&title=ipaddress"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&title=ipaddress"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&title=ipaddress"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/06/17/ipaddress/&name=ipaddress&description=&lt;p&gt;个人的知识记录。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/06/17/ipaddress/&t=ipaddress"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
