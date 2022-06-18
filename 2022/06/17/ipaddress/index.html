@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617113949.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220617114113.png">
 <meta property="article:published_time" content="2022-06-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-06-17T03:44:32.233Z">
+<meta property="article:modified_time" content="2022-06-18T00:38:48.119Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="ipaddress">
@@ -184,7 +184,7 @@
 </ul>
 <p>一般来说，都会使用 <code>192.168.1.1/24</code> 来表示 <code>192.168.1.0/24</code> 网络中IP地址为 <code>192.168.1.1</code> 的主机。因此，这3个函数的作用主要就是创建这么一个接口地址用来表示某个特定网络中的特定主机。</p>
 <blockquote>
-<p>192.168.1.2/24 等价于 “192.168.1.0/24 网络中IP地址为 192.168.1.1 的主机”，因此 192.168.1.2/24 更见的简单、易懂</p>
+<p>192.168.1.2/24 等价于 “192.168.1.0/24 网络中IP地址为 192.168.1.2 的主机”，因此 192.168.1.2/24 更见的简单、易懂</p>
 </blockquote>
 <p>创建对象的输入可以是字符串，比如说 <code>192.168.1.1</code>，也可以是整数 <code>3232235777</code> （包括十进制、16进制、8进制、2进制），下面举个例子：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ipaddress</span><br><span class="line"></span><br><span class="line">addr1 = ipaddress.ip_address(<span class="string">&#x27;192.168.1.1&#x27;</span>) <span class="comment"># 字符串</span></span><br><span class="line">addr2 = ipaddress.ip_address(<span class="number">3232235777</span>) <span class="comment"># 十进制</span></span><br><span class="line">addr3 = ipaddress.ip_address(<span class="number">0xC0A80101</span>) <span class="comment"># 16进制</span></span><br><span class="line">addr4 = ipaddress.ip_address(<span class="number">0o30052000401</span>) <span class="comment"># 8进制</span></span><br><span class="line">addr5 = ipaddress.ip_address(<span class="number">0b11000000101010000000000100000001</span>) <span class="comment"># 2进制</span></span><br><span class="line"><span class="built_in">print</span>(addr1)</span><br><span class="line"><span class="built_in">print</span>(addr2)</span><br><span class="line"><span class="built_in">print</span>(addr3)</span><br><span class="line"><span class="built_in">print</span>(addr4)</span><br><span class="line"><span class="built_in">print</span>(addr5)</span><br></pre></td></tr></table></figure>
