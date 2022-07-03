@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Question 21-30">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/07/03/Question%2021-30/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703224222.png">
+<meta property="article:published_time" content="2022-07-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-03T14:51:39.081Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="Python 练习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Question 21-30</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/07/02/Question%2011-20/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#question-21"><span class="toc-number">1.</span> <span class="toc-text">1. Question 21</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-22"><span class="toc-number">2.</span> <span class="toc-text">2. Question 22</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 字典排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#key"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1. key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#value"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2. value</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-23"><span class="toc-number">3.</span> <span class="toc-text">3. Question 23</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-24"><span class="toc-number">4.</span> <span class="toc-text">4. Question 24</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%86%85%E7%BD%AE%E6%96%87%E6%A1%A3"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 函数内置文档</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-25"><span class="toc-number">5.</span> <span class="toc-text">5. Question 25</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-26"><span class="toc-number">6.</span> <span class="toc-text">6. Question 26</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-27"><span class="toc-number">7.</span> <span class="toc-text">7. Question 27</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-28"><span class="toc-number">8.</span> <span class="toc-text">8. Question 28</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-29"><span class="toc-number">9.</span> <span class="toc-text">9. Question 29</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-30"><span class="toc-number">10.</span> <span class="toc-text">10. Question 30</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Question 21-30
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-02T16:00:00.000Z" itemprop="datePublished">2022-07-03</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Python/">Python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Python-%E7%BB%83%E4%B9%A0/" rel="tag">Python 练习</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+<p>分为三个等级：</p>
+<ol type="1">
+<li>easy</li>
+<li>medium</li>
+<li>hard</li>
+</ol>
+<span id="more"></span>
+<h1 id="question-21">1. Question 21</h1>
+<p><strong>题目</strong>：（hard）</p>
+<ul>
+<li>有一个机器人初始位置为 (0, 0)，只会上下左右移动。比如输入为：UP 5 DOWN 3 LEFT 3 RIGHT 2，意思为：先先向上移动 5 个单位，然后向下移动 3 个单位，接着向左移动 3 个单位，最后向右移动 2 个单位。计算出机器人最后的位置和初始位置的距离，如果是 float 则四舍五入。</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line">local = [<span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    movement = <span class="built_in">input</span>().split()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> movement:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    direction = movement[<span class="number">0</span>]</span><br><span class="line">    step = <span class="built_in">int</span>(movement[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">if</span> direction == <span class="string">&#x27;UP&#x27;</span>:</span><br><span class="line">        local[<span class="number">1</span>] += step</span><br><span class="line">    <span class="keyword">elif</span> direction == <span class="string">&#x27;DOWN&#x27;</span>:</span><br><span class="line">        local[<span class="number">1</span>] -= step</span><br><span class="line">    <span class="keyword">elif</span> direction == <span class="string">&#x27;LEFT&#x27;</span>:</span><br><span class="line">        local[<span class="number">0</span>] -= step</span><br><span class="line">    <span class="keyword">elif</span> direction == <span class="string">&#x27;RIGHT&#x27;</span>:</span><br><span class="line">        local[<span class="number">0</span>] += step</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">int</span>(<span class="built_in">round</span>(math.sqrt(<span class="built_in">pow</span>(local[<span class="number">0</span>], <span class="number">2</span>) + <span class="built_in">pow</span>(local[<span class="number">1</span>], <span class="number">2</span>)))))</span><br></pre></td></tr></table></figure>
+<h1 id="question-22">2. Question 22</h1>
+<p><strong>题目</strong>：（hard）</p>
+<ul>
+<li>给定一串字符串，求出字符串中每个单词出现的次数，并按照单词进行字母表排序，然后输出。比如输入为：New to Python or choosing between Python 2 and Python 3? Read Python 2 or Python 3. 输出为：2:2 3.:1 3?:1 New:1 Python:5 Read:1 and:1 between:1 choosing:1 or:2 to:1</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">str</span> = <span class="built_in">input</span>().split()</span><br><span class="line">res = <span class="built_in">dict</span>()</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">if</span> word <span class="keyword">in</span> res:</span><br><span class="line">        res[word] += <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        res[word] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> <span class="built_in">sorted</span>(res.keys()):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;word&#125;</span>:<span class="subst">&#123;res[word]&#125;</span>&#x27;</span>, end=<span class="string">&#x27; &#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>本题考查的是关于字典的排序。</li>
+</ul>
+<h2 id="字典排序">2.1. 字典排序</h2>
+<p>首先介绍一下 sorted 函数。语法如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sorted</span>(iterable, key, reverse)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>iterable：可迭代对象；</li>
+<li>key：是一个函数，用来选取参与比较的函数；</li>
+<li>reverse：指定升序还是降序，True 为降序，False 为升序（默认）；</li>
+</ul>
+<p>对字典的排序可以分为 2 种：</p>
+<ol type="1">
+<li>对 key 排序</li>
+<li>对 value 排序</li>
+</ol>
+<h3 id="key">2.1.1. key</h3>
+<p>第一种办法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">sorted</span>(my_dict.keys()))</span><br><span class="line"><span class="built_in">print</span>(my_dict)</span><br><span class="line"></span><br><span class="line"><span class="comment"># [&#x27;age&#x27;, &#x27;lilee&#x27;, &#x27;phone&#x27;]</span></span><br><span class="line"><span class="comment"># &#123;&#x27;lilee&#x27;: 25, &#x27;age&#x27;: 24, &#x27;phone&#x27;: 12&#125;</span></span><br></pre></td></tr></table></figure>
+<p>直接对 dict.keys() 进行排序即可。需要注意的是，这种方法得到的返回值是一个对 keys 排序过后的列表，原来的字典没有变化。</p>
+<p>如果需要遍历排序之后的结果，可以这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> <span class="built_in">sorted</span>(my_dict.keys()):</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;key&#125;</span> : <span class="subst">&#123;my_dict[key]&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># age : 24</span></span><br><span class="line"><span class="comment"># lilee : 25</span></span><br><span class="line"><span class="comment"># phone : 12</span></span><br></pre></td></tr></table></figure>
+<p>第二种方法，使用 lambda 匿名函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=<span class="keyword">lambda</span> item: item[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25), (&#x27;phone&#x27;, 12)]</span></span><br></pre></td></tr></table></figure>
+<p>这种方法改变了整个字典的顺序。</p>
+<p>也可以使用 operator.itemgetter 来，效果与 lambda 函数一样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</span><br><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=itemgetter(<span class="number">0</span>))</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25), (&#x27;phone&#x27;, 12)]</span></span><br></pre></td></tr></table></figure>
+<h3 id="value">2.1.2. value</h3>
+<p>只知道 value 是无法找到字典中的元素的，因此单纯的对 value 排序而不改变字典顺序是没有意义的，所以对 value 排序一定会改变字典顺序。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=<span class="keyword">lambda</span> item: item[<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;phone&#x27;, 12), (&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25)]</span></span><br></pre></td></tr></table></figure>
+<p>还可以使用 operator.itemgetter 进行排序：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</span><br><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=itemgetter(<span class="number">1</span>))</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;phone&#x27;, 12), (&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25)]</span></span><br></pre></td></tr></table></figure>
+<h1 id="question-23">3. Question 23</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>实现求平方的函数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">square</span>(<span class="params">x</span>):</span>  </span><br><span class="line">    <span class="keyword">return</span> x**<span class="number">2</span></span><br><span class="line"><span class="built_in">print</span>(square(<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
+<h1 id="question-24">4. Question 24</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>打印 Python 内置函数的文档，比如 abs(), int(), input()。以及为上一题中的自定义函数写文档</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">square</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    :param x:</span></span><br><span class="line"><span class="string">    :return: x**2</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> x**<span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">int</span>.__doc__)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">abs</span>.__doc__)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">input</span>.__doc__)</span><br><span class="line"><span class="built_in">print</span>(square.__doc__)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png" /></p>
+<h2 id="函数内置文档">4.1. 函数内置文档</h2>
+<p>一个函数定义中，<strong>最开始的多行注释</strong> 为这个函数的内置文档，可以通过 <code>func.__doc__</code> 进行查看。</p>
+<h1 id="question-25">5. Question 25</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个 class，拥有一个属性(name)以及一个相同的实例参数(self.name)</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    name = <span class="string">&#x27;person&#x27;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">m1ku = Person(<span class="string">&#x27;m1ku&#x27;</span>)</span><br><span class="line">jack = Person()</span><br><span class="line"><span class="built_in">print</span>(m1ku.name, Person.name)</span><br><span class="line"><span class="built_in">print</span>(jack.name, Person.name)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703224222.png" /></p>
+<p>可以看到，属性的参数 name 不会被修改，而实例参数 self.name 会被修改。</p>
+<h1 id="question-26">6. Question 26</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个函数，功能为求两数之和，并返回结果。</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">xsum</span>(<span class="params">a, b</span>):</span></span><br><span class="line">    <span class="keyword">return</span> a+b</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(xsum(<span class="number">1</span>,<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+<h1 id="question-27">7. Question 27</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个函数，将一个 integer 转为 str</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">int_to_str</span>(<span class="params">num</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">str</span>(num)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;the value is <span class="subst">&#123;int_to_str(<span class="number">10</span>)&#125;</span>, and the type is <span class="subst">&#123;<span class="built_in">type</span>(int_to_str(<span class="number">10</span>))&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="question-28">8. Question 28</h1>
+<p>与 27 重复</p>
+<h1 id="question-29">9. Question 29</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个函数，将两个 str 类型的整数相加，然后返回结果</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sum_num_of_str</span>(<span class="params">str1, str2</span>):</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>(str1) + <span class="built_in">int</span>(str2)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(sum_num_of_str(<span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;6&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<h1 id="question-30">10. Question 30</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个函数，将两个字符串拼接，然后返回</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">concatenate_two_str</span>(<span class="params">str1, str2</span>):</span></span><br><span class="line">    <span class="keyword">return</span> str1+str2</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(concatenate_two_str(<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27; world&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#question-21"><span class="toc-number">1.</span> <span class="toc-text">1. Question 21</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-22"><span class="toc-number">2.</span> <span class="toc-text">2. Question 22</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 字典排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#key"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1. key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#value"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2. value</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-23"><span class="toc-number">3.</span> <span class="toc-text">3. Question 23</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-24"><span class="toc-number">4.</span> <span class="toc-text">4. Question 24</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%86%85%E7%BD%AE%E6%96%87%E6%A1%A3"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 函数内置文档</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-25"><span class="toc-number">5.</span> <span class="toc-text">5. Question 25</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-26"><span class="toc-number">6.</span> <span class="toc-text">6. Question 26</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-27"><span class="toc-number">7.</span> <span class="toc-text">7. Question 27</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-28"><span class="toc-number">8.</span> <span class="toc-text">8. Question 28</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-29"><span class="toc-number">9.</span> <span class="toc-text">9. Question 29</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-30"><span class="toc-number">10.</span> <span class="toc-text">10. Question 30</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/07/03/Question%2021-30/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&text=Question 21-30"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&is_video=false&description=Question 21-30"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Question 21-30&body=Check out this article: https://hdfzzf.github.io/2022/07/03/Question%2021-30/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&name=Question 21-30&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;分为三个等级：&lt;/p&gt;
+&lt;ol type=&#34;1&#34;&gt;
+&lt;li&gt;easy&lt;/li&gt;
+&lt;li&gt;medium&lt;/li&gt;
+&lt;li&gt;hard&lt;/li&gt;
+&lt;/ol&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&t=Question 21-30"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
