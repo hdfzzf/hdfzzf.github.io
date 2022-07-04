@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Question 41-50">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/07/04/Question%2041-50/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-04T06:48:15.998Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="Python 练习">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Question 41-50</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/07/04/Question%2031-40/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/07/03/Question%2021-30/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#question-41"><span class="toc-number">1.</span> <span class="toc-text">Question 41</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-42"><span class="toc-number">2.</span> <span class="toc-text">Question 42</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-43"><span class="toc-number">3.</span> <span class="toc-text">Question 43</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-44"><span class="toc-number">4.</span> <span class="toc-text">Question 44</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-45"><span class="toc-number">5.</span> <span class="toc-text">Question 45</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#filter-%E5%87%BD%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">filter 函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-46"><span class="toc-number">6.</span> <span class="toc-text">Question 46</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-47"><span class="toc-number">7.</span> <span class="toc-text">Question 47</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-48"><span class="toc-number">8.</span> <span class="toc-text">Question 48</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-49"><span class="toc-number">9.</span> <span class="toc-text">Question 49</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-50"><span class="toc-number">10.</span> <span class="toc-text">Question 50</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Question 41-50
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-03T16:00:00.000Z" itemprop="datePublished">2022-07-04</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Python/">Python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Python-%E7%BB%83%E4%B9%A0/" rel="tag">Python 练习</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+<p>分为三个等级：</p>
+<ol type="1">
+<li>easy</li>
+<li>medium</li>
+<li>hard</li>
+</ol>
+<span id="more"></span>
+<h1 id="question-41">Question 41</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个函数，生成一个元组，元组内的元素为 [1, 20] 的平方。</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">produce_tuple</span>():</span></span><br><span class="line">    lst = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">21</span>):</span><br><span class="line">        lst.append(i**<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">tuple</span>(lst)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(produce_tuple())</span><br></pre></td></tr></table></figure>
+<h1 id="question-42">Question 42</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>给定一个元组 (1,2,3,4,5,6,7,8,9,10)，将其分为前半部分和后半部分，分别打印</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input_tuple = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br><span class="line">length = <span class="built_in">len</span>(input_tuple)</span><br><span class="line">tp1 = input_tuple[:length//<span class="number">2</span>]</span><br><span class="line">tp2 = input_tuple[length//<span class="number">2</span>:]</span><br><span class="line"><span class="built_in">print</span>(tp1)</span><br><span class="line"><span class="built_in">print</span>(tp2)</span><br></pre></td></tr></table></figure>
+<h1 id="question-43">Question 43</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>给定一个元组 (1,2,3,4,5,6,7,8,9,10)，生成另一个元组，只包含给定元组中的偶数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tp = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br><span class="line">lst = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(tp)):</span><br><span class="line">    <span class="keyword">if</span> tp[i]%<span class="number">2</span>==<span class="number">0</span>:</span><br><span class="line">        lst.append(tp[i])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">tuple</span>(lst))</span><br></pre></td></tr></table></figure>
+<h1 id="question-44">Question 44</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>给定一个字符串，如果是 'yes'、'YES'、'Yes'，则输出 'Yes'，否则输出 'No'</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="built_in">str</span> = <span class="built_in">input</span>()</span><br><span class="line"><span class="keyword">if</span> re.search(<span class="string">r&#x27;(yes)|(Yes)|(YES)&#x27;</span>, <span class="built_in">str</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Yes&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;No&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="question-45">Question 45</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，筛选出其中的偶数，使用 filter() 函数。</li>
+</ul>
+<p><strong>要求</strong>：</p>
+<ul>
+<li>使用 filter()</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lst = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]</span><br><span class="line">res =<span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x%<span class="number">2</span>==<span class="number">0</span>, lst))</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+<h2 id="filter-函数">filter 函数</h2>
+<p>作用：用于过滤序列，过滤掉不符合条件的元素，返回由符合条件元素组成的 filter 对象（迭代器对象）。</p>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">filter</span>(function, iterable)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>function：判断函数/过滤函数</li>
+<li>iterable：可迭代对象，作为函数的参数</li>
+</ul>
+<h1 id="question-46">Question 46</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，使用 map() 函数生成一个新的列表，元素为原来列表中元素的平方。</li>
+</ul>
+<p><strong>要求</strong>：</p>
+<ul>
+<li>使用 map()</li>
+<li>使用 lambda 匿名函数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lst = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]</span><br><span class="line">res = <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x**<span class="number">2</span>, lst))</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+<h1 id="question-47">Question 47</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，生成一个新的列表，元素为原来列表中偶数的平方。</li>
+</ul>
+<p><strong>要求</strong>：</p>
+<ul>
+<li>使用 filter() 筛选出偶数</li>
+<li>使用 map() 得到生成新的列表</li>
+<li>使用 lambda 匿名函数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lst = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]</span><br><span class="line">even_nums = <span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x%<span class="number">2</span>==<span class="number">0</span>, lst))</span><br><span class="line">res = <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x:x**<span class="number">2</span>, even_nums))</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+<h1 id="question-48">Question 48</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>使用 filter() 生成一个列表，列表元素为 [1, 20] 之间的偶数。</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x:x%<span class="number">2</span>==<span class="number">0</span>, [num <span class="keyword">for</span> num <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">21</span>)])))</span><br></pre></td></tr></table></figure>
+<h1 id="question-49">Question 49</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>使用 map() 生成一个列表，列表元素为 [1, 20] 每个数字的平方。</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x:x**<span class="number">2</span>, [num <span class="keyword">for</span> num <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">21</span>)])))</span><br></pre></td></tr></table></figure>
+<h1 id="question-50">Question 50</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>定义一个名为 American 的 class，拥有一个静态方法 printNationality。使用 <span class="citation" data-cites="staticmethod">@staticmethod</span></li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">American</span>:</span></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printNationality</span>():</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;American.&#x27;</span>)</span><br><span class="line"></span><br><span class="line">jack = American()</span><br><span class="line">jack.printNationality()</span><br><span class="line">American.printNationality()</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#question-41"><span class="toc-number">1.</span> <span class="toc-text">Question 41</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-42"><span class="toc-number">2.</span> <span class="toc-text">Question 42</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-43"><span class="toc-number">3.</span> <span class="toc-text">Question 43</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-44"><span class="toc-number">4.</span> <span class="toc-text">Question 44</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-45"><span class="toc-number">5.</span> <span class="toc-text">Question 45</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#filter-%E5%87%BD%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">filter 函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-46"><span class="toc-number">6.</span> <span class="toc-text">Question 46</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-47"><span class="toc-number">7.</span> <span class="toc-text">Question 47</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-48"><span class="toc-number">8.</span> <span class="toc-text">Question 48</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-49"><span class="toc-number">9.</span> <span class="toc-text">Question 49</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-50"><span class="toc-number">10.</span> <span class="toc-text">Question 50</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/07/04/Question%2041-50/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&text=Question 41-50"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&is_video=false&description=Question 41-50"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Question 41-50&body=Check out this article: https://hdfzzf.github.io/2022/07/04/Question%2041-50/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&name=Question 41-50&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;分为三个等级：&lt;/p&gt;
+&lt;ol type=&#34;1&#34;&gt;
+&lt;li&gt;easy&lt;/li&gt;
+&lt;li&gt;medium&lt;/li&gt;
+&lt;li&gt;hard&lt;/li&gt;
+&lt;/ol&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&t=Question 41-50"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
