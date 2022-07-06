@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Question 81-90">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/07/06/Question%2081-90/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-06T06:19:52.603Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="Python 练习">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Question 81-90</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/07/06/Question%2071-80/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/07/06/Question%2091-100/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#question-81"><span class="toc-number">1.</span> <span class="toc-text">1. Question 81</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#random.randrange"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. random.randrange()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-82"><span class="toc-number">2.</span> <span class="toc-text">2. Question 82</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#zlib.comprocess"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. zlib.comprocess()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zlib.decompress"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. zlib.decompress()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-83"><span class="toc-number">3.</span> <span class="toc-text">3. Question 83</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-84"><span class="toc-number">4.</span> <span class="toc-text">4. Question 84</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#random.shuffle"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. random.shuffle()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-85"><span class="toc-number">5.</span> <span class="toc-text">5. Question 85</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-86"><span class="toc-number">6.</span> <span class="toc-text">6. Question 86</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-87"><span class="toc-number">7.</span> <span class="toc-text">7. Question 87</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-88"><span class="toc-number">8.</span> <span class="toc-text">8. Question 88</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-89"><span class="toc-number">9.</span> <span class="toc-text">9. Question 89</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#enumerate"><span class="toc-number">9.1.</span> <span class="toc-text">9.1. enumerate()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-90"><span class="toc-number">10.</span> <span class="toc-text">10. Question 90</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Question 81-90
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-05T16:00:00.000Z" itemprop="datePublished">2022-07-06</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Python/">Python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Python-%E7%BB%83%E4%B9%A0/" rel="tag">Python 练习</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+<p>分为三个等级：</p>
+<ol type="1">
+<li>easy</li>
+<li>medium</li>
+<li>hard</li>
+</ol>
+<span id="more"></span>
+<h1 id="question-81">1. Question 81</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>使用 random.randrange() 函数随机生成一个 [7, 15] 的一个整数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="built_in">print</span>(random.randrange(<span class="number">7</span>, <span class="number">16</span>))</span><br></pre></td></tr></table></figure>
+<h2 id="random.randrange">1.1. random.randrange()</h2>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.randrange(start, stop[, step])</span><br></pre></td></tr></table></figure>
+<p>作用：</p>
+<ul>
+<li>从 [start, stop) 步长为 step（默认为 1） 的列表中随机选择一个整数返回。可以等价于 <code>random.choice(range(star, stop, step))</code> 只不过 choice 中是真的需要一个 range 对象，而这里不需要</li>
+</ul>
+<h1 id="question-82">2. Question 82</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>使用 zlib.comporess 函数来压缩字符串 "hello world!hello world!hello world!hello world!"，并将压缩之后的对象使用 zlib.decompress 解压缩</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zlib</span><br><span class="line"><span class="built_in">str</span> = <span class="string">b&#x27;hello world!hello world!hello world!hello world!&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">str</span>)</span><br><span class="line">byte_data = zlib.compress(<span class="built_in">str</span>)</span><br><span class="line"><span class="built_in">print</span>(byte_data)</span><br><span class="line"><span class="built_in">print</span>(zlib.decompress(byte_data))</span><br></pre></td></tr></table></figure>
+<h2 id="zlib.comprocess">2.1. zlib.comprocess()</h2>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zlib.comprocess(data, level=-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>data：字节类型的数据；</li>
+<li>level：可取 0~9 或者 -1，等级越高压缩速率越慢，压缩率越高。-1 表示压缩率和压缩速率的平衡等级，可以相当于 6；</li>
+</ul>
+<p>作用：</p>
+<ul>
+<li>将 data 压缩</li>
+</ul>
+<h2 id="zlib.decompress">2.2. zlib.decompress()</h2>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zlib.decomprocess(data, wbits=MAX_WBITS, bufsize=DEF_BUF_SIZE)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>data：需要解压的 data；</li>
+<li>wbits：形参控制历史缓冲区的大小（或称“窗口大小”）以及所期望的头部和尾部格式；</li>
+<li>bufsize：是用于存放解压数据的缓冲区初始大小；</li>
+</ul>
+<p>作用：</p>
+<ul>
+<li>解压 data 中的字节，返回还有解压内容的 bytes 对象</li>
+</ul>
+<h1 id="question-83">3. Question 83</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>计算 1+1 执行 100 次的时间</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> timeit</span><br><span class="line">t = timeit.Timer(<span class="string">&#x27;for _ in range(100): 1+1&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(t.timeit())</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：</p>
+<ul>
+<li>timeit 模块提供了一种简单的方法来计算一小段 Python 代码的耗时</li>
+</ul>
+<h1 id="question-84">4. Question 84</h1>
+<p><strong>题目</strong>：（easy）</p>
+<ul>
+<li>使用 shuffle 函数来随机打乱列表 [3, 6, 7, 8]</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line">lst = [<span class="number">3</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>]</span><br><span class="line"><span class="built_in">print</span>(lst)</span><br><span class="line">random.shuffle(lst)</span><br><span class="line"><span class="built_in">print</span>(lst)</span><br></pre></td></tr></table></figure>
+<h2 id="random.shuffle">4.1. random.shuffle()</h2>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.shuffle(lst)</span><br></pre></td></tr></table></figure>
+<p>作用：</p>
+<ul>
+<li>随机打乱 lst 序列的元素顺序</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>该函数没有返回值，只是将原来的序列打乱</li>
+</ul>
+<h1 id="question-85">5. Question 85</h1>
+<p>题目同上</p>
+<h1 id="question-86">6. Question 86</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>给定主语列表 ["I", "You"]，谓语列表 ["Play", "Love"]，宾语列表 ["Hockey","Football"]，生成所有可能的 “主谓宾” 结构的句子</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sub_list = [<span class="string">&#x27;I&#x27;</span>, <span class="string">&#x27;You&#x27;</span>]</span><br><span class="line">verb_list = [<span class="string">&#x27;Play&#x27;</span>, <span class="string">&#x27;Love&#x27;</span>]</span><br><span class="line">obj_list = [<span class="string">&#x27;Hockey&#x27;</span>, <span class="string">&#x27;Football&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> sub <span class="keyword">in</span> sub_list:</span><br><span class="line">    <span class="keyword">for</span> verb <span class="keyword">in</span> verb_list:</span><br><span class="line">        <span class="keyword">for</span> obj <span class="keyword">in</span> obj_list:</span><br><span class="line">            sentence = sub + <span class="string">&#x27; &#x27;</span> + verb + <span class="string">&#x27; &#x27;</span> + obj</span><br><span class="line">            <span class="built_in">print</span>(sentence)</span><br></pre></td></tr></table></figure>
+<h1 id="question-87">7. Question 87</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>给定一个列表 [5,6,77,45,22,12,24]，使用列表生成式来生成一个新的列表，其中只有原列表中的奇数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nums = [<span class="number">5</span>, <span class="number">6</span>, <span class="number">77</span>, <span class="number">45</span>, <span class="number">22</span>, <span class="number">12</span>, <span class="number">24</span>]</span><br><span class="line">left_nums = [num <span class="keyword">for</span> num <span class="keyword">in</span> nums <span class="keyword">if</span> num%<span class="number">2</span>!=<span class="number">0</span>]</span><br><span class="line"><span class="built_in">print</span>(left_nums)</span><br></pre></td></tr></table></figure>
+<h1 id="question-88">8. Question 88</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>给定一个列表 [12,24,35,70,88,120,155]，使用列表生成式来生成一个新的列表，其中不包括原列表中能够同时被 5 和 7 整除的数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nums = [<span class="number">12</span>, <span class="number">24</span>, <span class="number">35</span>, <span class="number">70</span>, <span class="number">88</span>, <span class="number">120</span>, <span class="number">155</span>]</span><br><span class="line">left_nums = [num <span class="keyword">for</span> num <span class="keyword">in</span> nums <span class="keyword">if</span> (num%<span class="number">5</span>!=<span class="number">0</span>) <span class="keyword">and</span> (num%<span class="number">7</span>!=<span class="number">0</span>)]</span><br><span class="line"><span class="built_in">print</span>(left_nums)</span><br></pre></td></tr></table></figure>
+<h1 id="question-89">9. Question 89</h1>
+<p><strong>题目</strong>：（medium）</p>
+<ul>
+<li>给定一个列表 [12,24,35,70,88,120,155]，使用列表生成式来生成一个新的列表，其中不包括原列表中下标为 2，2，4，6 的数</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nums = [<span class="number">12</span>, <span class="number">24</span>, <span class="number">35</span>, <span class="number">70</span>, <span class="number">88</span>, <span class="number">120</span>, <span class="number">155</span>]</span><br><span class="line">left_nums = [value <span class="keyword">for</span> (index, value) <span class="keyword">in</span> <span class="built_in">enumerate</span>(nums) <span class="keyword">if</span> (index != <span class="number">0</span>) <span class="keyword">and</span> (index != <span class="number">2</span>) <span class="keyword">and</span> (index != <span class="number">4</span>) <span class="keyword">and</span> (index != <span class="number">6</span>)]</span><br><span class="line"><span class="built_in">print</span>(left_nums)</span><br></pre></td></tr></table></figure>
+<h2 id="enumerate">9.1. enumerate()</h2>
+<p>语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">enumerate</span>(seq[, start=<span class="number">0</span>] ) </span><br></pre></td></tr></table></figure>
+<ul>
+<li>seq：一个序列、迭代器或者可迭代对象</li>
+<li>start：起始下标，默认为 0</li>
+</ul>
+<p>作用：</p>
+<ul>
+<li>得到序列的一个可迭代对象，其中每个元素都是一个元组 (index, value)。通常用于 for 循环中</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>序列的一个可迭代对象，元素为 (index, value) 的元组</li>
+</ul>
+<h1 id="question-90">10. Question 90</h1>
+<p><strong>题目</strong>：（hard）</p>
+<ul>
+<li>使用列表生成式生成一个 3 维的数组，维度分别为 3，5，8，所有元素都为 0</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">res = [[[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#question-81"><span class="toc-number">1.</span> <span class="toc-text">1. Question 81</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#random.randrange"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. random.randrange()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-82"><span class="toc-number">2.</span> <span class="toc-text">2. Question 82</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#zlib.comprocess"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. zlib.comprocess()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zlib.decompress"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. zlib.decompress()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-83"><span class="toc-number">3.</span> <span class="toc-text">3. Question 83</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-84"><span class="toc-number">4.</span> <span class="toc-text">4. Question 84</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#random.shuffle"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. random.shuffle()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-85"><span class="toc-number">5.</span> <span class="toc-text">5. Question 85</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-86"><span class="toc-number">6.</span> <span class="toc-text">6. Question 86</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-87"><span class="toc-number">7.</span> <span class="toc-text">7. Question 87</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-88"><span class="toc-number">8.</span> <span class="toc-text">8. Question 88</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-89"><span class="toc-number">9.</span> <span class="toc-text">9. Question 89</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#enumerate"><span class="toc-number">9.1.</span> <span class="toc-text">9.1. enumerate()</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#question-90"><span class="toc-number">10.</span> <span class="toc-text">10. Question 90</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/07/06/Question%2081-90/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&text=Question 81-90"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&title=Question 81-90"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&is_video=false&description=Question 81-90"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Question 81-90&body=Check out this article: https://hdfzzf.github.io/2022/07/06/Question%2081-90/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&title=Question 81-90"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&title=Question 81-90"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&title=Question 81-90"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&title=Question 81-90"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&name=Question 81-90&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;分为三个等级：&lt;/p&gt;
+&lt;ol type=&#34;1&#34;&gt;
+&lt;li&gt;easy&lt;/li&gt;
+&lt;li&gt;medium&lt;/li&gt;
+&lt;li&gt;hard&lt;/li&gt;
+&lt;/ol&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/07/06/Question%2081-90/&t=Question 81-90"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
