@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="1. 函数的基本概念与语法 语法： 123function funcName(param1, param2, param3,..)&amp;#123;	codes;&amp;#125; 例子： 123456&lt;?phpfunction showMess($name)&amp;#123;    return &amp;#x27;my name is &amp;#x27;.$name;&amp;#125;echo showMess(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6. 函数">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="1. 函数的基本概念与语法 语法： 123function funcName(param1, param2, param3,..)&amp;#123;	codes;&amp;#125; 例子： 123456&lt;?phpfunction showMess($name)&amp;#123;    return &amp;#x27;my name is &amp;#x27;.$name;&amp;#125;echo showMess(">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117145743.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117150248.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117150353.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117151120.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117151631.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117151804.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117152355.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117153028.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117153343.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117154158.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117155959.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117160146.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117160318.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161330.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161424.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161554.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161723.png">
+<meta property="article:published_time" content="2022-11-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-21T08:39:42.628Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="php基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117145743.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>6. 函数</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/11/21/8.%20%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/11/18/7.%20%E6%95%B0%E7%BB%84%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%AF%AD%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">1. 函数的基本概念与语法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 函数参数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%BC%E5%8F%82%E6%95%B0%E5%92%8C%E5%BC%95%E7%94%A8%E5%8F%82%E6%95%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 值参数和引用参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 默认参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 可变参数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0%E4%B8%8E%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">3. 可变函数与回调函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 可变函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 回调函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E5%9B%9E%E8%B0%83%E6%96%B9%E5%BC%8F%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E6%88%96%E7%B1%BB%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 用回调方式调用对象或类的方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AF%BC%E5%85%A5%E4%B8%8E%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">4.</span> <span class="toc-text">4. 函数导入与文件包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E4%B8%8E%E9%97%AD%E5%8C%85%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.</span> <span class="toc-text">5. 匿名函数与闭包实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">5.1. 匿名函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AD%E5%8C%85%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.2.</span> <span class="toc-text">5.2. 闭包实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%88%9B%E5%BB%BA%E4%B8%8E%E8%B0%83%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">6. 函数创建与调用</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        6. 函数
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-11-17T16:00:00.000Z" itemprop="datePublished">2022-11-18</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/php/">php</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/php%E5%9F%BA%E7%A1%80/" rel="tag">php基础</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <span id="more"></span>
+<h1 id="函数的基本概念与语法">1. 函数的基本概念与语法</h1>
+<p>语法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">funcName</span>(<span class="params">param1, param2, param3,..</span>)</span>&#123;</span><br><span class="line">	codes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例子：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showMess</span>(<span class="params"><span class="variable">$name</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;my name is &#x27;</span>.<span class="variable">$name</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> showMess(<span class="string">&#x27;takagi&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117145743.png" /></p>
+<h1 id="函数参数">2. 函数参数</h1>
+<h2 id="值参数和引用参数">2.1. 值参数和引用参数</h2>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$num</span> = <span class="number">10</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params"><span class="variable">$num</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$num</span> += <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$num</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;$num = &#x27;</span>.<span class="variable">$num</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;函数demo的返回值 $num = &#x27;</span>.demo(<span class="variable">$num</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;调用函数之后的$num = &#x27;</span>.<span class="variable">$num</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117150248.png" /></p>
+<p>这就是值参数，指示把值传入函数，相当于函数内创建了一个与全局变量 <code>$num</code> 相同名字的局部变量，对局部变量的修改不会影响到全局变量；</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$num</span> = <span class="number">10</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params">&amp;<span class="variable">$num</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$num</span> += <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$num</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;$num = &#x27;</span>.<span class="variable">$num</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;函数demo的返回值 $num = &#x27;</span>.demo(<span class="variable">$num</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;调用函数之后的$num = &#x27;</span>.<span class="variable">$num</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117150353.png" /></p>
+<p>引用参数可以理解为 C 中传入指针，函数内的变量和全局变量指向的是同一个块内存地址，所以函数内修改也会影响到函数外变量的值。</p>
+<h2 id="默认参数">2.2. 默认参数</h2>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params"><span class="variable">$i</span>=<span class="number">1</span>, <span class="variable">$j</span>=<span class="number">2</span>, <span class="variable">$k</span>=<span class="number">3</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i + $j + $k = &#x27;</span>.(<span class="variable">$i</span> + <span class="variable">$j</span> + <span class="variable">$k</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo();</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span>  demo(<span class="number">10</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> demo(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> demo(<span class="variable">$i</span>=<span class="number">10</span>, <span class="variable">$k</span>=<span class="number">30</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117151120.png" /></p>
+<p>默认参数就是在定义函数时给参数设置默认值，如果调用函数时没有传入参数，则使用默认值，如果传入参数，则使用传入值。</p>
+<p>需要注意：传入的参数必须按照顺序，无法通过 <code>demo($i=10, $k=30)</code> 方式跳过中间的默认参数。</p>
+<h2 id="可变参数">2.3. 可变参数</h2>
+<p>函数可以接受任意数量的参数，适合于实际参数大于形式参数。<code>func_get_args()</code> ：用在函数体内，将函数当前的参数打包到一个数组内返回。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;pre&gt;&#x27;</span>;</span><br><span class="line">    print_r(func_get_args());</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;/pre&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">demo(<span class="string">&#x27;html&#x27;</span>, <span class="string">&#x27;css&#x27;</span>, <span class="string">&#x27;javascript&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>可以看到，定义函数的时候，没有设置参数列表，但结果：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117151631.png" /></p>
+<p>这就是 <code>func_get_args</code> 的作用，获得传入函数的参数列表（生成一个索引数组）。有一个函数与这个很类似，<code>func_get_arg()</code>，可以获取参数列表中的某一个参数，利用索引获取。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;pre&gt;&#x27;</span>;</span><br><span class="line">    print_r(func_get_args());</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;/pre&gt;&#x27;</span>;</span><br><span class="line">    <span class="keyword">echo</span> func_get_arg(<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">demo(<span class="string">&#x27;html&#x27;</span>, <span class="string">&#x27;css&#x27;</span>, <span class="string">&#x27;javascript&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117151804.png" /></p>
+<pre><code>其实 array() 也是一个可变参数的函数</code></pre>
+<h1 id="可变函数与回调函数">3. 可变函数与回调函数</h1>
+<h2 id="可变函数">3.1. 可变函数</h2>
+<p>可变函数定义：</p>
+<ul>
+<li>可变函数也叫作变量函数，即函数的名称来自另一个变量。</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i + $j = &#x27;</span>.(<span class="variable">$i</span> + <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sub</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i - $j = &#x27;</span>.(<span class="variable">$i</span> - <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multi</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i * $j = &#x27;</span>.(<span class="variable">$i</span> * <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">div</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i / $j = &#x27;</span>.(<span class="variable">$i</span> / <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;可变函数的用法：&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;add&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$funcName</span>(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;sub&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$funcName</span>(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;multi&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$funcName</span>(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;div&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$funcName</span>(<span class="number">10</span>, <span class="number">5</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117152355.png" /></p>
+<p>根据结果可以看到，当变量 <code>$funcName</code> 发生变化时，调用的函数也发生变化，这里 <code>$funcName</code> 就是调用函数的名称，这就是可变函数的用法。</p>
+<p>除了上面的用法，还可以使用 <code>call_user_func_array()</code> 来调用可变函数。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i + $j = &#x27;</span>.(<span class="variable">$i</span> + <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sub</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i - $j = &#x27;</span>.(<span class="variable">$i</span> - <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multi</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i * $j = &#x27;</span>.(<span class="variable">$i</span> * <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">div</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i / $j = &#x27;</span>.(<span class="variable">$i</span> / <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;用 call_user_func_array(可变函数名称, 参数列表数组) 调用可变函数：&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;add&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> call_user_func_array(<span class="variable">$funcName</span>, [<span class="number">15</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;sub&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> call_user_func_array(<span class="variable">$funcName</span>, [<span class="number">15</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;multi&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> call_user_func_array(<span class="variable">$funcName</span>, [<span class="number">15</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$funcName</span> = <span class="string">&#x27;div&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> call_user_func_array(<span class="variable">$funcName</span>, [<span class="number">15</span>, <span class="number">3</span>]);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117153028.png" /></p>
+<h2 id="回调函数">3.2. 回调函数</h2>
+<p>回调函数：将可变函数的名称和可变函数的参数作为参数传入，在回调函数内部调用一个可变函数。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i + $j = &#x27;</span>.(<span class="variable">$i</span> + <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sub</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i - $j = &#x27;</span>.(<span class="variable">$i</span> - <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multi</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i * $j = &#x27;</span>.(<span class="variable">$i</span> * <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">div</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i / $j = &#x27;</span>.(<span class="variable">$i</span> / <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params"><span class="variable">$funcName</span>, <span class="variable">$a</span>, <span class="variable">$b</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$funcName</span>(<span class="variable">$a</span>, <span class="variable">$b</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;回调函数：&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;add&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;sub&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;multi&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;div&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117153343.png" /></p>
+<p>这里的 <code>demo</code> 就是回调函数。也可以使用 <code>call_user_func_array()</code> 来调用可变函数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i + $j = &#x27;</span>.(<span class="variable">$i</span> + <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sub</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i - $j = &#x27;</span>.(<span class="variable">$i</span> - <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multi</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i * $j = &#x27;</span>.(<span class="variable">$i</span> * <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">div</span>(<span class="params"><span class="variable">$i</span>, <span class="variable">$j</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;$i / $j = &#x27;</span>.(<span class="variable">$i</span> / <span class="variable">$j</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params"><span class="variable">$funcName</span>, <span class="variable">$a</span>, <span class="variable">$b</span></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// return $funcName($a, $b);</span></span><br><span class="line">    <span class="keyword">return</span> call_user_func_array(<span class="variable">$funcName</span>, [<span class="variable">$a</span>, <span class="variable">$b</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;回调函数：&lt;br&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;add&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;sub&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;multi&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> demo(<span class="string">&#x27;div&#x27;</span>, <span class="number">30</span>, <span class="number">20</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>结果不变。</p>
+<h2 id="用回调方式调用对象或类的方法">3.3. 用回调方式调用对象或类的方法</h2>
+<blockquote>
+<p>没搞懂，后续学到对象再回来</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">demo</span></span>&#123;</span><br><span class="line">    <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">func1</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;name = &#x27;</span>.<span class="variable">$name</span>.<span class="string">&#x27;, age = &#x27;</span>.<span class="variable">$age</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">func2</span>(<span class="params"><span class="variable">$name</span>, <span class="variable">$age</span></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;name = &#x27;</span>.<span class="variable">$name</span>.<span class="string">&#x27;, age = &#x27;</span>.<span class="variable">$age</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> call_user_func_array([<span class="string">&#x27;demo&#x27;</span>, <span class="string">&#x27;func1&#x27;</span>], [<span class="string">&#x27;takagi&#x27;</span>, <span class="string">&#x27;18&#x27;</span>]);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> call_user_func_array([(<span class="keyword">new</span> demo), <span class="string">&#x27;func2&#x27;</span>], [<span class="string">&#x27;m1ku&#x27;</span>, <span class="string">&#x27;20&#x27;</span>]);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117154158.png" /></p>
+<h1 id="函数导入与文件包含">4. 函数导入与文件包含</h1>
+<p>涉及到两个 PHP 语句：</p>
+<ol type="1">
+<li><code>require</code> ：用在文件开头，引入的文件的内容会直接替换该语句；</li>
+<li><code>include</code> ：适合用于运行过程中，动态的引入外部文件；</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">function showMess1()&#123;</span><br><span class="line">    return &#x27;welcome.&#x27;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">function showMess2()&#123;</span><br><span class="line">    return &#x27;takagi&#x27;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">require &#x27;temp1.php&#x27;;</span><br><span class="line"></span><br><span class="line">echo showMess1();</span><br><span class="line">echo &#x27;&lt;br&gt;&#x27;;</span><br><span class="line"></span><br><span class="line">if (true)&#123;</span><br><span class="line">    include &#x27;temp2.php&#x27;;</span><br><span class="line">    echo showMess2();</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    echo &#x27;no include&#x27;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有两个函数与这两个函数对应：</p>
+<ol type="1">
+<li><code>require_once</code></li>
+<li><code>include_once</code></li>
+</ol>
+<p>效果是一致的，这是用来确保文件只被引入一次（引入多次其实没啥用）。</p>
+<blockquote>
+<p><code>require</code> 和 <code>include</code> 不是函数，而是语言结构，同 <code>echo</code> 一样，后面的参数是文件名，可以放在括号内，也可以用字符串形式直接给出。</p>
+</blockquote>
+<h1 id="匿名函数与闭包实现">5. 匿名函数与闭包实现</h1>
+<h2 id="匿名函数">5.1. 匿名函数</h2>
+<p>匿名函数定义：</p>
+<ul>
+<li>没有名称或名称可以动态设置的函数；（其实匿名函数更像是用一个变量来表示函数）</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$showMess</span> = <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$name</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$name</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$showMess</span>(<span class="string">&#x27;takagi&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117155959.png" /></p>
+<p>这里的 <code>$showMess</code> 就是匿名函数，需要注意：</p>
+<ol type="1">
+<li>创建的时候需要在花括号后面加上分号，理解为此时的函数就是一个变量；</li>
+<li>调用的时候就是调用变量和函数的结合，既要 <code>$</code> ，也要传入参数；</li>
+</ol>
+<h2 id="闭包实现">5.2. 闭包实现</h2>
+<p>闭包：</p>
+<ul>
+<li>就是在一个函数内，引入一个匿名函数；</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">display</span>(<span class="params"><span class="variable">$str</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$show</span> = <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$name</span></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;My name is &#x27;</span>.<span class="variable">$name</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$show</span>(<span class="variable">$str</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> display(<span class="string">&#x27;m1ku&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117160146.png" /></p>
+<p>这里的 <code>display</code> 就是闭包。</p>
+<p>思考一个问题，此时的匿名函数在函数内部，那是否能够直接使用闭包函数的变量呢？答案是不能直接使用，需要用特殊的方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">display</span>(<span class="params"><span class="variable">$str</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$wel</span> = <span class="string">&#x27;Welcome, &#x27;</span>;</span><br><span class="line">    <span class="variable">$show</span> = <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$name</span></span>) <span class="keyword">use</span> (<span class="params"><span class="variable">$wel</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$wel</span>.<span class="string">&#x27;My name is &#x27;</span>.<span class="variable">$name</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$show</span>(<span class="variable">$str</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> display(<span class="string">&#x27;m1ku&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117160318.png" /></p>
+<h1 id="函数创建与调用">6. 函数创建与调用</h1>
+<p>大概可以总结为 4 种：</p>
+<ol type="1">
+<li>用 <code>function</code> 创建最普通的函数，调用方式也是最普通的；</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"><span class="variable">$a</span>, <span class="variable">$b</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$a</span>.<span class="string">&#x27; + &#x27;</span>.<span class="variable">$b</span>.<span class="string">&#x27; = &#x27;</span>.(<span class="variable">$a</span> + <span class="variable">$b</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> add(<span class="number">4</span>, <span class="number">6</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161330.png" /></p>
+<ol start="2" type="1">
+<li>用内置 <code>create_function</code> 创建函数，调用方式同匿名函数(PHP 8.0.0起被移除)；</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161424.png" /></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$func1</span> = create_function(<span class="string">&#x27;$a, $b&#x27;</span>, <span class="string">&#x27;return $a.\&#x27; + \&#x27;.$b.\&#x27; = \&#x27;.($a + $b);&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$func1</span>(<span class="number">7</span>, <span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>用 <code>function</code> 创建匿名函数</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$func2</span> = <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$a</span>, <span class="variable">$b</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$a</span>.<span class="string">&#x27; + &#x27;</span>.<span class="variable">$b</span>.<span class="string">&#x27; = &#x27;</span>.(<span class="variable">$a</span> + <span class="variable">$b</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$func2</span>(<span class="number">3</span>, <span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161554.png" /></p>
+<ol start="4" type="1">
+<li>用 <code>function</code> 创建匿名函数：没有名称，创建完直接执行，执行结束直接销毁；</li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> (<span class="function"><span class="keyword">function</span> (<span class="params"><span class="variable">$a</span>, <span class="variable">$b</span></span>) </span>&#123;<span class="keyword">return</span> <span class="variable">$a</span>.<span class="string">&#x27; + &#x27;</span>.<span class="variable">$b</span>.<span class="string">&#x27; = &#x27;</span>.(<span class="variable">$a</span> + <span class="variable">$b</span>);&#125;)(<span class="number">20</span>, <span class="number">40</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221117161723.png" /></p>
+<p>函数创建完毕之后，直接在后面跟上参数。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E8%AF%AD%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">1. 函数的基本概念与语法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">2. 函数参数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%BC%E5%8F%82%E6%95%B0%E5%92%8C%E5%BC%95%E7%94%A8%E5%8F%82%E6%95%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 值参数和引用参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 默认参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 可变参数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0%E4%B8%8E%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">3. 可变函数与回调函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 可变函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 回调函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E5%9B%9E%E8%B0%83%E6%96%B9%E5%BC%8F%E8%B0%83%E7%94%A8%E5%AF%B9%E8%B1%A1%E6%88%96%E7%B1%BB%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 用回调方式调用对象或类的方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%AF%BC%E5%85%A5%E4%B8%8E%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">4.</span> <span class="toc-text">4. 函数导入与文件包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E4%B8%8E%E9%97%AD%E5%8C%85%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.</span> <span class="toc-text">5. 匿名函数与闭包实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0"><span class="toc-number">5.1.</span> <span class="toc-text">5.1. 匿名函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AD%E5%8C%85%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.2.</span> <span class="toc-text">5.2. 闭包实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%88%9B%E5%BB%BA%E4%B8%8E%E8%B0%83%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">6. 函数创建与调用</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&text=6. 函数"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&title=6. 函数"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&is_video=false&description=6. 函数"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=6. 函数&body=Check out this article: https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&title=6. 函数"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&title=6. 函数"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&title=6. 函数"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&title=6. 函数"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&name=6. 函数&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/11/18/6.%20%E5%87%BD%E6%95%B0/&t=6. 函数"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2022
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
