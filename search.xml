@@ -18018,4 +18018,42 @@ efficiency = \frac 1{1+5\frac {T_{proc}}{T_{trans}}}
         <tag>php基础</tag>
       </tags>
   </entry>
+  <entry>
+    <title>wsl2中docker无法启动的问题</title>
+    <url>/2022/11/27/wsl2%E4%B8%ADdocker%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<span id="more"></span>
+<h1 id="问题">1. 问题</h1>
+<p>WSL2 支持两种 docker 安装，参考连接：<a href="https://zhuanlan.zhihu.com/p/148511634">win10利用WSL2安装docker的2种方式 - 知乎</a></p>
+<ol type="1">
+<li>第一种：官方推荐，使用 <code>docker for desktop</code>，个人不喜欢，还需要安装一个软件；</li>
+<li>第二种：与原生 Linux 一样，需要注意，wsl 无法使用 <code>systemctl</code>；</li>
+</ol>
+<p>使用第二种方式安装之后，输入</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">service docker start</span><br></pre></td></tr></table></figure>
+<p>启动 docker，但输入</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">service docker status</span><br></pre></td></tr></table></figure>
+<p>虽然没有报错，且查看 docker 状态的时候，发现成功启动，但再一次查看的时候，发现并没有启动，并且之后一直都无法启动，输入如下命令查看日志：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat /var/log/docker.log</span><br></pre></td></tr></table></figure>
+<p>在日志中发现：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221127092523.png" /></p>
+<p>原因是由于新的 ubuntu 使用了 iptables-nft，而 WSL2 不支持导致的。</p>
+<h1 id="解决">2. 解决</h1>
+<p>参考：<a href="https://blog.csdn.net/0210/article/details/124349371">Docker无法在WSL2的Ubuntu启动的问题_世宝宝的博客-CSDN博客</a></p>
+<ol type="1">
+<li>输入 <code>update-alternatives --config iptables</code></li>
+<li>输入 1，选择 <code>/usr/sbin/iptables-legacy</code></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221127092713.png" /></p>
+<p>然后再启动 docker 发现可以正常运行：</p>
+<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20221127092728.png" /></p>
+]]></content>
+      <categories>
+        <category>wsl2</category>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>wsl2</tag>
+        <tag>docker</tag>
+      </tags>
+  </entry>
 </search>
