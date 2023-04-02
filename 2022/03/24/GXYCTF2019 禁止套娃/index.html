@@ -13,13 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200901.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200923.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200955.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201026.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201059.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201121.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201131.png">
 <meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-19T04:04:35.970Z">
 <meta property="article:author" content="hdfzzf">
@@ -27,7 +20,6 @@
 <meta property="article:tag" content="git泄露">
 <meta property="article:tag" content="RCE">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200901.png">
     
     
       
@@ -162,15 +154,28 @@
     <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">1. 题目信息</h1>
-<p>进入环境之后发现什么信息都没有，数据包和源码都没有有用的信息。因此尝试扫描目录。但是我没有扫描出什么结果，可能是脚本不够强大吧。折腾无果后去搜索一下别人的WP，发现存在 <code>git</code> 泄露，因此使用 <code>githack</code> 下载。下载得到源码：</p>
+<p>进入环境之后发现什么信息都没有，数据包和源码都没有有用的信息。因此尝试扫描目录。但是我没有扫描出什么结果，可能是脚本不够强大吧。折腾无果后去搜索一下别人的WP，发现存在
+<code>git</code> 泄露，因此使用 <code>githack</code>
+下载。下载得到源码：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&quot;flag.php&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;flag在哪里呢？&lt;br&gt;&quot;</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]))&#123;</span><br><span class="line">    <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/data:\/\/|filter:\/\/|php:\/\/|phar:\/\//i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">&#x27;;&#x27;</span> === preg_replace(<span class="string">&#x27;/[a-z,_]+\((?R)?\)/&#x27;</span>, <span class="literal">NULL</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!preg_match(<span class="string">&#x27;/et|na|info|dec|bin|hex|oct|pi|log/i&#x27;</span>, <span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>])) &#123;</span><br><span class="line">                <span class="comment">// echo $_GET[&#x27;exp&#x27;];</span></span><br><span class="line">                @<span class="keyword">eval</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;exp&#x27;</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">die</span>(<span class="string">&quot;还差一点哦！&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;再好好想想！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;还想读flag，臭弟弟！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// highlight_file(__FILE__);</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h1 id="解题">2. 解题</h1>
 <p>第一个 <code>if</code> 过滤了一些伪协议；</p>
-<p>第二个 <code>if</code> 比较难，第一次遇见，这是过滤了函数的参数。<code>?(R)?</code> 是递归匹配模式的意思。匹配到的字符串都会被空代替，最后还需要满足强对比。所以，我们传入的exp在最后得有 <code>;</code> ，并且前面的部分都要被匹配，从而只剩下 <code>;</code>。</p>
+<p>第二个 <code>if</code>
+比较难，第一次遇见，这是过滤了函数的参数。<code>?(R)?</code>
+是递归匹配模式的意思。匹配到的字符串都会被空代替，最后还需要满足强对比。所以，我们传入的exp在最后得有
+<code>;</code> ，并且前面的部分都要被匹配，从而只剩下
+<code>;</code>。</p>
 <p>详细解释一下第二个匹配模式：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[a-z,_]+\((?R)?\)可以分为以下4个部分：</span><br><span class="line">1. [a-z,_]  </span><br><span class="line">2. \(   </span><br><span class="line">3. (?R)?   </span><br><span class="line">4. \)</span><br></pre></td></tr></table></figure>
-<p>假设输入的为 <code>print_r(scandir());</code>。这句话就是扫描某目录（此时目录并未指定），然后把目录下的所有文件名or子目录名形成一个数组返回并打印出来。</p>
+<p>假设输入的为
+<code>print_r(scandir());</code>。这句话就是扫描某目录（此时目录并未指定），然后把目录下的所有文件名or子目录名形成一个数组返回并打印出来。</p>
 <table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: center;">过程</th>
@@ -195,7 +200,8 @@
 <tr class="odd">
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">print_r(scandir</td>
-<td style="text-align: center;"><code>(?R)?</code> 起作用，进入递归，再次匹配<code>[a-z,_]</code></td>
+<td style="text-align: center;"><code>(?R)?</code>
+起作用，进入递归，再次匹配<code>[a-z,_]</code></td>
 <td style="text-align: center;">1</td>
 </tr>
 <tr class="even">
@@ -207,8 +213,10 @@
 <tr class="odd">
 <td style="text-align: center;">5</td>
 <td style="text-align: center;">print_r(scandir()</td>
-<td style="text-align: center;">进入第一个递归之后的 <code>\)</code> 起作用<br>执行之后退出第一次递归</td>
-<td style="text-align: center;">执行时属于：1<br>执行结束后退出第一层递归：0</td>
+<td style="text-align: center;">进入第一个递归之后的 <code>\)</code>
+起作用<br>执行之后退出第一次递归</td>
+<td
+style="text-align: center;">执行时属于：1<br>执行结束后退出第一层递归：0</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">6</td>
@@ -218,39 +226,61 @@
 </tr>
 </tbody>
 </table>
-<p>最后剩下一个 <code>;</code> 成功匹配。如果带有参数，比如：<code>print_r(scandir('/'));</code>，到第4步为止都是一样的，第5步的时候因为此时应该匹配的是 <code>\)</code> ，但是，此时字符串的位置是 <code>'/')</code> 无法成功匹配，返回原来的字符串，从而无法绕过第二个 <code>if</code>。</p>
+<p>最后剩下一个 <code>;</code>
+成功匹配。如果带有参数，比如：<code>print_r(scandir('/'));</code>，到第4步为止都是一样的，第5步的时候因为此时应该匹配的是
+<code>\)</code> ，但是，此时字符串的位置是 <code>'/')</code>
+无法成功匹配，返回原来的字符串，从而无法绕过第二个 <code>if</code>。</p>
 <p>成功绕过演示：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200901.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200901.png" /></p>
 <p>失败演示：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200923.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200923.png" /></p>
 <p>第三个 <code>if</code> 也比较简单，只是过滤了一些敏感词。</p>
 <p>接下来就要做两件事：</p>
 <ol type="1">
 <li><p>找 flag 所在的路径，一般在当前目录或者根目录</p></li>
 <li><p>找到了该怎么把路径表示出来，此时不能传入参数</p></li>
 </ol>
-<p>接下来需要对 PHP 比较了解的人能够想得到（反正我个菜鸟没有想到），先介绍几个函数：</p>
+<p>接下来需要对 PHP
+比较了解的人能够想得到（反正我个菜鸟没有想到），先介绍几个函数：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. localeconv(): 函数返回一包含本地数字及货币格式信息的数组。</span><br><span class="line"><span class="number">2</span>. scandir(): 列出给定目录中的文件和目录。</span><br><span class="line"><span class="number">3</span>. readfile(): 输出一个文件。本题中，如果使用该函数输出flag，需要在源码中查看</span><br><span class="line"><span class="number">4</span>. current(): 返回数组中的当前单元, 默认取第一个值。</span><br><span class="line"><span class="number">5</span>. pos(): current() 的别名。</span><br><span class="line"><span class="number">6</span>. next(): 函数将内部指针指向数组中的下一个元素，并输出。</span><br><span class="line"><span class="number">7</span>. array_reverse(): 以相反的元素顺序返回数组。</span><br><span class="line"><span class="number">8</span>. highlight_file(): 打印输出或者返回 filename 文件中语法高亮版本的代码。</span><br><span class="line"><span class="number">9</span>. array_flip(): 将数组的键和值互换</span><br><span class="line"><span class="number">10</span>. array_rand(): 随机读取数组中的一个或多个单元</span><br></pre></td></tr></table></figure>
-<p>以上最难理解的就是 <code>localeconv()</code>，但是这又是最关键的，因为不能传入参数，所以得想方设法找到路径 <code>/</code> 和 <code>.</code> ，而该函数就能够找到后者。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200955.png" /></p>
-<p>注意上图中的箭头处，那是 <code>.</code> 。因此，我们只要将它取出来即可，这时候就需要用到<code>current()</code> 了。然后再配合上 <code>scandir()</code> 和 <code>print_r</code> 就可以得到当前目录下的信息。</p>
+<p>以上最难理解的就是
+<code>localeconv()</code>，但是这又是最关键的，因为不能传入参数，所以得想方设法找到路径
+<code>/</code> 和 <code>.</code> ，而该函数就能够找到后者。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324200955.png" /></p>
+<p>注意上图中的箭头处，那是 <code>.</code>
+。因此，我们只要将它取出来即可，这时候就需要用到<code>current()</code>
+了。然后再配合上 <code>scandir()</code> 和 <code>print_r</code>
+就可以得到当前目录下的信息。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?exp=print_r(scandir(current(localeconv())));</span><br></pre></td></tr></table></figure>
 <p>返回结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201026.png" /></p>
-<p>注意到 <code>flag.php</code> 在第4个，或者说是倒数第2个。此时有两种方法：</p>
-<p>第一种，将整个数组反转，然后用 next() 取反转后的第二个元素，即 flag.php。payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?exp=show_source(next(array_reverse(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201059.png" /></p>
-<p>第二种比较看运气，利用 <code>array_flip()</code> 将交换数组的键和值</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201026.png" /></p>
+<p>注意到 <code>flag.php</code>
+在第4个，或者说是倒数第2个。此时有两种方法：</p>
+<p>第一种，将整个数组反转，然后用 next() 取反转后的第二个元素，即
+flag.php。payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?exp=show_source(next(array_reverse(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201059.png" /></p>
+<p>第二种比较看运气，利用 <code>array_flip()</code>
+将交换数组的键和值</p>
 <p><code>?exp=print_r(array_flip(scandir(current(localeconv()))));</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201121.png" /></p>
-<p>然后利用 <code>array_rand(array_flip())</code> 将数组的键<strong>随机</strong>的读取</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201121.png" /></p>
+<p>然后利用 <code>array_rand(array_flip())</code>
+将数组的键<strong>随机</strong>的读取</p>
 <p><code>?exp=highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201131.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324201131.png" /></p>
 <p>最终的 payload：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?exp=highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</span><br></pre></td></tr></table></figure>
 <p>由于随机性，所以需要多刷新几次。</p>
 <h1 id="总结">3. 总结</h1>
-<p>由于对 PHP 代码的不熟悉，导致本题最多只能做到代码审计这一步。得挑个时候学学 PHP 了，跑不掉的呀。</p>
+<p>由于对 PHP
+代码的不熟悉，导致本题最多只能做到代码审计这一步。得挑个时候学学 PHP
+了，跑不掉的呀。</p>
 
   </div>
 </article>
@@ -319,7 +349,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

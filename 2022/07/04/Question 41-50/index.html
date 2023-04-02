@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Question 41-50">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/07/04/Question%2041-50/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-03T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-05T04:01:51.398Z">
@@ -149,7 +149,10 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+    <p>项目地址：<a
+target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub</a></p>
 <p>分为三个等级：</p>
 <ol type="1">
 <li>easy</li>
@@ -167,28 +170,32 @@
 <h1 id="question-42">2. Question 42</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>给定一个元组 (1,2,3,4,5,6,7,8,9,10)，将其分为前半部分和后半部分，分别打印</li>
+<li>给定一个元组
+(1,2,3,4,5,6,7,8,9,10)，将其分为前半部分和后半部分，分别打印</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">input_tuple = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br><span class="line">length = <span class="built_in">len</span>(input_tuple)</span><br><span class="line">tp1 = input_tuple[:length//<span class="number">2</span>]</span><br><span class="line">tp2 = input_tuple[length//<span class="number">2</span>:]</span><br><span class="line"><span class="built_in">print</span>(tp1)</span><br><span class="line"><span class="built_in">print</span>(tp2)</span><br></pre></td></tr></table></figure>
 <h1 id="question-43">3. Question 43</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>给定一个元组 (1,2,3,4,5,6,7,8,9,10)，生成另一个元组，只包含给定元组中的偶数</li>
+<li>给定一个元组
+(1,2,3,4,5,6,7,8,9,10)，生成另一个元组，只包含给定元组中的偶数</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tp = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br><span class="line">lst = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(tp)):</span><br><span class="line">    <span class="keyword">if</span> tp[i]%<span class="number">2</span>==<span class="number">0</span>:</span><br><span class="line">        lst.append(tp[i])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">tuple</span>(lst))</span><br></pre></td></tr></table></figure>
 <h1 id="question-44">4. Question 44</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>给定一个字符串，如果是 'yes'、'YES'、'Yes'，则输出 'Yes'，否则输出 'No'</li>
+<li>给定一个字符串，如果是 'yes'、'YES'、'Yes'，则输出 'Yes'，否则输出
+'No'</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="built_in">str</span> = <span class="built_in">input</span>()</span><br><span class="line"><span class="keyword">if</span> re.search(<span class="string">r&#x27;(yes)|(Yes)|(YES)&#x27;</span>, <span class="built_in">str</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Yes&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;No&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <h1 id="question-45">5. Question 45</h1>
 <p><strong>题目</strong>：（medium）</p>
 <ul>
-<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，筛选出其中的偶数，使用 filter() 函数。</li>
+<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9,
+10]，筛选出其中的偶数，使用 filter() 函数。</li>
 </ul>
 <p><strong>要求</strong>：</p>
 <ul>
@@ -197,7 +204,8 @@
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lst = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>]</span><br><span class="line">res =<span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x%<span class="number">2</span>==<span class="number">0</span>, lst))</span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
 <h2 id="filter-函数">5.1. filter 函数</h2>
-<p>作用：用于过滤序列，过滤掉不符合条件的元素，返回由符合条件元素组成的 filter 对象（迭代器对象）。</p>
+<p>作用：用于过滤序列，过滤掉不符合条件的元素，返回由符合条件元素组成的
+filter 对象（迭代器对象）。</p>
 <p>语法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">filter</span>(function, iterable)</span><br></pre></td></tr></table></figure>
 <ul>
@@ -207,7 +215,8 @@
 <h1 id="question-46">6. Question 46</h1>
 <p><strong>题目</strong>：（medium）</p>
 <ul>
-<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，使用 map() 函数生成一个新的列表，元素为原来列表中元素的平方。</li>
+<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，使用 map()
+函数生成一个新的列表，元素为原来列表中元素的平方。</li>
 </ul>
 <p><strong>要求</strong>：</p>
 <ul>
@@ -219,7 +228,8 @@
 <h1 id="question-47">7. Question 47</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]，生成一个新的列表，元素为原来列表中偶数的平方。</li>
+<li>给定一个列表：[1, 2, 3, 4, 5, 6, 7, 8, 9,
+10]，生成一个新的列表，元素为原来列表中偶数的平方。</li>
 </ul>
 <p><strong>要求</strong>：</p>
 <ul>
@@ -246,7 +256,9 @@
 <h1 id="question-50">10. Question 50</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>定义一个名为 American 的 class，拥有一个静态方法 printNationality。使用 <span class="citation" data-cites="staticmethod">@staticmethod</span></li>
+<li>定义一个名为 American 的 class，拥有一个静态方法
+printNationality。使用 <span class="citation"
+data-cites="staticmethod">@staticmethod</span></li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">American</span>:</span></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">printNationality</span>():</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;American.&#x27;</span>)</span><br><span class="line"></span><br><span class="line">jack = American()</span><br><span class="line">jack.printNationality()</span><br><span class="line">American.printNationality()</span><br></pre></td></tr></table></figure>
@@ -297,7 +309,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&title=Question 41-50"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&name=Question 41-50&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/04/Question%2041-50/&name=Question 41-50&description=&lt;p&gt;项目地址：&lt;a
+href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;分为三个等级：&lt;/p&gt;
 &lt;ol type=&#34;1&#34;&gt;
 &lt;li&gt;easy&lt;/li&gt;
@@ -324,7 +339,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

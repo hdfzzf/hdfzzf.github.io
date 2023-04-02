@@ -6,21 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Question 21-30">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/07/03/Question%2021-30/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703224222.png">
 <meta property="article:published_time" content="2022-07-02T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-03T14:51:39.081Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="Python 练习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png">
     
     
       
@@ -152,7 +149,10 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+    <p>项目地址：<a
+target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub</a></p>
 <p>分为三个等级：</p>
 <ol type="1">
 <li>easy</li>
@@ -163,14 +163,21 @@
 <h1 id="question-21">1. Question 21</h1>
 <p><strong>题目</strong>：（hard）</p>
 <ul>
-<li>有一个机器人初始位置为 (0, 0)，只会上下左右移动。比如输入为：UP 5 DOWN 3 LEFT 3 RIGHT 2，意思为：先先向上移动 5 个单位，然后向下移动 3 个单位，接着向左移动 3 个单位，最后向右移动 2 个单位。计算出机器人最后的位置和初始位置的距离，如果是 float 则四舍五入。</li>
+<li>有一个机器人初始位置为 (0, 0)，只会上下左右移动。比如输入为：UP 5
+DOWN 3 LEFT 3 RIGHT 2，意思为：先先向上移动 5 个单位，然后向下移动 3
+个单位，接着向左移动 3 个单位，最后向右移动 2
+个单位。计算出机器人最后的位置和初始位置的距离，如果是 float
+则四舍五入。</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line">local = [<span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    movement = <span class="built_in">input</span>().split()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> movement:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    direction = movement[<span class="number">0</span>]</span><br><span class="line">    step = <span class="built_in">int</span>(movement[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">if</span> direction == <span class="string">&#x27;UP&#x27;</span>:</span><br><span class="line">        local[<span class="number">1</span>] += step</span><br><span class="line">    <span class="keyword">elif</span> direction == <span class="string">&#x27;DOWN&#x27;</span>:</span><br><span class="line">        local[<span class="number">1</span>] -= step</span><br><span class="line">    <span class="keyword">elif</span> direction == <span class="string">&#x27;LEFT&#x27;</span>:</span><br><span class="line">        local[<span class="number">0</span>] -= step</span><br><span class="line">    <span class="keyword">elif</span> direction == <span class="string">&#x27;RIGHT&#x27;</span>:</span><br><span class="line">        local[<span class="number">0</span>] += step</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">int</span>(<span class="built_in">round</span>(math.sqrt(<span class="built_in">pow</span>(local[<span class="number">0</span>], <span class="number">2</span>) + <span class="built_in">pow</span>(local[<span class="number">1</span>], <span class="number">2</span>)))))</span><br></pre></td></tr></table></figure>
 <h1 id="question-22">2. Question 22</h1>
 <p><strong>题目</strong>：（hard）</p>
 <ul>
-<li>给定一串字符串，求出字符串中每个单词出现的次数，并按照单词进行字母表排序，然后输出。比如输入为：New to Python or choosing between Python 2 and Python 3? Read Python 2 or Python 3. 输出为：2:2 3.:1 3?:1 New:1 Python:5 Read:1 and:1 between:1 choosing:1 or:2 to:1</li>
+<li>给定一串字符串，求出字符串中每个单词出现的次数，并按照单词进行字母表排序，然后输出。比如输入为：New
+to Python or choosing between Python 2 and Python 3? Read Python 2 or
+Python 3. 输出为：2:2 3.:1 3?:1 New:1 Python:5 Read:1 and:1 between:1
+choosing:1 or:2 to:1</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">str</span> = <span class="built_in">input</span>().split()</span><br><span class="line">res = <span class="built_in">dict</span>()</span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">if</span> word <span class="keyword">in</span> res:</span><br><span class="line">        res[word] += <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        res[word] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> word <span class="keyword">in</span> <span class="built_in">sorted</span>(res.keys()):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;word&#125;</span>:<span class="subst">&#123;res[word]&#125;</span>&#x27;</span>, end=<span class="string">&#x27; &#x27;</span>)</span><br></pre></td></tr></table></figure>
@@ -194,7 +201,9 @@
 <h3 id="key">2.1.1. key</h3>
 <p>第一种办法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">sorted</span>(my_dict.keys()))</span><br><span class="line"><span class="built_in">print</span>(my_dict)</span><br><span class="line"></span><br><span class="line"><span class="comment"># [&#x27;age&#x27;, &#x27;lilee&#x27;, &#x27;phone&#x27;]</span></span><br><span class="line"><span class="comment"># &#123;&#x27;lilee&#x27;: 25, &#x27;age&#x27;: 24, &#x27;phone&#x27;: 12&#125;</span></span><br></pre></td></tr></table></figure>
-<p>直接对 dict.keys() 进行排序即可。需要注意的是，这种方法得到的返回值是一个对 keys 排序过后的列表，原来的字典没有变化。</p>
+<p>直接对 dict.keys()
+进行排序即可。需要注意的是，这种方法得到的返回值是一个对 keys
+排序过后的列表，原来的字典没有变化。</p>
 <p>如果需要遍历排序之后的结果，可以这样：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> <span class="built_in">sorted</span>(my_dict.keys()):</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;key&#125;</span> : <span class="subst">&#123;my_dict[key]&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># age : 24</span></span><br><span class="line"><span class="comment"># lilee : 25</span></span><br><span class="line"><span class="comment"># phone : 12</span></span><br></pre></td></tr></table></figure>
 <p>第二种方法，使用 lambda 匿名函数：</p>
@@ -203,7 +212,9 @@
 <p>也可以使用 operator.itemgetter 来，效果与 lambda 函数一样：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</span><br><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=itemgetter(<span class="number">0</span>))</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25), (&#x27;phone&#x27;, 12)]</span></span><br></pre></td></tr></table></figure>
 <h3 id="value">2.1.2. value</h3>
-<p>只知道 value 是无法找到字典中的元素的，因此单纯的对 value 排序而不改变字典顺序是没有意义的，所以对 value 排序一定会改变字典顺序。</p>
+<p>只知道 value 是无法找到字典中的元素的，因此单纯的对 value
+排序而不改变字典顺序是没有意义的，所以对 value
+排序一定会改变字典顺序。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=<span class="keyword">lambda</span> item: item[<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;phone&#x27;, 12), (&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25)]</span></span><br></pre></td></tr></table></figure>
 <p>还可以使用 operator.itemgetter 进行排序：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</span><br><span class="line">my_dict = &#123;<span class="string">&#x27;lilee&#x27;</span>:<span class="number">25</span>, <span class="string">&#x27;age&#x27;</span>:<span class="number">24</span>, <span class="string">&#x27;phone&#x27;</span>:<span class="number">12</span>&#125;</span><br><span class="line">d = <span class="built_in">sorted</span>(my_dict.items(), key=itemgetter(<span class="number">1</span>))</span><br><span class="line"><span class="built_in">print</span>(d)</span><br><span class="line"><span class="comment"># [(&#x27;phone&#x27;, 12), (&#x27;age&#x27;, 24), (&#x27;lilee&#x27;, 25)]</span></span><br></pre></td></tr></table></figure>
@@ -217,22 +228,28 @@
 <h1 id="question-24">4. Question 24</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>打印 Python 内置函数的文档，比如 abs(), int(), input()。以及为上一题中的自定义函数写文档</li>
+<li>打印 Python 内置函数的文档，比如 abs(), int(),
+input()。以及为上一题中的自定义函数写文档</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">square</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    :param x:</span></span><br><span class="line"><span class="string">    :return: x**2</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> x**<span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">int</span>.__doc__)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">abs</span>.__doc__)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">input</span>.__doc__)</span><br><span class="line"><span class="built_in">print</span>(square.__doc__)</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703223620.png" /></p>
 <h2 id="函数内置文档">4.1. 函数内置文档</h2>
-<p>一个函数定义中，<strong>最开始的多行注释</strong> 为这个函数的内置文档，可以通过 <code>func.__doc__</code> 进行查看。</p>
+<p>一个函数定义中，<strong>最开始的多行注释</strong>
+为这个函数的内置文档，可以通过 <code>func.__doc__</code> 进行查看。</p>
 <h1 id="question-25">5. Question 25</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>定义一个 class，拥有一个属性(name)以及一个相同的实例参数(self.name)</li>
+<li>定义一个
+class，拥有一个属性(name)以及一个相同的实例参数(self.name)</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span></span><br><span class="line">    name = <span class="string">&#x27;person&#x27;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">m1ku = Person(<span class="string">&#x27;m1ku&#x27;</span>)</span><br><span class="line">jack = Person()</span><br><span class="line"><span class="built_in">print</span>(m1ku.name, Person.name)</span><br><span class="line"><span class="built_in">print</span>(jack.name, Person.name)</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703224222.png" /></p>
-<p>可以看到，属性的参数 name 不会被修改，而实例参数 self.name 会被修改。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220703224222.png" /></p>
+<p>可以看到，属性的参数 name 不会被修改，而实例参数 self.name
+会被修改。</p>
 <h1 id="question-26">6. Question 26</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
@@ -310,7 +327,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&title=Question 21-30"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&name=Question 21-30&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/03/Question%2021-30/&name=Question 21-30&description=&lt;p&gt;项目地址：&lt;a
+href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;分为三个等级：&lt;/p&gt;
 &lt;ol type=&#34;1&#34;&gt;
 &lt;li&gt;easy&lt;/li&gt;
@@ -337,7 +357,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

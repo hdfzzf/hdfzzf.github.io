@@ -13,18 +13,11 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png">
 <meta property="article:published_time" content="2022-03-21T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-29T12:24:23.111Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="SSTI">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png">
     
     
       
@@ -159,22 +152,36 @@
     <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和 <code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
-<p>发现有 <code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且 <code>hint.php</code> 源码中提示到 <code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到 <code>XFF</code>。</p>
+<p>进入环境后发现什么都没有，查看源码也没有。点击 <code>flag</code> 和
+<code>hint</code> 都没有。抓包也没找到有用信息，因此想到扫描目录吧。
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322201937.png" /></p>
+<p>发现有
+<code>.DS_Store</code>，因此可能有信息泄露，但是下载下来发现，一堆乱码。此时注意到题目：<code>The_mystery_of_ip</code>，并且
+<code>hint.php</code> 源码中提示到
+<code>&lt;!-- Do you know why i know your ip? --&gt;</code>，忽然想到
+<code>XFF</code>。</p>
 <h1 id="解题">解题</h1>
-<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
-<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup 才知道这里考的是模板注入。</p>
-<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
-<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
+<p>进入 <code>flag.php</code> 然后抓包，修改 <code>XFF</code>。 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322202806.png" /></p>
+<p>说明此题的突破点就在这里，但是实在想不到，看了别人的 writeup
+才知道这里考的是模板注入。</p>
+<p>先尝试 <code>&#123;&#123;2*3&#125;&#125;</code>，结果如下 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204148.png" /></p>
+<p>发现确实如此，输入 <code>&#123;&#123;php&#125;&#125;</code> <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204358.png" /></p>
 <p>发现是 <code>smarty</code>。</p>
 <p><code>smarty</code> 存在命令执行： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">exec — 执行一个外部程序  </span><br><span class="line">passthru — 执行外部程序并且显示原始输出  </span><br><span class="line">proc_close — 关闭由 proc_open 打开的进程并且返回进程退出码  </span><br><span class="line">proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。  </span><br><span class="line">popen — 打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。  </span><br><span class="line">proc_terminate — 杀除由 proc_open 打开的进程  </span><br><span class="line">shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。  </span><br><span class="line">system — 执行外部程序，并且显示输出  </span><br><span class="line">scandir 列出指定路径中的文件和目录  </span><br><span class="line"><span class="keyword">eval</span> — 把字符串作为PHP代码执行  </span><br><span class="line">assert --函数直接将传入的参数当成PHP代码执行</span><br></pre></td></tr></table></figure></p>
-<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
-<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
+<p>输入 payload：<code>&#123;&#123;passthru("ls /")&#125;&#125;</code> <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204751.png" /></p>
+<p>发现 flag，利用 <code>&#123;&#123;passthru("cat /flag")&#125;&#125;</code> <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220322204858.png" /></p>
 <p>成功get。</p>
 <h1 id="总结">总结</h1>
 <ul>
 <li>模板注入是 CTF 中常考的题目，这里着实没想到。</li>
-<li>要注意题目环境中的各种信息，比如这题中的题目想到 <code>XFF</code>。</li>
+<li>要注意题目环境中的各种信息，比如这题中的题目想到
+<code>XFF</code>。</li>
 </ul>
 
   </div>
@@ -244,7 +251,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

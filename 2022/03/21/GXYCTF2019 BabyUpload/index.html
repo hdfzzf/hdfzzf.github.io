@@ -13,22 +13,11 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png">
 <meta property="article:published_time" content="2022-03-20T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-22T00:43:35.571Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="文件上传">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png">
     
     
       
@@ -163,28 +152,45 @@
     <p>BUUCTF 网址：https://buuoj.cn/challenges</p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
-<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
+<p>打开环境可以很明显看到，这就是一个文件上传的题目。 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321194818.png" /></p>
 <h1 id="过滤测试">过滤测试</h1>
 <h2 id="过滤类型测试">过滤类型测试</h2>
-<p>随便上传一个图片 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
-<p>根据提示 <code>上传类型</code> 推测应该需要修改 <code>Content-Type</code>，尝试 <code>image/gif</code> 和 <code>imag/jpeg</code> 后，发现后者是可以的。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
+<p>随便上传一个图片 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195148.png" /></p>
+<p>根据提示 <code>上传类型</code> 推测应该需要修改
+<code>Content-Type</code>，尝试 <code>image/gif</code> 和
+<code>imag/jpeg</code> 后，发现后者是可以的。 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195315.png" /></p>
 <h2 id="过滤后缀测试">过滤后缀测试</h2>
-<p>将后缀修改为 <code>php</code> ，上传 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
-<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了 <code>.htaccess</code> 。尝试一下发现成功！ <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
-<p>记录一下地址 <code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为 <code>shell.jpg</code> 的木马即可。</p>
+<p>将后缀修改为 <code>php</code> ，上传 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195444.png" /></p>
+<p>经过多次尝试，发现我无法绕过这个过滤。此时思考，是否可以不用特定后缀又可以上传文件，想到了
+<code>.htaccess</code> 。尝试一下发现成功！ <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321195835.png" /></p>
+<p>记录一下地址
+<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/.htaccess</code>。之后，只要上传一个文件名为
+<code>shell.jpg</code> 的木马即可。</p>
 <h2 id="文件内容过滤">文件内容过滤</h2>
-<p>写入一句话木马，然后上传，果不其然被过滤了。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
-<p>换一种写法发现还是不行 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
-<p>猜测过滤的应该是开头的那个 <code>php</code> 。因此，换一种写法，成功绕过。 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
+<p>写入一句话木马，然后上传，果不其然被过滤了。 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200100.png" /></p>
+<p>换一种写法发现还是不行 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200308.png" /></p>
+<p>猜测过滤的应该是开头的那个 <code>php</code>
+。因此，换一种写法，成功绕过。 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200502.png" /></p>
 <p>记录上传地址：<code>/var/www/html/upload/0ac6e66ec314df83922a1ebbbdf6e358/shell.jpg</code></p>
 <h1 id="蚁剑连接get-flag">蚁剑连接get flag</h1>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
-<p>flag在根目录 <img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200538.png" /></p>
+<p>flag在根目录 <img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220321200555.png" /></p>
 <p>成功。</p>
 <h1 id="总结">总结</h1>
 <ol type="1">
 <li>要熟悉常用的上传类型，题目中大多考察的是图片，因此要熟记：<code>image/jpeg</code>、<code>image/png</code>、<code>image/gif</code>；</li>
-<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到 <code>.htaccess</code>；</li>
+<li>当脚本后缀被过滤之后，并且无法绕过时，需要想到
+<code>.htaccess</code>；</li>
 <li>文件内容的过滤，需要知道多种木马的写法。</li>
 </ol>
 
@@ -255,7 +261,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

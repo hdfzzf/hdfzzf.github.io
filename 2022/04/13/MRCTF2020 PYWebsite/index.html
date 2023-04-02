@@ -13,16 +13,11 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="题目地址：PYWebsite">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png">
 <meta property="article:published_time" content="2022-04-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-13T15:18:06.093Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="HTTP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png">
     
     
       
@@ -154,19 +149,24 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
+    <p>题目地址：<a
+target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite">PYWebsite</a></p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
 <p>进入环境之后，发现页面很复杂。先查看源码，发现</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231227.png" /></p>
 <p>这是后面输入授权码的时候触发的，最开始还以为绕过<code>hex_md5</code>就可以了。在这串代码中还有一个<code>./flag.php</code>。</p>
 <p>访问该文件得到如下界面</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231351.png" /></p>
 <h1 id="解题">解题</h1>
 <p>重点的提示<strong>已经记住了购买者的IP......除了购买者和我自己，没人可以看到flag</strong>。意思就是，要么我们自己购买，要么使用出题者的IP就可以看到flag。前者显然不可能，那么只有后者，这时候想到了一个HTTP头部信息<code>X-Forwarded-For</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231606.png" /></p>
 <p>flag在源码中可以查看</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220413231627.png" /></p>
 
   </div>
 </article>
@@ -214,7 +214,8 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/13/MRCTF2020%20PYWebsite/&title=MRCTF2020 PYWebsite"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/13/MRCTF2020%20PYWebsite/&title=MRCTF2020 PYWebsite"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/13/MRCTF2020%20PYWebsite/&title=MRCTF2020 PYWebsite"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/13/MRCTF2020%20PYWebsite/&name=MRCTF2020 PYWebsite&description=&lt;p&gt;题目地址：&lt;a href=&#34;https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite&#34;&gt;PYWebsite&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/13/MRCTF2020%20PYWebsite/&name=MRCTF2020 PYWebsite&description=&lt;p&gt;题目地址：&lt;a
+href=&#34;https://buuoj.cn/challenges#%5BMRCTF2020%5DPYWebsite&#34;&gt;PYWebsite&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/13/MRCTF2020%20PYWebsite/&t=MRCTF2020 PYWebsite"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -235,7 +236,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

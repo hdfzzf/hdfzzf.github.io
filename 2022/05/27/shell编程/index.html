@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人的知识点记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shell编程">
+<meta property="og:url" content="https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的知识点记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-27T08:27:37.017Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="shell基础">
+<meta property="article:tag" content="Linux基础">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>shell编程</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2022/05/28/Lupin_one%20Writeup/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/05/26/Breach-1.0%20Writeup/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. shell概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">2. shell解析器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E8%84%9A%E6%9C%AC%E5%85%A5%E9%97%A8"><span class="toc-number">3.</span> <span class="toc-text">3. shell脚本入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AAshell%E8%84%9A%E6%9C%AC-hello-world"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 第一个shell脚本-hello
+world</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 不同执行方式的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AAshell%E8%84%9A%E6%9C%AC-%E5%A4%9A%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 第二个shell脚本-多命令处理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">4.</span> <span class="toc-text">4. shell中的变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 系统变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 自定义变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">4.2.1.</span> <span class="toc-text">4.2.1. 基本语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89%E8%A7%84%E5%88%99"><span class="toc-number">4.2.2.</span> <span class="toc-text">4.2.2. 变量定义规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%8D%87%E4%B8%BA%E5%85%A8%E5%B1%80%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">4.2.3.</span> <span class="toc-text">4.2.3. 提升为全局环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. 特殊变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#n"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1. $n</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2. $#</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%8C"><span class="toc-number">4.3.3.</span> <span class="toc-text">4.3.3. $* 和 $@</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-1"><span class="toc-number">4.3.4.</span> <span class="toc-text">4.3.4. $?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">4.4.</span> <span class="toc-text">4.4. shell变量的作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">4.4.1.</span> <span class="toc-text">4.4.1. 局部变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="toc-number">4.4.2.</span> <span class="toc-text">4.4.2. 全局变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">4.4.3.</span> <span class="toc-text">4.4.3. 环境变量</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.</span> <span class="toc-text">5. 运算符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">6.</span> <span class="toc-text">6. 条件判断</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95-1"><span class="toc-number">6.1.</span> <span class="toc-text">6.1. 基本语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6"><span class="toc-number">6.2.</span> <span class="toc-text">6.2. 常用判断条件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">7.</span> <span class="toc-text">7. 流程控制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#if%E5%88%A4%E6%96%AD"><span class="toc-number">7.1.</span> <span class="toc-text">7.1. if判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#case%E8%AF%AD%E5%8F%A5"><span class="toc-number">7.2.</span> <span class="toc-text">7.2. case语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#for%E5%BE%AA%E7%8E%AF"><span class="toc-number">7.3.</span> <span class="toc-text">7.3. for循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%951"><span class="toc-number">7.3.1.</span> <span class="toc-text">7.3.1. 基础语法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%952"><span class="toc-number">7.3.2.</span> <span class="toc-text">7.3.2. 基础语法2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%92%8C%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.3.2.1.</span> <span class="toc-text">7.3.2.1. $*和$@的区别</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#while%E5%BE%AA%E7%8E%AF"><span class="toc-number">7.4.</span> <span class="toc-text">7.4. while循环</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#read%E8%AF%BB%E5%8F%96%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BE%93%E5%85%A5"><span class="toc-number">8.</span> <span class="toc-text">8. read读取控制台输入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">9.</span> <span class="toc-text">9. 函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0"><span class="toc-number">9.1.</span> <span class="toc-text">9.1. 系统函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#basename"><span class="toc-number">9.1.1.</span> <span class="toc-text">9.1.1. basename</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dirname"><span class="toc-number">9.1.2.</span> <span class="toc-text">9.1.2. dirname</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="toc-number">9.2.</span> <span class="toc-text">9.2. 自定义函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E5%B7%A5%E5%85%B7"><span class="toc-number">10.</span> <span class="toc-text">10. shell工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#cut"><span class="toc-number">10.1.</span> <span class="toc-text">10.1. cut</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sed"><span class="toc-number">10.2.</span> <span class="toc-text">10.2. sed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#awk"><span class="toc-number">10.3.</span> <span class="toc-text">10.3. awk</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-number">10.3.1.</span> <span class="toc-text">10.3.1. 基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="toc-number">10.3.2.</span> <span class="toc-text">10.3.2. 内置变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sort"><span class="toc-number">10.4.</span> <span class="toc-text">10.4. sort</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%81%E4%B8%9A%E7%9C%9F%E5%AE%9E%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="toc-number">11.</span> <span class="toc-text">11. 企业真实面试题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%AC%E4%B8%9C"><span class="toc-number">11.1.</span> <span class="toc-text">11.1. 京东</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%9C%E7%8B%90%E5%92%8C%E8%AE%AF%E7%BD%91"><span class="toc-number">11.2.</span> <span class="toc-text">11.2. 搜狐&amp;和讯网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E6%B5%AA"><span class="toc-number">11.3.</span> <span class="toc-text">11.3. 新浪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%91%E5%92%8C%E7%BD%91%E7%BB%9C"><span class="toc-number">11.4.</span> <span class="toc-text">11.4. 金和网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">12.</span> <span class="toc-text">12. 番外</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8Cshell%E8%84%9A%E6%9C%AC"><span class="toc-number">12.1.</span> <span class="toc-text">12.1. 执行shell脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E6%96%B0%E8%BF%9B%E7%A8%8B%E4%B8%AD%E8%BF%90%E8%A1%8C"><span class="toc-number">12.1.1.</span> <span class="toc-text">12.1.1. 在新进程中运行</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86shell%E8%84%9A%E6%9C%AC%E4%BD%9C%E4%B8%BA%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C"><span class="toc-number">12.1.1.1.</span> <span class="toc-text">12.1.1.1. 将shell脚本作为程序运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86shell%E8%84%9A%E6%9C%AC%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E7%BB%99bash%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="toc-number">12.1.1.2.</span> <span class="toc-text">12.1.1.2.
+将shell脚本作为参数传递给bash解释器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF%E4%BA%86%E6%96%B0%E8%BF%9B%E7%A8%8B"><span class="toc-number">12.1.1.3.</span> <span class="toc-text">12.1.1.3. 检测是否开启了新进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E5%BD%93%E5%89%8D%E8%BF%9B%E7%A8%8B%E4%B8%AD%E6%89%A7%E8%A1%8C"><span class="toc-number">12.1.2.</span> <span class="toc-text">12.1.2. 在当前进程中执行</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        shell编程
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-05-26T16:00:00.000Z" itemprop="datePublished">2022-05-27</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Linux%E5%9F%BA%E7%A1%80/" rel="tag">Linux基础</a>, <a class="tag-link-link" href="/tags/shell%E5%9F%BA%E7%A1%80/" rel="tag">shell基础</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人的知识点记录。</p>
+<span id="more"></span>
+<h1 id="shell概述">1. shell概述</h1>
+<p>shell是一个命令行解释器，它接收应用程序/用户的命令，然后调用操作系统内核。除此之外，shell还是一门编程语言。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526224512.png" /></p>
+<h1 id="shell解析器">2. shell解析器</h1>
+<p>可以在Linux中输入 <code>cat /etc/shells</code> 查看有哪些解析器</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526224716.png" /></p>
+<p>[[bash 和 sh 的区别]]</p>
+<p>kali中默认的是 zsh，可以输入 <code>echo $SHELL</code>
+查看默认的shell，也可以 <code>cat /etc/passwd</code> 查看</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526224919.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526224939.png" /></p>
+<h1 id="shell脚本入门">3. shell脚本入门</h1>
+<h2 id="第一个shell脚本-hello-world">3.1. 第一个shell脚本-hello
+world</h2>
+<ol type="1">
+<li><p>脚本格式</p>
+<p>脚本以 <code>#!/bin/bash</code> 开头（指定解析器）</p></li>
+<li><p>第一个 shell 脚本: helloworld.sh</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;hello world&quot;</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526225327.png" /></p></li>
+</ol>
+<h2 id="不同执行方式的区别">3.2. 不同执行方式的区别</h2>
+<p>大致有以下两种执行方式（1和其他）： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. ./helloworld.sh # 后面程序可以使用绝对路径 or 相对路径</span><br><span class="line">2. bash helloworld.sh # 后面程序可以使用绝对路径 or 相对路径</span><br><span class="line">3. sh helloworld.sh  # 后面程序可以使用绝对路径 or 相对路径</span><br><span class="line">4. ...</span><br></pre></td></tr></table></figure></p>
+<p>第一条命令和后两条命令是不一样的。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526225913.png" /></p>
+<p>就算没有执行权限，使用 <code>bash file</code>
+的方式还是可以执行的，而 <code>./file</code>
+的方式则会提示失败。这是因为前者是<strong>调用了 bash
+读取脚本文件中的内容，然后执行命令，所以只需要有读取权限
+即可</strong>。而后者是用户把整个文件当作一个可执行文件执行，所以需要该用户具有执行权限。</p>
+<p>如果没有读取权限，<code>bash file</code> 方式也会失效</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526230510.png" /></p>
+<p>如果只有读取权限，<code>bash file</code> 方式也能成功</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526230545.png" /></p>
+<h2 id="第二个shell脚本-多命令处理">3.3. 第二个shell脚本-多命令处理</h2>
+<p>需求：在 /home/m1ku/shellLearn 目录下添加一个文件
+secret.txt，并且向该文件中写入“Just a joke!”。用一个脚本 add.sh
+完成。</p>
+<p>命令如下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">cd /home/m1ku/shellLearn # 来到目录</span><br><span class="line">touch secret.txt # 新建文件</span><br><span class="line">echo &quot;Just a joke!&quot; &gt; secret.txt # 写入内容</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：<code>&gt;</code>是覆盖文件中的内容；<code>&gt;&gt;</code>是向文件中追加内容</p>
+</blockquote>
+<p>执行前：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526231429.png" /></p>
+<p>执行后：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220526231451.png" /></p>
+<h1 id="shell中的变量">4. shell中的变量</h1>
+<h2 id="系统变量">4.1. 系统变量</h2>
+<p>常用的系统变量：</p>
+<ol type="1">
+<li>$HOME -&gt; 当前用户家目录</li>
+<li>$PWD -&gt; 当前所在路径</li>
+<li>$SHELL -&gt; 当前用户的默认shell</li>
+<li>$USER -&gt; 当前用户</li>
+<li>$PATH -&gt; 环境变量</li>
+<li>...</li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527082346.png" /></p>
+<h2 id="自定义变量">4.2. 自定义变量</h2>
+<h3 id="基本语法">4.2.1. 基本语法</h3>
+<ol type="1">
+<li>定义变量（如果已存在变量，那么就会重新赋值）：<code>变量=值</code>，注意不能有空格！shell中空格一般表示分隔</li>
+<li>撤销变量：<code>unset 变量</code></li>
+<li>声明静态变量：<code>readonly 变量</code>，此时该变量不能
+unset，只能重启之后自动撤销</li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527082754.png" /></p>
+<p>如果需要输入的字符串是<strong>连续的</strong>，可以不见引号，如下</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527082923.png" /></p>
+<h3 id="变量定义规则">4.2.2. 变量定义规则</h3>
+<ol type="1">
+<li><p>变量名称可以由字母、数字和下划线组成，但是不能以数字开头，<strong>系统变量名建议大写</strong></p></li>
+<li><p><strong>等号两侧不能有空格</strong></p></li>
+<li><p>在 bash 中，变量默认类型都是字符串类型，无法直接进行数值运算</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527083239.png" /></p></li>
+<li><p>变量的值如果有空格，需要使用双引号或单引号括起来</p></li>
+</ol>
+<h3 id="提升为全局环境变量">4.2.3. 提升为全局环境变量</h3>
+<p>基本语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export 变量</span><br></pre></td></tr></table></figure></p>
+<p>举个例子：</p>
+<p>新建一个变量 <code>s=hello</code>，将其加入到 helloworld.sh 中</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527083852.png" /></p>
+<p>然后，执行该脚本，会发现 s 变量并没有被输出</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527083930.png" /></p>
+<p>但是如果将 s 提升为全局变量，则可以被输出</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527084002.png" /></p>
+<h2 id="特殊变量">4.3. 特殊变量</h2>
+<h3 id="n">4.3.1. <code>$n</code></h3>
+<p>作用：<code>$n</code>，n为数字，<code>$0</code>代表该脚本名称，<code>$1</code>-<code>$9</code>代表第一到第九个参数，十以上的参数需要用大括号包含，如<code>$&#123;11&#125;</code></p>
+<p>举个例子：</p>
+<p>编写脚本 parameter.sh ，代码如下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;$0 $1 $2 $3&quot;</span><br></pre></td></tr></table></figure></p>
+<p>分别执行以下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. bash parameter.sh</span><br><span class="line">2. bash parameter.sh I</span><br><span class="line">3. bash parameter.sh I Love</span><br><span class="line">4. bash parameter.sh I Love Myself</span><br><span class="line">5. bash parameter.sh I Love Myself too</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527084811.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527084831.png" /></p>
+<p>可以看到，每往脚本名后面添加一个参数，就会被执行而显示出来。这其实类似于python中的
+<code>sys.argv</code>，<code>sys.argv[0]</code>
+表示的也是该文件本身，参数从 <code>sys.argv[1]</code> 开始。</p>
+<h3 id="section">4.3.2. <code>$#</code></h3>
+<p>作用：获取输入参数的个数，常用于循环</p>
+<p>举个例子：</p>
+<p>还是 parameter.sh ，添加一行代码： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;$0 $1 $2 $3&quot;</span><br><span class="line">echo $#</span><br></pre></td></tr></table></figure></p>
+<p>分别执行以下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. bash parameter.sh</span><br><span class="line">2. bash parameter.sh I</span><br><span class="line">3. bash parameter.sh I Love</span><br><span class="line">4. bash parameter.sh I Love Myself</span><br><span class="line">5. bash parameter.sh I Love Myself too</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527085254.png" /></p>
+<p>根据结果可以知道，该变量可以获取传入的参数，即使该参数没被使用！</p>
+<h3 id="和">4.3.3. <code>$*</code> 和 <code>$@</code></h3>
+<p>功能：</p>
+<ul>
+<li><code>$*</code>: 这个变量代表命令行中所有的参数， <code>$*</code>
+把所有的参数看成一个整体</li>
+<li><code>$@</code>: 这个变量也代表命令行中所有的参数，不过
+<code>$@</code> 把每个参数区分对待</li>
+</ul>
+<p>举个例子：</p>
+<p>修改 parameter.sh 为: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;$0 $1 $2 $3&quot;</span><br><span class="line">echo $#</span><br><span class="line">echo $*</span><br><span class="line">echo $@</span><br></pre></td></tr></table></figure></p>
+<p>执行命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash parameter.sh I Love Myself too</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527085808.png" /></p>
+<p>具体的区别看：[[#和 的区别]]</p>
+<h3 id="section-1">4.3.4. <code>$?</code></h3>
+<p>功能：最后一次执行的命令的返回状态。如果这个变量的值为0，表示上一条命令被正确执行；如果这个变量的值为非0，证明上一条命令的执行不正确。</p>
+<p>举个例子：</p>
+<ul>
+<li><p>先故意执行一条错误的命令：<code>cat fsdasf</code>，然后在
+<code>echo $?</code></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527090121.png" /></p></li>
+<li><p>执行正确的命令 <code>cat parameter.sh</code>，然后在
+<code>echo $?</code></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527090204.png" /></p></li>
+</ul>
+<h2 id="shell变量的作用域">4.4. shell变量的作用域</h2>
+<p>变量的作用域，就是变量的有效范围。</p>
+<p>shell变量的作用域分为三种：</p>
+<ol type="1">
+<li>只能在函数内部使用，叫做局部变量（local variable）</li>
+<li>可以在当前shell进程中使用，叫做全局变量（global variable）</li>
+<li>可以在子进程中使用，叫做环境变量（environment variable）</li>
+</ol>
+<h3 id="局部变量">4.4.1. 局部变量</h3>
+<p>如下shell脚本： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">function func()&#123;</span><br><span class="line">	a=99 </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func</span><br><span class="line">echo $a</span><br></pre></td></tr></table></figure></p>
+<p>直接运行该函数</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527153821.png" /></p>
+<p>可以看到 a 的值在函数外面被调用，因此 a 就是全局变量。可以在前面加上
+local 使其成为局部变量。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">function func()&#123;</span><br><span class="line">	local a=99 </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func</span><br><span class="line">echo $a</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527153946.png" /></p>
+<p>此时，就无法在外面调用 a 变量。</p>
+<h3 id="全局变量">4.4.2. 全局变量</h3>
+<p>全局变量就是变量在当前的shell进程中都有效，每个shell进程都有自己的作用域，彼此互补干涉。在shell中定义的变量，默认都是全局变量。</p>
+<p>需要强调的是，全局变量的作用范围是<strong>当前的 Shell
+进程</strong>，而<strong>不是当前的 Shell
+脚本文件</strong>，它们是不同的概念；打开一个 Shell 窗口就创建了一个
+Shell 进程，打开多个 Shell 窗口就创建了多个 Shell 进程，每个 Shell
+进程都是独立的，拥有不同的进程 ID；在一个 Shell 进程中可以使用
+<code>source</code> 命令执行多个 Shell
+脚本文件，此时<strong>全局变量在这些脚本文件中都有效</strong>:</p>
+<blockquote>
+<p>source命令：从当前shell会话中的文件读取和执行命令。source命令通常用于保留、更改当前shell中的环境变量。简而言之，source一个脚本，将会在当前shell中运行execute命令。
+基本语法：<code>source filename</code>，可以使用 <code>.</code> 来代替
+<code>source</code></p>
+</blockquote>
+<p>首先创建两个文件 a.sh, b.sh，代码分别如下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo $a</span><br><span class="line">b=100</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo $b</span><br></pre></td></tr></table></figure>
+<p>然后在当前shell窗口输入：<code>a=10</code>，最后依次执行下面的命令：
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">source a.sh</span><br><span class="line">. ./b.sh</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527155033.png" /></p>
+<p>这三条命令都是在一个进程中执行的，从输出结果可以发现，在 Shell
+窗口中以命令行的形式定义的变量 a，在 a.sh 中有效；在 a.sh 中定义的变量
+b，在 b.sh 中也有效，变量 b 的作用范围已经超越了 a.sh。</p>
+<p>注意，必须在当前进程中运行 Shell 脚本，不能在新进程中运行 Shell
+脚本。</p>
+<h3 id="环境变量">4.4.3. 环境变量</h3>
+<p>全局变量只在当前 Shell 进程中有效，对其它 Shell
+进程和子进程都无效。如果使用<code>export</code>命令将全局变量导出，那么它就在所有的子进程中也有效了，这称为“环境变量”。</p>
+<p>环境变量被创建时所处的 Shell
+进程称为父进程，如果在父进程中再创建一个新的进程来执行 Shell
+命令，那么这个新的进程被称作 Shell 子进程。当 Shell
+子进程产生时，它会继承父进程的环境变量为自己所用，所以说环境变量可从父进程传给子进程。不难理解，环境变量还可以传递给孙进程。</p>
+<p>注意，两个没有父子关系的 Shell
+进程是不能传递环境变量的，并且环境变量只能向下传递而不能向上传递，即“传子不传父”。</p>
+<p>在当前窗口创建一个变量 <code>via=hello</code>，然后输入
+<code>bash</code> 新建一个进程，输出 via <code>echo $via</code></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527155426.png" /></p>
+<p>从结果可以看出来，该shell进程下并没有该变量。</p>
+<p>使用 <code>exit</code>
+退出该shell进程，回到刚刚创建via的进程，然后输入
+<code>export via</code>，将其升级为环境变量，接着再次
+<code>bash</code>，创建新进程，最后<code>echo $via</code></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527155742.png" /></p>
+<p>如果想在定义变量的同时将其导出为环境变量，可以使用
+<code>export a=12</code> 这样的命令。</p>
+<p><strong>注意，这样得到的环境变量也是临时的，如果最顶层的父进程，也就是创建改变量的进程关闭了，那么该环境变量也就消失了</strong></p>
+<p>比如，我关闭当前窗口，开启一个新窗口，再次输出该变量</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527160005.png" /></p>
+<h1 id="运算符">5. 运算符</h1>
+<p>基本语法：</p>
+<ol type="1">
+<li><code>$((运算式))</code> 或者 <code>$[运算式]</code></li>
+<li><code>expr +, -, \*, /, %</code>，分别是加，减，乘，除，取余</li>
+</ol>
+<blockquote>
+<p>注意：使用 expr 的时候运算符与参数之间需要有空格</p>
+</blockquote>
+<p>举个例子：</p>
+<ol type="1">
+<li><p>计算 3+2 的值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. expr 2 + 3 # 对</span><br><span class="line">2. expr 2+3   # 错</span><br><span class="line">3. expr 2+ 3  # 错</span><br><span class="line">4. expr 2 +3  # 错</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527090844.png" /></p></li>
+<li><p>计算 (2+3) * 4 的值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. expr `expr 2 + 3` \* 4</span><br><span class="line">2. s=$[(2+3)*4];echo $s</span><br></pre></td></tr></table></figure>
+<p>两种方式都是可行的。第一种的反引号[[Linux的shell中单、双、反引号的区别]]</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527091031.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527091059.png" /></p></li>
+</ol>
+<h1 id="条件判断">6. 条件判断</h1>
+<h2 id="基本语法-1">6.1. 基本语法</h2>
+<ul>
+<li><code>[ condition ]</code></li>
+</ul>
+<p>注意： - condition 前后都要有空格 - 条件非空即为 true，比如
+<code>[ hello ]</code> 返回 true，<code>[  ]</code> 返回false</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527092130.png" /></p>
+<h2 id="常用判断条件">6.2. 常用判断条件</h2>
+<ol type="1">
+<li><p>两个<strong>整数</strong>之间比较 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. = 也可用于字符串比较</span><br><span class="line">2. -lt 小于（less than）</span><br><span class="line">3. -le 小于等于（less equal）</span><br><span class="line">4. -eq 等于（equal）</span><br><span class="line">5. -gt 大于（greater than）</span><br><span class="line">6. -ge 大于等于（greater equal）</span><br><span class="line">7. -ne 不等于（not equal）</span><br></pre></td></tr></table></figure></p></li>
+<li><p>按照文件权限进行判断 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. -r 是否有读权限</span><br><span class="line">2. -w 是否有写权限</span><br><span class="line">3. -x 是否有执行权限</span><br></pre></td></tr></table></figure></p></li>
+<li><p>按照文件类型进行判断 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. -f 文件存在，且是一个常规的文件(file)</span><br><span class="line">2. -e 文件存在</span><br><span class="line">3. -d 文件存在，并且是一个目录(directory)</span><br></pre></td></tr></table></figure></p></li>
+</ol>
+<p>举个例子：</p>
+<ol type="1">
+<li><p>判断 23 是否大于 22</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ 23 -ge 22 ]; echo $?</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527093007.png" /></p></li>
+<li><p>helloworld.sh 是否具有写权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ -w helloworld.sh ]; echo $?</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527093109.png" /></p></li>
+<li><p>判断 /hoem/m1ku/shell.sh 是否存在</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ -e /hoem/m1ku/shell.sh ];echo $?</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527093219.png" /></p></li>
+<li><p>多条件判断（<code>&amp;&amp;</code>前一条命令执行成功，才会执行下一条；<code>||</code>前一条命令执行失败，才会执行下一条，因为前一条成功的话，两条命令的或已经1）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ hello ] &amp;&amp; echo OK || echo NotOK</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527093503.png" /></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[ hello ] &amp;&amp; [  ] || echo NotOK</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527093600.png" /></p></li>
+</ol>
+<h1 id="流程控制">7. 流程控制</h1>
+<h2 id="if判断">7.1. if判断</h2>
+<p>基本语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">if [ condition ];then</span><br><span class="line">	程序</span><br><span class="line">elif [ conditon ];then</span><br><span class="line">	程序</span><br><span class="line">else</span><br><span class="line">	程序</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">或者</span><br><span class="line">if [ condition ]</span><br><span class="line">then</span><br><span class="line">	 程序</span><br><span class="line">elif [ conditon2 ]</span><br><span class="line">then</span><br><span class="line">	程序</span><br><span class="line">else</span><br><span class="line">	程序</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
+<p>注意：</p>
+<ul>
+<li><code>[ condition ]</code>，condition 前后要有空格</li>
+<li>if 和 elif 后面都必须有空格</li>
+</ul>
+<p>举个例子：</p>
+<p>需求：输入一个数字，如果是1，则输出 hello world，如果是2，则输出 No
+no no；如果是其他，则什么都不输出。</p>
+<p>编写脚本 if.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">if [ $1 -eq 1 ]</span><br><span class="line">then</span><br><span class="line">	echo &quot;hello world&quot;</span><br><span class="line">elif [ $1 -eq 2 ]</span><br><span class="line">then</span><br><span class="line">	echo &quot;No no no&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
+<p>也可以这么写： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">if [ $1 -eq 1 ];then</span><br><span class="line">        echo &quot;hello world&quot;</span><br><span class="line">elif [ $1 -eq 2 ];then</span><br><span class="line">        echo &quot;No no no&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527094628.png" /></p>
+<h2 id="case语句">7.2. case语句</h2>
+<p>基本语法: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">case $变量名 in</span><br><span class="line">&quot;value_1&quot;)</span><br><span class="line">	如果变量值为 value_1，则执行程序1</span><br><span class="line">	;;</span><br><span class="line">&quot;value_2&quot;)</span><br><span class="line">	如果变量值为 value_2，则执行程序2</span><br><span class="line">	;;</span><br><span class="line">&quot;value_3&quot;)</span><br><span class="line">	如果变量值为 value_3，则执行程序3</span><br><span class="line">	;;</span><br><span class="line">*)</span><br><span class="line">	如果变量的值都不是以上的值，则执行此程序</span><br><span class="line">	;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure></p>
+<p>注意：<code>"value_1"</code>
+的引号可以不写，只有当变量的值含有空格时，需要带上引号</p>
+<p>举个例子：</p>
+<p>需求：输入一个数字，如果是1，则输出hello world；如果是2，则输出
+cls；都不是，则输出 No no no。</p>
+<p>编写脚本 case.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">case $1 in</span><br><span class="line">1)</span><br><span class="line">    echo &quot;hello world&quot;</span><br><span class="line">    ;;</span><br><span class="line">2)</span><br><span class="line">    echo &quot;cls&quot;</span><br><span class="line">    ;;</span><br><span class="line">*)</span><br><span class="line">    echo &quot;No no no&quot;</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure></p>
+<p>执行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527095640.png" /></p>
+<h2 id="for循环">7.3. for循环</h2>
+<h3 id="基础语法1">7.3.1. 基础语法1</h3>
+<p>基本语法1： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for((初始值;循环控制条件;变量变化))</span><br><span class="line">do</span><br><span class="line">	程序</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>举个例子：</p>
+<p>需求：从1加到100</p>
+<p>编写脚本 for.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">s=0</span><br><span class="line">for((i=1;i&lt;=100;i++))</span><br><span class="line">do</span><br><span class="line">    s=$[$s+$i]</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">echo $s</span><br></pre></td></tr></table></figure></p>
+<p>执行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527100419.png" /></p>
+<h3 id="基础语法2">7.3.2. 基础语法2</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for 变量 in value1 value2 value3 ...</span><br><span class="line">do</span><br><span class="line">	程序</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<p>解释：依次将 value1, value2, value3 赋值给变量，然后执行程序</p>
+<p>举个例子：</p>
+<p>需求：打印所有输入的参数</p>
+<p>编写脚本 for2.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">for i in $*</span><br><span class="line">do</span><br><span class="line">    echo &quot;I love $i&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>执行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527100857.png" /></p>
+<h4 id="和的区别">7.3.2.1. <code>$*</code>和<code>$@</code>的区别</h4>
+<p>^436457</p>
+<p>编写脚本 test.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &#x27;$* case:&#x27;</span><br><span class="line">for i in $*</span><br><span class="line">do</span><br><span class="line">    echo &quot;I love $i&quot;</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo &#x27;$@ case:&#x27;</span><br><span class="line">for j in $@</span><br><span class="line">do</span><br><span class="line">    echo &quot;You love $j&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>运行结果</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527101204.png" /></p>
+<p>看结果好像没有区别。我们加上引号再执行依次： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &#x27;$* case:&#x27;</span><br><span class="line">for i in &quot;$*&quot;</span><br><span class="line">do</span><br><span class="line">    echo &quot;I love $i&quot;</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">echo &#x27;$@ case:&#x27;</span><br><span class="line">for j in &quot;$@&quot;</span><br><span class="line">do</span><br><span class="line">    echo &quot;You love $j&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527101317.png" /></p>
+<p>这就是：“把输入的参数当作一个整体”和“把输入的参数区分开来”的区别</p>
+<h2 id="while循环">7.4. while循环</h2>
+<p>基本语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while [ conddition ]</span><br><span class="line">do</span><br><span class="line">	程序</span><br><span class="line">done</span><br></pre></td></tr></table></figure></p>
+<p>注意：</p>
+<ul>
+<li>while 后面需要有空格</li>
+<li><code>[ condition ]</code> conditon前后都要有空格</li>
+</ul>
+<p>举个例子：</p>
+<p>需求：从1加到100</p>
+<p>编写脚本 while.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">i=1</span><br><span class="line">s=0</span><br><span class="line">while [ $i -le 100 ]</span><br><span class="line">do</span><br><span class="line">    s=$[$s+$i]</span><br><span class="line">    i=$[$i+1]</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">echo $s</span><br></pre></td></tr></table></figure></p>
+<p>执行结果为：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527102232.png" /></p>
+<h1 id="read读取控制台输入">8. read读取控制台输入</h1>
+<p>基础语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read (选项) (参数)</span><br></pre></td></tr></table></figure></p>
+<p>选项：</p>
+<ul>
+<li>-t: 指定读取时等待的时间（单位：秒）</li>
+<li>-p：指定读取时的提示符</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>变量：指定读取的变量名</li>
+</ul>
+<p>举个例子：</p>
+<p>需求：提示7秒内，读取控制台输入的名称</p>
+<p>编写脚本 read.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">read -t 7 -p &quot;input your name in 7 seconds: &quot; name</span><br><span class="line">echo $name</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527102822.png" /></p>
+<p>可以一次性输入多个参数，参数之间用空格隔开，比如： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">read -t 10 -p &quot;input your name in 10 seconds: &quot; name age</span><br><span class="line">echo $name</span><br><span class="line">echo $age</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527103046.png" /></p>
+<h1 id="函数">9. 函数</h1>
+<h2 id="系统函数">9.1. 系统函数</h2>
+<h3 id="basename">9.1.1. basename</h3>
+<p>基础语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">basename [path] [suffix]</span><br></pre></td></tr></table></figure></p>
+<p>功能：</p>
+<ul>
+<li>basename命令会删掉path中的所有前缀，只留下文件名</li>
+<li>suffix如果被指定，basename会从path中把suffix指定的后缀去掉</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">basename /home/m1ku/shellLearn/helloworld.sh</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527111032.png" /></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">basename /home/m1ku/shellLearn/helloworld.sh .sh</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527111132.png" /></p>
+<h3 id="dirname">9.1.2. dirname</h3>
+<p>基础语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirname 绝对路径</span><br></pre></td></tr></table></figure></p>
+<p>功能：将给定文件的绝对路径中的文件名部分去掉，返回路径</p>
+<p>举个例子： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirname /home/m1ku/shellLearh/helloworld.sh</span><br></pre></td></tr></table></figure></p>
+<p>运行结果</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527111316.png" /></p>
+<h2 id="自定义函数">9.2. 自定义函数</h2>
+<p>基本语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function funcname()  # function 可加可不加</span><br><span class="line">&#123;</span><br><span class="line">	代码</span><br><span class="line">	[return int]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意：</p>
+<ul>
+<li>必须再调用函数之前声明函数，shell脚本是逐行运行的，不会提前进行编译；</li>
+<li>函数返回值，只能够通过 <code>$?</code> 来获取。可以使用 return
+进行返回；如果不加，将以最后一条命令的运行结果作为返回值。return
+后跟的数值 n(0-255)</li>
+</ul>
+<p>举个例子：</p>
+<p>需求：计算两个输入参数的和</p>
+<p>编写脚本 sum.sh <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">function sum()</span><br><span class="line">&#123;</span><br><span class="line">    s=0</span><br><span class="line">    s=$[$1+$2]</span><br><span class="line">    echo $s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">read -t 10 -p &quot;input the first and second parameters separately: &quot; p1 p2</span><br><span class="line">sum $p1 $p2</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527113022.png" /></p>
+<p>如果给函数增加返回值： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">function sum()</span><br><span class="line">&#123;</span><br><span class="line">    s=0</span><br><span class="line">    s=$[$1+$2]</span><br><span class="line">    echo $s</span><br><span class="line">    return 250</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">read -t 10 -p &quot;input the first and second parameters separately: &quot; p1 p2</span><br><span class="line">sum $p1 $p2</span><br><span class="line">echo $?</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527113239.png" /></p>
+<h1 id="shell工具">10. shell工具</h1>
+<h2 id="cut">10.1. cut</h2>
+<p>cut 的工作就是“剪”。具体的说就是在文件中负责剪切数据用的。cut
+命令从文件的每一行剪切字节、字符和字段，并将这些字节、字符和字段输出。</p>
+<p>基础语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cut [选项] file</span><br></pre></td></tr></table></figure></p>
+<p>选项：</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-b</td>
+<td>以字节为单位进行分割。这些字节位置将忽略多字节字符边界，除非也指定了-n</td>
+</tr>
+<tr class="even">
+<td>-c</td>
+<td>以字符为单位进行分割</td>
+</tr>
+<tr class="odd">
+<td>-d</td>
+<td>自定义分隔符，默认为制表符</td>
+</tr>
+<tr class="even">
+<td>-f</td>
+<td>与-d一起使用，指定显示哪一个区域</td>
+</tr>
+<tr class="odd">
+<td>-n</td>
+<td>取消分割多字节字符。仅和-b一起使用。</td>
+</tr>
+</tbody>
+</table>
+<p>注意：</p>
+<ul>
+<li>如果不指定file参数，cut命令将读取标准输入，必须指定-b,-c或-f标志之一。</li>
+<li>-d 后面的值可以不加引号，除非有空格！</li>
+</ul>
+<p>举个例子：</p>
+<p>首先准备好一个文件 cut.txt，内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abandon give</span><br><span class="line">a g</span><br><span class="line">c d</span><br><span class="line">ddfas erwf</span><br></pre></td></tr></table></figure></p>
+<p>中间间隔一个空格的大小。</p>
+<p>切割该文件的第一列： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cut -d &quot; &quot; -f 1 cut.txt</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527114432.png" /></p>
+<p>切割文件的第二列： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cut -d &quot; &quot; -f 2 cut.txt</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527114501.png" /></p>
+<p>切割出该文件的 abondon 这一个词： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat cut.txt|grep abandon|cut -d &#x27; &#x27; -f 1</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527114836.png" /></p>
+<p>切割出环境变量中的第二个值。环境变量以 <code>:</code> 作为分隔符
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $PATH|cut -d &#x27;:&#x27; -f 2</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527115131.png" /></p>
+<p>如果需要环境变量中第二个往后的所有值： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $PATH|cut -d &#x27;:&#x27; -f 2-</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527115223.png" /></p>
+<p>从ifconfig中切割出IP地址 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0|grep netmask|cut -d &#x27; &#x27; -f 10 # 需要数一下 inet 前面有几个空格</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527115847.png" /></p>
+<p>或者这样，不用数空格 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0|grep netmask|cut -d t -f 2|cut -d &#x27; &#x27; -f 2</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527120059.png" /></p>
+<h2 id="sed">10.2. sed</h2>
+<p>sed是一种流编辑器，他一次处理一行内容。处理时，把当前处理的行存储再临时缓冲区中，称为“模式空间”，接着用sed命令处理缓冲区中的内容，处理完成后，把缓冲区的内容送完屏幕，接着处理下一行。这样不断重复，知道文件末尾。<strong>原本文件的内容不会发生改变</strong>，除非使用重定向存储输出。</p>
+<p>基本语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed [选项] &#x27;command&#x27; file</span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr class="header">
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-e</td>
+<td>直接在指令列模式上进行sed的动作编辑</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>command</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>a</td>
+<td>a的后面可以接字符串，在下一行出现</td>
+</tr>
+<tr class="even">
+<td>d</td>
+<td>删除</td>
+</tr>
+<tr class="odd">
+<td>s</td>
+<td>查找并替换</td>
+</tr>
+</tbody>
+</table>
+<p>例子：</p>
+<p>在 cut.txt 文件内的第二行下新增一行 "hello hello" <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &quot;2a hello hello&quot; cut.txt</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527120754.png" /></p>
+<p>删除包含 give 的所有行： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &quot;/give/d&quot; cut.txt # / 是必须的</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527121129.png" /></p>
+<p>删除特定行： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &quot;2d&quot; cut.txt</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527121142.png" /></p>
+<p>将 cut.txt 中的 give 替换为 never： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &quot;s/give/never/g&quot; cut.txt # g 表示global</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527121329.png" /></p>
+<p>将第二行删除，并且替换 give 为 never： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -e &quot;2d&quot; -e &quot;s/give/never/g&quot; cut.txt</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527121513.png" /></p>
+<blockquote>
+<p>个人理解：需要执行多次命令的时候使用 -e</p>
+</blockquote>
+<h2 id="awk">10.3. awk</h2>
+<p>把文件逐行读入，以空格为默认分隔符将每行切片，切开的部分再进行分析处理。</p>
+<h3 id="基本用法">10.3.1. 基本用法</h3>
+<p>基本用法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk [选项] &#x27;pattern1&#123;action1&#125; pattern2&#123;2&#125; ...&#x27; filename</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>pattern：表示AWK再数据中查找的内容，就是匹配模式（正则）</li>
+<li>action：找到匹配内容时执行的一系列命令</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-F</td>
+<td>指定输入文件的分隔符</td>
+</tr>
+<tr class="even">
+<td>-v</td>
+<td>赋值一个用户定义的变量</td>
+</tr>
+</tbody>
+</table>
+<p>例子：（用 /etc/passwd 作为操作文件）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/passwd .</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527132848.png" /></p>
+<ol type="1">
+<li>搜索passwd中以root关键词开头的所有行，并输出该行的第7列</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F : &#x27;/^root/ &#123;print $7&#125;&#x27; passwd</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527132909.png" /></p>
+<ol start="2" type="1">
+<li>搜索 passwd 以root关键词开头的所有行，并输出该行的第1、7列，中间以
+<code>,</code> 分隔</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F : &#x27;/^root/ &#123;print $1&quot;,&quot;$7&#125;&#x27; passwd</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527133053.png" /></p>
+<ol start="3" type="1">
+<li>只显示第一列和第七列，以逗号分隔，且在所有行前面添加列名 user,shell
+在最后一行添加“m1ku, /bin/zuishuai”</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F : &#x27;BEGIN&#123;print &quot;user,shell&quot;&#125; &#123;print $1&quot;,&quot;$7&#125; END&#123;print &quot;m1ku, /bin/zuishuai&quot;&#125;&#x27; passwd</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527133558.png" /></p>
+<ol start="4" type="1">
+<li>将passwd文件中的用户id增加数值1并输出</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F : -v i=1 &#x27;&#123;print $3+i&#125;&#x27; passwd  # 注意是 + i，而不是 $i</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527133846.png" /></p>
+<h3 id="内置变量">10.3.2. 内置变量</h3>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FILENAME</td>
+<td>文件名</td>
+</tr>
+<tr class="even">
+<td>NR(number of records)</td>
+<td>已读的记录数</td>
+</tr>
+<tr class="odd">
+<td>NF(number of fields)</td>
+<td>浏览记录的域的个数（切割后，列的个数）</td>
+</tr>
+</tbody>
+</table>
+<p>例子：</p>
+<ol type="1">
+<li>统计 passwd 文件名、行数，列数</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F : &#x27;&#123;print &quot;filename: &quot; FILENAME &quot;, lineNo: &quot; NR &quot;, columns: &quot; NF&#125;&#x27; passwd</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527134245.png" /></p>
+<ol start="2" type="1">
+<li>切割ifconfig中的ip</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0|grep netmask|awk &#x27;&#123;print $2&#125;&#x27;</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527134543.png" /></p>
+<blockquote>
+<p>根据结果可知：不管是几个空格，awk都当作一个空格，这与cut是不同的</p>
+</blockquote>
+<ol start="3" type="1">
+<li>查询 cut.txt 中空行所在的行号</li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527134846.png" /></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &#x27;/^$/ &#123;print NR&#125;&#x27; cut.txt</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527134834.png" /></p>
+<h2 id="sort">10.4. sort</h2>
+<p>sort 命令将文件进行排序，并将排序结果标准输出。</p>
+<p>基本语法： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sort (选项) (参数)</span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr class="header">
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-n</td>
+<td>依照数值的大小排序</td>
+</tr>
+<tr class="even">
+<td>-r</td>
+<td>以相反的顺序排序</td>
+</tr>
+<tr class="odd">
+<td>-t</td>
+<td>设置排序是所有的分隔字符</td>
+</tr>
+<tr class="even">
+<td>-k</td>
+<td>指定需要排序的列</td>
+</tr>
+</tbody>
+</table>
+<p>参数：指定待排序的文件列表</p>
+<p>例子：</p>
+<p>数据准备： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">┌──(m1ku㉿kali)-[~/shellLearn]</span><br><span class="line">└─$ cat sort.sh </span><br><span class="line">bb:40:5.4</span><br><span class="line">bd:20:4.2</span><br><span class="line">xz:50:2.3</span><br><span class="line">cls:10:3.5</span><br><span class="line">ss:30:1.6</span><br></pre></td></tr></table></figure></p>
+<ol type="1">
+<li>按照 <code>:</code> 分割后的第三列倒序排序<br />
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sort -t : -nrk 3 sort.sh </span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意 k 一定要放在最后，或者单独出去，比如 sort -t : -nr -k 3 sort.sh</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527135734.png" /></p>
+<h1 id="企业真实面试题">11. 企业真实面试题</h1>
+<h2 id="京东">11.1. 京东</h2>
+<ol type="1">
+<li>使用 Linux 命令查询文件中空行所在的行号</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &#x27;/^$/ &#123;print NR&#125;&#x27; cut.txt</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li><p>有文件 chengji.txt 内容如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">张三 40</span><br><span class="line">李四 50</span><br><span class="line">王五 60</span><br></pre></td></tr></table></figure></p>
+<p>使用Linux命令计算第二列的和并输出</p></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat chengji.txt|awk -F &#x27; &#x27; &#x27;&#123;sum+=$2&#125; END &#123;print sum&#125;&#x27;</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527151428.png" /></p>
+<h2 id="搜狐和讯网">11.2. 搜狐&amp;和讯网</h2>
+<ol type="1">
+<li>shell脚本如何检查一个文件是否存在？如果不存在该如何处理？</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">if [ -f file.txt ]; then</span><br><span class="line">    echo &quot;file exist.&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;file not exits.&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h2 id="新浪">11.3. 新浪</h2>
+<ol type="1">
+<li><p>用shell写一个脚本，对文本中无需的一列数字排序 num.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">9</span><br><span class="line">8</span><br><span class="line">7</span><br><span class="line">4</span><br><span class="line">1</span><br><span class="line">5</span><br><span class="line">3</span><br><span class="line">2</span><br><span class="line">6</span><br></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">read -p &quot;please input the file&#x27;s name: &quot; file</span><br><span class="line"></span><br><span class="line">if [ -f $file ]; then</span><br><span class="line">   sort -n $file </span><br><span class="line">else</span><br><span class="line">    echo &quot;file not exist.&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527152342.png" /></p>
+<h2 id="金和网络">11.4. 金和网络</h2>
+<ol type="1">
+<li>使用shell命令写出查找当前文件夹 <code>/home/m1ku/shellLearn</code>
+下所有的文本文件内容中包含有字符 abandon 的文件名称</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -r give /home/m1ku/shellLearn | cut -d : -f 1</span><br></pre></td></tr></table></figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527152859.png" /></p>
+<h1 id="番外">12. 番外</h1>
+<ol type="1">
+<li>Linux中的很多参数值都可以不加引号，除非参数值中带有空格。</li>
+</ol>
+<h2 id="执行shell脚本">12.1. 执行shell脚本</h2>
+<h3 id="在新进程中运行">12.1.1. 在新进程中运行</h3>
+<h4 id="将shell脚本作为程序运行">12.1.1.1. 将shell脚本作为程序运行</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./helloworld.sh</span><br></pre></td></tr></table></figure>
+<p>整条命令的意思是执行当前目录下的 helloworld.sh 脚本。如果不写
+<code>./</code>，Linux 会到系统路径（由 PATH 环境变量指定）下查找
+helloworld.sh，而系统路径下显然不存在这个脚本，所以会执行失败。</p>
+<p><strong>通过这种方式执行脚本，脚本文件的第一行<code>#!/bin/bash</code>一定要写对（可能是其他的解释器），好让系统可以找到正确的解释器</strong></p>
+<p>用户需要对该文件具有执行权限。</p>
+<h4 id="将shell脚本作为参数传递给bash解释器">12.1.1.2.
+将shell脚本作为参数传递给bash解释器</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. bash helloworld.sh</span><br><span class="line">2. /bin/bash helloworld.sh</span><br></pre></td></tr></table></figure>
+<p>通过该方式运行脚本文件，不需要再第一个指定解释器信息，写了也没什么用。</p>
+<p>两条命令都可以。第一条命令：系统会先去环境变量中查找是否有名为bash的可执行文件，然后再利用bash去执行
+helloworld.sh；第二条命令：给出了bash的绝对路径，系统就不需要去查找，直接调用bash执行脚本文件即可。后者少了一个查找bash的过程。</p>
+<p>本质上是bash读取脚本文件的内容，并当作命令去执行。因此，用户需要对脚本文件具有读权限。</p>
+<h4 id="检测是否开启了新进程">12.1.1.3. 检测是否开启了新进程</h4>
+<p>可以编写脚本 check.sh 代码如下： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo $$ # 输出当前进程PID</span><br></pre></td></tr></table></figure></p>
+<p>先执行 <code>echo $$</code>
+查看当前的shell进程id，然后分别执行下面两条命令查看对应的pid：
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. bash check.sh</span><br><span class="line">2. ./check.sh</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527162238.png" /></p>
+<p>可以看到三条命令的结果不同，这也说明了上面的两种执行shell脚本的方式是在新进程中执行的。</p>
+<h3 id="在当前进程中执行">12.1.2. 在当前进程中执行</h3>
+<p>这里需要引入一个新的命令——source 命令。source 是 Shell
+内置命令的一种，它会读取脚本文件中的代码，并依次执行所有语句。你也可以理解为，source
+命令会强制执行脚本文件中的全部命令，而<strong>忽略脚本文件的执行权限，但是得有读权限</strong>。</p>
+<p>两种命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. source file</span><br><span class="line">2. . file</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意：必须加上文件的路径，即使在当前目录下也得使用
+<code>./filename</code></p>
+</blockquote>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527162603.png" /></p>
+<p>检查一下是否是在当前进程中执行的，输入 <code>echo $$</code>
+查询当前进程 pid</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220527162709.png" /></p>
+<p>可以观察到，三条命令的结果是一样，这也证明了这种方式执行脚本文件是在当前进程内。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. shell概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E8%A7%A3%E6%9E%90%E5%99%A8"><span class="toc-number">2.</span> <span class="toc-text">2. shell解析器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E8%84%9A%E6%9C%AC%E5%85%A5%E9%97%A8"><span class="toc-number">3.</span> <span class="toc-text">3. shell脚本入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AAshell%E8%84%9A%E6%9C%AC-hello-world"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 第一个shell脚本-hello
+world</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%90%8C%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 不同执行方式的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AAshell%E8%84%9A%E6%9C%AC-%E5%A4%9A%E5%91%BD%E4%BB%A4%E5%A4%84%E7%90%86"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 第二个shell脚本-多命令处理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">4.</span> <span class="toc-text">4. shell中的变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 系统变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 自定义变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">4.2.1.</span> <span class="toc-text">4.2.1. 基本语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89%E8%A7%84%E5%88%99"><span class="toc-number">4.2.2.</span> <span class="toc-text">4.2.2. 变量定义规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%8D%87%E4%B8%BA%E5%85%A8%E5%B1%80%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">4.2.3.</span> <span class="toc-text">4.2.3. 提升为全局环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E5%8F%98%E9%87%8F"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. 特殊变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#n"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1. $n</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2. $#</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%92%8C"><span class="toc-number">4.3.3.</span> <span class="toc-text">4.3.3. $* 和 $@</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-1"><span class="toc-number">4.3.4.</span> <span class="toc-text">4.3.4. $?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">4.4.</span> <span class="toc-text">4.4. shell变量的作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="toc-number">4.4.1.</span> <span class="toc-text">4.4.1. 局部变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="toc-number">4.4.2.</span> <span class="toc-text">4.4.2. 全局变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">4.4.3.</span> <span class="toc-text">4.4.3. 环境变量</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.</span> <span class="toc-text">5. 运算符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">6.</span> <span class="toc-text">6. 条件判断</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95-1"><span class="toc-number">6.1.</span> <span class="toc-text">6.1. 基本语法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6"><span class="toc-number">6.2.</span> <span class="toc-text">6.2. 常用判断条件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">7.</span> <span class="toc-text">7. 流程控制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#if%E5%88%A4%E6%96%AD"><span class="toc-number">7.1.</span> <span class="toc-text">7.1. if判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#case%E8%AF%AD%E5%8F%A5"><span class="toc-number">7.2.</span> <span class="toc-text">7.2. case语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#for%E5%BE%AA%E7%8E%AF"><span class="toc-number">7.3.</span> <span class="toc-text">7.3. for循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%951"><span class="toc-number">7.3.1.</span> <span class="toc-text">7.3.1. 基础语法1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%952"><span class="toc-number">7.3.2.</span> <span class="toc-text">7.3.2. 基础语法2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%92%8C%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.3.2.1.</span> <span class="toc-text">7.3.2.1. $*和$@的区别</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#while%E5%BE%AA%E7%8E%AF"><span class="toc-number">7.4.</span> <span class="toc-text">7.4. while循环</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#read%E8%AF%BB%E5%8F%96%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BE%93%E5%85%A5"><span class="toc-number">8.</span> <span class="toc-text">8. read读取控制台输入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">9.</span> <span class="toc-text">9. 函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0"><span class="toc-number">9.1.</span> <span class="toc-text">9.1. 系统函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#basename"><span class="toc-number">9.1.1.</span> <span class="toc-text">9.1.1. basename</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dirname"><span class="toc-number">9.1.2.</span> <span class="toc-text">9.1.2. dirname</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="toc-number">9.2.</span> <span class="toc-text">9.2. 自定义函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shell%E5%B7%A5%E5%85%B7"><span class="toc-number">10.</span> <span class="toc-text">10. shell工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#cut"><span class="toc-number">10.1.</span> <span class="toc-text">10.1. cut</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sed"><span class="toc-number">10.2.</span> <span class="toc-text">10.2. sed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#awk"><span class="toc-number">10.3.</span> <span class="toc-text">10.3. awk</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-number">10.3.1.</span> <span class="toc-text">10.3.1. 基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="toc-number">10.3.2.</span> <span class="toc-text">10.3.2. 内置变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sort"><span class="toc-number">10.4.</span> <span class="toc-text">10.4. sort</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%81%E4%B8%9A%E7%9C%9F%E5%AE%9E%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="toc-number">11.</span> <span class="toc-text">11. 企业真实面试题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%AC%E4%B8%9C"><span class="toc-number">11.1.</span> <span class="toc-text">11.1. 京东</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%9C%E7%8B%90%E5%92%8C%E8%AE%AF%E7%BD%91"><span class="toc-number">11.2.</span> <span class="toc-text">11.2. 搜狐&amp;和讯网</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E6%B5%AA"><span class="toc-number">11.3.</span> <span class="toc-text">11.3. 新浪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%91%E5%92%8C%E7%BD%91%E7%BB%9C"><span class="toc-number">11.4.</span> <span class="toc-text">11.4. 金和网络</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">12.</span> <span class="toc-text">12. 番外</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8Cshell%E8%84%9A%E6%9C%AC"><span class="toc-number">12.1.</span> <span class="toc-text">12.1. 执行shell脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E6%96%B0%E8%BF%9B%E7%A8%8B%E4%B8%AD%E8%BF%90%E8%A1%8C"><span class="toc-number">12.1.1.</span> <span class="toc-text">12.1.1. 在新进程中运行</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86shell%E8%84%9A%E6%9C%AC%E4%BD%9C%E4%B8%BA%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C"><span class="toc-number">12.1.1.1.</span> <span class="toc-text">12.1.1.1. 将shell脚本作为程序运行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%86shell%E8%84%9A%E6%9C%AC%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E7%BB%99bash%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="toc-number">12.1.1.2.</span> <span class="toc-text">12.1.1.2.
+将shell脚本作为参数传递给bash解释器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF%E4%BA%86%E6%96%B0%E8%BF%9B%E7%A8%8B"><span class="toc-number">12.1.1.3.</span> <span class="toc-text">12.1.1.3. 检测是否开启了新进程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E5%BD%93%E5%89%8D%E8%BF%9B%E7%A8%8B%E4%B8%AD%E6%89%A7%E8%A1%8C"><span class="toc-number">12.1.2.</span> <span class="toc-text">12.1.2. 在当前进程中执行</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&text=shell编程"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&title=shell编程"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&is_video=false&description=shell编程"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=shell编程&body=Check out this article: https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&title=shell编程"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&title=shell编程"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&title=shell编程"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&title=shell编程"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&name=shell编程&description=&lt;p&gt;个人的知识点记录。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/05/27/shell%E7%BC%96%E7%A8%8B/&t=shell编程"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

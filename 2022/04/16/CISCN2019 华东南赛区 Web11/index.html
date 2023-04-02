@@ -13,20 +13,12 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="题目地址：Web11">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png">
 <meta property="article:published_time" content="2022-04-15T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-16T12:32:28.213Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="SSTI">
 <meta property="article:tag" content="smarty">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png">
     
     
       
@@ -158,25 +150,35 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>题目地址：<a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
+    <p>题目地址：<a
+target="_blank" rel="noopener" href="https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11">Web11</a></p>
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
 <p>进入环境之后，看到了一堆信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121336.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121350.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121357.png" /></p>
 <h1 id="解题">解题</h1>
-<p>首先，我尝试了一下API Usage，先后访问了<code>http://node4.buuoj.cn:29398/api</code>和<code>http://node4.buuoj.cn:29398/xff</code>，发现状态码都为301。</p>
+<p>首先，我尝试了一下API
+Usage，先后访问了<code>http://node4.buuoj.cn:29398/api</code>和<code>http://node4.buuoj.cn:29398/xff</code>，发现状态码都为301。</p>
 <p>接着我尝试了一下Connection中的请求头，得到状态码500。</p>
 <p>最后看到了<code>build with smarty</code>，可能暗示着存在SSTI，并且渲染引擎为smarty。首先尝试了一下<code>http://node4.buuoj.cn:29398/$&#123;7*7&#125;</code>，结果如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121736.png" /></p>
 <p>这不应该呀，如果说确实渲染引擎确实为smarty的话，这里显示的应该是<code>$49</code>。思来想去，我注意到了url，我的输入居然变成了<code>$%7B7*7%7D</code>，那么自然不会被smarty给识别成代码执行。</p>
 <p>所以，我尝试用burp发送请求。终于</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png" /></p>
-<p>确定了这里存在SSTI，那接下来就很简单了。可以先用<code>$&#123;smarty.version</code>查看一下版本，看一下能否利用一些标签。我这里直接使用命令执行，payload如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;system(&quot;ls /&quot;)&#125; # 找到flag文件在根目录下</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416121940.png" /></p>
+<p>确定了这里存在SSTI，那接下来就很简单了。可以先用<code>$&#123;smarty.version</code>查看一下版本，看一下能否利用一些标签。我这里直接使用命令执行，payload如下：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;system(&quot;ls /&quot;)&#125; # 找到flag文件在根目录下</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122203.png" /></p>
 <p>然后读取flag <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;system(&#x27;cat /flag&#x27;)&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220416122245.png" /></p>
 <h1 id="总结">总结</h1>
 <p>这是一道关于SSTI的简单题目，唯一需要注意的点是不能直接在浏览器中输入payload，否则会被url编码，导致smarty不能识别。</p>
 
@@ -226,7 +228,8 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/&title=CISCN2019 华东南赛区 Web11"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/&title=CISCN2019 华东南赛区 Web11"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/&title=CISCN2019 华东南赛区 Web11"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/&name=CISCN2019 华东南赛区 Web11&description=&lt;p&gt;题目地址：&lt;a href=&#34;https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11&#34;&gt;Web11&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/&name=CISCN2019 华东南赛区 Web11&description=&lt;p&gt;题目地址：&lt;a
+href=&#34;https://buuoj.cn/challenges#%5BCISCN2019%20华东南赛区%5DWeb11&#34;&gt;Web11&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2022/04/16/CISCN2019%20%E5%8D%8E%E4%B8%9C%E5%8D%97%E8%B5%9B%E5%8C%BA%20Web11/&t=CISCN2019 华东南赛区 Web11"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -247,7 +250,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

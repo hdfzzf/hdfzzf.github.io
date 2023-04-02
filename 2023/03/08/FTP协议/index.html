@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人知识点记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FTP协议">
+<meta property="og:url" content="https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人知识点记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-03-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-08T12:04:57.557Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="FTP协议">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>FTP协议</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/03/31/Docker%E5%85%A5%E9%97%A8/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2022/11/27/wsl2%E4%B8%ADdocker%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ftp-%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">1. FTP 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ftp-%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. FTP 连接建立</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1. 主动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2. 被动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3. 连接方式总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ftp-%E5%AE%9E%E6%88%98"><span class="toc-number">2.</span> <span class="toc-text">2. FTP 实战</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 环境搭建与配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1. 下载与安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2. 修改配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3. 修改防火墙</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 一些问题与解决</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 用户无法登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E4%B9%8B%E5%90%8E%E5%91%BD%E4%BB%A4%E6%97%A0%E6%B3%95%E6%89%A7%E8%A1%8C"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 登录之后命令无法执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ftp-%E4%BD%BF%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. FTP 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 基础用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E7%99%BB%E5%BD%95"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 匿名登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ftp-%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">3. FTP 流量分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E5%BD%95"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 登录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 下载文件（被动模式）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 上传文件（主动模式）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        FTP协议
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-03-07T16:00:00.000Z" itemprop="datePublished">2023-03-08</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a> › <a class="category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/FTP%E5%8D%8F%E8%AE%AE/" rel="tag">FTP协议</a>, <a class="tag-link-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag">计算机网络</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人知识点记录。</p>
+<span id="more"></span>
+<h1 id="ftp-基础">1. FTP 基础</h1>
+<blockquote>
+<p>[[第 2 章 应用层#3. FTP]] 也有 FTP 基础，这里对其进行补充。</p>
+</blockquote>
+<h2 id="概述">1.1. 概述</h2>
+<p>FTP（File Transfer Protocol）文件传输协议，在 TCP/IP
+协议族中属于应用层协议运行于 TCP
+协议之上是一种可靠的传输协议，主要功能用于实现用户间文件分发共享，以及网络管理者在进行设备版本升级、日志下载和配置保存等业务操作时，均会使用到
+FTP 功能。</p>
+<p><strong>FTP 实现的目标：</strong></p>
+<ol type="1">
+<li>促进文件的共享（计算机程序或数据）；</li>
+<li>鼓励间接或者隐式的使用远程计算机；</li>
+<li>向用户屏蔽不同主机中各种文件存储系统（<strong>File
+system</strong>）的细节；</li>
+<li>可靠和高效的传输数据</li>
+</ol>
+<p>同大多数 <code>Internet</code>
+服务一样，<strong>FTP</strong>也是一个客户/服务器系统（<code>C/S</code>
+系统）。用户通过一个客户端程序连接至在远程计算机上运行的服务器程序。依照<strong>FTP</strong>协议提供服务，进行文件传送的计算机就是<strong>FTP
+服务器</strong>，而连接 FTP 服务器，遵循 FTP
+协议与服务器传送文件的电脑就是<strong>FTP 客户端</strong>。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220531140557.png" /></p>
+<p>需要注意，与 HTTP 不同，FTP
+还是一个<strong>有状态的协议</strong>，FTP
+服务器需要维护用户的状态信息：当前所在路径，用户的账号以及对应的控制连接。</p>
+<p>与 HTTP 相同的地方在于：</p>
+<ul>
+<li>两者都使用 TCP</li>
+<li>FTP 在 <strong>控制连接</strong> 上也是以 ASCII 文本方式传送；</li>
+</ul>
+<h2 id="ftp-连接建立">1.2. FTP 连接建立</h2>
+<p>与常见的应用层协议（比如 HTTP）不同，FTP 协议需要两条 TCP 连接：</p>
+<ul>
+<li>控制连接：用来传递控制信息，比如 FTP 命令之类的；</li>
+<li>数据连接：用来传递数据；</li>
+</ul>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/76af3d74dc814484bc80553cb959aadf%7Etplv-k3u1fbpfcp-zoom-in-crop-mark%204536%200%200%200.webp"
+alt="76af3d74dc814484bc80553cb959aadf~tplv-k3u1fbpfcp-zoom-in-crop-mark 4536 0 0 0.webp" />
+<figcaption
+aria-hidden="true">76af3d74dc814484bc80553cb959aadf~tplv-k3u1fbpfcp-zoom-in-crop-mark
+4536 0 0 0.webp</figcaption>
+</figure>
+<p>FTP
+服务一般运行在20和21两个端口（服务器端）。端口20用于在客户端和服务器之间传输数据流（数据连接），而端口21用于传输控制流（控制连接），并且是命令通向
+ftp 服务器的进口。</p>
+<p>当数据通过数据流传输时，控制流处于空闲状态。而当控制流空闲很长时间后，客户端的防火墙会将其会话置为超时，这样当大量数据通过防火墙时，会产生一些问题。此时，虽然文件可以成功的传输，但因为控制会话，会被防火墙断开；传输会产生一些错误。</p>
+<p>FTP 连接有两种建立方式：</p>
+<ol type="1">
+<li>主动模式（PORT）；</li>
+<li>被动模式（PASV）；</li>
+</ol>
+<p>这里的主动和被动都是对于 FTP 服务端来说的。</p>
+<h3 id="主动模式">1.2.1. 主动模式</h3>
+<p>FTP 协议最初定义的连接方式，流程如下：</p>
+<ol type="1">
+<li>客户端的随机端口向服务端的 21 端口发起 TCP
+建立，并建立控制连接；</li>
+<li>客户端用 PORT
+命令在控制连接上向服务器传输用于数据传输的临时端口号；</li>
+<li>服务端的 20 端口向客户端的临时端口号发起 TCP
+建立，并建立数据连接；</li>
+<li>双方在数据连接上进行数据传输，传输完成之后发送数据的一方主动关闭数据连接；</li>
+</ol>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308094030.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h3 id="被动模式">1.2.2. 被动模式</h3>
+<p>流程如下：</p>
+<ol type="1">
+<li>客户端的随机端口向服务端的 21 端口发起 TCP
+建立，并建立控制连接；</li>
+<li>客户端在控制连接上向服务器发送 PASV
+命令，告诉服务器进入被动模式，服务器选择临时端口号并通过控制连接告诉客户端；</li>
+<li>客户端在有数据传输时，通过随机端口向服务器的临时端口发起 TCP
+建立，并建立数据连接；</li>
+<li>双方在数据连接上进行数据传输，传输完毕之后，发送数据的一方主动关闭数据连接；</li>
+</ol>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308094334.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h3 id="连接方式总结">1.2.3. 连接方式总结</h3>
+<p>主动模式对 FTP 服务器的管理是有利的，因为 FTP 服务器只需要管理 20、21
+端口的数据出入（防火墙设置）；但对客户端的管理是不利的，因为服务器的 20
+端口向客户端发起 TCP 建立时，有可能被客户端的防火墙拦截。</p>
+<p>被动模式对 FTP 服务器的管理是不利的，因为客户端向服务器的临时端口发起
+TCP
+建立时，也有可能被防火墙拦截；但对客户端的管理是有利的，因为客户端主动去建立数据连接，端口的选择可控。</p>
+<p>不论主动模式还是被动模式，对于控制连接的建立都是一样的，差别在于数据连接的建立。一言以蔽之，在数据连接建立时，谁主动，对谁有利。</p>
+<h1 id="ftp-实战">2. FTP 实战</h1>
+<p>服务器和客户端：Ubuntu 22.04。</p>
+<h2 id="环境搭建与配置">2.1. 环境搭建与配置</h2>
+<blockquote>
+<p>环境的搭建与配置都是在服务器</p>
+</blockquote>
+<h3 id="下载与安装">2.1.1. 下载与安装</h3>
+<p>首先，需要下载 <code>vsftpd</code>（very secure FTP daemon）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install vsftpd</span><br></pre></td></tr></table></figure>
+<h3 id="修改配置文件">2.1.2. 修改配置文件</h3>
+<p>下载完成之后，需要修改配置文件，配置文件的位置：<code>/etc/vsftpd.conf</code>
+或者 <code>/etc/vsftpd/vsftpd.conf</code>，只贴一写重要的设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">anonymous_enable=NO</span><br><span class="line">local_enable=YES</span><br><span class="line">write_enable=YES  # 是否允许用户上传</span><br><span class="line">chroot_local_user=YES</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd.chroot_list</span><br></pre></td></tr></table></figure>
+<p>其中后面 3个很重要：</p>
+<ul>
+<li><code>chroot_local_user、chroot_list_enable、chroot_list_file</code>
+是一起的，是否允许用户切换到上级目录。可以看下面的表格；</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 43%" />
+<col style="width: 43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><code>chroot_local_user = YES</code></th>
+<th><code>chroot_local_user = No</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>chroot_list_enable = YES</code></td>
+<td>所有用户都不可以从家目录切换出去，如果设置了
+<code>chroot_list_file</code>，则该文件下的用户可以切换出去</td>
+<td>所有用户都可以从家目录切换出去，如果设置了
+<code>chroot_list_file</code>，则该文件下的用户不可以切换出去</td>
+</tr>
+<tr class="even">
+<td><code>chroot_list_enable = NO</code></td>
+<td>所有用户都不可以从家目录切换出去，<code>chroot_list_file</code>
+设置失效</td>
+<td>所有用户都可以从家目录切换出去，<code>chroot_list_file</code>
+设置失效</td>
+</tr>
+</tbody>
+</table>
+<p>修改完成之后，使用命令 <code>service vsftpd restart</code> 重启 FTP
+服务使其生效。</p>
+<p>打开了 <code>chroot_list_enable</code>
+可能连接的时候提示连接不上，因为 <code>/etc/vsftpd.chroot_list</code>
+不存在还是什么的，可以参考 [[#4. 参考]]第 9
+篇文章，自己创建一个文件即可，名字只需要与配置文件中的相同就行。</p>
+<h3 id="修改防火墙">2.1.3. 修改防火墙</h3>
+<ul>
+<li>如果正在运行 UFW 防火墙，需要允许 FTP 流量。打开 FTP 命令端口21，FTP
+数据端口20和被动端口范围30000-31000；</li>
+<li>为了避免被锁定，确保 SSH 打开端口 22；（其实无所谓）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. sudo ufw allow 20:21/tcp</span><br><span class="line">2. sudo ufw allow 30000:31000/tcp</span><br><span class="line">3. sudo ufw allow ssh</span><br><span class="line">4. sudo ufw reload</span><br></pre></td></tr></table></figure>
+<h2 id="一些问题与解决">2.2. 一些问题与解决</h2>
+<h3 id="用户无法登录">2.2.1. 用户无法登录</h3>
+<p>配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chroot_local_user=YES</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd.chroot_list</span><br></pre></td></tr></table></figure>
+<p>有一个用户 <code>ftpers</code>，不在
+<code>/etc/vsftpd.chroot_list</code> 文件中，使用该用户登录
+<code>ftp</code> 时提示如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">500 OOPS: vsftpd: refusing to run with writable root inside chroot()</span><br></pre></td></tr></table></figure>
+<p>解决问题的文章在 [[#4. 参考]]的第 12
+篇文章，这里贴一下原文中说的原因：</p>
+<blockquote>
+<p>This is caused by the fact that the directory of the user you’re
+connecting to, is write-enabled. In normal <code>chroot()</code>
+situations, the parent directory needs to be read-only.</p>
+</blockquote>
+<blockquote>
+<p>This means for most situations of <code>useradd</code>, which will
+create a home directory owned and writeable by the user, the above error
+of “<em>vsftpd: refusing to run with writable root inside chroot
+()</em>” will be shown.</p>
+</blockquote>
+<p>解决办法就是在配置文件中加入这么一句话：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">allow_writeable_chroot=YES</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我对 <code>chroot</code> 不太了解，有机会补充一下。</p>
+</blockquote>
+<h3 id="登录之后命令无法执行">2.2.2. 登录之后命令无法执行</h3>
+<p>问题如下；</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308120201.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>输入任何命令都是显示
+<code>229 Entering Extended Passive Mode</code>，解决问题的视频 [[#4.
+参考]] 第 8 篇。</p>
+<p>就是先输入命令 <code>passive</code>
+退出被动模式，然后就可以执行命令了</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308120335.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>或者修改服务器配置文件，支持被动模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pasv_enable=YES  # 开启被动模式</span><br><span class="line">pasv_min_port=40001 #最低端口</span><br><span class="line">pasv_max_port=40010 #最高端口</span><br></pre></td></tr></table></figure>
+<h2 id="ftp-使用">2.3. FTP 使用</h2>
+<h3 id="基础用法">2.3.1. 基础用法</h3>
+<p>一些常用的命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1. ftp serverIP # 从shell登录到ftp服务器;</span><br><span class="line">2. user  # 登录，当已经进入 ftp 之后使用 user 可以登录</span><br><span class="line">3. get file  # 下载ftp服务器上的文件</span><br><span class="line">4. mget      # 下载多个文件</span><br><span class="line">5. put file  # 上传本地文件到ftp服务器</span><br><span class="line">6. mput      # 上传多个本地文件</span><br><span class="line">7. cd   # 切换目录</span><br><span class="line">8. ls   # 展示目录下的内容</span><br><span class="line">9. bye  # 断开连接</span><br><span class="line">10. ascii 或者 binary  # 切换传输模式</span><br><span class="line">11. pwd  # 显示当前目录</span><br><span class="line">12. exit 或者 quit  # 退出ftp</span><br></pre></td></tr></table></figure>
+<p>登录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">takagi@takagi-VirtualBox:~/Desktop$ ftp ftpers@10.0.2.15</span><br><span class="line">Connected to 10.0.2.15.</span><br><span class="line">220 (vsFTPd 3.0.5)</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password:</span><br><span class="line">230 Login successful.</span><br><span class="line">Remote system <span class="built_in">type</span> is UNIX.</span><br><span class="line">Using binary mode to transfer files.</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ftp&gt; user</span><br><span class="line">(username) ftpers</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password: </span><br><span class="line">230 Login successful.</span><br><span class="line">Remote system <span class="built_in">type</span> is UNIX.</span><br><span class="line">Using binary mode to transfer files.</span><br></pre></td></tr></table></figure>
+<p>下载文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ftp&gt; ls</span><br><span class="line">200 EPRT <span class="built_in">command</span> successful. Consider using EPSV.</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">-rw-r--r--    1 1001     1001            6 Mar 08 11:44 test.txt</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; get test.txt</span><br><span class="line"><span class="built_in">local</span>: test.txt remote: test.txt</span><br><span class="line">200 EPRT <span class="built_in">command</span> successful. Consider using EPSV.</span><br><span class="line">150 Opening BINARY mode data connection <span class="keyword">for</span> test.txt (6 bytes).</span><br><span class="line">100% |***********************************|     6        8.52 KiB/s    00:00 ETA</span><br><span class="line">226 Transfer complete.</span><br><span class="line">6 bytes received <span class="keyword">in</span> 00:00 (3.44 KiB/s)</span><br></pre></td></tr></table></figure>
+<p>会下载到当前 shell 所在的目录下。</p>
+<p>上传文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">ftp&gt; put up.txt </span><br><span class="line"><span class="built_in">local</span>: up.txt remote: up.txt</span><br><span class="line">200 EPRT <span class="built_in">command</span> successful. Consider using EPSV.</span><br><span class="line">150 Ok to send data.</span><br><span class="line">100% |***********************************|    12       18.99 KiB/s    00:00 ETA</span><br><span class="line">226 Transfer complete.</span><br><span class="line">12 bytes sent <span class="keyword">in</span> 00:00 (5.49 KiB/s)</span><br><span class="line">ftp&gt; ls</span><br><span class="line">200 EPRT <span class="built_in">command</span> successful. Consider using EPSV.</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">-rw-r--r--    1 1001     1001            6 Mar 08 11:44 test.txt</span><br><span class="line">-rw-------    1 1001     1001           12 Mar 08 12:15 up.txt</span><br><span class="line">226 Directory send OK.</span><br></pre></td></tr></table></figure>
+<p>可以看到，多了一个 <code>up.txt</code> 文件。</p>
+<h3 id="匿名登录">2.3.2. 匿名登录</h3>
+<p>为什么要有匿名登录？</p>
+<ul>
+<li>因为有的服务器专门使用 FTP
+来共享文件，而客户很多，不可能为每个客户都创建一个用户来登录 FTP
+服务器，所以才有了匿名登录；</li>
+</ul>
+<p>修改配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">anonymous_enable=YES  # 启动匿名登录</span><br><span class="line">anon_root=/var/ftp    # 设定匿名用户的根目录</span><br><span class="line">anon_upload_enable=YES  # 是否允许上传文件</span><br><span class="line">anon_mkdir_write_enable=YES  # 是否允许新建目录</span><br></pre></td></tr></table></figure>
+<p>创建匿名用户的根目录
+<code>/var/ftp</code>（名字、路径无所谓，只要和配置文件相同就行），在
+<code>/var/ftp</code> 目录下新建一个目录
+<code>pub</code>（名字无所谓，用处后面说）。</p>
+<p>然后重启 <code>vsftpd</code> 服务就可以了。</p>
+<p>匿名登录，用户名一般为 anonymous，密码一般是空，直接回车就行。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308122033.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">takagi@takagi-VirtualBox:~/Desktop$ ftp anonymous@10.0.2.15</span><br><span class="line">Connected to 10.0.2.15.</span><br><span class="line">220 (vsFTPd 3.0.5)</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password: </span><br><span class="line">230 Login successful.</span><br><span class="line">Remote system <span class="built_in">type</span> is UNIX.</span><br><span class="line">Using binary mode to transfer files.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">229 Entering Extended Passive Mode (|||30381|)</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">drwxrwxrwx    2 0        0            4096 Mar 08 16:01 pub</span><br><span class="line">-rw-r--r--    1 0        0             493 Mar 08 15:56 qwe.txt</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; get qwe.txt</span><br><span class="line"><span class="built_in">local</span>: qwe.txt remote: qwe.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||30110|)</span><br><span class="line">150 Opening BINARY mode data connection <span class="keyword">for</span> qwe.txt (493 bytes).</span><br><span class="line">100% |***********************************|   493       10.22 MiB/s    00:00 ETA</span><br><span class="line">226 Transfer complete.</span><br><span class="line">493 bytes received <span class="keyword">in</span> 00:00 (412.19 KiB/s)</span><br><span class="line">ftp&gt; put up.txt</span><br><span class="line"><span class="built_in">local</span>: up.txt remote: up.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||30658|)</span><br><span class="line">553 Could not create file.</span><br></pre></td></tr></table></figure>
+<p>从上面的信息可以看出匿名用户只可以下载文件，而不可以上传文件。这是因为上传文件需要对当前目录有
+<code>w</code> 权限，我们查看 <code>/var/ftp</code>
+发现并没有写权限：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308160741.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>或许有一个很简单的方式：直接将该目录的权限设置为 777
+就好了，但实际是不行的，因为 vsftpd 处于安全考虑，是不准让 ftp
+用户的家目录的权限是完全没有限制的。不过可以尝试一下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308160917.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">takagi@takagi-VirtualBox:~/Desktop$ ftp anonymous@10.0.2.15</span><br><span class="line">Connected to 10.0.2.15.</span><br><span class="line">220 (vsFTPd 3.0.5)</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password: </span><br><span class="line">500 OOPS: vsftpd: refusing to run with writable root inside chroot()</span><br><span class="line">ftp: Login failed</span><br></pre></td></tr></table></figure>
+<p>所以，可以在 <code>/var/ftp</code> 创建一个目录 <code>pub</code>
+专门用来匿名用户上传文件，<code>pub</code> 权限设置为
+777（其实只要其他用户对 <code>pub</code> 有写权限就可以了，也就是
+<code>..7</code> 就行）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ftp&gt; cd pub</span><br><span class="line">250 Directory successfully changed.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">229 Entering Extended Passive Mode (|||30370|)</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">-rw-r--r--    1 0        0               6 Mar 08 16:01 ooo.txt</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; put up.txt </span><br><span class="line">local: up.txt remote: up.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||30020|)</span><br><span class="line">150 Ok to send data.</span><br><span class="line">100% |***********************************|    12        1.82 KiB/s    00:00 ETA</span><br><span class="line">226 Transfer complete.</span><br><span class="line">12 bytes sent in 00:00 (1.04 KiB/s)</span><br></pre></td></tr></table></figure>
+<h1 id="ftp-流量分析">3. FTP 流量分析</h1>
+<blockquote>
+<p>客户端：10.0.2.5；服务器：10.0.2.15</p>
+</blockquote>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308165943.png" /></p>
+<blockquote>
+<p>看不清楚的话可以在浏览器单独打开文件</p>
+</blockquote>
+<p>终端流程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">takagi@takagi-VirtualBox:~/Desktop$ ftp ftpers@10.0.2.15</span><br><span class="line">Connected to 10.0.2.15.</span><br><span class="line">220 (vsFTPd 3.0.5)</span><br><span class="line">331 Please specify the password.</span><br><span class="line">Password: </span><br><span class="line">230 Login successful.</span><br><span class="line">Remote system <span class="built_in">type</span> is UNIX.</span><br><span class="line">Using binary mode to transfer files.</span><br><span class="line">ftp&gt; ls</span><br><span class="line">229 Entering Extended Passive Mode (|||30547|)</span><br><span class="line">150 Here comes the directory listing.</span><br><span class="line">-rw-------    1 1001     1001          493 Mar 08 16:51 qwe.txt</span><br><span class="line">-rw-r--r--    1 1001     1001            6 Mar 08 11:44 test.txt</span><br><span class="line">-rw-------    1 1001     1001           12 Mar 08 12:15 up.txt</span><br><span class="line">226 Directory send OK.</span><br><span class="line">ftp&gt; get test.txt</span><br><span class="line"><span class="built_in">local</span>: test.txt remote: test.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||30172|)</span><br><span class="line">150 Opening BINARY mode data connection <span class="keyword">for</span> test.txt (6 bytes).</span><br><span class="line">100% |***********************************|     6       38.04 KiB/s    00:00 ETA</span><br><span class="line">226 Transfer complete.</span><br><span class="line">6 bytes received <span class="keyword">in</span> 00:00 (3.67 KiB/s)</span><br><span class="line">ftp&gt; put hell.txt</span><br><span class="line"><span class="built_in">local</span>: hell.txt remote: hell.txt</span><br><span class="line">229 Entering Extended Passive Mode (|||30611|)</span><br><span class="line">150 Ok to send data.</span><br><span class="line">100% |***********************************|   493        6.02 MiB/s    00:00 ETA</span><br><span class="line">226 Transfer complete.</span><br><span class="line">493 bytes sent <span class="keyword">in</span> 00:00 (313.23 KiB/s)</span><br><span class="line">ftp&gt; <span class="built_in">bye</span></span><br><span class="line">221 Goodbye.</span><br></pre></td></tr></table></figure>
+<h2 id="登录">3.1. 登录</h2>
+<ol type="1">
+<li><p>当客户端发起 <code>ftp ftpers@10.0.2.15</code> 时，需要先建立 TCP
+连接（控制连接），于是进行了 TCP 3 次握手；</p></li>
+<li><p>3 次握手结束后，服务发送 FTP 的包，也就是 No. 4
+的流量包，内容如下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308170126.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>客户端收到后，需要回复一个 ACK （后面 ACK
+不再说明），然后发起请求，也就是 No. 6，指定了用户
+<code>ftpers</code></p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308170158.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>服务器收到后，响应 No. 8，内容如下，要我们输入密码：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308170231.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>客户端收到后，输入密码 （注意，这里密码是明文传输），也就是 No.
+10：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308170304.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>服务器确定密码正确后，响应 No. 12</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308170336.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>后面的流量就是一些登录后的命令，比如
+<code>FEAT</code>、<code>EPRT</code>、<code>PASV</code> 可以在 [[#4.
+参考]] 的第 14 篇文章中找到结果，直接跳过；</p></li>
+</ol>
+<h2 id="下载文件被动模式">3.2. 下载文件（被动模式）</h2>
+<blockquote>
+<p>查看下载文件 <code>test.txt</code> 的流量：</p>
+</blockquote>
+<ol type="1">
+<li><p>跳过 <code>ls</code> 这些命令的流量，直接看 No.
+61，客户端向服务器请求 <code>test.txt</code>，</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308170609.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>可以看到 61 之后，服务器回应了一个 <code>EPSV</code>
+和一个紧接着的流量然后就进行了 TCP 3 次握手，这个 <code>EPSV</code>
+后面紧跟着的流量 (No. 64)很有意思，内容如下，它在内容中说明了一个端口
+30172，这其实就是被动模式下，服务器告诉客户端用来传输数据的临时端口，后面的
+3 次握手也正是为了建立数据连接，可以放一张 3 次握手的流量内容（客户端的
+ACK，第 3 次握手）；</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308171002.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308171131.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>客户端又发送了一个
+<code>RETR test.txt</code>，意思是下载该文件；</p></li>
+<li><p>服务器响应后，开始在数据连接上传输数据（流量 No. 70 到 No.
+75），下图是 No. 79，红框圈出来的一个是双方端口，另一个是文件内容；</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308171703.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+</ol>
+<p>上传文件的步骤同下载文件，只是命令不同。</p>
+<h2 id="上传文件主动模式">3.3. 上传文件（主动模式）</h2>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308193819.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>在上传文件之前，也就是 <code>put hell00.txt</code> 这句话会执行 4
+个步骤：</p>
+<ol type="1">
+<li><p>客户端告诉服务器，自己开放的端口，也就是上图中的 No. 44</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308194021.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>然后正式发送命令 <code>STOR hell00.txt</code>，流量 No.
+46</p></li>
+<li><p>TCP 3 次握手建立数据连接（有服务器主动建立），流量 No.
+47、48、49；</p></li>
+<li><p>通过数据连接上传数据，流量 No. 51；</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230308194240.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+</ol>
+<h1 id="参考">4. 参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">文件传输协议
+- 维基百科，自由的百科全书</a></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FTPS">FTPS -
+维基百科，自由的百科全书</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://baike.baidu.com/item/FTP/13839">FTP（文件传输协议）_百度百科</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34109504">浅谈FTP协议的工作方式 -
+知乎</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/luoxn28/p/5585458.html">深入理解FTP协议 -
+luoxn28 - 博客园</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://juejin.cn/post/7119502508786974733#heading-1">详解ftp协议，力荐！！！
+- 掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linuxprobe.com/chapter-11.html">第11章
+使用Vsftpd服务传输文件。 | 《Linux就该这么学》</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=i5furEJlySY">Solved: issue
+with FTP server (229 Entering Extended Passive Mode</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.linuxquestions.org/questions/linux-newbie-8/500-oops-could-not-read-chroot-list-file-etc-vsftpd-chroot_list-4175426540/">[SOLVED]
+500 OOPS: could not read chroot () list file:/etc/vsftpd.
+chroot_list</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.myfreax.com/how-to-setup-ftp-server-with-vsftpd-on-ubuntu-20-04/">如何在ubuntu
+20.04使用vsftpd设置ftp服务器 | myfreax</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38423256/article/details/119773336">vsftpd配置chroot_list_enable、chroot_local_user、chroot_list_file说明_喜羊羊love红太狼的博客-CSDN博客</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://ma.ttias.be/vsftpd-linux-500-oops-vsftpd-refusing-run-writable-root-inside-chroot/">vsftpd
+on linux: 500 OOPS: vsftpd: refusing to run with writable root inside
+chroot()</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://gnu-linux.readthedocs.io/zh/latest/Chapter02/90_vsftpd.html">vsftpd
+配置文件 — Linux latest 文档</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-hans/FTP%E5%91%BD%E4%BB%A4%E5%88%97%E8%A1%A8">FTP命令列表
+- 维基百科，自由的百科全书</a></li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ftp-%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">1. FTP 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ftp-%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. FTP 连接建立</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1. 主动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2. 被动模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3. 连接方式总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ftp-%E5%AE%9E%E6%88%98"><span class="toc-number">2.</span> <span class="toc-text">2. FTP 实战</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 环境搭建与配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1. 下载与安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2. 修改配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3. 修改防火墙</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 一些问题与解决</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 用户无法登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E4%B9%8B%E5%90%8E%E5%91%BD%E4%BB%A4%E6%97%A0%E6%B3%95%E6%89%A7%E8%A1%8C"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 登录之后命令无法执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ftp-%E4%BD%BF%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. FTP 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 基础用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BF%E5%90%8D%E7%99%BB%E5%BD%95"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 匿名登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ftp-%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">3. FTP 流量分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E5%BD%95"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 登录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 下载文件（被动模式）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 上传文件（主动模式）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&text=FTP协议"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&title=FTP协议"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&is_video=false&description=FTP协议"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=FTP协议&body=Check out this article: https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&title=FTP协议"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&title=FTP协议"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&title=FTP协议"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&title=FTP协议"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&name=FTP协议&description=&lt;p&gt;个人知识点记录。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2023/03/08/FTP%E5%8D%8F%E8%AE%AE/&t=FTP协议"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>

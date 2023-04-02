@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Question 71-80">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/07/06/Question%2071-80/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-05T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-05T21:35:04.487Z">
@@ -149,7 +149,10 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+    <p>项目地址：<a
+target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub</a></p>
 <p>分为三个等级：</p>
 <ol type="1">
 <li>easy</li>
@@ -205,11 +208,13 @@
 <h2 id="random.choice">6.1. random.choice()</h2>
 <p>语法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.choice(seq)</span><br></pre></td></tr></table></figure>
-<p>作用：从非空 seq 中随机返回一个元素，如果 seq 为空则引发 IndexError</p>
+<p>作用：从非空 seq 中随机返回一个元素，如果 seq 为空则引发
+IndexError</p>
 <h1 id="question-77">7. Question 77</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>随机返回一个在 0~200 之间能被 5 整除，也能被 7 整除的数字。使用 random 模块和 list</li>
+<li>随机返回一个在 0~200 之间能被 5 整除，也能被 7 整除的数字。使用
+random 模块和 list</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line">available_nums = [x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">201</span>) <span class="keyword">if</span> (x%<span class="number">5</span>==<span class="number">0</span>) <span class="keyword">and</span> (x%<span class="number">7</span>==<span class="number">0</span>)]</span><br><span class="line"><span class="built_in">print</span>(random.choice(available_nums))</span><br></pre></td></tr></table></figure>
@@ -225,11 +230,15 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">random.sample(population, k, counts=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
 <p>作用：</p>
 <ul>
-<li>从 population 集合中取出 k 个元素形成一个列表并返回。population 集合中的同一个元素（<strong>多个相同值的元素 != 同一个元素</strong>）不会被选择 2 次及以上。</li>
+<li>从 population 集合中取出 k 个元素形成一个列表并返回。population
+集合中的同一个元素（<strong>多个相同值的元素 !=
+同一个元素</strong>）不会被选择 2 次及以上。</li>
 </ul>
-<p>如果 population 中有多个相同的元素，比如为：<code>['hello', 'hello', 'hello', 'hello', 'hello', 'world', 'world']</code>，此时一下两者等价：</p>
+<p>如果 population
+中有多个相同的元素，比如为：<code>['hello', 'hello', 'hello', 'hello', 'hello', 'world', 'world']</code>，此时一下两者等价：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">第一种：random.sample([<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, <span class="string">&#x27;world&#x27;</span>], <span class="number">3</span>)</span><br><span class="line">第二种：random.sample([<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>], <span class="number">3</span> counts=[<span class="number">5</span>, <span class="number">2</span>])</span><br></pre></td></tr></table></figure>
-<p>这就是 counts 参数的作用，counts 参数的每一个值，即 population 中的对应元素的个数。</p>
+<p>这就是 counts 参数的作用，counts 参数的每一个值，即 population
+中的对应元素的个数。</p>
 <h1 id="question-79">9. Question 79</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
@@ -240,7 +249,8 @@
 <h1 id="question-80">10. Question 80</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>随机生成一个列表，有 5 个数，每个数都在 [1, 1001] 之间，且能同时被 5 和 7 整除</li>
+<li>随机生成一个列表，有 5 个数，每个数都在 [1, 1001] 之间，且能同时被 5
+和 7 整除</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line">nums = [x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">1001</span>) <span class="keyword">if</span> (x%<span class="number">5</span>==<span class="number">0</span>) <span class="keyword">and</span> (x%<span class="number">7</span>==<span class="number">0</span>)]</span><br><span class="line"><span class="built_in">print</span>(random.sample(nums, <span class="number">5</span>))</span><br></pre></td></tr></table></figure>
@@ -291,7 +301,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/06/Question%2071-80/&title=Question 71-80"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/06/Question%2071-80/&title=Question 71-80"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/06/Question%2071-80/&title=Question 71-80"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/06/Question%2071-80/&name=Question 71-80&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/06/Question%2071-80/&name=Question 71-80&description=&lt;p&gt;项目地址：&lt;a
+href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;分为三个等级：&lt;/p&gt;
 &lt;ol type=&#34;1&#34;&gt;
 &lt;li&gt;easy&lt;/li&gt;
@@ -318,7 +331,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

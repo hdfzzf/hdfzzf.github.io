@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+    <meta name="description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Question 61-70">
 <meta property="og:url" content="https://hdfzzf.github.io/2022/07/05/Question%2061-70/index.html">
 <meta property="og:site_name" content="HDFZZF&#39;s BLOG">
-<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
+<meta property="og:description" content="项目地址：Python-programming-exercises&#x2F;100+ Python challenging programming exercises for Python 3.md at master · ReganQing&#x2F;Python-programming-exercises · GitHub 分为三个等级：  easy medium hard">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-07-04T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-05T20:52:38.361Z">
@@ -149,7 +149,10 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub</a></p>
+    <p>项目地址：<a
+target="_blank" rel="noopener" href="https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md">Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub</a></p>
 <p>分为三个等级：</p>
 <ol type="1">
 <li>easy</li>
@@ -228,14 +231,16 @@
 <h1 id="question-69">9. Question 69</h1>
 <p><strong>题目</strong>：（medium）</p>
 <ul>
-<li>给定一个整数 n，使用生成器来打印 [0, n] 之间所有能同时被 5 和 7 整除的数</li>
+<li>给定一个整数 n，使用生成器来打印 [0, n] 之间所有能同时被 5 和 7
+整除的数</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_num</span>(<span class="params">n</span>):</span></span><br><span class="line">    i = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> i &lt;= n:</span><br><span class="line">        <span class="keyword">if</span> (i%<span class="number">5</span>==<span class="number">0</span>) <span class="keyword">and</span> (i%<span class="number">7</span>==<span class="number">0</span>):</span><br><span class="line">            <span class="keyword">yield</span> i    </span><br><span class="line">        i += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">n = <span class="built_in">int</span>(<span class="built_in">input</span>())</span><br><span class="line">res = []</span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> get_num(n):</span><br><span class="line">    res.append(<span class="built_in">str</span>(num))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;,&#x27;</span>.join(res))</span><br></pre></td></tr></table></figure>
 <h1 id="question-70">10. Question 70</h1>
 <p><strong>题目</strong>：（easy）</p>
 <ul>
-<li>使用 <code>assert</code> 来判断列表 [2,4,6,8] 里面的数是否为偶数</li>
+<li>使用 <code>assert</code> 来判断列表 [2,4,6,8]
+里面的数是否为偶数</li>
 </ul>
 <p><strong>代码</strong>：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lst = [<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]</span><br><span class="line"><span class="keyword">for</span> num <span class="keyword">in</span> lst:</span><br><span class="line">    <span class="keyword">assert</span> num%<span class="number">2</span>==<span class="number">0</span></span><br></pre></td></tr></table></figure>
@@ -243,7 +248,8 @@
 <p>作用：判断表达式是否正确</p>
 <p>语法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assert</span> expression</span><br></pre></td></tr></table></figure>
-<p>返回值：正确则代码继续执行，错误则抛出异常 <code>AssertionError</code></p>
+<p>返回值：正确则代码继续执行，错误则抛出异常
+<code>AssertionError</code></p>
 
   </div>
 </article>
@@ -291,7 +297,10 @@
   <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2022/07/05/Question%2061-70/&title=Question 61-70"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2022/07/05/Question%2061-70/&title=Question 61-70"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2022/07/05/Question%2061-70/&title=Question 61-70"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/05/Question%2061-70/&name=Question 61-70&description=&lt;p&gt;项目地址：&lt;a href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+ Python challenging programming exercises for Python 3.md at master · ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2022/07/05/Question%2061-70/&name=Question 61-70&description=&lt;p&gt;项目地址：&lt;a
+href=&#34;https://github.com/ReganQing/Python-programming-exercises/blob/master/100%2B%20Python%20challenging%20programming%20exercises%20for%20Python%203.md&#34;&gt;Python-programming-exercises/100+
+Python challenging programming exercises for Python 3.md at master ·
+ReganQing/Python-programming-exercises · GitHub&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;分为三个等级：&lt;/p&gt;
 &lt;ol type=&#34;1&#34;&gt;
 &lt;li&gt;easy&lt;/li&gt;
@@ -318,7 +327,7 @@
     Copyright &copy;
     
     
-    2021-2022
+    2021-2023
     hdfzzf
   </div>
   <div class="footer-right">
