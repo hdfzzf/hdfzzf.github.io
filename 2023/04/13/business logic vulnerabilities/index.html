@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="网站：  Business logic vulnerabilities | Web Security Academy Examples of business logic vulnerabilities | Web Security Academy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="business logic vulnerabilities">
+<meta property="og:url" content="https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="网站：  Business logic vulnerabilities | Web Security Academy Examples of business logic vulnerabilities | Web Security Academy">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-14T03:27:36.183Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="burpsuite">
+<meta property="article:tag" content="业务逻辑漏洞">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>business logic vulnerabilities</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/10/MySQL%E5%85%A5%E9%97%A8/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%BC%E8%87%B4%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">2.</span> <span class="toc-text">2. 导致业务逻辑漏洞的原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%B1%E5%AE%B3"><span class="toc-number">3.</span> <span class="toc-text">3. 危害</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">4. 例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A7%E5%88%B6"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 过度信任客户端控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E6%B3%95%E5%A4%84%E7%90%86%E9%9D%9E%E5%B8%B8%E8%A7%84%E8%BE%93%E5%85%A5"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 无法处理非常规输入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E5%81%9A%E5%87%BA%E9%94%99%E8%AF%AF%E7%9A%84%E5%81%87%E8%AE%BE"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. 对用户行为做出错误的假设</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%97%E4%BF%A1%E4%BB%BB%E7%9A%84%E7%94%A8%E6%88%B7%E5%B9%B6%E4%B8%8D%E6%80%BB%E6%98%AF%E5%80%BC%E5%BE%97%E4%BF%A1%E8%B5%96"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1.
+受信任的用户并不总是值得信赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%B8%8D%E4%BC%9A%E6%80%BB%E6%98%AF%E6%8F%90%E4%BE%9B%E5%BC%BA%E5%88%B6%E8%BE%93%E5%85%A5"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2. 用户不会总是提供强制输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%B8%8D%E4%BC%9A%E6%80%BB%E6%98%AF%E9%81%B5%E5%BE%AA%E9%A2%84%E6%9C%9F%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="toc-number">4.3.3.</span> <span class="toc-text">4.3.3.
+用户不会总是遵循预期的顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%AE%9A%E9%A2%86%E5%9F%9F%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="toc-number">4.4.</span> <span class="toc-text">4.4. 特定领域的缺陷</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E4%BE%9B-encryption-oracle"><span class="toc-number">4.5.</span> <span class="toc-text">4.5. 提供 encryption oracle</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">5.</span> <span class="toc-text">6. 防御</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        business logic vulnerabilities
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-12T16:00:00.000Z" itemprop="datePublished">2023-04-13</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Web%E5%AE%89%E5%85%A8/">Web安全</a> › <a class="category-link" href="/categories/burpsuite/">burpsuite</a> › <a class="category-link" href="/categories/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E/">业务逻辑漏洞</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/burpsuite/" rel="tag">burpsuite</a>, <a class="tag-link-link" href="/tags/%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E/" rel="tag">业务逻辑漏洞</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>网站：</p>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws">Business
+logic vulnerabilities | Web Security Academy</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples">Examples
+of business logic vulnerabilities | Web Security Academy</a></li>
+</ol>
+<span id="more"></span>
+<h1 id="概述">1. 概述</h1>
+<p>业务逻辑漏洞是应用程序设计和实现中的缺陷，允许攻击者触发意外行为。这可能使攻击者能够操纵合法功能以实现恶意目标。这些缺陷通常是由于未能预见到可能发生的异常应用程序状态而导致的，因此未能安全的处理。</p>
+<p>逻辑缺陷对于那些没有明确寻找它们的人来说通常是不可见的，因为它们通常不会在应用程序的正常使用中暴露出来。但是，攻击者可能能够通过以开发人员意想不到的方式与应用程序交互来发现并利用。</p>
+<p>业务逻辑的主要目的之一是执行在设计应用程序或功能时定义的规则和约束。从广义上讲，业务规则规定了应用程序在给定场景发生时应如何反应。这包括防止用户做会对业务产生负面影响或根本没有意义的事情。</p>
+<p>逻辑上的缺陷可以让攻击者规避这些规则。
+例如，他们可能无需完成预期的购买工作流程即可完成交易。
+在其他情况下，用户提供的数据验证中断或不存在可能允许用户对事务关键值进行任意更改或提交无意义的输入。
+通过将意外值传递到服务器端逻辑，攻击者可能会诱使应用程序做一些它不应该做的事情。</p>
+<p>基于逻辑的漏洞可能非常多样化，并且通常是应用程序及其特定功能所独有的。
+识别它们通常需要一定数量的知识，例如了解业务领域或攻击者在给定上下文中可能有什么目标。
+这使得它们很难使用自动漏洞扫描器进行检测。
+因此，逻辑缺陷通常是漏洞赏金猎人和手动测试人员的重要目标。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/logic-flaws.jpg" /></p>
+<h1 id="导致业务逻辑漏洞的原因">2. 导致业务逻辑漏洞的原因</h1>
+<p>业务逻辑漏洞的出现通常是因为设计和开发团队对用户将如何与应用程序进行交互做出了错误的假设。这些错误的假设可能导致对用户输入的验证不充分。例如，如果开发人员假设用户将专门通过
+Web
+浏览器传递数据，则应用程序可能完全依赖弱客户端控件来验证输入。这些很容易被攻击者使用拦截代理绕过。</p>
+<p>最终，这意味着当攻击者偏离预期的用户行为时，应用程序无法采取适当的措施来阻止这种情况，因此无法安全地处理这种情况。</p>
+<p>逻辑缺陷在过于复杂的系统中尤为常见，即使是开发团队自己也无法完全理解。为避免逻辑缺陷，开发人员需要从整体上理解应用程序。这包括了解如何以意想不到的方式组合不同的功能。在大型代码库上工作的开发人员可能无法深入了解应用程序的所有区域是如何工作的。在一个组件上工作的人可能会对另一个组件的工作方式做出有缺陷的假设，结果无意中引入了严重的逻辑缺陷。如果开发人员没有明确记录所做的任何假设，这些类型的漏洞很容易潜入应用程序。</p>
+<h1 id="危害">3. 危害</h1>
+<p>从根本上说，任何逻辑缺陷的影响都取决于它所涉及的功能。例如，如果缺陷存在于身份验证机制中，这可能会对整体安全性产生严重影响。攻击者可能会利用它来提升权限，或者完全绕过身份验证，从而获得对敏感数据和功能的访问权限。这也为其他漏洞利用增加了攻击面。</p>
+<p>金融交易中有缺陷的逻辑显然会导致资金被盗、欺诈等给企业造成巨大损失。还应该注意，即使逻辑缺陷可能不会让攻击者直接受益，它们仍然可以让恶意方以某种方式破坏业务。</p>
+<h1 id="例子">4. 例子</h1>
+<h2 id="过度信任客户端控制">4.1. 过度信任客户端控制</h2>
+<p>所谓客户端控制就是在客户端做验证，比方说之前的文件上传，在 js
+代码中来验证用户上传文件的后缀是否是图片，这是一种极其危险的行为，因为用户可以使用诸如
+burpsuite 等工具在通过 js
+验证后修改数据，这样一来，客户端验证就失去了作用。</p>
+<p>靶场1：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-excessive-trust-in-client-side-controls">Lab:
+Excessive trust in client-side controls | Web Security Academy</a></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities.png" /></p>
+<p>进去之后会看到上图的界面，需要先登录，然后购买第一个产品，第一个产品的价格是
+<code>1337.00</code>，而我们的账户只有
+<code>99.99</code>，显然无法购买。</p>
+<p>将产品 <code>add to cart</code> 时抓取流量包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-1.png"
+alt="business logic vulnerabilities-2" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-2</figcaption>
+</figure>
+<p>注意这里的价格
+<code>133700</code>，我们尝试修改这里的数值，然后去购物车查看，这里修改为
+1，然后</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-2.png"
+alt="business logic vulnerabilities-2" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-2</figcaption>
+</figure>
+<p>价格被成功修改，此时就可以购买了。打开第一个产品的
+<code>view detail</code> 界面，查看源代码，注意如下代码段：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-3.png"
+alt="business logic vulnerabilities-2" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-2</figcaption>
+</figure>
+<p>这就是我们 <code>add to cart</code>
+时提交的数据，可以看到，这里将价格写死在 <code>html</code>
+中，也就是前端来控制价格，被我们使用 burp 绕过了。</p>
+<hr />
+<p>靶场2： <a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/authentication/multi-factor/lab-2fa-broken-logic">Lab:
+2FA broken logic | Web Security Academy</a></p>
+<p>首先使用给的 <code>wiener:peter</code> 登录，并使用 burp
+记录这过程的所有流量。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-4.png" /></p>
+<p>查看其中两个数据包，左边是发送验证码的数据包，右边是登录成功后的数据包，注意到两边的
+session 值是不同的，因此有理由推测“验证码”可能在另一个 session
+文件中，而该文件里面对于该验证码是发给谁的应该是通过用户名判断的，这一点可以从短信接收页面看出来。</p>
+<p>那么思路就很清楚了：</p>
+<ol type="1">
+<li>找到用户向客户端请求验证码的数据包（就是
+<code>GET /login2</code>）；</li>
+<li>把 <code>GET /login2</code> 里面的 cookie 中的 <code>verify</code>
+设置为 <code>carlos</code>，并发送该数据包，此时后台应该会给
+<code>carlos</code> 的邮箱发送一个验证码，但我们不知道值是多少；</li>
+<li>然后将 <code>POST /login2</code> 数据包对验证码，也就是
+<code>mfa-code</code> 参数进行爆破，根据上图可知道，当验证码正确时返回
+302，（经过尝试，验证码失败返回 200）；</li>
+</ol>
+<p>需要注意，上面的过程中需要保证两个数据包的 <code>session</code>
+值相同。我们先登录 <code>wiener</code> 账号，然后使用这过程中产生的
+<code>GET /login2</code> 和 <code>POST /login2</code>。</p>
+<p><code>GET /login2</code> 数据包：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-5.png" /></p>
+<p><code>POST /login2</code> 数据包：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-6.png" /></p>
+<p>最终爆破的结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-7.png" /></p>
+<p>最后一步，使用 burp
+再次拦截一下提交验证码的数据包（<code>POST /login2</code>），然后将爆破成功的整个数据包的内容复制进去，然后发送，最后成功在网页进入
+<code>carlos</code> 账号，点击 <code>My account</code>
+即可通关。（我这里已经通关了，就没法看邮箱，所以演示最后一步）。</p>
+<p>我认为本靶场漏洞最大的因素应该是登录和验证码两者没有关联，两者的
+session
+文件分开，并且验证码验证是哪个用户请求时使用的是用户名，而用户名是可以被修改的。</p>
+<p>防御措施：</p>
+<p>将两者的 session
+文件关联起来，比如说最开始输入了用户名和密码，给了一个
+sessionid，那么在验证码验证的 seesion 文件中携带这个
+sessionid，用户提交验证码时不仅验证验证码是否正确，还验证 sessionid
+是否正确，就不要去验证用户名了。</p>
+<p>而 sessionid 与前一步的登录绑定，那就登录 sessionid 对应的 session
+文件的用户。</p>
+<h2 id="无法处理非常规输入">4.2. 无法处理非常规输入</h2>
+<p>应用程序逻辑的一个目标是将用户输入限制为符合业务规则的值。例如，应用程序可能被设计为接受某种数据类型的任意值，但从业务的角度来看，逻辑决定了这个值是否可以接受。许多应用程序将数字限制纳入其逻辑。这可能包括旨在管理库存、应用预算限制、触发供应链阶段等的限制。</p>
+<p>让我们以在线商店为例。订购产品时，用户通常会指定他们想要订购的数量。尽管理论上任何整数都是有效输入，但业务逻辑可能会阻止用户订购比当前库存更多的单位。要实施这样的规则，开发人员需要预测所有可能的场景，并将处理这些场景的方法整合到应用程序逻辑中。换句话说，他们需要告诉应用程序它是否应该允许给定的输入以及它应该如何根据各种条件做出反应。如果没有明确的逻辑来处理给定的情况，这可能会导致意外和潜在的可利用行为。</p>
+<p>例如，数字数据类型可能接受负值。根据相关功能，业务逻辑允许这样做可能没有意义。但是，如果应用程序没有执行足够的服务器端验证并拒绝此输入，攻击者可能会传递一个负值并引发不需要的行为。</p>
+<p>考虑两个银行账户之间的资金转账。此功能几乎肯定会在完成转账之前检查发件人是否有足够的资金：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$transferAmount</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;amount&#x27;</span>];</span><br><span class="line"><span class="variable">$currentBalance</span> = <span class="variable">$user</span>-&gt;getBalance();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$transferAmount</span> &lt;= <span class="variable">$currentBalance</span>) &#123;</span><br><span class="line">    <span class="comment">// Complete the transfer</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Block the transfer: insufficient funds</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是，如果逻辑不能充分阻止用户在金额参数中提供负值，攻击者可能会利用这一点来绕过余额检查并向“错误”方向转移资金。如果攻击者向受害者的账户发送了
+-1000 美元，这可能会导致他们从受害者那里收到 1000 美元。该逻辑将始终评估
+-1000 小于当前余额并批准转账。</p>
+<p>在审核应用程序时，应该使用 Burp Proxy 和 Repeater
+等工具来尝试提交非常规值。特别是，尝试在合法用户不太可能输入的范围内输入。这包括异常高或异常低的数字输入以及基于文本的字段的异常长字符串。您甚至可以尝试意想不到的数据类型。通过观察应用程序的响应，您应该尝试回答以下问题：</p>
+<ol type="1">
+<li>是否对数据施加了任何限制？</li>
+<li>达到这些限制时会发生什么？</li>
+<li>是否对输入进行了任何转换或规范化？</li>
+</ol>
+<p>这可能会暴露弱输入验证，使您能够以不寻常的方式操作应用程序。请记住，如果在目标网站上发现一种无法安全处理非常规输入的表单，则其他表单很可能会遇到同样的问题。</p>
+<p>靶场 1：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level">Lab:
+High-level logic vulnerability | Web Security Academy</a></p>
+<p>进入环境先登录
+<code>wiener:peter</code>，然后购买第一个物品，与之前不同的是，这里把
+<code>price</code> 变成了 <code>quantity</code>，</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-8.png" /></p>
+<p>经过尝试，无法修改成小数，但可以修改成负数，我修改成了
+-1，然后提交请求，最后来到购物车查看：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-9.png" /></p>
+<p>但此时无法购买，提示 <code>Total</code>
+不能为负数，因此就买一些其他物品凑成正数，然后购买：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-10.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-11.png" /></p>
+<p>原来它是要求正常价格买 jacket，那就一样的操作，先选
+<strong>负几件其他物品</strong>，然后正常把一件 jacket
+加入购物车，只要总价格小于拥有的价格就好，成功通关。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-12.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-13.png" /></p>
+<p>就像前面说的一样，从业务逻辑上来看，购买物品的数量除了不能为
+0，这没有意义，也不能为负数，这会造成购买物品反而赚钱的错误业务逻辑。</p>
+<hr />
+<p>靶场 2：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-low-level">Lab:
+Low-level logic flaw | Web Security Academy</a></p>
+<p>该靶场和之前一样，但加了限制：</p>
+<ol type="1">
+<li>数量的值被限制在 <code>[0,99]</code>，且只能为整数；</li>
+<li>如果构成车出现一件物品的数量小于等于 0，就会自动删除；</li>
+</ol>
+<p>根据提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">You will need to use Burp Intruder (or Turbo Intruder) to solve this lab.</span><br><span class="line"></span><br><span class="line">To make sure the price increases in predictable increments, we recommend configuring your attack to only send one request at a time. In Burp Intruder, you can do this from the resource pool settings using the **Maximum concurrent requests** option.</span><br></pre></td></tr></table></figure>
+<p>应该是利用数字在计算机中的存储是存在上限的，以 16
+位存储举例，正整数的最大值为 <code>0x7fff</code>，一旦超过这个数，比如说
+<code>0x8fff</code>，它的二进制为
+<code>1000 1111 1111</code>，而第一位在数字中是符号位，0 为正数，1
+位负数，所以一旦超上限，数就会一下跳到负数，然后再一直增加。</p>
+<p>这里利用的就是这个原理，但是不知道上限是多少，所以使用
+<code>burp</code> 爆破，每次只能加 99，设置如下：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-14.png" /></p>
+<p>在不知道请求了几次之后，终于出现了负数：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-15.png" /></p>
+<p>经过测试，当数量达到 <code>16062</code> 第一次出现负值：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-16.png" /></p>
+<p>如果把小数点去掉，这个数和 <code>7fffffff</code>
+（2147483647）很接近，通过补码换算</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-17.png" /></p>
+<p>发现上限就是
+<code>7fffffff</code>。那接下来只要使用堆砌其他物品的数量使总的价格维持在：<span
+class="math inline">\(-133700 &lt; total &lt;-123700\)</span>
+，然后再把一件 jacket 加入构成就可以购买。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-18.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-19.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-20.png" /></p>
+<hr />
+<p>靶场3： <a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-inconsistent-handling-of-exceptional-input">Lab:
+Inconsistent handling of exceptional input | Web Security
+Academy</a></p>
+<p>这题确实没想到，看了提示也想不到，是这样的，该靶场漏洞的起因是长度，后台会对邮箱的长度进行截取。</p>
+<p>第一步，注册一个账号，邮箱格式：<code>大于255的字符串@YOUR-EMAIL-ID.web-security-academy.net</code>，这里大于
+255 的字符串最好有点规律，我这里是
+<code>abcde*255</code>，然后在邮箱里确认注册，登录进入
+<code>My account</code>：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-21.png" /></p>
+<p>发现邮箱长度截取了输入的前 255 个字符。</p>
+<p>第二步，可以根据官网的 solution 利用 burpsuite
+发现，或者其他目录爆破的方式得到一个路径
+<code>/admin</code>，访问得到如下结果：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-22.png" /></p>
+<p>在注册的时候有提示，如果是 <code>DontWannaCry</code>
+的员工，则需要使用它们的邮箱，结合这里的判断可以知道，使用
+<code>DontWannaCry</code> 邮箱的用户应该都是管理员。</p>
+<p>第三步，利用邮箱截取前 255
+个字符串的特性，重新注册一个账号，邮箱为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">长字符串@dontwannacry.com.YOUR-EMAIL-ID.web-security-academy.net</span><br></pre></td></tr></table></figure>
+<p>其中 <code>长字符串@dontwannacry.com</code> 部分正好长度为
+255，这样的一个注册信息能够在邮箱中看到，确认注册登录后可以发现：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-23.png" /></p>
+<p>从该页面看，该账户的注册邮箱就是 <code>DontWannaCry</code>
+的，因此该账户有权限访问 <code>/admin</code>。</p>
+<p>最后一步，访问 <code>/admin</code>，删除 <code>carlos</code>
+账号：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-24.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-25.png" /></p>
+<p>这里的成因是两个地方的邮箱长度起冲突了：</p>
+<ol type="1">
+<li>注册时候，邮箱长度不限制，因此可以利用
+<code>xxx.YOUR-EMAIL-ID.web-security-academy.net</code>
+使注册信息发送到我们的邮箱；</li>
+<li>注册成功后，写入数据库的邮箱长度有限制，因此注册成功后，真正写入数据库的用户的邮箱就是前
+255 个字符；</li>
+</ol>
+<p>这两个地方的逻辑应该统一，注册时就应该限制长度。</p>
+<h2 id="对用户行为做出错误的假设">4.3. 对用户行为做出错误的假设</h2>
+<p>逻辑漏洞最常见的根本原因之一是对用户行为做出错误的假设。这可能导致开发人员没有考虑违反这些假设的潜在危险场景的广泛问题。在本节中，我们将提供一些应避免的常见假设的警示示例，并演示它们如何导致危险的逻辑缺陷。</p>
+<h3 id="受信任的用户并不总是值得信赖">4.3.1.
+受信任的用户并不总是值得信赖</h3>
+<p>应用程序可能看起来是安全的，因为它们实施看似可靠的措施来执行业务规则。不幸的是，一些应用程序错误地认为，在最初通过了这些严格的控制后，用户及其数据可以无限期地被信任。这可能导致从那时起对相同控制的执行相对松懈。</p>
+<p>如果业务规则和安全措施没有在整个应用程序中一致应用，这可能会导致潜在的危险漏洞，攻击者可能会利用这些漏洞。</p>
+<p>靶场：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-inconsistent-security-controls">Lab:
+Inconsistent security controls | Web Security Academy</a></p>
+<p>任务也是删除 <code>carlos</code>
+用户，经过上一个靶场的“折磨”，能够推出：存在 <code>/admin</code>。</p>
+<p>类似的，先注册一个用户，提示和上一个靶场一样，<code>dontwannacry</code>
+邮箱注册时管理员。使用
+<code>string@YOUR-EMAIL-ID.web-security-academy.net</code>
+邮箱注册，激活，登录看到这样的界面：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-26.png" /></p>
+<p>可以直接使用 <code>Update email</code>
+功能更新自己的邮箱，上图就是我更新之后的样子。</p>
+<p>最后访问 <code>/admin</code>，删除 <code>carlos</code>：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-27.png" /></p>
+<p>这里就很好解释了
+“在最初通过了这些严格的控制后，用户及其数据可以无限期地被信任。这可能导致从那时起对相同控制的执行相对松懈。”这句话。最开始注册的时候对邮箱做了限制，等注册成功了，对注册用户过于信任，就连更换邮箱也不用验证一下新邮箱，而是直接更换，这就是漏洞成因。</p>
+<h3 id="用户不会总是提供强制输入">4.3.2. 用户不会总是提供强制输入</h3>
+<p><strong>一种误解是用户总是会为必填输入字段提供值</strong>。浏览器（前端）可能会阻止普通用户在没有必要输入的情况下提交表单，但正如我们所知，攻击者可以篡改传输中的参数。这甚至扩展到完全删除参数。</p>
+<p>在同一个服务器端代码存在多个函数的情况下，这是一个特殊的问题。在这种情况下，特定参数的存在或不存在可以决定执行哪个代码。删除参数值可能允许攻击者访问本应无法访问的代码路径。</p>
+<p>在探测逻辑缺陷时，应该尝试依次删除每个参数并观察这对响应有何影响。应该确保：</p>
+<ol type="1">
+<li>一次只删除一个参数以确保到达所有相关代码路径（控制变量法）。</li>
+<li>尝试删除参数的名称和值。服务器通常会以不同方式处理这两种情况。</li>
+<li>遵循多阶段流程直至完成。有时，在一个步骤中篡改参数会影响工作流程中的另一个步骤。</li>
+</ol>
+<p>这适用于 URL 和 POST 参数，但不要忘记也检查
+cookie。这个简单的过程可以揭示一些可能被利用的奇怪的应用程序行为。</p>
+<p>靶场 ：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/authentication/other-mechanisms/lab-password-reset-broken-logic">Lab:
+Password reset broken logic | Web Security Academy</a></p>
+<p>目标：利用密码重置功能修改 <code>carlos</code>
+的密码，并且登录该账户访问 <code>My account</code> 界面。</p>
+<p>先尝试使用 <code>wiener:peter</code> 登录，发现只有
+<code>Update email</code> 的功能，没有密码重置，那么只可能在
+<code>forgot password</code> 功能点。</p>
+<p>测试该功能点，输入
+<code>wiener</code>，然后邮箱收到一封邮件，点击让我们输入新的密码，这一切流程结束后就可以使用新的密码登录。</p>
+<p>查看这一流程的流量情况，其实只有两个地方能做文章：</p>
+<ol type="1">
+<li>输入用户名时；</li>
+<li>输入新的密码时；</li>
+</ol>
+<p>如果修改了前者，那么 <code>carlos</code>
+的邮箱我们并不知道，因此先查看输入新密码那个数据包，发现由以下参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">temp-forgot-password-token=fiUaMtLvFfBUp0ebVGLwnTNKicBbWUjR&amp;username=wiener&amp;new-password-1=123456&amp;new-password-2=123456</span><br></pre></td></tr></table></figure>
+<p>尝试将 <code>username</code> 修改为
+<code>carlos</code>，发现成功修改：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-28.png" /></p>
+<p>使用 <code>carlos:123456</code> 登录成功：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-29.png" /></p>
+<p>“用户不会总是提供强制输入”理解：</p>
+<ul>
+<li>强制输入“”就是修改密码这个请求包中的用户名
+<code>username=wiener</code>
+就是强制输入，不是用户输入的，而是前端自动提供的；</li>
+<li>因此这句话就是浏览器的强制输入用户并不买账，可能会去修改这些强制输入的参数从而达到恶意目标；</li>
+</ul>
+<hr />
+<p>靶场：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-weak-isolation-on-dual-use-endpoint">Lab:
+Weak isolation on dual-use endpoint | Web Security Academy</a></p>
+<p>目标：登录 <code>administrator</code> 用户并删除
+<code>carlos</code>。</p>
+<p>注意两个地方：</p>
+<ol type="1">
+<li>靶场标题：Weak isolation on dual-use endpoint；</li>
+<li>This lab makes a flawed assumption about the user's privilege level
+based on their input.</li>
+</ol>
+<p>我们先使用 <code>wiener:peter</code> 登录，发现只有两个功能：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-30.png" /></p>
+<p>修改邮箱没有用，那么只可能是 <code>Change password</code> 功能。</p>
+<p>正常使用没有问题，如果我们将 <code>username</code> 修改为
+<code>administrator</code>，会提示 <code>current password</code>
+不正确。是否意味着：如果 <code>current password</code> 正确，能够在
+<code>wiener</code> 的登录界面修改 <code>administrator</code>
+的密码？结合题目的
+<code>dual-use endpoint</code>，更加让我坚信，这里肯定存在漏洞。</p>
+<p>四个参数，<code>username=administrator</code>，<code>new password</code>
+和 <code>confirm new password</code> 都是 <code>administrator</code>
+新的密码，我们不知道
+<code>current password</code>，我尝试了不填以及其他操作都不行，结果答案是把整个参数删掉：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-31.png" /></p>
+<p>这不就验证了
+“尝试删除参数的名称和值。服务器通常会以不同方式处理这两种情况。”。</p>
+<p>使用修改后的密码登录 <code>administrator</code>，然后访问
+<code>/admin</code>，并删除 <code>carlos</code>：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-32.png" /></p>
+<h3 id="用户不会总是遵循预期的顺序">4.3.3.
+用户不会总是遵循预期的顺序</h3>
+<p>许多事务依赖于由一系列步骤组成的预定义工作流。 Web
+界面通常会引导用户完成此过程，每次他们完成当前步骤时都会将他们带到工作流程的下一步。但是，攻击者不一定会遵守这个预期的顺序。不考虑这种可能性可能会导致危险的缺陷，这些缺陷可能相对容易被利用。</p>
+<p>例如，许多实施双因素身份验证 (2 FA)
+的网站要求用户先在一个页面上登录，然后再在单独的页面上输入验证码。假设用户将始终遵循此过程直至完成，因此不验证他们是否这样做，可能会让攻击者完全绕过
+2 FA 步骤。</p>
+<p>靶场 1：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/authentication/multi-factor/lab-2fa-simple-bypass">Lab:
+2FA simple bypass | Web Security Academy</a></p>
+<p>首先使用 <code>wiener:peter</code> 尝试登录，发现流程如下：</p>
+<ol type="1">
+<li><code>POST /login</code>，输入用户名和密码；</li>
+<li><code>POST /login2</code>，输入验证码；</li>
+<li><code>GET /my-account</code>，用户界面；</li>
+</ol>
+<p>我们不知道 <code>carlos</code> 的邮箱自然也就不知道
+<code>carlos</code> 的验证码，因此可以这样操作：</p>
+<ol type="1">
+<li><code>POST /login</code>，输入 <code>carlos:montoya</code>；</li>
+<li>直接 url 输入
+<code>/my-account</code>，发现可以直接跳转到页面；</li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-36.png" /></p>
+<p>我这里傻了，一直以为先登录
+<code>wiener</code>，验证码不输入，然后登录
+<code>carlos</code>，输入刚刚获得的验证码。</p>
+<p>该漏洞的成因很简单，网站设计者认为用户会一步一步跟着流程来，谁知道用户直接跳过流程。如果一定要跟着流程了，一定要保证前一步完成了才能进行下一步。</p>
+<p>即使在相同的工作流程或功能中，对事件顺序做出假设也会导致范围广泛的问题。使用像
+Burp Proxy 和 Repeater
+这样的工具，一旦攻击者看到一个请求，他们就可以随意重放它并使用强制浏览以他们想要的任何顺序与服务器执行任何交互。这允许他们在应用程序处于意外状态时完成不同的操作。</p>
+<p>要识别这些类型的缺陷，应该使用强制浏览以非预期的顺序提交请求。例如，您可以跳过某些步骤、多次访问单个步骤、返回到前面的步骤等等。注意如何访问不同的步骤。虽然您通常只是向特定
+URL 提交 GET 或 POST 请求，但有时您可以通过向同一 URL
+提交不同的参数集来访问步骤。与所有逻辑缺陷一样，尝试确定开发人员所做的假设以及攻击面所在的位置。然后，您可以寻找违反这些假设的方法。</p>
+<p>请注意，这种测试通常会导致异常，因为预期变量具有空值或未初始化的值。以部分定义或不一致的状态到达某个位置也可能导致应用程序抱怨。在这种情况下，一定要密切注意您遇到的任何错误消息或调试信息。这些可能是信息泄露的宝贵来源，可以帮助您微调攻击并了解有关后端行为的关键细节。</p>
+<p>靶场 2：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-insufficient-workflow-validation">Lab:
+Insufficient workflow validation | Web Security Academy</a></p>
+<p>首先，我们要关注一下购买商品的流程：</p>
+<ol type="1">
+<li>选择商品加入购物车；</li>
+<li>来到购物车点击 <code>place order</code>；</li>
+<li>首先发送一个请求：<code>POST /cart/checkout</code>；</li>
+<li>然后收到服务端的响应，一般分为两种：
+<ol type="1">
+<li>如果钱购买，则：<code>Location: /cart/order-confirmation?order-confirmed=true</code>，这里其实钱就已经扣了；</li>
+<li>如果钱不够买，则：<code>Location: /cart?err=INSUFFICIENT_FUNDS</code>；</li>
+</ol></li>
+<li>如果是第一种，则会进一步访问
+<code>GET /cart/order-confirmation?order-confirmed=true</code>，该请求结束后，购买成功；</li>
+<li>如果是第二种，则会访问
+<code>GET /cart?err=INSUFFICIENT_FUNDS</code>，提示购买失败；</li>
+</ol>
+<p>因此本题的切入点就是购买的第一个请求，我们直接买 jacket，点击
+<code>place order</code>，对于第一个请求我们要拦截响应，即：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-37.png" /></p>
+<p>拦截响应后，将其修改为如下：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-38.png" /></p>
+<p>然后发送第二个请求：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-39.png"
+alt="business logic vulnerabilities-39" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-39</figcaption>
+</figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-40.png" /></p>
+<p>该漏洞的主要原因还是出在购买的两个请求流程，第二个请求没有验证，根据
+url 中是 <code>/cart?err=INSUFFICIENT_FUNDS</code> 还是
+<code>cart/order-confirmation?order-confirmed=true</code>
+来判断，而这两个值虽然取决于 <code>/cart/checkout</code>
+的结果，但在发送第二个请求时可以人为修改，导致服务器根据 url
+判断这笔订单应该通过。</p>
+<hr />
+<p>靶场 3：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-flawed-state-machine">Lab:
+Authentication bypass via flawed state machine | Web Security
+Academy</a></p>
+<p>使用 <code>wiener:peter</code> 登录，登录流程为：</p>
+<ol type="1">
+<li>输入用户名、密码；</li>
+<li>第一步验证正确，选择角色；</li>
+<li>选择完进入 <code>my-account</code> 界面；</li>
+</ol>
+<p>根据靶场名称，应该是跳过上面三步的某一步，第 3 步明显跳不过，那么只能
+1、2，先尝试跳过第一步，也就是直接抓 <code>role-selector</code>
+的包发送，提示</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-41.png" /></p>
+<p>那么就跳第二步，输入给的用户名和密码之后，浏览器会去请求
+<code>role-selector</code> 页面：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-42.png"
+alt="business logic vulnerabilities-42" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-42</figcaption>
+</figure>
+<p>直接丢弃这个请求包，然后会出现一个 burpsuite 报错的界面，不用管，直接
+url 访问主页面，也就是没有任何路径的页面:</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-44.png"
+alt="business logic vulnerabilities-44" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-44</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-43.png"
+alt="business logic vulnerabilities-43" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-43</figcaption>
+</figure>
+<p>可以看到，此时默认登录了 <code>administrator</code>
+用户，接下来只要删除 <code>carlos</code> 就可以了。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-45.png"
+alt="business logic vulnerabilities-45" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-45</figcaption>
+</figure>
+<h2 id="特定领域的缺陷">4.4. 特定领域的缺陷</h2>
+<p>在许多情况下，您会遇到特定于业务领域或网站用途的逻辑缺陷。</p>
+<p>在线商店的折扣功能是寻找逻辑缺陷时的经典攻击面。对于攻击者来说，这可能是一个潜在的金矿，在应用折扣的方式中会出现各种基本逻辑缺陷。</p>
+<p>例如，假设一家在线商店对超过 1000 美元的订单提供 10%
+的折扣。如果业务逻辑在应用折扣后无法检查订单是否已更改，则这可能容易被滥用。在这种情况下，攻击者可以简单地将商品添加到他们的购物车中，直到他们达到
+1000
+美元的门槛，然后在下订单之前删除他们不想要的商品。然后他们将收到订单的折扣，即使它不再满足预期的标准。</p>
+<p>应特别注意根据用户操作确定的标准调整价格或其他敏感值的任何情况。尝试了解应用程序使用什么算法来进行这些调整，以及在什么时候进行这些调整。这通常涉及操纵应用程序，使其处于应用调整不符合开发人员预期的原始标准的状态。</p>
+<p>要识别这些漏洞，您需要仔细考虑攻击者可能有什么目标，并尝试使用提供的功能找到实现此目标的不同方法。这可能需要一定程度的特定领域知识，以便了解在给定上下文中什么可能是有利的。举个简单的例子，你需要了解社交媒体才能理解强迫大量用户关注你的好处。</p>
+<p>如果不了解该领域，您可能会忽略危险行为，因为您根本不知道其潜在的连锁反应。同样，您可能很难将这些点连接起来，并注意到如何以有害的方式组合两个功能。为简单起见，本主题中使用的示例特定于所有用户都已经熟悉的域，即在线商店。但是，无论您是漏洞赏金猎人、渗透测试，还是只是一名试图编写更安全代码的开发人员，您都可能在某个时候遇到来自不太熟悉的领域的应用程序。在这种情况下，您应该尽可能多地阅读文档，并在可能的情况下与该领域的主题专家交谈以获取他们的见解。这听起来工作量很大，但领域越模糊，其他测试人员就越有可能错过大量错误。</p>
+<p>靶场 1：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-flawed-enforcement-of-business-rules">Lab:
+Flawed enforcement of business rules | Web Security Academy</a></p>
+<p>首先登录，然后发现送了一张 5
+元优惠券。但是尝试在购物车使用，发现只能使用一次（废话）。</p>
+<p>滑到 <code>home</code> 页面的底部有一个 <code>sign up</code>
+功能，随便输入格式 <code>xxx@xxx</code>，得到又一张优惠券
+<code>SIGNUP30</code>，此时可以同时使用两张优惠券了。</p>
+<p>漏洞就发生在这里，如果交替的不断添加这两张优惠券，发现可以一直叠加，但如果两次请求是同一张优惠券，则会提示优惠券已经使用。那就不断交替叠加优惠券，直到买得起。</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-46.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-47.png" /></p>
+<hr />
+<p>靶场 2：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples">Examples
+of business logic vulnerabilities | Web Security Academy</a></p>
+<p>注意题目：无线金币的逻辑漏洞。</p>
+<p>经过测试发现，可以获得一张 7
+折优惠券（跟上个靶场一样），并且有一个商品叫
+<code>gift card</code>，售价 10 元，购买后会给一串字符串，在
+<code>my account</code> 界面输入可以获得 10
+元，如果使用优惠券，则一次就能净赚 3 元。</p>
+<p>测试到这，我想着，优惠券能否多次使用？于是又买了一件
+<code>gift card</code>，发现还真可以：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-48.png"
+alt="business logic vulnerabilities-48" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-48</figcaption>
+</figure>
+<p>因此，可以利用这个漏洞一直刷金币：</p>
+<ol type="1">
+<li>使用优惠券买 <code>gift card</code> 可以赚 3 元；</li>
+</ol>
+<p>只要买几百次就有钱买 jacket
+了。原理不难，但如果都是手动操作明显不太现实，所以需要使用 burpsutie
+进行自动化操作，分析流量，发现总的就是这 5 步：</p>
+<ol type="1">
+<li><code>POST /card</code>，将 gift card 加入购物车；</li>
+<li><code>POST /card/coupon</code>，使用优惠券；</li>
+<li><code>POST /cart/check</code>，检测能否买得起，此时就已经付了钱；</li>
+<li><code>GET /cart/order-confirmation?order-confirmed=true</code>，确认购买；</li>
+<li><code>POST /gift-card</code>，使用 gift card；</li>
+</ol>
+<p>第一步，打开 <code>Project Options</code> 选项，在
+<code>Session Handling Rules</code> 下的 <code>Sessions</code> 下选择
+<code>Add</code>：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-49.png"
+alt="business logic vulnerabilities-49" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-49</figcaption>
+</figure>
+<p>第二步，在 <code>scope</code> 的 <code>URL Scope</code> 下选择
+<code>include all URLs</code>:</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-50.png" /></p>
+<p>第三步，回到 <code>Details</code> 下，在 <code>Rule Actions</code>
+下选择 <code>Add -&gt; Run a marco</code> ：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-51.png"
+alt="business logic vulnerabilities-51" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-51</figcaption>
+</figure>
+<p>第四步，在 <code>selecct marco</code> 下点击
+<code>Add</code>，然后选择上面的 5 个请求（按住 <code>ctrl</code>
+加鼠标左键可以选择多个），注意顺序</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-52.png" /></p>
+<p>第 5 步，选择第 4 个请求，点击 <code>configure item</code>，在
+<code>Custom parameter locations in response</code> 下选择
+<code>Add</code>，<code>parameter name</code> 见下图，然后高亮第一个
+<code>Code</code>：，两次 OK 回到 <code>Marco Editor</code> 界面：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-53.png" /></p>
+<p>第 6 步，选择第 5 个请求，点击
+<code>Configure item</code>，这里只需要将 <code>gitf-card</code>
+参数设置为 <code>reponse 4</code>，可以选择 <code>Test macro</code>
+来确保 gift-card 参数匹配并确认它收到了302 响应，然后一直 ok 回到 burp
+窗口：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-54.png" /></p>
+<p>最后一步，将 <code>GET /my-account</code> 的请求发送给
+<code>intruder</code> 模块，清除 <code>payload</code>，然后如下设置</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-55.png"
+alt="business logic vulnerabilities-55" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-55</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-56.png"
+alt="business logic vulnerabilities-56" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-56</figcaption>
+</figure>
+<p>最后点击 <code>start attack</code> 等待攻击结束就有钱买 jacket
+了。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-57.png"
+alt="business logic vulnerabilities-57" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-57</figcaption>
+</figure>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-58.png" /></p>
+<p>成因：对应优惠券没做限制，优惠券应该只能使用一次，使用一次后就作废了。</p>
+<h2 id="提供-encryption-oracle">4.5. 提供 encryption oracle</h2>
+<p>当用户可控制的输入被加密并且生成的密文以某种方式提供给用户时，可能会发生危险情况。这种输入有时被称为“encryption
+oracle”。攻击者可以使用此输入使用正确的算法和非对称密钥来加密任意数据。</p>
+<p>当应用程序中有其他用户可控制的输入期望使用相同算法加密数据时，这会变得很危险。在这种情况下，攻击者可能会使用
+encryption oracle生成有效的加密输入，然后将其传递给其他敏感函数。</p>
+<p>如果站点上有另一个用户可控制的输入提供反向功能（解密），则此问题可能会更加复杂。这将使攻击者能够解密其他数据以识别预期的结构。这为他们节省了一些创建恶意数据所涉及的工作，但不一定是成功利用漏洞所必需的。</p>
+<p>encryption oracle 的严重性取决于哪些功能也使用与 oracle
+相同的算法。</p>
+<p>简单理解：</p>
+<ul>
+<li>如果加密后的密文让攻击者得到，攻击者可以使用原文和密文去推测加密算法，如果加密算法被破解，那么攻击者就可以随意构造输入。</li>
+<li>如果其他用户也使用相同的加密算法，那么攻击者就可以伪造请求；</li>
+<li>如果有用户的功能可以解密，攻击者构造的 payload
+经过加密后的数据可以使用解密功能解密，验证破解的加密算法是否正确；</li>
+</ul>
+<p>靶场：<a
+target="_blank" rel="noopener" href="https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-authentication-bypass-via-encryption-oracle">Lab:
+Authentication bypass via encryption oracle | Web Security
+Academy</a></p>
+<p>登录 <code>wiener:peter</code> 记住选择
+<code>stay login in</code>，这之后 cookie 中会携带参数
+<code>stay-logged-in</code>，这是一个加密的内容，而且没法解密。</p>
+<p>在 <code>Update email</code>
+中，如果邮箱格式不对，服务器会返回一个响应包，其中有一个参数：<code>notification</code>，记过多次测试，发现随着输入邮箱的值不同，<code>notification</code>
+的值也不同，流程如下：</p>
+<ol type="1">
+<li>输入邮箱值为 1；</li>
+<li>服务器返回
+<code>notification=4EWiYrpeyNMJO2HEBim%2fLw%2bDbwrXzVYSuqayS45lnsc%3d</code>；</li>
+<li>浏览器请求 <code>my-account</code> 界面，携带
+<code>notification</code>，然后页面出现
+<code>Invalid email address:1</code>；</li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-59.png" /></p>
+<p>可以合理推测：输入的邮箱值经过某种加密变成了
+<code>notification</code> 的值，然后浏览器携带 <code>notification</code>
+的值请求服务器，服务器收到后将其解码，得到
+<code>Invalid email address:1</code>。</p>
+<p>而 <code>stay-logged-in</code> 也是一个加密字段，如果将
+<code>notification</code> 的值修改成 <code>stay-logged-in</code>
+的值是否也会被解密？</p>
+<p>拦截 <code>update email</code> 之后的第一次请求的响应，修改
+<code>notification</code> 为 <code>stay-logged-in</code> 的值：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-60.png" /></p>
+<p>发现确实被解密出来了：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-61.png" /></p>
+<p>发现这和时间戳有点像：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-63.png" /></p>
+<p>那我们可以构造 <code>administrator:时间戳</code> 作为
+<code>email</code> 的值，然后在第一次请求的响应中获得
+<code>notification</code>，需要注意系统会自动在最前面添加 23
+个字节，也就是 <code>Invalid email address:</code>，所以需要把
+<code>notification</code> 先 url 解密、再 base 64 解密，然后删除前 23
+个字节，在 base 64 编码、url 编码，得到新的 notification
+值放入响应包，然后放行，第二个请求会自动使用新的
+notification，此时解密报错，说 notification 的字节数必须是 16
+的倍数。</p>
+<p>系统拿到我们的值如果加密后不足 16 的倍数，应该是自动增加一些
+padding，而我们将系统构造好的删除了 23
+个字节，导致报错，所以可以构造：<code>xxxxxxxxxadministrator:时间戳</code>，前面有
+9 个字节，这样将系统返回的 notification 删除 32 个字节就正好剩下
+<code>administrator:时间戳</code>：</p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-64.png" /></p>
+<p>官网接下来的步骤：去 <code>proxy history</code> 中找一个
+<code>GET /</code> 的请求，然后将 <code>cookie</code> 中的
+<code>session</code> 全部删除，把 <code>stay-logged-in</code> 修改成删除
+32 个字节之后的经过 base 64、url 编码的内容，然后就可以以
+<code>administrator</code> 登录，之后访问 <code>/admin</code> 删除
+<code>carlos</code> 即可。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-65.png"
+alt="business logic vulnerabilities-65" />
+<figcaption aria-hidden="true">business logic
+vulnerabilities-65</figcaption>
+</figure>
+<blockquote>
+<p>原来是我 Linux 的 burpsuite 有问题，烦</p>
+</blockquote>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-66.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/business%20logic%20vulnerabilities-67.png" /></p>
+<p>这里体现的就是一个 web
+应用内，既可以加密，也可以解密，并且使用的是同一套算法，就会导致该问题。</p>
+<h1 id="防御">6. 防御</h1>
+<p>简而言之，防止业务逻辑漏洞的关键是：</p>
+<ol type="1">
+<li>确保开发人员和测试人员了解应用程序服务的领域；</li>
+<li>避免对用户行为或应用程序其他部分的行为做出隐含的假设；</li>
+</ol>
+<p>应该确定对服务器端状态做出了哪些假设，并实施必要的逻辑来验证这些假设是否得到满足。这包括在继续处理业务之前确保任何输入的值都是合理的。</p>
+<p>同样重要的是要确保开发人员和测试人员能够完全理解这些假设以及应用程序在不同场景中应该如何反应。
+这可以帮助团队尽早发现逻辑缺陷。
+为促进这一点，开发团队应尽可能遵守以下最佳实践：</p>
+<ul>
+<li>为所有事务和工作流维护清晰的设计文档和数据流，注意在每个阶段所做的任何假设。</li>
+<li>尽可能清楚地编写代码。
+如果很难理解应该发生什么，就很难发现任何逻辑缺陷。
+理想情况下，编写良好的代码不需要文档来理解它。
+在不可避免的复杂情况下，生成清晰的文档对于确保其他开发人员和测试人员了解所做的假设以及预期的行为是什么至关重要。</li>
+<li>注意对使用每个组件的其他代码的任何引用。
+如果恶意方以不寻常的方式操纵这些依赖项，请考虑这些依赖项的任何副作用。</li>
+</ul>
+<p>由于许多逻辑缺陷的相对独特性，很容易将它们作为人为错误造成的一次性错误而忽略并继续前进。然而，正如我们已经证明的那样，这些缺陷通常是构建应用程序的初始阶段不良做法的结果。首先分析为什么存在逻辑缺陷，以及团队是如何忽略它的，可以帮助您发现流程中的弱点。通过进行微小的调整，您可以增加类似缺陷在源头上被切断或在开发过程中及早发现的可能性。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%BC%E8%87%B4%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">2.</span> <span class="toc-text">2. 导致业务逻辑漏洞的原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%B1%E5%AE%B3"><span class="toc-number">3.</span> <span class="toc-text">3. 危害</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">4. 例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E5%BA%A6%E4%BF%A1%E4%BB%BB%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%A7%E5%88%B6"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 过度信任客户端控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E6%B3%95%E5%A4%84%E7%90%86%E9%9D%9E%E5%B8%B8%E8%A7%84%E8%BE%93%E5%85%A5"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 无法处理非常规输入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E5%81%9A%E5%87%BA%E9%94%99%E8%AF%AF%E7%9A%84%E5%81%87%E8%AE%BE"><span class="toc-number">4.3.</span> <span class="toc-text">4.3. 对用户行为做出错误的假设</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%97%E4%BF%A1%E4%BB%BB%E7%9A%84%E7%94%A8%E6%88%B7%E5%B9%B6%E4%B8%8D%E6%80%BB%E6%98%AF%E5%80%BC%E5%BE%97%E4%BF%A1%E8%B5%96"><span class="toc-number">4.3.1.</span> <span class="toc-text">4.3.1.
+受信任的用户并不总是值得信赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%B8%8D%E4%BC%9A%E6%80%BB%E6%98%AF%E6%8F%90%E4%BE%9B%E5%BC%BA%E5%88%B6%E8%BE%93%E5%85%A5"><span class="toc-number">4.3.2.</span> <span class="toc-text">4.3.2. 用户不会总是提供强制输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E4%B8%8D%E4%BC%9A%E6%80%BB%E6%98%AF%E9%81%B5%E5%BE%AA%E9%A2%84%E6%9C%9F%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="toc-number">4.3.3.</span> <span class="toc-text">4.3.3.
+用户不会总是遵循预期的顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E5%AE%9A%E9%A2%86%E5%9F%9F%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="toc-number">4.4.</span> <span class="toc-text">4.4. 特定领域的缺陷</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E4%BE%9B-encryption-oracle"><span class="toc-number">4.5.</span> <span class="toc-text">4.5. 提供 encryption oracle</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">5.</span> <span class="toc-text">6. 防御</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&text=business logic vulnerabilities"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&title=business logic vulnerabilities"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&is_video=false&description=business logic vulnerabilities"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=business logic vulnerabilities&body=Check out this article: https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&title=business logic vulnerabilities"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&title=business logic vulnerabilities"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&title=business logic vulnerabilities"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&title=business logic vulnerabilities"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&name=business logic vulnerabilities&description=&lt;p&gt;网站：&lt;/p&gt;
+&lt;ol type=&#34;1&#34;&gt;
+&lt;li&gt;&lt;a href=&#34;https://portswigger.net/web-security/logic-flaws&#34;&gt;Business
+logic vulnerabilities | Web Security Academy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a
+href=&#34;https://portswigger.net/web-security/logic-flaws/examples&#34;&gt;Examples
+of business logic vulnerabilities | Web Security Academy&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2023/04/13/business%20logic%20vulnerabilities/&t=business logic vulnerabilities"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
