@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="官网：OAuth Community Site">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OAuth2.0协议">
+<meta property="og:url" content="https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="官网：OAuth Community Site">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-16T02:35:27.270Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="OAuth">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>OAuth2.0协议</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/04/16/%E5%8F%8C%E5%9B%A0%E7%B4%A0%E8%AE%A4%E8%AF%81%E7%9B%B8%E5%85%B3/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/13/business%20logic%20vulnerabilities/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 概述与应用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2oauth-1.0"><span class="toc-number">2.</span> <span class="toc-text">2. 历史：OAuth 1.0</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#oauth-2.0"><span class="toc-number">3.</span> <span class="toc-text">3. Oauth 2.0</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8D%E8%AF%8D%E5%AE%9A%E4%B9%89"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 名词定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oauth-%E7%9A%84%E6%80%9D%E8%B7%AF%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. Oauth 的思路与运行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E6%8E%88%E6%9D%83%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 客户端的授权模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.3.1. 授权码模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.3.2. 简化模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.3.3. 密码模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.4.</span> <span class="toc-text">3.3.4. 客户端模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0-token"><span class="toc-number">3.4.</span> <span class="toc-text">3.4. 更新 token</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        OAuth2.0协议
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-15T16:00:00.000Z" itemprop="datePublished">2023-04-16</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/OAuth/">OAuth</a> › <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/OAuth/" rel="tag">OAuth</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>官网：<a target="_blank" rel="noopener" href="https://oauth.net/">OAuth Community Site</a></p>
+<span id="more"></span>
+<h1 id="概述与应用场景">1. 概述与应用场景</h1>
+<p><strong>概述：</strong></p>
+<p>OAuth
+是一个关于授权（authorizaation）的开放网络标准，在全世界得到广泛的应用，目前的版本是
+2.0。</p>
+<p>OAUTH
+协议为用户资源的授权提供了一个安全的、开放而又简易的标准。与以往的授权方式不同之处是
+OAUTH
+的授权不会使第三方触及到用户的帐号信息（如用户名与密码），即第三方无需使用用户的用户名与密码就可以申请获得该用户资源的授权，因此
+OAUTH 是安全的。同时，任何第三方都可以使用 OAUTH
+认证服务，任何服务提供商都可以实现自身的 OAUTH 认证服务，因而 OAUTH
+是开放的。业界提供了 OAUTH 的多种实现如 PHP、JavaScript、Java、Ruby
+等各种语言开发包，大大节约了程序员的时间，因而 OAUTH
+是简易的。目前互联网很多服务如 Open API，很多大头公司如
+Google，Yahoo，Microsoft 等都提供了 OAUTH 认证服务，这些都足以说明 OAUTH
+标准逐渐成为开放资源授权的标准。</p>
+<p><strong>应用场景：</strong></p>
+<p>有这么一个“云冲印”网站，可以将用户储存在 Google
+的照片冲印出来，用户为了使用该服务，就必须让“云冲印”读取储存在 Google
+的照片。</p>
+<p>问题出现了，“云冲印”必须得到用户的授权，才可以去读取 google
+上储存的照片，那“云冲印”要如何才能获取用户的授权呢？传统的方法是用户将自己的
+Google 账号、密码告诉“云冲印”，后者使用这些信息去 Google
+读取照片。这样虽然能够解决问题，但会引入更多的问题：</p>
+<ol type="1">
+<li>"云冲印"为了后续的服务，会保存用户的密码，即使明确说明不会保存，但没人能够保证，因此这样很不安全；</li>
+<li>Google 必须部署密码登录（Google
+使用双因素认证），而单纯使用密码登录是不安全的；</li>
+<li>“云冲印”拥有账号和密码，就相当于获得了用户在 Google
+的所有权限，且用户没法限制；</li>
+<li>如果用户需要收回权限，就必须修改密码，这样一来，其他获得授权的第三方服务全部失效；</li>
+<li>如果一个第三方服务出现漏洞，泄露了密码，那么用户的 Google
+密码也被泄露；</li>
+</ol>
+<p>因此，需要一种方法来提供这样场景下的解决方案，这就是 OAuth。</p>
+<h1 id="历史oauth-1.0">2. 历史：OAuth 1.0</h1>
+<p>OAuth 1.0 中定义了 3 种角色：Service
+Provider、User、Consumer。其中，Google 就是 Service
+Provider，“云冲印”就是 Consumer。</p>
+<p>但 User 使用 Consumer 的服务时，OAuth 1.0 的工作流程开始：</p>
+<ol type="1">
+<li>Consumer 向 service provider 申请 request token；</li>
+<li>Consumer 将 user 重定向到 service provider 处，user 带着未授权的
+request token；</li>
+<li>User 在 service provider 同意授权；</li>
+<li>Service provider 将 user 重定向回 consumer，user 带回授权过的
+request token；</li>
+<li>Consumer 使用授权过的 request token 向 service provider 交换 access
+token；</li>
+<li>Consumer 使用 access token 访问 user 在 service provider
+处储存的资源；</li>
+</ol>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230416092643.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>概念介绍：</p>
+<ul>
+<li>Request token：consumer 用于取得 user 授权的载体，有 service
+provider 提供，请求用户授权；</li>
+<li>Access token：consumer 访问 user 储存在 service provider
+处的资源，可以使用授权过的 request token 与 service provider 交换 access
+token；</li>
+</ul>
+<p>工作流程中主要的请求、响应参数：</p>
+<p>第 1步：请求 request token；</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>请求参数</th>
+<th>响应参数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>oauth_consumer_key：consumer 标识符</td>
+<td>oauth_token：未授权的 request token</td>
+</tr>
+<tr class="even">
+<td>oauth_signature_method：签名方法</td>
+<td>oauth_token_secret：与 requesttoken 匹配的密码</td>
+</tr>
+<tr class="odd">
+<td>oauth_signature：签名值</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>oauth_timestamp：时间戳</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>oauth_nonce：随机值，唯一值，防止重放攻击</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>oaut_version：版本，填 1.0</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>第 2 步：重定向 user 到 service provider，此时只有请求参数；</p>
+<ol type="1">
+<li>Oauth_token；</li>
+<li>Oauth_callback；</li>
+<li>其他；</li>
+</ol>
+<p>第 3 步：用户授权，这一步不好说，每个 service provider
+要求的可能都不同，但请求参数大都有：</p>
+<ol type="1">
+<li>Service provider 要求 user 提供证明信息，比如用户名和密码；</li>
+<li>Service provier 向 user 说明：要授权哪些信息、要授权给哪个 consumer
+等；</li>
+<li>User 在知晓之后主动进行授权，授权的访问也由用户指定，service
+provider 保护没有授权的部分不允许 consumer 访问；</li>
+</ol>
+<p>第 4 步：user 带着授权的 request token 返回 consumer；</p>
+<ul>
+<li>User 授权完毕之后，service provider 根据第 2 步中的 oauth_callback
+的值将 user 重定向到 consumer，user 回 consumer 的请求包中携带有
+oauth_token，用来表名是否授权成功；</li>
+</ul>
+<p>第 5 步：获取 access token；</p>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>请求参数</th>
+<th>响应参数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>oauth_consumer_key</td>
+<td>oauth_token：此时是 access token</td>
+</tr>
+<tr class="even">
+<td>oauth_token：经授权的 requet token</td>
+<td>oauth_token_secret：与 access token 匹配的密码</td>
+</tr>
+<tr class="odd">
+<td>oauth_signature_method</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>oauth_signature</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>oauth_timestamp</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>oauth_nonce</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>oauth_version</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>第 6 步：访问 service provider 上的资源，请求参数如下；</p>
+<ol type="1">
+<li>Oauth_consumer_key</li>
+<li>Oauth_token，也就是第 5 步中取回的 access token；</li>
+<li>Oauth_signature_method</li>
+<li>Oauth_sighature</li>
+<li>Oauth_timestamp</li>
+<li>Oauth_nonce</li>
+<li>Oauth_version</li>
+</ol>
+<p>Oauth 1.0 存在一个严重的安全问题，攻击流程如下：</p>
+<ol type="1">
+<li>Attacker 登录 consumer，发起 oauth 授权，这时候 consumer 去 service
+provicer 申请 request token；</li>
+<li>Consumer 重定向 attakcer 到 service
+provider，但这个请求包被拦截，attacker 将这个 url
+通过钓鱼的方式让受害者点击；</li>
+<li>受害者完成授权，service provider
+将受害者重定向到某个不知名的地方（由攻击者的 url 中的 callback
+指定）；</li>
+<li>此时，攻击者也同时获得了授权的 request token（受害者授权的），使用
+request token 与 service provider 交换 access
+token，从而可以获取受害者的资料；</li>
+</ol>
+<p>上述的攻击过程，受害者的密码没有泄露，任何信息都没有泄露、修改，唯一的问题是攻击者钓鱼使受害者主动完成了授权。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230416094502.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>这事因为 oauth 1.0
+过程中，没有验证是否是同一个用户触发的整个流程，service provider 和
+consumer 只根据 request token 来判断用户是否授权，不在乎是哪个用户。</p>
+<p>经过这次安全漏洞事件（2009 年上面的漏洞被披露），OAuth
+协议发布了修正的版本，包括很多小的错误更正，就是后来的广为使用的 OAuth
+1.0 Core Revision A，一般称为 OAuth 1.0a，也是 Twitter
+至今仍在使用的版本。</p>
+<p>在 oauth 1.0 的基础上做了一些修改：</p>
+<ol type="1">
+<li>请求 request token 的时候需要传递 oauth_callback，该参数的作用是
+consumer 告诉 service provider，如果 user 授权完成后，就把 user 重定向到
+oauth_callback 处。好处：攻击者即使拿到授权的 request
+token，因为无法知道 oauth_callback，那就没办法使用 request
+token。Service provier 对于该请求的响应中包含了
+oauth_callback_confimed。</li>
+<li>重定向 user 到 service provider 中取消了 oauth_callback；</li>
+<li>用户授权完毕后，service provier 将 user 重定向到第一步中的
+oauth_callback 指定的 url，user 除了带回授权后的 request token，还增加了
+oauth_verifier；</li>
+<li>Consumer 使用 requet token 交换 access token 时，需要验证
+oauth_verifier，该参数能验证授权的用户和登录 consumer
+的用户是否是同一个；</li>
+</ol>
+<h1 id="oauth-2.0">3. Oauth 2.0</h1>
+<h2 id="名词定义">3.1. 名词定义</h2>
+<ol type="1">
+<li>Third-party
+application：第三方应用程序，也叫作客户端（client），比如 <a
+href="#1.%20概述与应用场景">1. 概述与应用场景</a> 中的云冲印；</li>
+<li>HTTP Service：HTTP 服务提供商，比如 <a
+href="#1.%20概述与应用场景">1. 概述与应用场景</a> 中的 google；</li>
+<li>Resource Own：资源所有者，也就是用户（user）；</li>
+<li>User Agent：用户代理，一般就是浏览器；</li>
+<li>Authorization
+Server：认证服务器，服务提供商专门用来处理认证的服务器；</li>
+<li>Resource
+Server：资源服务器，服务提供商用来存放用户数据的服务器；</li>
+</ol>
+<p><strong>Oauth
+的作用就是：让客户端安全可控地获取用户的授权，与服务提供商进行互动。</strong></p>
+<h2 id="oauth-的思路与运行流程">3.2. Oauth 的思路与运行流程</h2>
+<p>OAuth 在"客户端"与"服务提供商"之间，设置了一个授权层（authorization
+layer）。"客户端"不能直接登录"服务提供商"，只能登录授权层，以此将用户与客户端区分开来。"客户端"登录授权层所用的令牌（token），与用户的密码不同。用户可以在登录的时候，指定授权层令牌的权限范围和有效期。</p>
+<p>"客户端"登录授权层以后，"服务提供商"根据令牌的权限范围和有效期，向"客户端"开放用户储存的资料。</p>
+<p>Oauth 2.0 的运行流程如下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/oauth20_process.png"
+alt="oauth20_process" />
+<figcaption aria-hidden="true">oauth20_process</figcaption>
+</figure>
+<p>用户打开客户端以后，上述流程开始。步骤解释：</p>
+<ul>
+<li>A：客户端要求用户给予授权；</li>
+<li>B：用户同意给客户端授权；</li>
+<li>C：客户端使用上一步获得的授权，向认证服务器申请 token；</li>
+<li>D：认证服务器对客户端进行认证，通过以后，同意发放 token；</li>
+<li>E：客户端使用 token，向资源服务器申请获取资源；</li>
+<li>F：资源服务器确认令牌无误，同意向客户的开放资源；</li>
+</ul>
+<p>上面的步骤中，最难也是最关键的就是 B，用户该如何给客户端授权呢？</p>
+<h2 id="客户端的授权模式">3.3. 客户端的授权模式</h2>
+<p>客户端必须得到用户的授权（authorization grant），才能获得令牌（access
+token），oauth 2.0 定义了 4 中授权方式：</p>
+<ol type="1">
+<li>授权码模式（authorization code）；</li>
+<li>简化模式（implicit）；</li>
+<li>密码模式（resource owner password credentials）；</li>
+<li>客户端模式（client credentials）；</li>
+</ol>
+<h3 id="授权码模式">3.3.1. 授权码模式</h3>
+<p>授权码模式（authorization
+code）是功能最完整、流程最严密的授权模式。它的特点就是<strong>通过客户端的后台服务器，与"服务提供商"的认证服务器进行互动</strong>。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/authorization_code.png"
+alt="authorization_code" />
+<figcaption aria-hidden="true">authorization_code</figcaption>
+</figure>
+<p>用户登录客户端之后，流程开始。步骤（步骤中用户和代理都叫用户）：</p>
+<ul>
+<li>A：客户端要求用户给予授权，将用户重定向到认证服务器；</li>
+<li>B：用户选择是否给予客户端授权；</li>
+<li>C：假设上一步，用户选择了授权，那么认证服务器就会将用户重定向到客户端事先指定的
+uri，同时用户会携带授权码；</li>
+<li>D：客户端收到授权码，附上早先指定的重定向 uri，向认证服务器申请
+access token，这一步在客户端的后台服务器上完成，对用户透明；</li>
+<li>E：认证服务器核对了授权码和重定向 uri，确认无误后向客户端发送 access
+token 和 refresh token；</li>
+</ul>
+<p>A 步骤中，客户端申请认证的 URI，包含以下参数：</p>
+<ul>
+<li>response_type：表示授权类型，必选项，此处的值固定为"code"</li>
+<li>client_id：表示客户端的ID，必选项</li>
+<li>redirect_uri：表示重定向URI，可选项</li>
+<li>scope：表示申请的权限范围，可选项</li>
+<li>state：表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /authorize?response_type=code&amp;client_id=s6BhdRkqt3&amp;state=xyz&amp;redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb HTTP/1.1</span><br><span class="line">Host: server.example.com</span><br></pre></td></tr></table></figure>
+<p>C 步骤中，服务器回应客户端的 URI，包含以下参数：</p>
+<ul>
+<li>code：表示授权码，必选项。该码的有效期应该很短，通常设为10分钟，客户端只能使用该码一次，否则会被授权服务器拒绝。该码与客户端ID和重定向URI，是一一对应关系。</li>
+<li>state：如果客户端的请求中包含这个参数，认证服务器的回应也必须一模一样包含这个参数。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">302</span> Found</span><br><span class="line"><span class="attribute">Location</span><span class="punctuation">: </span>https://client.example.com/cb?code=SplxlOBeZQQYbYS6WxSbIA&amp;state=xyz</span><br></pre></td></tr></table></figure>
+<p>D 步骤中，客户端向认证服务器申请令牌的 HTTP 请求，包含以下参数：</p>
+<ul>
+<li>grant_type：表示使用的授权模式，必选项，此处的值固定为"authorization_code"。</li>
+<li>code：表示上一步获得的授权码，必选项。</li>
+<li>redirect_uri：表示重定向URI，必选项，且必须与A步骤中的该参数值保持一致。</li>
+<li>client_id：表示客户端ID，必选项。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/token</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>server.example.com</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line"><span class="apache"><span class="attribute">grant_type</span>=authorization_code&amp;code=SplxlOBeZQQYbYS<span class="number">6</span>WxSbIA&amp;redirect_uri=https%<span class="number">3</span>A%<span class="number">2</span>F%<span class="number">2</span>Fclient%<span class="number">2</span>Eexample%<span class="number">2</span>Ecom%<span class="number">2</span>Fcb</span></span><br></pre></td></tr></table></figure>
+<p>E 步骤中，认证服务器发送的 HTTP 回复，包含以下参数：</p>
+<ul>
+<li>access_token：表示访问令牌，必选项。</li>
+<li>token_type：表示令牌类型，该值大小写不敏感，必选项，可以是bearer类型或mac类型。</li>
+<li>expires_in：表示过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。</li>
+<li>refresh_token：表示更新令牌，用来获取下一次的访问令牌，可选项。</li>
+<li>scope：表示权限范围，如果与客户端申请的范围一致，此项可省略。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json;charset=UTF-8</span><br><span class="line"><span class="attribute">Cache-Control</span><span class="punctuation">: </span>no-store</span><br><span class="line"><span class="attribute">Pragma</span><span class="punctuation">: </span>no-cache</span><br><span class="line"></span><br><span class="line"><span class="json">&#123;</span></span><br><span class="line"><span class="json">  <span class="attr">&quot;access_token&quot;</span>:<span class="string">&quot;2YotnFZFEjr1zCsicMWpAA&quot;</span>,</span></span><br><span class="line"><span class="json">  <span class="attr">&quot;token_type&quot;</span>:<span class="string">&quot;example&quot;</span>,</span></span><br><span class="line"><span class="json">  <span class="attr">&quot;expires_in&quot;</span>:<span class="number">3600</span>,</span></span><br><span class="line"><span class="json">  <span class="attr">&quot;refresh_token&quot;</span>:<span class="string">&quot;tGzv3JOkF0XG5Qx2TlKWIA&quot;</span>,</span></span><br><span class="line"><span class="json">  <span class="attr">&quot;example_parameter&quot;</span>:<span class="string">&quot;example_value&quot;</span></span></span><br><span class="line"><span class="json">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>相关参数使用 JSON 发送，并且 HTTP 头信息明确指定不允许缓存。</p>
+<h3 id="简化模式">3.3.2. 简化模式</h3>
+<p>简化模式（implicit grant
+type）不通过第三方应用程序的服务器，直接在浏览器中向认证服务器申请令牌，跳过了"授权码"这个步骤，因此得名。所有步骤在浏览器中完成，令牌对访问者是可见的，且客户端不需要认证。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/implicit_grant.png"
+alt="implicit_grant" />
+<figcaption aria-hidden="true">implicit_grant</figcaption>
+</figure>
+<p>用户登录客户端后，上述流程开启：</p>
+<ul>
+<li>A：客户端将用户重定向到认证服务器；</li>
+<li>B：用户决定是否给予授权；</li>
+<li>C：假设上一步中同意授权，认证服务器将将用户重定向到客户端指定的 uri
+，并在 uri 的 hash 部分包含了 access token；</li>
+<li>D：浏览器向资源服务器发出请求，不包含上一步中得到的 access
+token；</li>
+<li>E：资源服务器返回一个网页，其中包含的代码可以获取 hash 中的 access
+token；</li>
+<li>F：浏览器执行上一步获得的 script，得到 access token；</li>
+<li>G：浏览器将 access token 发给客户端；</li>
+</ul>
+<p>A 步骤中，客户端发出的 HTTP 请求，包含以下参数：</p>
+<ul>
+<li>response_type：表示授权类型，此处的值固定为"token"，必选项。</li>
+<li>client_id：表示客户端的ID，必选项。</li>
+<li>redirect_uri：表示重定向的URI，可选项。</li>
+<li>scope：表示权限范围，可选项。</li>
+<li>state：表示客户端的当前状态，可以指定任意值，认证服务器会原封不动地返回这个值。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/authorize?response_type=token&amp;client_id=s6BhdRkqt3&amp;state=xyz&amp;redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>server.example.com</span><br></pre></td></tr></table></figure>
+<p>C 步骤中，认证服务器回应客户端的 URI，包含以下参数：</p>
+<ul>
+<li>access_token：表示访问令牌，必选项。</li>
+<li>token_type：表示令牌类型，该值大小写不敏感，必选项。</li>
+<li>expires_in：表示过期时间，单位为秒。如果省略该参数，必须其他方式设置过期时间。</li>
+<li>scope：表示权限范围，如果与客户端申请的范围一致，此项可省略。</li>
+<li>state：如果客户端的请求中包含这个参数，认证服务器的回应也必须一模一样包含这个参数。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">302</span> Found</span><br><span class="line"><span class="attribute">Location</span><span class="punctuation">: </span>http://example.com/cb#access_token=2YotnFZFEjr1zCsicMWpAA&amp;state=xyz&amp;token_type=example&amp;expires_in=3600</span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，认证服务器用 HTTP 头信息的 Location
+栏，指定浏览器重定向的网址。注意，在这个网址的 Hash 部分包含了令牌。</p>
+<p>根据上面的 D 步骤，下一步浏览器会访问 Location 指定的网址，但是 Hash
+部分不会发送。接下来的 E
+步骤，服务提供商的资源服务器发送过来的代码，会提取出 Hash 中的令牌。</p>
+<h3 id="密码模式">3.3.3. 密码模式</h3>
+<p>密码模式（Resource Owner Password Credentials
+Grant）中，用户向客户端提供自己的用户名和密码。客户端使用这些信息，向"服务商提供商"索要授权。</p>
+<p>在这种模式中，用户必须把自己的密码给客户端，但是客户端不得储存密码。这通常用在用户对客户端高度信任的情况下，比如客户端是操作系统的一部分，或者由一个大公司出品。而认证服务器只有在其他授权模式无法执行的情况下，才能考虑使用这种模式。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/resource_owner_password.png"
+alt="resource_owner_password" />
+<figcaption aria-hidden="true">resource_owner_password</figcaption>
+</figure>
+<p>步骤：</p>
+<ul>
+<li>A：用户向客户端提供用户名和密码；</li>
+<li>B：客户端使用用户名和密码向认证服务器申请 access token；</li>
+<li>C：认证服务器确认无误后，向客户端提供 access token；</li>
+</ul>
+<p>B 步骤中，客户端发出的 HTTP 请求，包含以下参数：</p>
+<ul>
+<li>grant_type：表示授权类型，此处的值固定为"password"，必选项。</li>
+<li>username：表示用户名，必选项。</li>
+<li>password：表示用户的密码，必选项。</li>
+<li>scope：表示权限范围，可选项。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/token</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>server.example.com</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line"><span class="apache"><span class="attribute">grant_type</span>=password&amp;username=johndoe&amp;password=A<span class="number">3</span>ddj<span class="number">3</span>w</span></span><br></pre></td></tr></table></figure>
+<p>C 步骤中，认证服务器向客户端发送访问令牌。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json;charset=UTF-8</span><br><span class="line"><span class="attribute">Cache-Control</span><span class="punctuation">: </span>no-store</span><br><span class="line"><span class="attribute">Pragma</span><span class="punctuation">: </span>no-cache</span><br><span class="line"></span><br><span class="line"><span class="json">&#123;</span></span><br><span class="line"><span class="json"><span class="attr">&quot;access_token&quot;</span>:<span class="string">&quot;2YotnFZFEjr1zCsicMWpAA&quot;</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;token_type&quot;</span>:<span class="string">&quot;example&quot;</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;expires_in&quot;</span>:<span class="number">3600</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;refresh_token&quot;</span>:<span class="string">&quot;tGzv3JOkF0XG5Qx2TlKWIA&quot;</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;example_parameter&quot;</span>:<span class="string">&quot;example_value&quot;</span></span></span><br><span class="line"><span class="json">&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>整个过程中，客户端不得保存用户的密码。</p>
+</blockquote>
+<h3 id="客户端模式">3.3.4. 客户端模式</h3>
+<p>客户端模式（Client Credentials
+Grant）指客户端以自己的名义，而不是以用户的名义，向"服务提供商"进行认证。严格地说，客户端模式并不属于
+OAuth
+框架所要解决的问题。在这种模式中，用户直接向客户端注册，客户端以自己的名义要求"服务提供商"提供服务，其实不存在授权问题。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/client_credentials.png"
+alt="client_credentials" />
+<figcaption aria-hidden="true">client_credentials</figcaption>
+</figure>
+<p>步骤：</p>
+<ul>
+<li>A：客户端向认证服务器进行身份认证、申请 access token；</li>
+<li>B：认证服务器确认无误后，向客户端提供 access token；</li>
+</ul>
+<p>A 步骤中，客户端发出的 HTTP 请求，包含以下参数：</p>
+<ul>
+<li>grant_type：表示授权类型，此处的值固定为"client_credentials"，必选项。</li>
+<li>scope：表示权限范围，可选项。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/token</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>server.example.com</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line"><span class="ini"><span class="attr">grant_type</span>=client_credentials</span></span><br></pre></td></tr></table></figure>
+<p>B 步骤中，认证服务器向客户端发送访问令牌。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json;charset=UTF-8</span><br><span class="line"><span class="attribute">Cache-Control</span><span class="punctuation">: </span>no-store</span><br><span class="line"><span class="attribute">Pragma</span><span class="punctuation">: </span>no-cache</span><br><span class="line"></span><br><span class="line"><span class="json">&#123;</span></span><br><span class="line"><span class="json"><span class="attr">&quot;access_token&quot;</span>:<span class="string">&quot;2YotnFZFEjr1zCsicMWpAA&quot;</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;token_type&quot;</span>:<span class="string">&quot;example&quot;</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;expires_in&quot;</span>:<span class="number">3600</span>,</span></span><br><span class="line"><span class="json"><span class="attr">&quot;example_parameter&quot;</span>:<span class="string">&quot;example_value&quot;</span></span></span><br><span class="line"><span class="json">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="更新-token">3.4. 更新 token</h2>
+<p>如果用户访问的时候，客户端的"访问令牌"已经过期，则需要使用"更新令牌"申请一个新的访问令牌。</p>
+<p>客户端发出更新令牌的HTTP请求，包含以下参数：</p>
+<ul>
+<li>grant_type：表示使用的授权模式，此处的值固定为"refresh_token"，必选项。</li>
+<li>refresh_token：表示早前收到的更新令牌，必选项。</li>
+<li>scope：表示申请的授权范围，不可以超出上一次申请的范围，如果省略该参数，则表示与上一次一致。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/token</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>server.example.com</span><br><span class="line"><span class="attribute">Authorization</span><span class="punctuation">: </span>Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="line"></span><br><span class="line"><span class="apache"><span class="attribute">grant_type</span>=refresh_token&amp;refresh_token=tGzv<span class="number">3</span>JOkF<span class="number">0</span>XG<span class="number">5</span>Qx<span class="number">2</span>TlKWIA</span></span><br></pre></td></tr></table></figure>
+<h1 id="参考">4. 参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">理解OAuth
+2.0 - 阮一峰的网络日志</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2019/04/oauth_design.html">OAuth
+2.0 的一个简单解释 - 阮一峰的网络日志</a></li>
+<li><a target="_blank" rel="noopener" href="https://deepzz.com/post/what-is-oauth2-protocol.html">10
+分钟理解什么是 OAuth 2.0 协议 | Deepzz's Blog</a></li>
+<li><a target="_blank" rel="noopener" href="https://sexywp.com/oauth-1-intro.htm">OAuth 1.0 简介 –
+Becomin' Charles</a></li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 概述与应用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2oauth-1.0"><span class="toc-number">2.</span> <span class="toc-text">2. 历史：OAuth 1.0</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#oauth-2.0"><span class="toc-number">3.</span> <span class="toc-text">3. Oauth 2.0</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8D%E8%AF%8D%E5%AE%9A%E4%B9%89"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 名词定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#oauth-%E7%9A%84%E6%80%9D%E8%B7%AF%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. Oauth 的思路与运行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E6%8E%88%E6%9D%83%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.</span> <span class="toc-text">3.3. 客户端的授权模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.3.1. 授权码模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8C%96%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.3.2. 简化模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.3.3. 密码模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.3.4.</span> <span class="toc-text">3.3.4. 客户端模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0-token"><span class="toc-number">3.4.</span> <span class="toc-text">3.4. 更新 token</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">4. 参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&text=OAuth2.0协议"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&title=OAuth2.0协议"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&is_video=false&description=OAuth2.0协议"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=OAuth2.0协议&body=Check out this article: https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&title=OAuth2.0协议"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&title=OAuth2.0协议"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&title=OAuth2.0协议"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&title=OAuth2.0协议"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&name=OAuth2.0协议&description=&lt;p&gt;官网：&lt;a href=&#34;https://oauth.net/&#34;&gt;OAuth Community Site&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2023/04/16/OAuth2.0%E5%8D%8F%E8%AE%AE/&t=OAuth2.0协议"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
