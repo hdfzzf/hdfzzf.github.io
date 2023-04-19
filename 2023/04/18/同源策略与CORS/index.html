@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="CORS跨域原理解析 - 掘金 浅析CORS攻击及其挖洞思路 - 先知社区 跨源资源共享（CORS） - HTTP | MDN Nginx 通过 CORS 实现跨域 - 奇妙的 Linux 世界">
+<meta property="og:type" content="article">
+<meta property="og:title" content="同源策略与CORS">
+<meta property="og:url" content="https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="CORS跨域原理解析 - 掘金 浅析CORS攻击及其挖洞思路 - 先知社区 跨源资源共享（CORS） - HTTP | MDN Nginx 通过 CORS 实现跨域 - 奇妙的 Linux 世界">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-19T10:38:51.763Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="同源策略">
+<meta property="article:tag" content="CORS">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>同源策略与CORS</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/16/%E5%8F%8C%E5%9B%A0%E7%B4%A0%E8%AE%A4%E8%AF%81%E7%9B%B8%E5%85%B3/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 同源策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6-1"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. 限制 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6-2"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. 限制 2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#iframe-%E6%A0%87%E7%AD%BE"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1. iframe 标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%90%E5%88%B6-2-%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2. 限制 2 的情况</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6-3"><span class="toc-number">1.3.</span> <span class="toc-text">1.3. 限制 3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%86%B5-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.3.1. 情况 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%86%B5-2"><span class="toc-number">1.3.2.</span> <span class="toc-text">1.3.2. 情况 2</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cors"><span class="toc-number">2.</span> <span class="toc-text">2. CORS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cors-%E8%AF%B7%E6%B1%82%E5%88%86%E7%B1%BB"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. CORS 请求分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 简单请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 预检请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%B8%A6%E8%BA%AB%E4%BB%BD%E5%87%AD%E8%AF%81%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3. 附带身份凭证的请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82%E5%92%8C%E5%87%AD%E8%AF%81"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">2.2.3.1. 预检请求和凭证</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cors-%E6%9C%89%E5%85%B3%E5%AD%97%E6%AE%B5"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. CORS 有关字段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 响应头字段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-origin"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">2.3.1.1.
+Access-Control-Allow-Origin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-expose-headers"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">2.3.1.2.
+Access-Control-Expose-Headers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-max-age"><span class="toc-number">2.3.1.3.</span> <span class="toc-text">2.3.1.3. Access-Control-Max-Age</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-credentials"><span class="toc-number">2.3.1.4.</span> <span class="toc-text">2.3.1.4.
+Access-Control-Allow-Credentials</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-methods"><span class="toc-number">2.3.1.5.</span> <span class="toc-text">2.3.1.5.
+Access-Control-Allow-Methods</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-headers"><span class="toc-number">2.3.1.6.</span> <span class="toc-text">2.3.1.6.
+Access-Control-Allow-Headers</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 请求头字段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#origin"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">2.3.2.1. Origin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-request-method"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">2.3.2.2.
+Access-Control-Request-Method</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-request-headers"><span class="toc-number">2.3.2.3.</span> <span class="toc-text">2.3.2.3.
+Access-Control-Request-Headers</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E7%8E%B0-cors-%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 服务器实现 CORS 流程</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        同源策略与CORS
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-17T16:00:00.000Z" itemprop="datePublished">2023-04-18</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a> › <a class="category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/CORS/" rel="tag">CORS</a>, <a class="tag-link-link" href="/tags/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5/" rel="tag">同源策略</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://juejin.cn/post/6844903859068862472">CORS跨域原理解析 -
+掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7242">浅析CORS攻击及其挖洞思路 -
+先知社区</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS">跨源资源共享（CORS）
+- HTTP | MDN</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.hi-linux.com/posts/60405.html#vip-container">Nginx
+通过 CORS 实现跨域 - 奇妙的 Linux 世界</a></li>
+</ol>
+<span id="more"></span>
+<h1 id="同源策略">1. 同源策略</h1>
+<p><strong>同源策略</strong>是一个重要的安全策略，它用于限制
+<strong>一个源的文档</strong> 或者 <strong>它加载的脚本</strong>
+如何能与另一个源的资源进行交互。它能帮助阻隔恶意文档，减少可能被攻击的媒介。</p>
+<p>如果两个 URL 的 protocol、port 和 host 都相同的话，则这两个 URL
+是同源。这个方案也被称为“协议/主机/端口元组”，或者直接是 “元组”。</p>
+<p>下表给出了与
+URL <code>http://store.company.com/dir/page.html</code> 的源进行对比的示例:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Url</th>
+<th>结果</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>http://store.company.com/dir2/other.html</code></td>
+<td>同源</td>
+<td>只有路径不同</td>
+</tr>
+<tr class="even">
+<td><code>http://store.company.com/dir/inner/another.html</code></td>
+<td>同源</td>
+<td>只有路径不同</td>
+</tr>
+<tr class="odd">
+<td><code>https://store.company.com/secure.html</code></td>
+<td>不同源</td>
+<td>协议不同</td>
+</tr>
+<tr class="even">
+<td><code>http://store.company.com:81/dir/etc.html</code></td>
+<td>不同源</td>
+<td>端口不同，http 默认端口是 80</td>
+</tr>
+<tr class="odd">
+<td><code>http://news.company.com/dir/other.html</code></td>
+<td>不同源</td>
+<td>主机不同</td>
+</tr>
+</tbody>
+</table>
+<p>对于 WEB
+的同源策略相信大家都很熟悉,<strong>如果两个页面的协议，端口（如果有指定）和域名都相同，则两个页面具有相同的源</strong>,
+而不同源的客户端脚本在没有明确授权的情况下，不能读写对方资源。</p>
+<p>当然, 页面中的链接，重定向以及表单提交是不会受到同源策略限制的, 并且,
+跨域资源的引入是可以的。但是 js 不能读写加载的内容。</p>
+<p>同源策略确实提高了 web 的安全性, 但是对于 DNS Rebinding
+来说是没有作用的, 因为同源策略看的是域名, 并不是背后的 IP 地址,
+虽然两次的请求 IP 地址不同, 但是由于 DNS 服务器的绑定, 域名都是一样的,
+那么自然不违反同源策略.</p>
+<p>总结一下就是同源需要满足 3 个条件：</p>
+<p>1. 协议相同<br />
+2. 域名相同<br />
+3. 端口相同</p>
+<p>同源策略也有 3 个限制：</p>
+<ol type="1">
+<li><p>在跨域的情况下，不能发起 Ajax 请求；</p>
+<p>在发起 Ajax
+请求之前，浏览器会自动去发起一个访问，访问的地址是异步请求的访问地址，这个动作叫做
+<strong>预检</strong>。</p>
+<p><strong>预检</strong>的作用：<br />
+浏览器通过预检去检查异步请求访问的目标网站的跨域配置。其实就是根据目标网站返回头里面的
+Access-Control-Allow-Origin
+字段来判断，目标是否允许当前网站发起跨域访问。</p>
+<ol type="1">
+<li>如果 Access-Control-Allow-Origin 字段的值为
+<code>*</code>，则代表允许所有网站发起跨域访问。<br />
+</li>
+<li>如果 Access-Control-Allow-Origin
+字段的值为特定域名，则代表只允许特定域名发起跨域访问。</li>
+</ol></li>
+<li><p>在 HTML 标签里面，任何标签只要支持 src
+属性，就不受同源策略限制；比如
+<code>iframe、script、img</code>；</p></li>
+<li><p>当前域的 js
+代码，不能够操作（读和写都不行）跨域网页（被当前页面引用）的 dom
+元素；但，如果当前网页引用了某个 js 代码（跨域或者不跨域），那么 js
+代码可以操作当前网页的 dom 元素；（后半段：因为 js
+代码被加载回来，在当前网页被执行，所以此时 js 代码和 dom
+元素同源）</p></li>
+</ol>
+<p>下面将演示一下这 3 个限制。</p>
+<h2 id="限制-1">1.1. 限制 1</h2>
+<ul>
+<li>发起 ajax 请求的虚拟机：<code>10.0.2.15</code>；</li>
+<li>另一台虚拟机：<code>10.0.2.4</code></li>
+</ul>
+<p>在 <code>10.0.2.4</code> 虚拟机上创建了文档
+<code>test.php</code>，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">echo &#x27;can you see it?&#x27;;</span><br></pre></td></tr></table></figure>
+<p>直接使用浏览器访问没有问题：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219101950.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>将 <code>index.html</code> 代码稍作修改：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    welcome, &lt;span id=&quot;username&quot;&gt;&lt;/span&gt;</span><br><span class="line">    &lt;!-- import jQuery --&gt;</span><br><span class="line">    &lt;script src=&quot;jquery-3.6.3.min.js&quot;&gt;&lt;/script&gt;  </span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        let ajaxArgv = &#123;</span><br><span class="line">            url: &#x27;http://10.0.2.4/test/test.php&#x27;,</span><br><span class="line">            type: &#x27;get&#x27;,</span><br><span class="line">            dateType: &#x27;text&#x27;,</span><br><span class="line">            success: function (res)&#123;</span><br><span class="line">                $(&#x27;#username&#x27;).text(res);</span><br><span class="line">            &#125;,</span><br><span class="line">            error: function()&#123;</span><br><span class="line">                alert(&#x27;ajax fail.&#x27;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;;</span><br><span class="line">        $.ajax(ajaxArgv);</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219102101.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>调用了 <code>error</code> 方法，也就是说明 ajax
+请求出错了，我们查看控制台：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219102154.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>错误信息：跨域请求阻塞，同源策略不允许从
+<code>http://10.0.2.4/test/test.php</code> 读取内容。</p>
+<p>虽然出错了，但我们查看开发者工具下的网络（可以刷新一下）：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219102331.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>还是发起了请求，并且状态码是
+200，因此请求是成功了，但同源策略发现跨域了，于是报错。</p>
+<p>解决的方法在报错信息中也给出了，可以通过
+<code>Access-Control-Allow-Origin</code> 使 <code>10.0.2.4</code> 下的
+<code>test.php</code> 文件接受来自跨域的请求。将 <code>test.php</code>
+代码修改为如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	header(&#x27;Access-Control-Allow-Origin: *&#x27;);</span><br><span class="line">	echo &#x27;can you see it?&#x27;;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219102751.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h2 id="限制-2">1.2. 限制 2</h2>
+<p>以 <code>iframe</code> 标签为例，顺便介绍一个这个标签。</p>
+<h3 id="iframe-标签">1.2.1. <code>iframe</code> 标签</h3>
+<p>HTML 中 <code>iframe</code> 标签的作用：</p>
+<ul>
+<li>在当前页面上引入另外一个独立、完整的网页；</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;second&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;span id=&quot;b&quot;&gt;this just a test.&lt;/span&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;iframe src=&quot;second.html&quot; id=&quot;a&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>两个文件都在同一台服务器上，我们访问 <code>index.html</code>：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219103833.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<ul>
+<li>外面的框：<code>iframe</code> 标签带的；</li>
+<li>里面的内容：<code>seconde.html</code> 显示的内容；</li>
+</ul>
+<p>用 iframe 引用的网站中的元素也可以使用 js
+代码获取，下面修改显示的内容为 <code>takagi</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;iframe src=&quot;second.html&quot; id=&quot;a&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">    document.getElementById(&#x27;a&#x27;).contentWindow.document.getElementById(&#x27;b&#x27;).innerText = &#x27;takagi&#x27;;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219104256.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>从上图中可以看到，内容并没有被更改，并且还报错了，报错信息是：</p>
+<ul>
+<li><code>Uncaught TypeError: document.getElementById(...).contentWindow.document.getElementById(...) is null</code>，也就是我们要修改的对象是
+null，无法修改；</li>
+</ul>
+<p>这个问题的原因很简单：</p>
+<ul>
+<li>访问 <code>index.html</code> 文件时，会按照顺序去执行代码，因此
+<code>&lt;script&gt;</code> 中的代码被执行；</li>
+<li>访问 <code>index.html</code> 文件时，<code>iframe</code>
+会去加载目标网页；</li>
+<li>那么加载网页和执行代码这两件事的顺序就很重要，一定是目标网页加载完成之后才可以执行代码，否则代码中没有
+<code>document.getElementById('a').contentWindow.document.getElementById('b')</code>
+对象；</li>
+<li>总结而言：<code>&lt;script&gt;</code>
+中的代码执行时，网页还没有被加载，因此找不到对象，从而报错；</li>
+</ul>
+<p>解决方法—— <code>onload</code> DOM 事件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;iframe src=&quot;second.html&quot; id=&quot;a&quot; onload=&quot;func()&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        function func()&#123;</span><br><span class="line">            document.getElementById(&#x27;a&#x27;).contentWindow.document.getElementById(&#x27;b&#x27;).innerText = &#x27;takagi&#x27;;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219104734.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>成功修改。</p>
+<h3 id="限制-2-的情况">1.2.2. 限制 2 的情况</h3>
+<p>将 <code>second.html</code> 放到 <code>10.0.2.4</code> 服务器上，将
+<code>index.html</code> 代码中 <code>&lt;script&gt;</code>
+标签内容去掉：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;iframe src=&quot;http://10.0.2.4/test/second.html&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219110520.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>但也有例外，比如如果引用百度，则结果如下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219111036.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>这是因为：</p>
+<ul>
+<li><code>X-Frame-Options HTTP</code> 响应头是
+<strong>用来给浏览器指示是否允许一个页面可否在
+<code>&lt;frame&gt;</code> 、 <code>&lt;iframe&gt;</code> 、
+<code>&lt;embed&gt;</code> 或者 <code>&lt;object&gt;</code>
+中展现的标记</strong>。</li>
+</ul>
+<p><code>img</code> 标签：</p>
+<figure class="highlight plaintext"><figcaption><span>index. Html</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;img src=&quot;https://img0.baidu.com/it/u=3260592084,3929148669&amp;fm=253&amp;fmt=auto&amp;app=120&amp;f=JPEG?w=500&amp;h=501&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219110926.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h2 id="限制-3">1.3. 限制 3</h2>
+<h3 id="情况-1">1.3.1. 情况 1</h3>
+<p>我们将 <code>second.html</code> 移到 <code>10.0.2.4</code>
+服务器上，然后修改 <code>index.html</code> 代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;iframe src=&quot;http://10.0.2.4/test/second.html&quot; id=&quot;a&quot; onload=&quot;func()&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        function func()&#123;</span><br><span class="line">            document.getElementById(&#x27;a&#x27;).contentWindow.document.getElementById(&#x27;b&#x27;).innerText = &#x27;takagi&#x27;;</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219105228.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>从结果上来看：</p>
+<ul>
+<li>跨域的资源被成功加载；</li>
+<li>但，内容没有被修改；</li>
+</ul>
+<p>这就是：当前域的 js 代码，不能够操作跨域网页（被当前页面引用）的 dom
+元素。</p>
+<h3 id="情况-2">1.3.2. 情况 2</h3>
+<p>在 <code>10.0.2.4</code> 上创建 js 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.getElementById(&#x27;a&#x27;).innerText = &#x27;hello, takagi.&#x27;;</span><br></pre></td></tr></table></figure>
+<p>在 <code>10.0.2.15</code> 上修改 <code>index.html</code>
+文件为如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;</span><br><span class="line">    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">    &lt;title&gt;jQuery ajax&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;span id=&quot;a&quot;&gt;can you see it?&lt;/span&gt;</span><br><span class="line">    &lt;script src=&quot;http://10.0.2.4/test/1.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>访问 <code>index.html</code>，按照道理，输出的应该是
+<code>can you see it?</code>。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230219110222.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>可以看到，结果不是我们所想，而是被 <code>1.js</code> 给修改了。</p>
+<p>这就是：如果当前网页引用了某个 js 代码（跨域或者不跨域），那么 js
+代码可以操作当前网页的 dom 元素，</p>
+<h1 id="cors">2. CORS</h1>
+<h2 id="概述">2.1. 概述</h2>
+<p><code>CORS</code> 是跨源 <code>AJAX</code>
+请求的根本解决方法。<code>JSONP</code> 只能发 <code>GET</code>
+请求，但是 <code>CORS</code> 允许任何类型的请求。</p>
+<p>整个 <code>CORS</code>
+通信过程都是浏览器自动完成的，不需要用户参与。对于开发者来说，<code>CORS</code>
+通信与同源的 <code>AJAX</code>
+通信没有差别，代码完全一样。<strong>浏览器一旦发现 AJAX
+请求跨源，就会自动添加一些附加的头信息，有时还会多一次附加的请求，但用户不会有感觉</strong>。因此，实现
+<code>CORS</code> 通信的关键是<strong>服务器</strong>，只要服务器实现了
+<code>CORS</code> 接口，就可以跨源通信。</p>
+<p>简单的例子可以看一下 <a href="#1.1.%20限制%201">1.1. 限制 1</a>，在
+php
+文件中添加代码：<code>header('Access-Control-Allow-Origin: *');</code>
+算是一种简单的 CORS 实现机制。</p>
+<h2 id="cors-请求分类">2.2. CORS 请求分类</h2>
+<p>CORS
+请求分为两类：简单请求和非简单请求。同时满足以下两大条件，就属于简单请求：</p>
+<ol type="1">
+<li>请求方法是 <code>HEAD</code>、<code>GET</code>、<code>POST</code>
+之一；</li>
+<li>请求头中只包含：<code>Accept</code>、<code>Accept-Language</code>、<code>Content-Language</code>、<code>Last-Event-ID</code>
+和 <code>Content-Type</code>，其中 <code>Content-Type</code> 只能是
+<code>application/x-www-form-urlencoded</code>、<code>multipart/form-data</code>
+、<code>text/plain</code></li>
+</ol>
+<p>凡是没有同时满足这两个条件的请求，都是非简单请求，而浏览器对于这两种请求的处理是不同的。</p>
+<p>接下来从 3 个场景简单介绍：</p>
+<ol type="1">
+<li>简单请求</li>
+<li>预检请求</li>
+<li>附带身份凭证的请求</li>
+</ol>
+<h3 id="简单请求">2.2.1. 简单请求</h3>
+<p>本机有一个 <code>test.html</code> 文件，代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>jQuery ajax<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    welcome, <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">&quot;username&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> url = <span class="string">&#x27;http://192.168.110.9/public/test.php&#x27;</span>;</span></span><br><span class="line"><span class="javascript">        xhr.open(<span class="string">&#x27;GET&#x27;</span>, url);</span></span><br><span class="line"><span class="javascript">        xhr.send();</span></span><br><span class="line"><span class="javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>请求该文件，查看该过程中的包，发现就 1 次交互。</p>
+<p>请求包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418230735.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>响应包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418230748.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<blockquote>
+<p>Can you see it? 是 <code>test.php</code> 中的代码
+<code>echo "Can you see it?"</code> 返回的。</p>
+</blockquote>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418231203.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>请求头中的 <code>Origin</code> 表示该请求来源于
+<code>http://127.0.0.1</code>。响应头中的
+<code>Access-Control-Allow-Origin: *</code> 表明该资源可以被
+<strong>任意外源</strong> 访问。</p>
+<p>使用 <code>Origin</code> 和 <code>Access-Control-Allow-Origin</code>
+可以完成最简单的访问控制。如果只想特定的源可以访问，可以设置
+<code>Access-Control-Allow-Origin</code> 的值，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Origin: https://foo.example</span><br></pre></td></tr></table></figure>
+<h3 id="预检请求">2.2.2. 预检请求</h3>
+<p>与简单请求不同，“需预检的请求”要求必须首先使用 OPTIONS
+方法发起一个预检请求到服务器，以获知服务器是否允许该实际请求。“预检请求”的使用，可以避免跨域请求对服务器的用户数据产生未预期的影响。</p>
+<p>比如修改 <code>test.html</code> 代码为如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>jQuery ajax<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    welcome, <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">&quot;username&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span></span><br><span class="line"><span class="javascript">        xhr.open(<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;http://192.168.110.9/public/test.php&#x27;</span>);</span></span><br><span class="line"><span class="javascript">        xhr.setRequestHeader(<span class="string">&#x27;X-PINGOTHER&#x27;</span>, <span class="string">&#x27;pingpong&#x27;</span>);</span></span><br><span class="line"><span class="javascript">        xhr.send();</span></span><br><span class="line"><span class="javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意看，这里的
+<code>xhr.setRequestHeader('X-PINGOTHER', 'pingpong')</code>
+设置了一个请求头 <code>X-PINGOTHER</code>，这是一个非标准的 HTTP
+请求头参数，可以看到这个 HTTP 请求并不满足刚刚说的简单请求的 2
+大条件，所以这是一个非简单请求（预检请求）。</p>
+<p>访问 <code>test.html</code>，查看该过程的流量：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418231747.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>发现代码中只发送一个请求，但实际发送了两个请求。</p>
+<p>第一个请求、响应内容：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418231836.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418231854.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>第二个请求、响应内容：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418231909.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418231921.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<blockquote>
+<p>不要在意响应的内容，我这里只是演示一下预检请求是一个
+<code>OPTIONS</code> 的请求。实际上预检请求的响应是没有内容的</p>
+</blockquote>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418232342.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>浏览器根据 JavaScript 代码判断这是一个非简单请求，所以发送了 OPTIONS
+预检请求，预检请求中待了两个字段：</p>
+<ul>
+<li><code>Access-Control-Request-Method: GET</code>：告诉服务器，实际的请求的方法是
+GET；</li>
+<li><code>Access-Control-Request-Headers: x-pingother</code>：告诉服务器，实际的请求会携带一个自定义请求头字段：<code>x-pingother</code>。</li>
+</ul>
+<p>服务器会根据这两个信息来判断实际的请求是否给允许。</p>
+<p>预检请求的响应包中还是 <code>Access-Control-Allow-Origin: *</code> 和
+<code>Accewss-Control-Allow-Headers: *</code>，这是因为我的服务器设置的，下图我修改了服务器配置：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418233125.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>可以看到多了一行
+<code>Access-Control-Allow-Methods: POST, GET, OPTIONS</code>。这 3
+个字段都是服务器对预检请求的响应：告诉浏览器服务器可以接受的请求方法、请求头以及请求源。</p>
+<p>因此，预检的作用：</p>
+<ul>
+<li>浏览器：告诉服务器实际的请求的方法、来源、请求头字段等信息；</li>
+<li>服务器：根据浏览器的预检请求，判断是否能够接受实际请求；</li>
+</ul>
+<h3 id="附带身份凭证的请求">2.2.3. 附带身份凭证的请求</h3>
+<p>这里的身份凭证指的是
+<code>cookie</code>，一般而言，跨域的请求不会携带身份凭证信息，如果一定要携带，可以通过设置来实现，比如下面代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">&quot;X-UA-Compatible&quot;</span> <span class="attr">content</span>=<span class="string">&quot;IE=edge&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>jQuery ajax<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    welcome, <span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">&quot;username&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> invocation = <span class="keyword">new</span> XMLHttpRequest();</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> url = <span class="string">&#x27;http://192.168.110.9/public/test.php&#x27;</span>;</span></span><br><span class="line"><span class="javascript">        invocation.withCredentials = <span class="literal">true</span>;</span></span><br><span class="line"><span class="javascript">        invocation.open(<span class="string">&#x27;GET&#x27;</span>, url);</span></span><br><span class="line"><span class="javascript">        invocation.send();</span></span><br><span class="line"><span class="javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>与 <a href="#2.2.1.%20简单请求">2.2.1. 简单请求</a>
+对比，多了一句代码：<code>invocation.withCredentials = true;</code>，表示会在跨源请求中携带身份凭证信息。</p>
+<p>查看这过程中的请求与响应内容：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418233632.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418233641.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418233729.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>可以看到，请求头中携带了 <code>Cookie</code> 字段。</p>
+<blockquote>
+<p>这是一个简单请求，所以只有一次交互；cookie 的值先让服务器设置了
+cookie，然后再进行上述访问。</p>
+</blockquote>
+<h4 id="预检请求和凭证">2.2.3.1. 预检请求和凭证</h4>
+<p>CORS 预检请求不能包含凭据。预检请求的响应必须指定
+<code>Access-Control-Allow-Credentials: true</code>
+来表明<strong>可以携带凭据进行实际的请求</strong>。</p>
+<blockquote>
+<p>注意，预检不能包含凭证！</p>
+</blockquote>
+<p>在响应附带身份凭证的请求时：</p>
+<ul>
+<li>服务器<strong>不能</strong>将
+<code>Access-Control-Allow-Origin</code>
+的值设为通配符“<code>*</code>”，而应将其设置为特定的域，如：<code>Access-Control-Allow-Origin: https://example.com</code>。</li>
+<li>服务器<strong>不能</strong>将
+<code>Access-Control-Allow-Headers</code>
+的值设为通配符“<code>*</code>”，而应将其设置为标头名称的列表，如：<code>Access-Control-Allow-Headers: X-PINGOTHER, Content-Type</code></li>
+<li>服务器<strong>不能</strong>将
+<code>Access-Control-Allow-Methods</code>
+的值设为通配符“<code>*</code>”，而应将其设置为特定请求方法名称的列表，如：<code>Access-Control-Allow-Methods: POST, GET</code></li>
+</ul>
+<p>对于附带身份凭证的请求（通常是
+<code>Cookie</code>），这是因为请求的标头中携带了 <code>Cookie</code>
+信息，如果 <code>Access-Control-Allow-Origin</code>
+的值为“<code>*</code>”，请求将会失败。而将
+<code>Access-Control-Allow-Origin</code> 的值设置为
+<code>https://example.com</code>，则请求将成功执行。</p>
+<p>另外，响应标头中也携带了 <code>Set-Cookie</code> 字段，尝试对 Cookie
+进行修改。如果操作失败，将会抛出异常。</p>
+<p>只有请求头设置了 <code>xhr.withCredentials = true</code>
+的预检请求和实际请求：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418234845.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418234855.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>请求头设置了 <code>xhr.withCredentials = true</code>
+，但服务器没有设置 <code>Access-Control-Allow-Credentials: true</code>
+直接报错：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418234514.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>此时只有预检，没有实际请求：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418234531.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>请求头设置了 <code>xhr.withCredentials = true</code> ，服务器设置
+<code>Access-Control-Allow-Credentials: true</code>
+的预检请求和实际请求：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418234743.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230418234804.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>所以要想非简单请求中携带身份凭证需要同时满足两大条件：</p>
+<ol type="1">
+<li>请求头：<code>xhr.withCredentials = true</code></li>
+<li>服务器：<code>Access-Control-Allow-Credentials: true</code></li>
+</ol>
+<h2 id="cors-有关字段">2.3. CORS 有关字段</h2>
+<h3 id="响应头字段">2.3.1. 响应头字段</h3>
+<p>列出了服务器为访问控制请求返回的 HTTP
+响应头，这是由跨源资源共享规范定义的。</p>
+<h4 id="access-control-allow-origin">2.3.1.1.
+Access-Control-Allow-Origin</h4>
+<p>格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Origin: &lt;origin&gt; | *</span><br></pre></td></tr></table></figure>
+<p><code>Access-Control-Allow-Origin</code>
+参数指定了单一的源，告诉浏览器允许该源访问资源。或者，对于
+<strong>不需要携带</strong>
+身份凭证的请求，服务器可以指定该字段的值为通配符“<code>*</code>”，表示允许来自任意源的请求。</p>
+<p>例如，为了允许来自 <code>https://mozilla.org</code>
+的代码访问资源，可以指定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Origin: https://mozilla.org</span><br><span class="line">Vary: Origin</span><br></pre></td></tr></table></figure>
+<p>如果服务端指定了具体的单个源（作为允许列表的一部分，可能会根据请求的来源而动态改变）而非通配符“<code>*</code>”，那么响应标头中的
+<a
+target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Vary"><code>Vary</code></a>
+字段的值必须包含 <code>Origin</code>。这将告诉客户端：服务器对不同的 <a
+target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin"><code>Origin</code></a>
+返回不同的内容。</p>
+<blockquote>
+<p>Vary 是一个 HTTP
+响应头部信息，它决定了对于未来的一个请求头，应该用一个缓存的回复
+(response) 还是向源服务器请求一个新的回复。它被服务器用来表明在 content
+negotiation
+algorithm（内容协商算法）中选择一个资源代表的时候应该使用哪些头部信息（headers）.</p>
+</blockquote>
+<h4 id="access-control-expose-headers">2.3.1.2.
+Access-Control-Expose-Headers</h4>
+<p>在跨源访问时，XMLHttpRequest 对象的 <code>getResponseHeader()</code>
+方法只能拿到一些最基本的响应头，<code>Cache-Control</code>、<code>Content-Language</code>、<code>Content-Type</code>、<code>Expires</code>、<code>Last-Modified</code>、<code>Pragma</code>，如果要访问其他头，则需要服务器设置本响应头。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Expose-Headers: &lt;header-name&gt;[, &lt;header-name&gt;]*</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Expose-Headers: X-My-Custom-Header, X-Another-Custom-Header</span><br></pre></td></tr></table></figure>
+<p>这样浏览器就能够通过 <code>getResponseHeader</code> 访问
+<code>X-My-Custom-Header</code> 和 <code>X-Another-Custom-Header</code>
+响应头了。</p>
+<h4 id="access-control-max-age">2.3.1.3. Access-Control-Max-Age</h4>
+<p>Access-Control-Max-Age 头指定了 preflight (预检)
+请求的结果能够被缓存多久。</p>
+<p>格式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Max-Age: &lt;delta-seconds&gt;</span><br></pre></td></tr></table></figure>
+<p><code>delta-seconds</code> 参数表示 preflight
+预检请求的结果在多少秒内有效。</p>
+<h4 id="access-control-allow-credentials">2.3.1.4.
+Access-Control-Allow-Credentials</h4>
+<p>Access-Control-Allow-Credentials 头指定了当浏览器的 credentials
+设置为 true 时是否允许浏览器读取 response 的内容。当用在对 preflight
+预检测请求的响应中时，它指定了实际的请求是否可以使用
+credentials。请注意：简单 GET
+请求不会被预检；如果对此类请求的响应中不包含该字段，这个响应将被忽略掉，并且浏览器也不会将相应内容返回给网页。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Credentials: true</span><br></pre></td></tr></table></figure>
+<h4 id="access-control-allow-methods">2.3.1.5.
+Access-Control-Allow-Methods</h4>
+<p>Access-Control-Allow-Methods
+标头字段指定了访问资源时允许使用的请求方法，用于预检请求的响应。其指明了实际请求所允许使用的
+HTTP 方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Methods: &lt;method&gt;[, &lt;method&gt;]*</span><br></pre></td></tr></table></figure>
+<h4 id="access-control-allow-headers">2.3.1.6.
+Access-Control-Allow-Headers</h4>
+<p>Access-Control-Allow-Headers
+标头字段用于预检请求的响应。其指明了实际请求中允许携带的标头字段。这个标头是服务器端对浏览器端
+Access-Control-Request-Headers 标头的响应。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Allow-Headers: &lt;header-name&gt;[, &lt;header-name&gt;]*</span><br></pre></td></tr></table></figure>
+<h3 id="请求头字段">2.3.2. 请求头字段</h3>
+<p>列出了可用于发起跨源请求的标头字段。请注意，这些标头字段无须手动设置。当开发者使用
+XMLHttpRequest 对象发起跨源请求时，它们已经被设置就绪。</p>
+<h4 id="origin">2.3.2.1. Origin</h4>
+<p>Origin 标头字段表明预检请求或实际跨源请求的源站。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Origin: &lt;origin&gt;</span><br></pre></td></tr></table></figure>
+<p>origin 参数的值为源站 URL。它不包含任何路径信息，只是服务器名称。</p>
+<p>备注：</p>
+<ul>
+<li><code>Origin</code> 的值可以为 <code>null</code>。</li>
+<li>在所有访问控制请求中，<code>Origin</code>
+标头字段<strong>总是</strong>被发送。</li>
+</ul>
+<h4 id="access-control-request-method">2.3.2.2.
+Access-Control-Request-Method</h4>
+<p>Access-Control-Request-Method
+标头字段用于预检请求。其作用是，将实际请求所使用的 HTTP
+方法告诉服务器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Request-Method: &lt;method&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="access-control-request-headers">2.3.2.3.
+Access-Control-Request-Headers</h4>
+<p>Access-Control-Request-Headers
+标头字段用于预检请求。其作用是，将实际请求所携带的标头字段（通过
+<code>setRequestHeader()</code>
+等设置的）告诉服务器。这个浏览器端标头将由互补的服务器端标头
+Access-Control-Allow-Headers 回答。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access-Control-Request-Headers: &lt;field-name&gt;[, &lt;field-name&gt;]*</span><br></pre></td></tr></table></figure>
+<h2 id="服务器实现-cors-流程">2.4. 服务器实现 CORS 流程</h2>
+<p>下图是服务端实现 CORS 的流程：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/cors_server_flowchart.png"
+alt="cors_server_flowchart" />
+<figcaption aria-hidden="true">cors_server_flowchart</figcaption>
+</figure>
+<ol type="1">
+<li>查看 <code>HTTP</code> 请求头是否有 <code>Origin</code> 字段；</li>
+<li>如果没有，则当成普通的请求，如果 <code>Origin</code>
+不允许，则浏览器的 consoles
+会报错，但还是会收到一个响应，该响应的状态码大概率还是 200；</li>
+<li>如果有，且 <code>Origin</code>
+的源是被允许的，则继续看是否是预检请求（Method=OPTIONS）；</li>
+<li>如果是预检请求，就返回
+<code>Allow-Headers</code>、<code>Allow-Methods</code>
+等，但响应体内容为空；</li>
+<li>如果不是预检请求吗，就返回
+<code>Allow-Origin</code>、<code>Allow-Credentials</code>
+等，并返回正常的内容；</li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 同源策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6-1"><span class="toc-number">1.1.</span> <span class="toc-text">1.1. 限制 1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6-2"><span class="toc-number">1.2.</span> <span class="toc-text">1.2. 限制 2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#iframe-%E6%A0%87%E7%AD%BE"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1. iframe 标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%90%E5%88%B6-2-%E7%9A%84%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2. 限制 2 的情况</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%88%B6-3"><span class="toc-number">1.3.</span> <span class="toc-text">1.3. 限制 3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%86%B5-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.3.1. 情况 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%86%B5-2"><span class="toc-number">1.3.2.</span> <span class="toc-text">1.3.2. 情况 2</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cors"><span class="toc-number">2.</span> <span class="toc-text">2. CORS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cors-%E8%AF%B7%E6%B1%82%E5%88%86%E7%B1%BB"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. CORS 请求分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. 简单请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2. 预检请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%B8%A6%E8%BA%AB%E4%BB%BD%E5%87%AD%E8%AF%81%E7%9A%84%E8%AF%B7%E6%B1%82"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3. 附带身份凭证的请求</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82%E5%92%8C%E5%87%AD%E8%AF%81"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">2.2.3.1. 预检请求和凭证</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cors-%E6%9C%89%E5%85%B3%E5%AD%97%E6%AE%B5"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. CORS 有关字段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%8D%E5%BA%94%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1. 响应头字段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-origin"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">2.3.1.1.
+Access-Control-Allow-Origin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-expose-headers"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">2.3.1.2.
+Access-Control-Expose-Headers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-max-age"><span class="toc-number">2.3.1.3.</span> <span class="toc-text">2.3.1.3. Access-Control-Max-Age</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-credentials"><span class="toc-number">2.3.1.4.</span> <span class="toc-text">2.3.1.4.
+Access-Control-Allow-Credentials</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-methods"><span class="toc-number">2.3.1.5.</span> <span class="toc-text">2.3.1.5.
+Access-Control-Allow-Methods</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-allow-headers"><span class="toc-number">2.3.1.6.</span> <span class="toc-text">2.3.1.6.
+Access-Control-Allow-Headers</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%A4%B4%E5%AD%97%E6%AE%B5"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2. 请求头字段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#origin"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">2.3.2.1. Origin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-request-method"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">2.3.2.2.
+Access-Control-Request-Method</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#access-control-request-headers"><span class="toc-number">2.3.2.3.</span> <span class="toc-text">2.3.2.3.
+Access-Control-Request-Headers</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%9E%E7%8E%B0-cors-%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">2.4. 服务器实现 CORS 流程</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&text=同源策略与CORS"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&title=同源策略与CORS"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&is_video=false&description=同源策略与CORS"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=同源策略与CORS&body=Check out this article: https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&title=同源策略与CORS"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&title=同源策略与CORS"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&title=同源策略与CORS"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&title=同源策略与CORS"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&name=同源策略与CORS&description=&lt;ol type=&#34;1&#34;&gt;
+&lt;li&gt;&lt;a
+href=&#34;https://juejin.cn/post/6844903859068862472&#34;&gt;CORS跨域原理解析 -
+掘金&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://xz.aliyun.com/t/7242&#34;&gt;浅析CORS攻击及其挖洞思路 -
+先知社区&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a
+href=&#34;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS&#34;&gt;跨源资源共享（CORS）
+- HTTP | MDN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a
+href=&#34;https://www.hi-linux.com/posts/60405.html#vip-container&#34;&gt;Nginx
+通过 CORS 实现跨域 - 奇妙的 Linux 世界&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/&t=同源策略与CORS"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
