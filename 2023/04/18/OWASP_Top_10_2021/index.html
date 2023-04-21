@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="OWASP Top 10 2021 学习记录，后续可能会往里面加入靶场的练习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OWASP_Top_10_2021">
+<meta property="og:url" content="https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="OWASP Top 10 2021 学习记录，后续可能会往里面加入靶场的练习。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-21T04:05:35.429Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="OWASP Top 10">
+<meta property="article:tag" content="Web安全">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>OWASP_Top_10_2021</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/18/%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5%E4%B8%8ECORS/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#broken-access-control%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%A4%B1%E6%95%88"><span class="toc-number">2.</span> <span class="toc-text">2. Broken Access
+Control（访问控制失效）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%B6%E5%9C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 靶场</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#unprotected-admin-functionality"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. Unprotected admin
+functionality</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unprotected-admin-functionality-with-unpredictable-url"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2.
+Unprotected admin functionality with unpredictable URL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-role-controlled-by-request-parameter"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3. User role
+controlled by request parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-role-can-be-modified-in-user-profile"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4. User role can
+be modified in user profile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.2.5. User ID
+controlled by request parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter-with-unpredictable-user-ids"><span class="toc-number">2.2.6.</span> <span class="toc-text">2.2.6.
+User ID controlled by request parameter, with unpredictable user
+IDs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter-with-data-leakage-in-redirect"><span class="toc-number">2.2.7.</span> <span class="toc-text">2.2.7.
+User ID controlled by request parameter with data leakage in
+redirect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter-with-password-disclosure"><span class="toc-number">2.2.8.</span> <span class="toc-text">2.2.8.
+User ID controlled by request parameter with password disclosure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insecure-direct-object-references"><span class="toc-number">2.2.9.</span> <span class="toc-text">2.2.9. Insecure direct object
+references</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#url-based-access-control-can-be-circumvented"><span class="toc-number">2.2.10.</span> <span class="toc-text">2.2.10. URL-based
+access control can be circumvented</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#method-based-access-control-can-be-circumvented"><span class="toc-number">2.2.11.</span> <span class="toc-text">2.2.11.
+Method-based access control can be circumvented</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#multi-step-process-with-no-access-control-on-one-step"><span class="toc-number">2.2.12.</span> <span class="toc-text">2.2.12.
+Multi-step process with no access control on one step</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#referer-based-access-control"><span class="toc-number">2.2.13.</span> <span class="toc-text">2.2.13. Referer-based access
+control</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cryptographic-failures%E5%8A%A0%E5%AF%86%E5%A4%B1%E6%95%88"><span class="toc-number">3.</span> <span class="toc-text">3. Cryptographic
+Failures（加密失效）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-2"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-1"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#injection%E6%B3%A8%E5%85%A5"><span class="toc-number">4.</span> <span class="toc-text">4. Injection（注入）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-3"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-2"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#insecure-design%E4%B8%8D%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1"><span class="toc-number">5.</span> <span class="toc-text">5. Insecure Design（不安全设计）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-4"><span class="toc-number">5.1.</span> <span class="toc-text">5.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1%E6%A6%82%E8%BF%B0"><span class="toc-number">5.2.</span> <span class="toc-text">5.2. 威胁建模概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-3"><span class="toc-number">5.3.</span> <span class="toc-text">5.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security-misconfiguration-%E5%AE%89%E5%85%A8%E9%94%99%E8%AF%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">6. Security
+Misconfiguration (安全错误配置)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-5"><span class="toc-number">6.1.</span> <span class="toc-text">6.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-4"><span class="toc-number">6.2.</span> <span class="toc-text">6.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#vulnerable-and-outdated-components%E6%9C%89%E6%BC%8F%E6%B4%9E%E8%BF%87%E6%9C%9F%E7%9A%84%E7%BB%84%E4%BB%B6"><span class="toc-number">7.</span> <span class="toc-text">7.
+Vulnerable and Outdated Components（有漏洞、过期的组件）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-6"><span class="toc-number">7.1.</span> <span class="toc-text">7.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-5"><span class="toc-number">7.2.</span> <span class="toc-text">7.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#identification-and-authentication-failures-%E8%AE%A4%E8%AF%81%E5%92%8C%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6%E5%A4%B1%E6%95%88"><span class="toc-number">8.</span> <span class="toc-text">8.
+Identification and Authentication Failures (认证和验证机制失效)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-7"><span class="toc-number">8.1.</span> <span class="toc-text">8.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%AD%E8%AF%81%E5%A1%AB%E5%85%85%E5%92%8C%E7%88%86%E7%A0%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">8.2.</span> <span class="toc-text">8.2. 凭证填充和爆破的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-6"><span class="toc-number">8.3.</span> <span class="toc-text">8.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#software-and-data-integrity-failures%E8%BD%AF%E4%BB%B6%E5%92%8C%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7%E6%95%85%E9%9A%9C"><span class="toc-number">9.</span> <span class="toc-text">9.
+Software and Data Integrity Failures（软件和数据完整性故障）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-8"><span class="toc-number">9.1.</span> <span class="toc-text">9.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-7"><span class="toc-number">9.2.</span> <span class="toc-text">9.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security-logging-and-monitoring-failures%E5%AE%89%E5%85%A8%E6%97%A5%E5%BF%97%E5%92%8C%E7%9B%91%E6%8E%A7%E6%95%85%E9%9A%9C"><span class="toc-number">10.</span> <span class="toc-text">10.
+Security Logging and Monitoring Failures（安全日志和监控故障）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-9"><span class="toc-number">10.1.</span> <span class="toc-text">10.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E4%BC%AA%E9%80%A0"><span class="toc-number">10.2.</span> <span class="toc-text">10.2. 日志伪造</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-8"><span class="toc-number">10.3.</span> <span class="toc-text">10.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#server-side-request-forgery-ssff%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0"><span class="toc-number">11.</span> <span class="toc-text">11. Server Side
+Request Forgery (SSFF，服务端请求伪造)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-10"><span class="toc-number">11.1.</span> <span class="toc-text">11.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-9"><span class="toc-number">11.2.</span> <span class="toc-text">11.2. 参考</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        OWASP_Top_10_2021
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-17T16:00:00.000Z" itemprop="datePublished">2023-04-18</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Web%E5%AE%89%E5%85%A8/">Web安全</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/OWASP-Top-10/" rel="tag">OWASP Top 10</a>, <a class="tag-link-link" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="tag">Web安全</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>OWASP Top 10 2021 学习记录，后续可能会往里面加入靶场的练习。</p>
+<span id="more"></span>
+<h1 id="概述">1. 概述</h1>
+<p>与 2017
+年对比，2021年的前10名中有3个新类别，4个类别的名称和范围发生了变化，还有一些合并。官方在必要时更改了类别名称，以专注于根本原因而不是表现形式。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/owasp_top_10_2021.png"
+alt="owasp_top_10_2021" />
+<figcaption aria-hidden="true">owasp_top_10_2021</figcaption>
+</figure>
+<p>排行如下：</p>
+<ol type="1">
+<li>Broken Access Control</li>
+<li>Cryptographic Failures</li>
+<li>Injection</li>
+<li>Insecure design</li>
+<li>Security Misconfiguration</li>
+<li>Vulnerable and Qutdated Components</li>
+<li>Identification and Authentication Failures</li>
+<li>Software and Data Integrity Failures</li>
+<li>Security Logging and Monitoring Failures</li>
+<li>Server-Side Request Forgery</li>
+</ol>
+<h1 id="broken-access-control访问控制失效">2. Broken Access
+Control（访问控制失效）</h1>
+<h2 id="概述-1">2.1. 概述</h2>
+<p>一些相关的机制介绍：</p>
+<ul>
+<li>身份验证：用于识别用户，最常见的就是登录表单</li>
+<li>会话管理：用于识别 HTTP 请求是哪个用户发送的（HTTP
+的无状态型性），最常见的就是登录之后，服务器发送的响应头中的
+<code>Set-Cookie</code> 字段；</li>
+<li>访问控制：用于确认当前用户是否有权限（被允许）做某个操作
+<ul>
+<li><p>垂直访问控制：允许普通用户执行管理员的相关操作；</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230420084653.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>水平访问控制：允许普通用户 A 执行普通用户 B 的相关操作</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230420084713.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+<li><p>上下文相关的访问控制（Context-Dependent Access
+Control）：允许用户跳过一些过程，比如下图中，正确的删除用户的过程是
+<code>点击 delete -&gt; 来到 /confirm 点击yes -&gt; 删除成功</code>，如果跳过中间的步骤直接删除则打破了
+Context-Dependent Access Control；</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230420084803.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure></li>
+</ul></li>
+</ul>
+<p>访问控制强制执行策略（access control enforces
+policy），使用户不能超出其预期权限进行操作。故障通常会导致未经授权的信息泄露、修改、破坏所有数据或执行超出用户限制的业务功能。常见的访问控制漏洞包括：</p>
+<ol type="1">
+<li>违反最小权限原则或违反默认拒绝原则，其中访问权限应仅授予特定功能、用户，<strong>但任何人都可以使用</strong>。</li>
+<li>通过修改 URL（参数篡改或强制浏览）、内部应用程序状态或 HTML
+页面，或使用攻击工具修改 API 请求来绕过访问控制检查。</li>
+<li>通过提供其唯一标识符（不安全的直接对象引用）允许查看或编辑他人的帐户（比如
+uid 参数）</li>
+<li>缺少 POST、PUT 和 DELETE 访问控制的访问 API</li>
+<li>权限提升。在没有登录的情况下执行登录用户的功能、在登录普通用户的情况下执行
+admin（管理员）的功能；</li>
+<li>元数据操作，例如重放或篡改 JSON Web Token (JWT)，篡改
+cookie、隐藏字段以提升权限或（这后面什么意思？）滥用 JWT 无效</li>
+<li>CORS 错误配置允许来自未经授权/不可信来源的 API 访问。</li>
+<li>强制以非认证用户身份浏览认证页面或以标准用户身份浏览特权页面。</li>
+</ol>
+<p>示例攻击场景：</p>
+<p>场景 1：</p>
+<p>应用程序在访问账户信息的 SQL 调用中使用未经验证的数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pstmt.setString(1, request.getParameter(&quot;acct&quot;));</span><br><span class="line">ResultSet results = pstmt.executeQuery( );</span><br></pre></td></tr></table></figure>
+<p>这里的查询语句的参数是
+<code>acct</code>，由用户输入，用户可以遍历的输入 <code>acct</code>
+从而获取其他用户的信息，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://example.com/app/accountInfo?acct=notmyacct</span><br></pre></td></tr></table></figure>
+<p>场景 2：</p>
+<p>攻击者通过修改 URL 从而访问到其他页面，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://example.com/app/getappInfo</span><br><span class="line">https://example.com/app/admin_getappInfo</span><br></pre></td></tr></table></figure>
+<p>场景 3：</p>
+<p>攻击者通过修改 id 从而实现删除其他用户订单的功能，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public boolean deleteOrder(Long id)&#123;</span><br><span class="line">	Order order = orderRepository.getOne(id);</span><br><span class="line">	if (order == null)&#123;</span><br><span class="line">		log.info(&#x27;No found order&#x27;);</span><br><span class="line">		return false</span><br><span class="line">	&#125;</span><br><span class="line">	User user = order.getUser();</span><br><span class="line">	orderRepository.delete(order);</span><br><span class="line">	log.info(&#x27;Delete order for user&#123;&#125;&#x27;, user.getId());</span><br><span class="line">	return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>攻击者通过将 <code>getappInfo</code> 修改为
+<code>admin_getappInfo</code> 成功访问到管理员界面。</p>
+<p>通过对以上内容的理解，可以得出，一些常见的、属于这一分类的 web
+漏洞：</p>
+<ol type="1">
+<li>文件包含、目录遍历、信息泄露：这 3
+个漏洞本质上都是信息泄露，文件包含可能可以做其他利用，比如执行恶意程序。</li>
+<li>越权，包括水平越权和垂直越权；</li>
+<li>Session 固定和 cookie 伪造，这两者都是攻击者拿到受害者的 session
+或者 cookie 就可以以受害者的身份登录网站，执行操作；</li>
+<li>CORS 错误配置；</li>
+</ol>
+<p>预防该类漏洞的手段：</p>
+<ol type="1">
+<li>使用“安全中心（security-centric）”的设计，所有的访问必须先进行验证，保证验证通过之后才可以进一步操作；</li>
+<li>除了公共的资源，拒绝所有的请求；</li>
+<li>在整个 web 应用中使用最小权限原则（principal of least privilege）
+；</li>
+<li>使用基于属性或者基于功能的访问控制，而不是基于角色的访问控制；</li>
+<li><strong>“用户的输入是不可信的”</strong>，因此服务端需要一直进行访问控制；</li>
+</ol>
+<blockquote>
+<p>ABAC（Attribute-Based Access
+Control）利用了一组称为“属性”的特征，包括用户属性、环境属性、资源属性。基于这些属性来确定一个功能的访问，而
+RBAC（role-based access control）只是基于用户来确定访问控制，ABAC 较于
+RBAC 有着更多的变量，所以安全性更高，但实现也更加复杂。</p>
+</blockquote>
+<h2 id="靶场">2.2. 靶场</h2>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230420090622.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h3 id="unprotected-admin-functionality">2.2.1. Unprotected admin
+functionality</h3>
+<p>进入环境后，还像着往常一样，去找
+<code>/admin</code>，发现不存在，利用目录扫描也没找到，但发现了一个熟悉的文件
+<code>robots.txt</code>：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421085308.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>该文件内容也很简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /administrator-panel</span><br></pre></td></tr></table></figure>
+<p>访问 <code>/administrator-panel</code>，发现可以直接删除用户
+<code>carlos</code>：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421085410.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p><strong>分析：</strong></p>
+<ul>
+<li>该漏洞的产生就和它的名字一样，管理员的功能没有受到保护，只要攻击者知道
+<code>/administrator-panel</code> 存在，就可以执行管理员功能；</li>
+</ul>
+<h3 id="unprotected-admin-functionality-with-unpredictable-url">2.2.2.
+Unprotected admin functionality with unpredictable URL</h3>
+<p>和上题类似，不过不论是 <code>/robots.txt</code> 、<code>/admin</code>
+还是 <code>/administrator-panel</code> 都不存在。根据题目说明“but the
+location is disclosed somewhere in the application”，去查看
+<code>/login</code> 页面的源码一段 js 代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> isAdmin = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">if</span> (isAdmin) &#123;</span><br><span class="line">   <span class="keyword">var</span> topLinksTag = <span class="built_in">document</span>.getElementsByClassName(<span class="string">&quot;top-links&quot;</span>)[<span class="number">0</span>];</span><br><span class="line">   <span class="keyword">var</span> adminPanelTag = <span class="built_in">document</span>.createElement(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line">   adminPanelTag.setAttribute(<span class="string">&#x27;href&#x27;</span>, <span class="string">&#x27;/admin-zremy3&#x27;</span>);</span><br><span class="line">   adminPanelTag.innerText = <span class="string">&#x27;Admin panel&#x27;</span>;</span><br><span class="line">   topLinksTag.append(adminPanelTag);</span><br><span class="line">   <span class="keyword">var</span> pTag = <span class="built_in">document</span>.createElement(<span class="string">&#x27;p&#x27;</span>);</span><br><span class="line">   pTag.innerText = <span class="string">&#x27;|&#x27;</span>;</span><br><span class="line">   topLinksTag.appendChild(pTag);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从这里可以得到
+<code>/admin-zremy3</code>，访问该路径发现就是管理员功能页面，可以直接删除
+<code>carlos</code></p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421090108.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p><strong>分析：</strong></p>
+<ul>
+<li>根本原因，没对管理员功能做保护；</li>
+<li>直接原因，在源代码中暴露了管理功能页面的路径；</li>
+</ul>
+<h3 id="user-role-controlled-by-request-parameter">2.2.3. User role
+controlled by request parameter</h3>
+<p>进入环境，登录 <code>wiener:peter</code>，然后访问
+<code>/admin</code>，查看 <code>GET /admin</code> 的包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421090446.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>注意 <code>Admin=false</code> 参数，刷新页面，然后将其修改为
+<code>Admin=true</code> 就可以成功访问到 <code>/admin</code>
+页面，并删除 <code>carlos</code>，需要注意的是，删除 <code>carlos</code>
+时也需要更改 <code>Admin=true</code>.</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421090641.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p><strong>分析：</strong></p>
+<ul>
+<li>虽然对管理员功能做了一定的访问控制，只有 <code>Admin=true</code>
+时才可以访问，但该参数是用户可控的，因此是不安全；</li>
+</ul>
+<h3 id="user-role-can-be-modified-in-user-profile">2.2.4. User role can
+be modified in user profile</h3>
+<p>进入环境，使用 <code>wiener:peter</code>
+登录，然后发呆（bushi），根据题目所说，需要修改个人信息，但只有
+<code>Update email</code>，先试试看，发现请求包和响应包如下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421093053.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421093107.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>注意到响应包中存在一个
+<code>roleid</code>，这就是我们要修改的地方，我尝试了很多，发现只有
+<code>POST /my-account/change-email</code>
+的请求体中内容如下时才可以：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;username&quot;: &quot;wiener&quot;,</span><br><span class="line">  &quot;email&quot;: &quot;123123@123&quot;,</span><br><span class="line">  &quot;apikey&quot;: &quot;cCDmIkzLyoQnEuvQOHFuHOC9VRUdEYEG&quot;,</span><br><span class="line">  &quot;roleid&quot;: 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>名字无所谓，我只修改了 roleid</p>
+</blockquote>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421093242.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>发现响应包中的 <code>roleid</code> 被成功修改，于是再次访问
+<code>/admin</code>，成功访问也可以删除了。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421093321.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p><strong>分析：</strong></p>
+<ul>
+<li>虽然该 web 应用在设计之初就不允许对 <code>roleid</code>
+的修改，但对此功能没有做很好的限制，估计后台的修改邮箱的后端有这么一句
+<code>roleid = postContent['roleid']</code>；</li>
+</ul>
+<h3 id="user-id-controlled-by-request-parameter">2.2.5. User ID
+controlled by request parameter</h3>
+<p>进入环境，使用 <code>wiener:peter</code> 登录，根据题目提示，我修改了
+<code>id=carlos</code>，没想到还真进来了，提交就完事了</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421094003.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p><strong>分析：</strong></p>
+<ul>
+<li>使用用户提交的内容作为判断当前用户的条件，这是不安全的；</li>
+</ul>
+<h3
+id="user-id-controlled-by-request-parameter-with-unpredictable-user-ids">2.2.6.
+User ID controlled by request parameter, with unpredictable user
+IDs</h3>
+<p>进入环境，登录
+<code>wiener:peter</code>，之后真的就发呆了，首先看了一下
+<code>id</code>，是一串类似
+<code>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code>
+的字符串，没有任何规律，<code>update email</code>
+也没有帮助，结果居然是在 <code>home</code> 中找 <code>carlos</code>
+发表的 blog：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421100810.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>可以看到 <code>carlos</code> 的 <code>id</code>，然后访问
+<code>/my-account?id=&#123;红框中的内容&#125;</code>，就可以访问到
+<code>carlos</code> 的个人信息页面，得到 API Key。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>根本原因：和 <a
+href="#2.2.5.%20User%20ID%20controlled%20by%20request%20parameter">2.2.5.
+User ID controlled by request parameter</a>
+一样，判断用户的条件用用户输入；</li>
+<li>直接原因：将判断用户的条件即 guid 暴露出来；</li>
+</ul>
+<h3
+id="user-id-controlled-by-request-parameter-with-data-leakage-in-redirect">2.2.7.
+User ID controlled by request parameter with data leakage in
+redirect</h3>
+<p>登录 <code>wiener:peter</code>，访问 <code>my-account</code>，发现
+url 中带有 <code>id=wiener</code> ，尝试将其修改为
+<code>id=carlos</code>，发现被重定向到了
+<code>/login</code>，根据题目提示，查看该重定向的包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421101844.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>成功得到 <code>carlos</code> 的 API Key。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>根本原因：信息泄露，或者说逻辑漏洞，访问
+<code>my-account/id=carlos</code> 时，不应该将 <code>carlos</code>
+的信息返回。</li>
+</ul>
+<h3
+id="user-id-controlled-by-request-parameter-with-password-disclosure">2.2.8.
+User ID controlled by request parameter with password disclosure</h3>
+<p>登录 <code>wiener:peter</code>，访问 <code>/my-account</code>，发现
+<code>Update email</code>
+功能处填上了密码，可以通过查看源码的方式（或者点击
+<code>update email</code> 拦截请求包）获得明文：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421102853.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>还发现带有参数 <code>?id=wiener</code>，根据题目提示，可以访问
+<code>/my-account?id=administrator</code>，成功访问到管理员的信息，并查看源码得到管理员的密码：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421102940.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>登录访问 <code>/admin</code> 删除 <code>carlos</code> 就行。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>根本原因：越权，只需要修改
+<code>id</code>，就可以访问到其他用户的个人信息页面；</li>
+<li>密码暴露反倒是小事，不过也是一个隐患；</li>
+</ul>
+<h3 id="insecure-direct-object-references">2.2.9. Insecure direct object
+references</h3>
+<p>直接进入 <code>/chat</code> 页面，这里介绍一下 <code>send</code> 和
+<code>view transcript</code> 两个功能：</p>
+<ul>
+<li><code>send</code>：将文本框的内容发送， <code>Hal Pline</code>
+会针对你的内容做出回答，就是聊天；</li>
+<li><code>view transcript</code>：将聊天记录下载下来；</li>
+</ul>
+<p>经过不断尝试（聊天、下载）我发现下载下来的记录是
+<code>x.txt</code>，前面的 x 是整数，我看了一下我的第一个下载文件时
+<code>2.txt</code>，这是否意味着有一个
+<code>1.txt</code>，尝试访问，得到了如下结果：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421105409.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>成功拿到密码（需要注意，最后面那个 <code>.</code>
+是句号，不是密码的一部分），虽然不知道是谁的，但根据题目可知，应该是
+<code>carlos</code> 的，尝试之后发现可以登录。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>其一，根据 <code>broken access control</code>
+中的描述，服务器不应该保存没有必要存储的信息；</li>
+<li>其二，即使存储了聊天记录，也不应该是明文，毕竟聊天是可能存在隐私的，所以应该加密；</li>
+<li>其三，用户不应该都能够下载不属于自己的聊天记录；</li>
+</ul>
+<h3 id="url-based-access-control-can-be-circumvented">2.2.10. URL-based
+access control can be circumvented</h3>
+<p>直接访问 <code>/admin</code> 会提示
+<code>Access denied</code>，根据提示，后端支持
+<code>X-Original-URL</code> 头部，该头部的作用是重写 URL，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 第一个请求包</span><br><span class="line">GET /admin HTTP/1.1</span><br><span class="line">...</span><br><span class="line"># 第二个请求包</span><br><span class="line">GET / HTTP/1.1</span><br><span class="line">X-Original-URL: /admin</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>两者效果一样， <code>X-Original-URL</code> 就是将请求的 url
+重写，因此本题就可拦截 <code>GET /admin</code> 请求包，修改为：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421111126.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421111135.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>但并不能直接删除 <code>carlos</code>，一样的道理，咱们无法访问
+<code>/delete</code>，还是一样的方法：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421111444.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>参数还是得写在上面，将参数写在 <code>X-Original-URL</code>
+会提示：<code>"Missing parameter 'username'"</code>。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>根本原因，没有对特殊页面进行严格的访问控制，比如验证 session
+之类的；</li>
+<li>直接原因，后端支持非标准的头部
+<code>X-Original-URL</code>，而没有对其进行一定限制；</li>
+</ul>
+<h3 id="method-based-access-control-can-be-circumvented">2.2.11.
+Method-based access control can be circumvented</h3>
+<p>首先登录 <code>administrator:admin</code>，拿到将 <code>wiener</code>
+升级的请求包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421114524.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>登录
+<code>wiener:peter</code>，随便抓取一个包，让后构造成上述的样子，主要的因素有：</p>
+<ul>
+<li><code>/admin-role</code></li>
+<li><code>username=wiener&amp;action=upgrade</code></li>
+</ul>
+<p>其他无所谓，然后将请求方式改成 <code>GET</code>，得到如下的包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421114510.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>将其发送即可通过。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>后台有验证，但是验证不全面，只验证了 <code>POST</code>
+请求的参数，修改方式：
+<ul>
+<li>如果只验证 <code>POST</code>，那就禁用其他请求方式，或者
+<code>if(Not POST)&#123;结束&#125;</code>；</li>
+<li>对所有用户提交的参数进行验证；</li>
+</ul></li>
+</ul>
+<h3 id="multi-step-process-with-no-access-control-on-one-step">2.2.12.
+Multi-step process with no access control on one step</h3>
+<p>先登录 <code>administrator:admin</code>，提升 <code>wiener</code>
+为管理员，其过程为：</p>
+<ol type="1">
+<li><code>POST /admin-role</code> 携带
+<code>username=wiener&amp;action=upgrade</code>，返回包为 200</li>
+<li><code>POST /admin-role</code> 携带
+<code>action=upgrade&amp;confirmed=true&amp;username=wiener</code>，返回包为
+302</li>
+<li>重定向回 <code>GET /admin</code>；</li>
+</ol>
+<p>接着，登录 <code>wiener:peter</code>，把上述 1、2 步骤的包中的 cookie
+修改为 <code>wiener:peter</code> 的。</p>
+<p>上述第一个请求修改后的请求与响应：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421115553.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>上述第二个请求修改后的请求与响应：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421115615.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>成功通过。</p>
+<p><strong>分析：</strong></p>
+<ul>
+<li>后台进行了访问控制策略，但没有完全限制，存在一点的纰漏，比如这里的确认是否提升用户的请求就没有做限制；</li>
+</ul>
+<h3 id="referer-based-access-control">2.2.13. Referer-based access
+control</h3>
+<p>过程同上，先登录 <code>administrator:admin</code>，抓取
+<code>carlos</code> 升级为管理员的包：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421120121.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>然后登录 <code>wiener:peter</code>，将上面的请求包的
+<code>cookie</code> 修改为 <code>wiener</code> 的，并且把
+<code>username=carlos</code> 修改为 <code>username=wiener</code>
+即可：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421120306.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>我们尝试修改 <code>Referer</code> 的值，会发现：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230421120358.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>后台通过 <code>Referer</code> 来进行判断用户，逻辑是 “能从
+<code>/amdin</code> 来的请求一定是管理员的”，但 <code>Referer</code>
+能被用户修改，属于防君子不防小人了。</p>
+<h2 id="参考">2.3. 参考</h2>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=_jz5qFWhLcg">Broken Access
+Control | Complete Guide - YouTube</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">A01
+Broken Access Control - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/access-control">Access
+control vulnerabilities and privilege escalation</a></li>
+</ol>
+<h1 id="cryptographic-failures加密失效">3. Cryptographic
+Failures（加密失效）</h1>
+<h2 id="概述-2">3.1. 概述</h2>
+<p>首先是确定传输中和静态数据的保护需求，例如，密码、信用卡号、健康记录、个人信息和商业机密需要额外保护。对于所有数据：</p>
+<ul>
+<li>是否有数据以明文形式传输，比如 HTTP、SMTP、FTP 等协议是否通过 TLS
+加密。外部流量危险，需要验证所有的内部流量，比如负载均衡器、web
+服务器和后端系统之间的流量；</li>
+<li>默认情况下或在旧代码中是否使用任何旧的或弱的加密算法或协议？</li>
+<li>是否使用默认加密密钥？是否使用较弱的加密密钥？是否缺少适当的密钥管理与轮换？Are
+crypto keys checked into source code
+repositories？（如何理解最后一句？）</li>
+<li>是否未强制执行加密；</li>
+<li>收到的服务器证书和信任链是否经过正确验证；</li>
+<li>Are initialization vectors ignored, reused, or not generated
+sufficiently secure for the cryptographic mode of operation? Is an
+insecure mode of operation such as ECB in use? Is encryption used when
+authenticated encryption is more
+appropriate？（应该是密码学相关内容）</li>
+<li>在没有密码基本密钥派生功能（password base key derivation function,
+PBKDF）的情况下，密码是否被用作加密密钥；</li>
+<li>随机性是否用于加密目的而不是为满足加密要求而设计的？
+即使选择了正确的功能，它是否需要由开发人员
+seed，如果不需要，开发人员是否用缺乏足够熵/不可预测性的 seed
+覆盖了内置的强大 seed 功能？（seed 生成随机数需要的随机种子）</li>
+<li>是否使用了 MD5 或 SHA1
+等已弃用的哈希函数，或者在需要加密哈希函数时是否使用了非加密哈希函数？</li>
+<li>是否使用了已弃用的加密填充方法；</li>
+<li>加密错误的消息或侧信道信息（就是旁路攻击，side-channel
+attack）是否可利用；</li>
+</ul>
+<p>防御手段：</p>
+<ul>
+<li>对应用程序处理、存储或传输的数据进行分类。根据隐私法、监管要求或业务需求确定哪些数据是敏感数据</li>
+<li>不要存储不必要的敏感信息；</li>
+<li>对所有敏感信息进行加密，不论是静态的还是传输过程中的；</li>
+<li>确保采用最新且强大的标准算法、协议和密钥；使用适当的密钥管理。</li>
+<li>使用安全协议加密所有传输中的数据，例如使用前向保密 (FS) 密码的
+TLS、服务器的密码优先级和安全参数。使用 HTTP 严格传输安全 (HSTS)
+等指令强制加密。</li>
+<li>禁止缓存包含敏感数据的流量；</li>
+<li>根据数据的分类，使用对应的安全控制；</li>
+<li>不要使用 FTP 和 SMTP 等旧协议来传输敏感数据</li>
+<li>使用具有工作因子（延迟因子）的强自适应和加盐哈希函数存储密码，例如
+Argon2、scrypt、bcrypt 或 PBKDF2</li>
+<li>必须选择适合操作模式的初始化向量。对于许多模式，这意味着使用
+CSPRNG（加密安全伪随机数生成器）。对于需要随机数的模式，初始化向量 (IV)
+不需要 CSPRNG。在任何情况下，IV 都不应该为固定密钥使用两次。</li>
+<li>始终使用经过身份验证的加密，而不仅仅是加密</li>
+<li>密钥应以加密方式随机生成，并作为字节数组存储在内存中。如果使用密码，则必须通过适当的密码基密钥派生函数将其转换为密钥</li>
+<li>确保在适当的地方使用加密随机性，并且它没有以可预测的方式或低熵播种。大多数现代
+API 不要求开发人员为 CSPRNG 播种以获得安全性。</li>
+<li>避免弃用的加密函数和填充方案，例如 MD5、SHA1、PKCS number 1
+v1.5。</li>
+<li>独立验证配置和设置的有效性。</li>
+</ul>
+<p>攻击场景示例：</p>
+<p>场景
+1：应用程序使用数据库自动加密对数据库中的敏感信息进行加密（比如信用卡卡号），但数据库的自动加密在检索时会自动解密，因此如果应用程序存在
+SQL 注入漏洞，那么就可以利用 SQL 注入获取明文形式的信用卡卡号。</p>
+<p>场景 2：站点不对所有页面使用
+TLS，或者不支持弱加密。攻击者监视网络流量（例如，在不安全的无线网络中），将连接从
+HTTPS 降级为 HTTP，拦截请求，并窃取用户的会话 cookie。然后，攻击者重放此
+cookie
+并劫持用户的（已验证的）会话，访问或修改用户的私人数据。除了上述内容，他们还可以更改所有传输的数据，例如汇款的接收者。</p>
+<p>场景
+3：密码数据库使用未加盐的或简单的哈希来存储每个人的密码。文件上传漏洞允许攻击者检索密码数据库。所有未加盐的哈希值都可以通过预先计算的哈希值彩虹表公开。由简单或快速哈希函数生成的哈希值可能会被
+GPU 破解，即使它们被加盐。</p>
+<p>总结：</p>
+<ol type="1">
+<li>对存储、传输的敏感数据进行加密；</li>
+<li>Web 应用使用加密的协议，比如 HTTPS，而不是 HTTP；</li>
+<li>加密算法要新、要强大、要足够随机；</li>
+<li>对于敏感数据，没有必要存储的就不存储，不存储就不会泄露；</li>
+</ol>
+<h2 id="参考-1">3.2. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A02_2021-Cryptographic_Failures/">A02
+Cryptographic Failures - OWASP Top 10:2021</a></li>
+</ol>
+<h1 id="injection注入">4. Injection（注入）</h1>
+<h2 id="概述-3">4.1. 概述</h2>
+<p>应用程序在以下情况下容易受到攻击：</p>
+<ul>
+<li>应用程序未验证、过滤用户提供的数据。</li>
+<li>直接在解释器中使用没有上下文感知转义的动态查询或非参数化调用（参数化调用：SQL
+预处理）</li>
+<li>在对象关系映射 (object-relational mapping, ORM)
+搜索参数中使用恶意数据来提取额外的敏感记录</li>
+<li>直接使用或连接恶意数据。SQL
+或命令包含动态查询、命令或存储过程中的结构和恶意数据;</li>
+</ul>
+<p>一些更常见的注入是 SQL、NoSQL、OS 命令、对象关系映射 (ORM)、LDAP
+和表达式语言 (EL)或对象图导航库
+(OGNL)注入。源代码审查是检测应用程序是否容易受到注入攻击的最佳方法。强烈建议对所有参数、标头、URL、cookie、JSON、SOAP
+和 XML 数据输入进行自动化测试。组织可以在 CI/CD 管道中包含静态
+(SAST)、动态 (DAST)和交互式
+(IAST)应用程序安全测试工具，以便在生产部署之前识别注入漏洞。</p>
+<blockquote>
+<p>I/CD
+管道是为了交付新版本的软件而必须执行的一系列步骤。持续集成/持续交付（CI/CD）管道是一套专注于使用
+DevOps 或站点可靠性工程（SRE）方法来改进软件交付的实践。</p>
+</blockquote>
+<p>防御手段：</p>
+<ul>
+<li>首选的选择是使用安全的
+API，这样可以避免完全使用解释器，提供参数化接口，或者迁移到对象关系映射工具
+(Object Relational Mapping Tools, orm)。注意: 即使参数化，如果 PL/SQL 或
+T-SQL 使用 EXECUTE IMMEDIATE 或 <code>exec()</code>
+连接查询和数据或执行恶意数据，存储过程仍然可能引入 SQL 注入。</li>
+<li>使用积极的服务器端输入验证（比如黑、白名单过滤）。这不是一个完整的防御，因为许多应用程序需要特殊字符，例如文本区域或移动应用程序的
+API。</li>
+<li>对于任何剩余的动态查询，使用该解释器的特定转义语法转义特殊字符。注意:
+SQL 结构
+(如表名、列名等)不能转义，因此用户提供的结构名是危险的。这是报告编写软件中常见的问题。</li>
+<li>在查询中使用 LIMIT 和其他 SQL 控件，以防止在 SQL
+注入的情况下大量泄露记录。</li>
+</ul>
+<p>攻击场景示例：</p>
+<p>场景 1：应用程序在构造以下易受攻击的 SQL 调用时使用不受信任的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String query = &quot;SELECT \* FROM accounts WHERE custID=&#x27;&quot; + request.getParameter(&quot;id&quot;) + &quot;&#x27;&quot;;</span><br></pre></td></tr></table></figure>
+<p>上述查询语句的构造中，<code>custID</code> 由用户提供，存在 SQL
+注入。</p>
+<p>场景
+2：同样，应用程序对框架的盲目信任可能会导致查询仍然容易受到攻击，（例如，Hibernate
+查询语言 (HQL)）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Query HQLQuery = session.createQuery(&quot;FROM accounts WHERE custID=&#x27;&quot; + request.getParameter(&quot;id&quot;) + &quot;&#x27;&quot;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://example.com/app/accountView?id=&#x27; UNION SELECT SLEEP(10);-- </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上面 <code>--</code> 后面有个空格</p>
+</blockquote>
+<p>用户可以输入上面的 payload 建议 SQL 注入漏洞。</p>
+<p>原来的 OWASP Top 10 中 SQL 注入是一个单独分类，现在已经被整合到了
+Injection 中，这也表明了 Injection 不只是 SQL
+注入，还有许多其他注入漏洞：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/injection_vuln.jpg"
+alt="injection_vuln" />
+<figcaption aria-hidden="true">injection_vuln</figcaption>
+</figure>
+<h2 id="参考-2">4.2. 参考</h2>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://owasp.org/Top10/A03_2021-Injection/">A03 Injection
+- OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/334483.html">2021
+Owasp top 10 逐个击破--A03:2021 – Injection -
+FreeBuf网络安全行业门户</a></li>
+</ol>
+<h1 id="insecure-design不安全设计">5. Insecure Design（不安全设计）</h1>
+<h2 id="概述-4">5.1. 概述</h2>
+<p>不安全设计是一个广泛的范畴，不是一个特定的弱点，可能是许多弱点，表现为“缺乏控制设计”或者“无效的控制设计”。不安全的设计和不安全的实现是有区别的。我们区分设计漏洞和实现漏洞是有原因的，它们有不同的根源和补救措施。比如说删除用户的过程
+<code>点击 delete -&gt; 点击 confirm -&gt; 完成删除</code> ：</p>
+<ul>
+<li>不安全设计：<code>点击 delete -&gt; 完成删除</code>，在设计的时候就没有设计
+<code>confirm</code> 机制；</li>
+<li>不安全实现：实现了
+<code>点击 delete -&gt; 点击 confirm -&gt; 完成删除</code>
+，但实现过程存在漏洞，比如用户可以修改 <code>uid</code>
+实现删除其他用户；</li>
+</ul>
+<p>一个安全的设计也有可能存在实现漏洞，一个不安全的设计不可能被完美的实现所修复，因为所需要的安全控制从未被设计，讲人话就是：我从来没想过要这么做，要如何修复？</p>
+<p>导致不安全设计的因素之一是开发的软件或系统中缺乏固有的业务风险分析，因此无法确定需要何种级别的安全设计。</p>
+<p><strong>需求和资源管理：</strong></p>
+<p>收集并协商应用程序的业务需求，包括对所有数据资产的机密性、完整性、可用性和真实性的保护需求以及预期的业务逻辑。考虑应用程序的暴露程度以及是否需要隔离用户（除了访问控制）。编写技术要求，包括功能性和非功能性安全要求。规划和协商涵盖所有设计、构建、测试和运营（包括安全活动）的预算。</p>
+<p><strong>安全设计：</strong></p>
+<p>安全设计是一种文化和方法，它不断地评估威胁，并确保代码得到可靠的设计和测试，以防止已知的攻击方法。威胁建模应该集成到
+refinement sessions
+(或类似的活动)中;，查找数据流和访问控制或其他安全控制中的更改。在用户故事开发（user
+story
+development）中，确定正确的流程和故障状态，确保它们被负责的和受影响的各方很好地理解和同意。分析预期和失效流程的假设和条件，确保它们仍然是准确和理想的。确定如何验证假设并执行适当行为所需的条件。确保结果记录在用户描述中。从错误中学习，并提供积极的激励来促进改进。安全设计既不是附加组件，也不是可以添加到软件中的工具。</p>
+<p><strong>安全开发声明周期：</strong></p>
+<p>安全软件需要一个安全的开发生命周期、某种形式的安全设计模式、铺路方法（paved
+road
+methodology）、安全组件库、工具和威胁建模。在整个项目和软件维护的整个过程中，在软件项目的开始阶段就联系的安全专家。考虑利用
+OWASP 软件保证成熟度模型（SAMM）以帮助组织安全软件开发工作。</p>
+<p><strong>防御手段：</strong></p>
+<ul>
+<li>与 AppSec
+专业人员一起建立和使用安全的开发生命周期，以帮助评估和设计安全和隐私相关的控制措施</li>
+<li>建立和使用安全设计模式库或准备好使用组件的道路（paved road）</li>
+<li>将威胁建模用于关键身份验证、访问控制、业务逻辑和关键流程</li>
+<li>Integrate security language and controls into user stories
+(将安全语言和控件集成到用户故事中)</li>
+<li>在应用程序的每一层（从前端到后端）集成合理性检查</li>
+<li>编写单元和集成测试以验证所有关键流程是否都能抵抗威胁模型。为应用程序的每一层编译用例和误用例。</li>
+<li>根据暴露和保护需求，在系统层和网络层上分离层级</li>
+<li>通过设计在所有层中稳健地隔离租户（tenants）；</li>
+<li>限制用户或服务的资源消耗</li>
+</ul>
+<p>攻击场景示例：</p>
+<p>场景
+1：凭证恢复工作流可能包括“问题与回答”，这是不安全的，“问题与回答”不能作为可信的身份证据，因为不止一个人可以知道答案。此类代码应被删除并替换为更安全的设计。（比如你的家乡是哪里这种问题，之前还挺经常见的）</p>
+<p>场景
+2：连锁电影院允许团体预订折扣，最多15名观众，需要押金。攻击者可以对这个流程进行威胁建模，并测试他们是否可以一次性预订600个座位和所有电影院，从而造成巨大的收入损失，这样只需要交
+15 个座位的前，却订了 600 个座位。</p>
+<p>场景
+3：一家零售连锁店的电子商务网站没有针对黄牛运行的机器人的保护措施，黄牛购买高端显卡以转售拍卖网站。这为显卡制造商和零售连锁所有者带来了可怕的宣传，并与无法以任何价格获得这些显卡的发烧友产生了长期的仇恨。仔细的反机器人设计和领域逻辑规则，例如在可用的几秒钟内进行的购买，可能会识别出不真实的购买并拒绝此类交易。</p>
+<h2 id="威胁建模概述">5.2. 威胁建模概述</h2>
+<p>不安全设计这个漏洞很广泛，并不是某段代码、某个功能有问题，而是整个
+web
+应用就是一个问题。对于这类漏洞比较难修复，所以最好的就是尽量不出现这类漏洞，引入威胁建模，在上线前就解决问题。</p>
+<p>威胁建模的目的是回答以下 4 个问题：</p>
+<ul>
+<li>What are we working on（应用程序）?</li>
+<li>What can go wrong（有哪些问题）?</li>
+<li>What are we going to do about it（针对这些问题，该如何做）?</li>
+<li>Did we do a good job（能否做的更好）?</li>
+</ul>
+<p>为了回答这 4 个问题，威胁建模有 4 个步骤：</p>
+<ol type="1">
+<li>评估范围；</li>
+<li>确定威胁；</li>
+<li>确定对策；</li>
+<li>评估工作；</li>
+</ol>
+<p>上面 4
+个步骤中，最难的就是评估范围，这需要将应用程序进行分解，了解应用程序的使用流程，确定入口点以查看潜在的攻击者可以在哪里与应用程序进行交互，确定资产（即攻击者可能会感兴趣的项目/区域），并标识表示应用程序将授予外部实体的访问权限的信任级别。</p>
+<p>分解应用程序有 3 种技术，第一种就是构建数据流程图：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/data_process.png"
+alt="data_process" />
+<figcaption aria-hidden="true">data_process</figcaption>
+</figure>
+<p>第二种是过程流程图：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/procession_process.jpg"
+alt="procession_process" />
+<figcaption aria-hidden="true">procession_process</figcaption>
+</figure>
+<p>由于数据流程图是由系统工程师而不是安全专家开发的，因此它们包含了许多威胁建模不需要的开销。数据流程图的一种替代方法是过程流程图。两者在总体概念上相似，但后者更加精简，并且侧重于用户和执行代码在系统中的移动方式，更紧密地反映了攻击者的思维方式</p>
+<p>第三种则是攻击树：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/attacke_tree.jpg"
+alt="attacke_tree" />
+<figcaption aria-hidden="true">attacke_tree</figcaption>
+</figure>
+<p>它们由代表不同事件的一系列父节点和子节点组成，子节点是必须满足的条件才能使父节点为真。根节点（图中的最高父节点）是攻击的总体目标。借助攻击树，威胁建模者可以看到必须组合哪些情况才能使威胁成功。</p>
+<p>威胁建模框架和方法（威胁建模的各种结构化方法通常称为框架或方法论），以下是
+7 中顶级威胁建模方法：</p>
+<ul>
+<li>STRIDE</li>
+<li>DREAD</li>
+<li>PASTA</li>
+<li>VAST</li>
+<li>Trike</li>
+<li>OCTAVE</li>
+<li>NIST</li>
+</ul>
+<h2 id="参考-3">5.3. 参考</h2>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://owasp.org/Top10/A04_2021-Insecure_Design/">A04
+Insecure Design - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/334963.html">2021
+Owasp top 10 逐个击破--A04:2021 – Insecure Design -
+FreeBuf网络安全行业门户</a></li>
+<li><a target="_blank" rel="noopener" href="https://owasp.org/www-community/Threat_Modeling">Threat
+Modeling | OWASP Foundation</a></li>
+</ol>
+<h1 id="security-misconfiguration-安全错误配置">6. Security
+Misconfiguration (安全错误配置)</h1>
+<h2 id="概述-5">6.1. 概述</h2>
+<p>如果应用程序存在以下情况，则该应用程序可能容易受到攻击：</p>
+<ul>
+<li>在应用程序堆栈（application
+stack）的任何部分缺少适当的安全加固（security
+hardening），或者，云服务权限配置不当；</li>
+<li>启用或安装了不必要的功能，例如，不必要的端口、服务、页面、帐户或特权；</li>
+<li>默认帐户及其密码仍然启用且未更改</li>
+<li>错误处理时，向用户显示过多的错误消息如堆栈跟踪或其他信息；</li>
+<li>对于升级的系统，最新的安全功能被禁用或未安全配置。</li>
+<li>应用程序服务器、应用程序框架（例如
+Struts、Spring、<code>ASP.NET</code>）、库（libraries）、数据库等的安全设置未设置为安全值。</li>
+<li>服务器不发送安全标头（HTTP
+头部字段）或指令，或者它们未设置为安全值。</li>
+<li>该软件已过时或易受攻击 <a
+href="#7.%20Vulnerable%20and%20Outdated%20Components（有漏洞、过期的组件）">7.
+Vulnerable and Outdated Components（有漏洞、过期的组件）</a></li>
+</ul>
+<p>如果没有一致的、可重复的应用程序安全配置过程，系统就会面临更高的风险。</p>
+<p><strong>防御手段：</strong></p>
+<ul>
+<li>可重复的加固过程可以快速轻松地部署另一个适当锁定（appropriately
+locked down）的环境。开发、QA
+和生产环境都应该配置相同，在每个环境中使用不同的凭据。这个过程应该是自动化的，以尽量减少设置新安全环境所需的工作。</li>
+<li>一个最小的平台，没有任何不必要的功能、组件、文档和示例。删除或不安装未使用的特性和框架。</li>
+<li>作为补丁管理过程的一部分，审查和更新适用于所有安全说明、更新和补丁的配置的任务
+(参见 <a
+href="#7.%20Vulnerable%20and%20Outdated%20Components（有漏洞、过期的组件）">7.
+Vulnerable and Outdated
+Components（有漏洞、过期的组件）</a>)。查看云存储权限 (如 S3 bucket
+permissions)。</li>
+<li>分段应用程序架构通过分段、容器化或云安全组 (ACL)
+在组件或租户之间提供有效和安全的分离</li>
+<li>向客户端发送安全指令，例如，安全标头。</li>
+<li>用于验证所有环境中配置和设置有效性的自动化过程。</li>
+</ul>
+<p><strong>攻击场景示例：</strong></p>
+<p>场景
+1：应用程序服务器附带未从生产服务器中删除的示例应用程序。这些示例应用程序具有攻击者用来破坏服务器的已知安全漏洞。假设这些应用程序之一是管理控制台，并且默认帐户未更改。在这种情况下，攻击者使用默认密码登录并接管。</p>
+<p>场景
+2：服务器上未禁用目录列表。攻击者发现他们可以简单地列出目录。攻击者找到并下载已编译的
+Java
+类，他们对其进行反编译和反向工程以查看代码。然后，攻击者在应用程序中发现了严重的访问控制缺陷。</p>
+<p>场景
+3：应用程序服务器的配置允许向用户返回详细的错误消息，例如堆栈跟踪。这可能会暴露敏感信息或潜在缺陷，例如已知易受攻击的组件版本。</p>
+<p>场景 4：云服务提供商 (cloud service provider，CSP) 具有其他 CSP
+用户对 Internet
+开放的默认共享权限。这允许访问存储在云存储中的敏感数据。</p>
+<p>安全配置错误可能发生在很多地方，最常见的就是
+CMS，很多搭建小网站的时候就没有做适当修改，只改了账号、密码之类的私密信息，但整体架构没有更改，因此可以通过获取
+CMS 源码得到网站的整体架构。可能发生错误配置的地方：</p>
+<ul>
+<li>网络服务；</li>
+<li>CMS；</li>
+<li>数据库；</li>
+<li>代码；</li>
+<li>...</li>
+</ul>
+<h2 id="参考-4">6.2. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">A05
+Security Misconfiguration - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/336072.html">2021 Owasp top 10
+逐个击破，A05:2021 – Security Misconf... -
+FreeBuf网络安全行业门户</a></li>
+</ol>
+<h1 id="vulnerable-and-outdated-components有漏洞过期的组件">7.
+Vulnerable and Outdated Components（有漏洞、过期的组件）</h1>
+<h2 id="概述-6">7.1. 概述</h2>
+<p>可能容易受到攻击：</p>
+<ul>
+<li>如果您不知道您使用的所有组件的版本（客户端和服务器端）。这包括您直接使用的组件以及嵌套的依赖项。</li>
+<li>如果软件易受攻击
+(存在已知漏洞)、不受支持或已过时。这包括操作系统、Web/应用程序服务器、数据库管理系统
+(DBMS)、应用程序、API 和所有组件、运行时环境和库。</li>
+<li>如果您没有定期扫描漏洞并订阅与您使用的组件相关的安全公告。</li>
+<li>如果您不以基于风险的方式及时修复或升级底层平台、框架和依赖项。这种情况通常发生在补丁是每月或每季度在变更控制下的任务的环境中，这会使组织在几天或几个月的时间里不必要地暴露于已修复的漏洞。</li>
+<li>如果软件开发人员不测试更新、升级或修补库的兼容性。</li>
+<li>如果您不保护组件的配置（<a
+href="#6.%20Security%20Misconfiguration%20(安全错误配置)">6. Security
+Misconfiguration (安全错误配置)</a> ）。</li>
+</ul>
+<p><strong>防御手段：</strong></p>
+<ul>
+<li>删除未使用的依赖项、不必要的功能、组件、文件和文档。</li>
+<li>使用版本、OWASP 依赖性检查、<code>retire.js</code>
+等工具持续清点客户端和服务器端组件（例如框架、库）及其依赖项的版本。持续监控常见漏洞和披露
+(CVE) 等来源和国家漏洞数据库
+(NVD)，了解组件中的漏洞。使用软件组成分析工具来自动化该过程。订阅与您使用的组件相关的安全漏洞的电子邮件警报。</li>
+<li>仅通过安全链接从官方来源获取组件。首选签名包以减少包含经过修改的恶意组件的机会（<a
+href="#9.%20Software%20and%20Data%20Integrity%20Failures（软件和数据完整性故障）">9.
+Software and Data Integrity Failures（软件和数据完整性故障）</a>)。</li>
+<li>监控未维护或未为旧版本创建安全补丁的库和组件。如果无法打补丁，请考虑部署虚拟补丁来监控、检测或防止发现的问题。</li>
+</ul>
+<p>攻击场景实例：</p>
+<p>场景
+1：组件通常以与应用程序本身相同的权限运行，因此任何组件中的缺陷都可能导致严重影响。此类缺陷可能是偶然的（例如，编码错误）或故意的（例如，组件中的后门）。发现的一些可利用组件漏洞示例包括：</p>
+<ul>
+<li>CVE-2017-5638，允许在服务器上执行任意代码的 Struts 2
+远程代码执行漏洞被认为是重大漏洞的罪魁祸首。</li>
+<li>虽然物联网 (IoT)
+通常很难或不可能修补，但修补它们的重要性可能很大（例如，生物医学设备）。</li>
+</ul>
+<p>有一些自动化工具可以帮助攻击者找到未打补丁或配置错误的系统。例如，Shodan
+IoT 搜索引擎可以帮助您找到仍然遭受 2014 年 4 月修补的 Heartbleed
+漏洞的设备。</p>
+<p>那些 0 Day、1 Day、N Day 基本都是针对这一类别漏洞的。</p>
+<h2 id="参考-5">7.2. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/">A06
+Vulnerable and Outdated Components - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/339547.html">2021
+Owasp Top 10 逐个击破之A06：易受攻击和淘汰的组件 -
+FreeBuf网络安全行业门户</a></li>
+</ol>
+<h1
+id="identification-and-authentication-failures-认证和验证机制失效">8.
+Identification and Authentication Failures (认证和验证机制失效)</h1>
+<h2 id="概述-7">8.1. 概述</h2>
+<p>身份验证与会话管理对于防御与身份验证相关的攻击至关重要，如果应用程序存在下面的情况，那就可能存在身份验证相关的漏洞：</p>
+<ul>
+<li>允许爆破，即攻击者拥有有效的用户名，使用密码字典进行爆破；</li>
+<li>允许自动攻击，例如凭证填充，其中攻击者拥有有效的用户名、密码的列表；</li>
+<li>允许默认密码、弱密码或众所周知的密码，例如“Password1”或“admin/admin”。</li>
+<li>使用弱的、无效的凭证恢复和忘记密码的操作，这些是不安全的，比如“你的小学在哪？”之类的
+sb 问题；</li>
+<li>使用纯文本、加密或弱哈希尼玛数据存储，见 <a
+href="#3.%20Cryptographic%20Failures（加密失效）">3. Cryptographic
+Failures（加密失效）</a></li>
+<li>缺少多重身份验证或者无效的多重身份验证（如 <a
+href="../⭐知识复习总结/补充知识点/双因素认证相关.md">双因素认证</a>就是多重身份验证的一种）</li>
+<li>在 URL 中暴露了 session ID；</li>
+<li>登录成功后重用了 session ID，登录前后的 session id
+相同，如果攻击者获得了目标登录前的 session（或者攻击者将自己的 session
+给目标）目标使用该 session
+进行身份验证，那么攻击者就有了目标的权限；</li>
+<li>Session ID 没有正确的无效，用户会话或身份验证 token （主要是 single
+sign-on tokens，单点登录令牌）在注销或不活动期间没有正确的失效；</li>
+</ul>
+<blockquote>
+<p>SSO：它希望用户只需要登录一次，就可以访问所有的系统。SSO
+的出现无疑让用户的使用体验更加的便捷，但是从安全角度来看，SSO
+把风险都集中在一个点上。所以说，SSO 的出现有利也有弊。</p>
+</blockquote>
+<p><strong>防御手段</strong>：</p>
+<ul>
+<li>在可能的情况下，实施多因素身份验证以防止自动凭据填充、暴力破解和被盗凭据重用攻击。</li>
+<li>不要使用任何默认凭据，特别是对于管理员用户。</li>
+<li>实施弱密码检查，例如根据前 10,000
+个最差密码列表测试新密码，如果新密码在其中，则需要更改；</li>
+<li>使密码长度、复杂性和轮换策略与美国国家标准与技术研究院 (NIST)
+800-63b 的第 5.1.1
+节中关于记忆的秘密或其他基于证据的现代密码策略的指南保持一致。（看看就好）</li>
+<li>通过对所有结果使用相同的消息，确保注册、凭据恢复和 API
+路径得到加固以防止帐户枚举攻击。（比如使用错误的用户名登录，提示用户名错误，使用正确的用户名登录，可能提示密码错误，这就是有害的，应该都提示登录信息错误）</li>
+<li>限制或逐渐延迟失败的登录尝试，但要注意不要造成拒绝服务的情况。记录所有故障并在检测到凭据填充、暴力破解或其他攻击时提醒管理员。（限制：比如银行尝试
+5
+次就锁了，逐渐延迟失败的尝试：失败多次就等半个小时再尝试，继续多次失败就继续延长等待时间）</li>
+<li>使用服务器端的、安全的、内置的会话管理器，在登录后生成一个新的具有高熵的随机会话
+ID。会话 id 不应出现在 URL
+中，应安全存储，并在注销、空闲和绝对超时后失效。</li>
+</ul>
+<p><strong>攻击场景示例：</strong></p>
+<p>场景 1：攻击者使用爆破或者撞库（凭证填充）攻击。</p>
+<p>场景
+2：大多数身份验证攻击的发生是由于继续使用密码作为唯一因素。一旦考虑最佳的体验（用户的体验），密码轮换和复杂性要求会鼓励用户使用和重复使用弱密码。建议组织根据
+NIST 800-63 停止这些做法并使用多因素身份验证。</p>
+<p>场景
+3：应用程序会话超时设置不正确。用户使用公用计算机访问应用程序，用户没有选择“注销”，而是简单地关闭浏览器选项卡然后走开。一个小时后，攻击者使用相同的浏览器，用户仍然通过身份验证。</p>
+<h2 id="凭证填充和爆破的区别">8.2. 凭证填充和爆破的区别</h2>
+<p>OWASP
+将凭证填充归类为爆破的子集。但严格来讲，凭证填充与传统的暴力攻击有很大不同。<strong>暴力攻击尝试在情境背景或线索的情况下猜测密码，有时按照常规密码设置建议随机套用字符</strong>。<strong>凭证填充利用的是泄露数据，可能正确的答案在数量上得到了精简</strong>。</p>
+<p>防止暴力攻击的有效方法是使用由多个字符组成的强密码，包括大写字母、数字和特殊字符。但是密码强度不能防止凭证填充。密码的强弱无关紧要–如果密码在不同的帐户之间共享，那它依然会受损于凭证填充。</p>
+<h2 id="参考-6">8.3. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/">A07
+Identification and Authentication Failures - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/342666.html">2021
+Owasp Top 10 逐个击破之A07：认证及验证机制失效 -
+FreeBuf网络安全行业门户</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.cloudflare.com/zh-cn/learning/bots/what-is-credential-stuffing/">什么是凭证填充？|
+凭证填充与暴力破解攻击 | Cloudflare</a></li>
+</ol>
+<h1 id="software-and-data-integrity-failures软件和数据完整性故障">9.
+Software and Data Integrity Failures（软件和数据完整性故障）</h1>
+<h2 id="概述-8">9.1. 概述</h2>
+<p>软件和数据完整性故障与代码和基础设施不能防止完整性违规有关。</p>
+<p>这方面的一个例子是，应用程序依赖于来自不可信源、存储库和内容交付网络
+(cdn)的插件、库或模块。不安全的 CI/CD
+管道可能会引入未经授权的访问、恶意代码或系统危害。现在的许多应用程序有自动更新的功能，在没有充分进行完整性验证的情况下下载更新，并应用与以前受信任的应用程序之上，而当前的更新可能是攻击者上传的。</p>
+<p>另一个例子是将对象、数据编码或序列化为攻击者可以看到和修改的结构，这种结构容易受到不安全反序列化的影响。</p>
+<p><strong>防御手段：</strong></p>
+<ul>
+<li>使用数字签名或类似机制来验证软件或数据来自预期来源并且未被更改。</li>
+<li>确保库和依赖项（例如 npm 或
+Maven）正在使用受信任的存储库。如果您的风险状况较高（希望更安全），请考虑托管一个经过审查的内部已知良好存储库。</li>
+<li>确保使用 OWASP Dependency Check 或 OWASP CycloneDX
+等软件供应链安全工具来验证组件不包含已知漏洞</li>
+<li>确保对代码和配置更改进行审查，以最大限度地减少恶意代码或配置被引入软件管道的可能性。</li>
+<li>确保您的 CI/CD
+管道具有适当的隔离、配置和访问控制，以确保流经构建和部署过程的代码的完整性。</li>
+<li>确保在没有某种形式的完整性检查或数字签名以检测序列化数据的篡改或重放的情况下，未签名或未加密的序列化数据不会发送到不受信任的客户端</li>
+</ul>
+<p><strong>攻击场景示例：</strong></p>
+<p>场景
+1——没有签名的更新：许多家用路由器、机顶盒、设备固件等不通过签名固件验证更新。未签名的固件越来越成为攻击者的目标，而且预计只会变得更糟。这是一个主要问题，因为很多时候除了在未来的版本中修复并等待以前的版本过时之外，没有任何补救机制。</p>
+<p>场景 2——SolarWinds
+恶意更新：众所周知，民族国家会攻击更新机制，最近一次值得注意的攻击是
+SolarWinds Orion
+攻击。开发该软件的公司拥有安全的构建和更新完整性流程。尽管如此，这些仍然能够被破坏，几个月来，该公司向
+18,000 多个组织分发了一个高度针对性的恶意更新，其中大约 100
+个受到影响。这是历史上对这种性质影响最深远、最重大的违规行为之一。</p>
+<p>场景 3——不安全的反序列化：React 应用程序调用一组 Spring Boot
+微服务。作为函数式程序员，他们试图确保他们的代码是不可变的。他们提出的解决方案是序列化用户状态，并在每个请求中来回传递。攻击者注意到“rO0”Java
+对象签名（在 base64 中）并使用 Java Serial Killer
+工具在应用程序服务器上获得远程代码执行。</p>
+<h2 id="参考-7">9.2. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/">A08
+Software and Data Integrity Failures - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/342910.html">2021
+Owasp Top 10 逐个击破之A08：软件和数据完整性故障 -
+FreeBuf网络安全行业门户</a></li>
+</ol>
+<h1 id="security-logging-and-monitoring-failures安全日志和监控故障">10.
+Security Logging and Monitoring Failures（安全日志和监控故障）</h1>
+<h2 id="概述-9">10.1. 概述</h2>
+<p>回到 OWASP 2021 年 Top
+10，此类别旨在帮助检测、升级和响应活跃的违规行为。没有日志记录和监控，就无法检测到违规行为。任何时候都可能发生日志记录、检测、监控和主动响应不足的情况：</p>
+<ul>
+<li>不记录可审核事件，例如登录、登录失败和高价值交易。</li>
+<li>警告和错误没有生成日志消息或者生成不充分或者不清楚的日志消息。</li>
+<li>应用程序和 API 的可疑活动没有被日志记录。</li>
+<li>日志只存储在本地；</li>
+<li>适当的警报阈值和响应升级流程没有安排到位或者没有效果；</li>
+<li>通过动态应用程序安全测试 (dynamic application security
+testing，DAST)工具 (如 OWASP ZAP)进行渗透测试和扫描不会触发警报。</li>
+<li>应用程序无法实时或近实时地检测、升级或警报活动攻击。</li>
+</ul>
+<p>通过使日志记录和警报事件对用户或攻击者可见，很容易受到信息泄露的影响
+<a href="#2.%20Broken%20Access%20Control（访问控制失效）">2. Broken
+Access Control（访问控制失效）</a>。</p>
+<p><strong>防御手段：</strong></p>
+<p>开发人员应根据应用程序的风险实施以下部分或全部控制措施：</p>
+<ul>
+<li>确保所有登录、访问控制和服务器端输入验证失败都可以使用足够的用户上下文来记录，以识别可疑或恶意帐户，并保留足够的时间以允许延迟取证分析。</li>
+<li>确保以“日志管理解决方案可以轻松使用的格式”生成日志。</li>
+<li>确保日志数据正确编码，以防止对日志记录或监控系统进行注入或攻击。（SQL
+注入就有针对日志的攻击）</li>
+<li>确保高价值交易具有“带有完整性控制”的审计跟踪，以防止篡改或删除。</li>
+<li>DevSecOps
+团队应该建立有效的监控和警报，以便检测到可疑活动并快速做出响应。</li>
+<li>制定或采用事件响应和恢复计划，例如美国国家标准技术研究院 (NIST)
+800-61r2 或更高版本。</li>
+</ul>
+<p>有商业和开源应用程序保护框架，如 OWASP ModSecurity
+核心规则集，以及开源日志关联软件，如 Elasticsearch、Logstash、Kibana
+(ELK) 堆栈，具有自定义仪表板和警报功能。</p>
+<p><strong>攻击场景示例：</strong></p>
+<p>场景
+1：由于缺乏监控和日志记录，一家儿童健康计划提供商的网站运营商无法检测到违规行为。外部方通知健康计划提供者，攻击者访问并修改了超过
+350
+万儿童的数千份敏感健康记录。事后审查发现网站开发人员没有解决重大漏洞。由于没有对系统进行记录或监控，数据泄露可能从
+2013 年就开始了，时间超过七年。</p>
+<p>场景
+2：印度一家主要航空公司发生了一次数据泄露事件，涉及数百万乘客超过十年的个人数据，包括护照和信用卡数据。数据泄露发生在第三方云托管提供商处，该供应商在一段时间后将泄露事件通知了航空公司。</p>
+<p>场景 3：欧洲一家主要航空公司遭遇了 GDPR
+可报告违规行为。据报道，该漏洞是由攻击者利用的支付应用程序安全漏洞造成的，攻击者收集了超过
+400,000 条客户支付记录。该航空公司因此被隐私监管机构罚款 2000
+万英镑。</p>
+<h2 id="日志伪造">10.2. 日志伪造</h2>
+<p>应用程序通常使用日志文件来存储事件或事务的历史，以供以后查看、收集统计信息或调试。根据应用程序的性质，检查日志文件的任务可以根据需要手动执行，也可以使用工具自动筛选重要事件或趋势信息的日志。</p>
+<p>当日志条目包含未经过授权的用户输入时, 会造成日志伪造。</p>
+<p>日志伪造条件：</p>
+<ul>
+<li>数据是从不可靠的来源
+(包括但不局限于不可靠用户的输入信息或是不可靠用户可能更改的文件)进入应用程序;</li>
+<li>数据写入到应用程序或是系统日志文件。</li>
+</ul>
+<p>满足上述两个条件即可构成一个日志伪造的漏洞。</p>
+<p>日志伪造的影响：</p>
+<ul>
+<li>如果攻击者向记录到日志文件的应用程序提供恶意数据，则可能会妨碍或误导日志文件的解读。最理想的情况是，攻击者可能通过向应用程序提供包括适当字符的输入，在日志文件中插入错误的条目。如果日志文件是自动处理的，那么攻击者可以破坏文件格式或注入意外的字符，从而使文件无法使用。通过伪造或其他方式，可能会导致日志文件中的统计信息发生偏差，受到破坏的日志文件可用于掩护攻击者的跟踪轨迹，甚至还可以牵连第三方来执行恶意行为。最糟糕的情况是，攻击者可能向日志文件注入代码（SQL
+注入的一个类别）或者其他命令，利用日志处理实用程序中的漏洞。</li>
+</ul>
+<p>日志伪造防御：</p>
+<ul>
+<li>输入验证：对输入的信息进行验证。假设所有输入都是恶意的，使用“接受已知好的数据”输入验证策略，即使用严格符合规范的可接受输入列表。拒绝任何不严格符合规范的输入，或者将其转换为符合规范的输入。</li>
+<li>输出编码：对要写入日志文件的信息进行编码，使之符合日志文件的编码格式要求。</li>
+</ul>
+<p>日志伪造在 CWE 中被编号为：<a
+target="_blank" rel="noopener" href="https://cwe.mitre.org/data/definitions/117.html">CWE - CWE-117:
+Improper Output Neutralization for Logs (4.10)</a></p>
+<h2 id="参考-8">10.3. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/">A09
+Security Logging and Monitoring Failures - OWASP Top 10:2021</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/350993.html">2021 Owasp Top 10
+逐个击破之A09：安全日志和监控故障 - FreeBuf网络安全行业门户</a></li>
+</ol>
+<h1 id="server-side-request-forgery-ssff服务端请求伪造">11. Server Side
+Request Forgery (SSFF，服务端请求伪造)</h1>
+<h2 id="概述-10">11.1. 概述</h2>
+<p>每当 Web 应用程序在未验证用户提供的 URL
+的情况下获取远程资源时，就会出现 SSRF
+缺陷。它允许攻击者强制应用程序将精心设计的请求发送到意想不到的目的地，即使受到防火墙、VPN
+或其他类型的网络访问控制列表 (access control list，ACL) 的保护。</p>
+<p>随着现代 Web 应用程序为最终用户提供方便的功能，获取 URL
+成为一种常见的场景。因此，SSRF
+正在增加。此外，由于云服务和架构的复杂性，SSRF 的严重性越来越高。</p>
+<p><strong>防御手段：</strong></p>
+<p>开发人员可以通过实施以下部分或全部深度防御控制来防止 SSRF：</p>
+<ul>
+<li><strong>From Network layer</strong>(从网路层着手)
+<ul>
+<li>将远端资源存取功能切割成不同子网以降低伪造服务端请求的影响；</li>
+<li>于防火墙政策或于网路存取控制规则实施"预设全拒绝 (deny by default)"
+，以封锁全部来自外部之网路流量；</li>
+</ul></li>
+<li><strong>From Application layer:</strong>(从应用层入手)
+<ul>
+<li>过滤并验证来自于用户端提供的输入</li>
+<li>以白名单方式列出 URL、port、目的地清单</li>
+<li>不传送原始回应给用户端</li>
+<li>停用 HTTP 重定向</li>
+<li>留意网址一致性，以避免例如 DNS rebinding 攻击、TOCTOU（time of
+check, time of use） 攻击</li>
+</ul></li>
+</ul>
+<p>不要通过使用黑名单或正则表达式来缓解
+SSRF。攻击者拥有绕过黑名单的负载列表、工具和技能。</p>
+<p>还可以考虑一下措施：</p>
+<ul>
+<li>不要在前端系统上部署其他与安全相关的服务（例如
+OpenID）。控制这些系统上的本地流量（例如 localhost）</li>
+<li>对于具有专用和可管理用户组的前端，在独立系统上使用网络加密（例如
+VPN）以考虑非常高的保护需求</li>
+</ul>
+<p><strong>攻击场景：</strong></p>
+<p>攻击者可以使用 SSRF 攻击受 Web 应用程序防火墙、防火墙或网络 ACL
+保护的系统，使用的场景如下：</p>
+<ul>
+<li>场景
+1：端口扫描内部服务器——如果网络架构未分段，攻击者可以绘制出内部网络，并根据连接结果或者连接、拒绝
+SSRF 负载连接的耗用时间来确定内部服务器上的端口是打开还是关闭。</li>
+<li>场景
+2：敏感数据暴露——攻击者可以访问本地文件或内部服务来获取敏感信息，例如
+<code>file:///etc/passwd</code> 和 <code>http://localhost:28017/</code>
+。</li>
+<li>场景 3：访问云服务的元数据存储——大多数云提供商都有元数据存储，例如
+<code>http://169.254.169.254/</code>
+。攻击者可以读取元数据以获得敏感信息。</li>
+<li>场景
+4：破坏内部服务——攻击者可以滥用内部服务进行进一步的攻击，例如远程代码执行
+(RCE) 或拒绝服务 (DoS)。</li>
+</ul>
+<h2 id="参考-9">11.2. 参考</h2>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_%28SSRF%29/">A10
+Server Side Request Forgery (SSRF) - OWASP Top 10:2021</a></li>
+<li><a href="../web基础漏洞/SSRF/SSRF.md">SSRF</a></li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#broken-access-control%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%A4%B1%E6%95%88"><span class="toc-number">2.</span> <span class="toc-text">2. Broken Access
+Control（访问控制失效）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%B6%E5%9C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. 靶场</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#unprotected-admin-functionality"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1. Unprotected admin
+functionality</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unprotected-admin-functionality-with-unpredictable-url"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2.
+Unprotected admin functionality with unpredictable URL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-role-controlled-by-request-parameter"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3. User role
+controlled by request parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-role-can-be-modified-in-user-profile"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4. User role can
+be modified in user profile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.2.5. User ID
+controlled by request parameter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter-with-unpredictable-user-ids"><span class="toc-number">2.2.6.</span> <span class="toc-text">2.2.6.
+User ID controlled by request parameter, with unpredictable user
+IDs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter-with-data-leakage-in-redirect"><span class="toc-number">2.2.7.</span> <span class="toc-text">2.2.7.
+User ID controlled by request parameter with data leakage in
+redirect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-id-controlled-by-request-parameter-with-password-disclosure"><span class="toc-number">2.2.8.</span> <span class="toc-text">2.2.8.
+User ID controlled by request parameter with password disclosure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#insecure-direct-object-references"><span class="toc-number">2.2.9.</span> <span class="toc-text">2.2.9. Insecure direct object
+references</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#url-based-access-control-can-be-circumvented"><span class="toc-number">2.2.10.</span> <span class="toc-text">2.2.10. URL-based
+access control can be circumvented</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#method-based-access-control-can-be-circumvented"><span class="toc-number">2.2.11.</span> <span class="toc-text">2.2.11.
+Method-based access control can be circumvented</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#multi-step-process-with-no-access-control-on-one-step"><span class="toc-number">2.2.12.</span> <span class="toc-text">2.2.12.
+Multi-step process with no access control on one step</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#referer-based-access-control"><span class="toc-number">2.2.13.</span> <span class="toc-text">2.2.13. Referer-based access
+control</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">2.3.</span> <span class="toc-text">2.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cryptographic-failures%E5%8A%A0%E5%AF%86%E5%A4%B1%E6%95%88"><span class="toc-number">3.</span> <span class="toc-text">3. Cryptographic
+Failures（加密失效）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-2"><span class="toc-number">3.1.</span> <span class="toc-text">3.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-1"><span class="toc-number">3.2.</span> <span class="toc-text">3.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#injection%E6%B3%A8%E5%85%A5"><span class="toc-number">4.</span> <span class="toc-text">4. Injection（注入）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-3"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-2"><span class="toc-number">4.2.</span> <span class="toc-text">4.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#insecure-design%E4%B8%8D%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1"><span class="toc-number">5.</span> <span class="toc-text">5. Insecure Design（不安全设计）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-4"><span class="toc-number">5.1.</span> <span class="toc-text">5.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A8%81%E8%83%81%E5%BB%BA%E6%A8%A1%E6%A6%82%E8%BF%B0"><span class="toc-number">5.2.</span> <span class="toc-text">5.2. 威胁建模概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-3"><span class="toc-number">5.3.</span> <span class="toc-text">5.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security-misconfiguration-%E5%AE%89%E5%85%A8%E9%94%99%E8%AF%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">6. Security
+Misconfiguration (安全错误配置)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-5"><span class="toc-number">6.1.</span> <span class="toc-text">6.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-4"><span class="toc-number">6.2.</span> <span class="toc-text">6.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#vulnerable-and-outdated-components%E6%9C%89%E6%BC%8F%E6%B4%9E%E8%BF%87%E6%9C%9F%E7%9A%84%E7%BB%84%E4%BB%B6"><span class="toc-number">7.</span> <span class="toc-text">7.
+Vulnerable and Outdated Components（有漏洞、过期的组件）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-6"><span class="toc-number">7.1.</span> <span class="toc-text">7.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-5"><span class="toc-number">7.2.</span> <span class="toc-text">7.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#identification-and-authentication-failures-%E8%AE%A4%E8%AF%81%E5%92%8C%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6%E5%A4%B1%E6%95%88"><span class="toc-number">8.</span> <span class="toc-text">8.
+Identification and Authentication Failures (认证和验证机制失效)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-7"><span class="toc-number">8.1.</span> <span class="toc-text">8.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%AD%E8%AF%81%E5%A1%AB%E5%85%85%E5%92%8C%E7%88%86%E7%A0%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">8.2.</span> <span class="toc-text">8.2. 凭证填充和爆破的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-6"><span class="toc-number">8.3.</span> <span class="toc-text">8.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#software-and-data-integrity-failures%E8%BD%AF%E4%BB%B6%E5%92%8C%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7%E6%95%85%E9%9A%9C"><span class="toc-number">9.</span> <span class="toc-text">9.
+Software and Data Integrity Failures（软件和数据完整性故障）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-8"><span class="toc-number">9.1.</span> <span class="toc-text">9.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-7"><span class="toc-number">9.2.</span> <span class="toc-text">9.2. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#security-logging-and-monitoring-failures%E5%AE%89%E5%85%A8%E6%97%A5%E5%BF%97%E5%92%8C%E7%9B%91%E6%8E%A7%E6%95%85%E9%9A%9C"><span class="toc-number">10.</span> <span class="toc-text">10.
+Security Logging and Monitoring Failures（安全日志和监控故障）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-9"><span class="toc-number">10.1.</span> <span class="toc-text">10.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E4%BC%AA%E9%80%A0"><span class="toc-number">10.2.</span> <span class="toc-text">10.2. 日志伪造</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-8"><span class="toc-number">10.3.</span> <span class="toc-text">10.3. 参考</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#server-side-request-forgery-ssff%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0"><span class="toc-number">11.</span> <span class="toc-text">11. Server Side
+Request Forgery (SSFF，服务端请求伪造)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0-10"><span class="toc-number">11.1.</span> <span class="toc-text">11.1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83-9"><span class="toc-number">11.2.</span> <span class="toc-text">11.2. 参考</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&text=OWASP_Top_10_2021"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&title=OWASP_Top_10_2021"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&is_video=false&description=OWASP_Top_10_2021"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=OWASP_Top_10_2021&body=Check out this article: https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&title=OWASP_Top_10_2021"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&title=OWASP_Top_10_2021"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&title=OWASP_Top_10_2021"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&title=OWASP_Top_10_2021"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&name=OWASP_Top_10_2021&description=&lt;p&gt;OWASP Top 10 2021 学习记录，后续可能会往里面加入靶场的练习。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2023/04/18/OWASP_Top_10_2021/&t=OWASP_Top_10_2021"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
